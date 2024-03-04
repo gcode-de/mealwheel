@@ -16,10 +16,8 @@ export default function DetailPage() {
   if (error) {
     return <h1>error</h1>;
   }
-  if (isLoading) {
-    return <h1>loading recipe...</h1>;
-  }
-  if (!recipe) {
+
+  if (isLoading || !recipe) {
     return <h1>loading recipe...</h1>;
   }
 
@@ -68,15 +66,10 @@ export default function DetailPage() {
           ))}
         </StyledList>
         <StyledHyper>
-          <StyledLink
-            href="#instructions"
-            onClick={() => setContent("instructions")}
-          >
+          <StyledLink onClick={() => setContent("instructions")}>
             instructions
           </StyledLink>
-          <StyledLink href="#video" onClick={() => setContent("video")}>
-            video
-          </StyledLink>
+          <StyledLink onClick={() => setContent("video")}>video</StyledLink>
         </StyledHyper>
         {content === "instructions" && (
           <StyledIngredients>{instructions}</StyledIngredients>
@@ -131,11 +124,13 @@ const StyledHyper = styled.div`
   justify-content: space-between;
   border-bottom: 1px solid var(--color-darkgrey);
 `;
-const StyledLink = styled(Link)`
+const StyledLink = styled.button`
   text-decoration: none;
   color: var(--color-font);
   font-size: large;
   font-weight: bold;
+  border: none;
+  background: none;
 
   &:hover {
     color: var(--color-highlight);
