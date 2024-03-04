@@ -24,7 +24,7 @@ export default function MealCard({ recipe }) {
 }
 
 const StyledImage = styled(Image)`
-  border-radius: 20px 0px 0px 20px;
+  border-radius: 20px 0 0 20px;
 `;
 
 const StyledCard = styled.li`
@@ -36,7 +36,7 @@ const StyledCard = styled.li`
   border-radius: 20px;
   z-index: 2;
   /* border: black solid 1px; */
-  box-shadow: 0px 4px 8px 0px rgb(0 0 0 / 25%);
+  box-shadow: 0px 4px 8px 0 rgb(0 0 0 / 25%);
 `;
 
 const StyledDiv = styled.div`
