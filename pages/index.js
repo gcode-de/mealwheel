@@ -4,10 +4,26 @@ import Header from "@/components/Styled/Header";
 import CardSkeleton from "@/components/Styled/CardSkeleton";
 import MealCard from "@/components/Styled/MealCard";
 
-export default function HomePage() {
-  const { data, error, isLoading } = useSWR(`/api/recipes`);
+export default function HomePage({ userId }) {
+  const {
+    data,
+    error: recipesError,
+    isLoading: recipesIsLoading,
+  } = useSWR(`/api/recipes`);
+  const {
+    data: user,
+    error: userError,
+    isLoading: userIsLoading,
+  } = useSWR(`/api/users/${userId}`);
 
-  if (error) {
+  function getRecipeProperty(_id, property) {
+    const recipeInteraction = user.recipeInteractions.find(
+      (interaction) => interaction.recipe._id === _id
+    );
+    return recipeInteraction?.[property];
+  }
+
+  if (recipesError || userError) {
     return (
       <div>
         <Header text={"Meal Wheel 🥗"} />
@@ -16,7 +32,7 @@ export default function HomePage() {
     );
   }
 
-  if (isLoading) {
+  if (recipesIsLoading || userIsLoading) {
     return (
       <>
         <Header text={"Meal Wheel 🥗"} />
@@ -30,13 +46,30 @@ export default function HomePage() {
     );
   }
 
+  const favoriteRecipes = user?.recipeInteractions.filter(
+    (recipe) => recipe.isFavorite
+  );
+
   return (
     <>
       <Header text={"Meal Wheel 🥗"} />
       <article>
         <StyledUl>
-          {data.map((recipe) => {
-            return <MealCard key={recipe._id} recipe={recipe} />;
+          {data?.map((recipe) => {
+            // const recipeInteraction = favoriteRecipes.find(
+            //   (r) => r.recipe._id === recipe._id
+            // );
+            // console.log(recipeInteraction);
+            // const isFavorite = recipeInteraction?.isFavorite;
+            // console.log(isFavorite);
+
+            return (
+              <MealCard
+                key={recipe._id}
+                recipe={recipe}
+                isFavorite={getRecipeProperty(recipe._id, "isFavorite")}
+              />
+            );
           })}
         </StyledUl>
       </article>

@@ -6,18 +6,34 @@ import styled from "styled-components";
 import Link from "next/link";
 import { useState } from "react";
 
-export default function DetailPage() {
+export default function DetailPage({ userId }) {
   const [content, setContent] = useState("instructions");
   const router = useRouter();
   const { id } = router.query;
 
-  const { data: recipe, isLoading, error } = useSWR(`/api/recipes/${id}`);
+  const {
+    data: recipe,
+    isLoading: dataIsLoading,
+    error: dataError,
+  } = useSWR(`/api/recipes/${id}`);
+  const {
+    data: user,
+    error: userError,
+    isLoading: userIsLoading,
+  } = useSWR(`/api/users/${userId}`);
 
-  if (error) {
+  function getRecipeProperty(_id, property) {
+    const recipeInteraction = user.recipeInteractions.find(
+      (interaction) => interaction.recipe._id === _id
+    );
+    return recipeInteraction?.[property];
+  }
+
+  if (userError || dataError) {
     return <h1>error</h1>;
   }
 
-  if (isLoading || !recipe) {
+  if (userIsLoading || dataIsLoading || !user || !recipe) {
     return <h1>loading recipe...</h1>;
   }
 
@@ -42,6 +58,8 @@ export default function DetailPage() {
           router.back();
         }}
         style={"arrowLeft"}
+        left="0.5rem"
+        top="0.5rem"
       />
       <StyledImage
         src={imageLink}
@@ -50,6 +68,16 @@ export default function DetailPage() {
         alt={`recipe Image ${title}`}
       />
       <StyledArticle>
+        <IconButton
+          style="Heart"
+          right="1rem"
+          top="-0.5rem"
+          fill={
+            getRecipeProperty(_id, "isFavorite")
+              ? "var(--color-highlight)"
+              : "var(--color-lightgrey)"
+          }
+        />
         <h1>{title}</h1>
         <p>
           {duration} MIN | {difficulty}
