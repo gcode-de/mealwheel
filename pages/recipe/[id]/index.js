@@ -17,7 +17,7 @@ export default function DetailPage() {
     return <h1>error</h1>;
   }
   if (isLoading) {
-    return <h1>loading...</h1>;
+    return <h1>loading recipe...</h1>;
   }
   if (!recipe) {
     return <h1>loading recipe...</h1>;
