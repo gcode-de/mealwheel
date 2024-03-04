@@ -1,11 +1,18 @@
 import styled from "styled-components";
 import Image from "next/image";
 import Link from "next/link";
+import IconButton from "./IconButton";
 
 export default function MealCard({ recipe }) {
   return (
-    <StyledLink href={`/recipe/${recipe._id}`}>
-      <StyledCard>
+    <StyledLi>
+      <IconButton
+        style="Heart"
+        right="-1rem"
+        top="0.25rem"
+        fill="var(--color-lightgrey)"
+      />
+      <StyledLink href={`/recipe/${recipe._id}`}>
         <StyledImage
           src={recipe.imageLink}
           alt={recipe.title}
@@ -18,8 +25,8 @@ export default function MealCard({ recipe }) {
             {recipe.duration} MIN | {recipe.difficulty.toUpperCase()}
           </StyledPDuration>
         </StyledDiv>
-      </StyledCard>
-    </StyledLink>
+      </StyledLink>
+    </StyledLi>
   );
 }
 
@@ -27,9 +34,8 @@ const StyledImage = styled(Image)`
   border-radius: 20px 0 0 20px;
 `;
 
-const StyledCard = styled.li`
+const StyledLink = styled(Link)`
   background-color: var(--color-component);
-  list-style-type: none;
   margin: 1.25rem 0 0 0;
   display: flex;
   flex-direction: row;
@@ -37,6 +43,8 @@ const StyledCard = styled.li`
   z-index: 2;
   /* border: black solid 1px; */
   box-shadow: 0px 4px 8px 0 rgb(0 0 0 / 25%);
+  text-decoration: none;
+  color: var(--darkgrey);
 `;
 
 const StyledDiv = styled.div`
@@ -62,7 +70,7 @@ const StyledPDuration = styled.p`
   margin-left: 1.5rem;
 `;
 
-const StyledLink = styled(Link)`
-  text-decoration: none;
-  color: var(--darkgrey);
+const StyledLi = styled.li`
+  list-style-type: none;
+  position: relative;
 `;
