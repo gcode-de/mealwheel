@@ -10,6 +10,7 @@ export default function App({ Component, pageProps }) {
     data: user,
     isLoading,
     error,
+    mutate,
   } = useSWR(`/api/users/${userId}`, fetcher);
 
   function getRecipeProperty(_id, property) {
@@ -17,6 +18,39 @@ export default function App({ Component, pageProps }) {
       (interaction) => interaction.recipe._id === _id
     );
     return recipeInteraction?.[property];
+  }
+
+  async function toggleIsFavorite(_id) {
+    if (user.recipeInteractions.find((i) => i.recipe._id === _id)) {
+      user.recipeInteractions = user.recipeInteractions.map((i) =>
+        i.recipe._id === _id ? { ...i, isFavorite: !i.isFavorite } : i
+      );
+      const response = await fetch(`/api/users/${user._id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(user),
+      });
+      console.log(await response);
+
+      if (response.ok) {
+        mutate();
+      }
+    } else {
+      user.recipeInteractions.push({ isFavorite: true, recipe: _id });
+      const response = await fetch(`/api/users/${user._id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(user),
+      });
+      console.log(await response);
+      if (response.ok) {
+        mutate();
+      }
+    }
   }
 
   if (error) {
@@ -55,6 +89,7 @@ export default function App({ Component, pageProps }) {
             userId={userId}
             user={user}
             getRecipeProperty={getRecipeProperty}
+            toggleIsFavorite={toggleIsFavorite}
           />
         </SWRConfig>
       </Layout>

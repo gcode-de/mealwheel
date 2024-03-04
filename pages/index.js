@@ -4,7 +4,12 @@ import Header from "@/components/Styled/Header";
 import CardSkeleton from "@/components/Styled/CardSkeleton";
 import MealCard from "@/components/Styled/MealCard";
 
-export default function HomePage({ error, isLoading, getRecipeProperty }) {
+export default function HomePage({
+  error,
+  isLoading,
+  getRecipeProperty,
+  toggleIsFavorite,
+}) {
   const {
     data: recipes,
     error: recipesError,
@@ -45,6 +50,7 @@ export default function HomePage({ error, isLoading, getRecipeProperty }) {
                 key={recipe._id}
                 recipe={recipe}
                 isFavorite={getRecipeProperty(recipe._id, "isFavorite")}
+                onToggleIsFavorite={toggleIsFavorite}
               />
             );
           })}

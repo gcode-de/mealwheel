@@ -8,6 +8,7 @@ export default function Favorites({
   error,
   isLoading,
   getRecipeProperty,
+  toggleIsFavorite,
 }) {
   const favoriteRecipes = user?.recipeInteractions
     .filter((recipe) => recipe.isFavorite)
@@ -43,6 +44,7 @@ export default function Favorites({
                 key={recipe._id}
                 recipe={recipe}
                 isFavorite={getRecipeProperty(recipe._id, "isFavorite")}
+                onToggleIsFavorite={toggleIsFavorite}
               />
             );
           })}

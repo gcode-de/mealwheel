@@ -30,6 +30,7 @@ const StyledBox = styled.div`
   align-items: center;
   border-radius: 100%;
   box-shadow: 4px 8px 16px 0 rgb(0 0 0 / 8%);
+  cursor: pointer;
 `;
 
 const StyledLinkSvg = styled.button`
@@ -37,5 +38,4 @@ const StyledLinkSvg = styled.button`
   height: 30px;
   border: none;
   background: none;
-  cursor: pointer;
 `;

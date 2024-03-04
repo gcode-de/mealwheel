@@ -6,7 +6,12 @@ import styled from "styled-components";
 import Link from "next/link";
 import { useState } from "react";
 
-export default function DetailPage({ error, isLoading, getRecipeProperty }) {
+export default function DetailPage({
+  error,
+  isLoading,
+  getRecipeProperty,
+  toggleIsFavorite,
+}) {
   const [content, setContent] = useState("instructions");
   const router = useRouter();
   const { id } = router.query;
@@ -66,6 +71,9 @@ export default function DetailPage({ error, isLoading, getRecipeProperty }) {
               ? "var(--color-highlight)"
               : "var(--color-lightgrey)"
           }
+          onClick={() => {
+            toggleIsFavorite(_id);
+          }}
         />
         <h1>{title}</h1>
         <p>

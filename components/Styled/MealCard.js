@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import IconButton from "./IconButton";
 
-export default function MealCard({ recipe, isFavorite }) {
+export default function MealCard({ recipe, isFavorite, onToggleIsFavorite }) {
   return (
     <StyledLi>
       <IconButton
@@ -11,6 +11,9 @@ export default function MealCard({ recipe, isFavorite }) {
         right="-1rem"
         top="0.25rem"
         fill={isFavorite ? "var(--color-highlight)" : "var(--color-lightgrey)"}
+        onClick={() => {
+          onToggleIsFavorite(recipe._id);
+        }}
       />
       <StyledLink href={`/recipe/${recipe._id}`}>
         <StyledImage
