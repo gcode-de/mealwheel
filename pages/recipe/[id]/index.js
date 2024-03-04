@@ -6,7 +6,7 @@ import styled from "styled-components";
 import Link from "next/link";
 import { useState } from "react";
 
-export default function DetailPage({ userId }) {
+export default function DetailPage({ error, isLoading, getRecipeProperty }) {
   const [content, setContent] = useState("instructions");
   const router = useRouter();
   const { id } = router.query;
@@ -16,24 +16,12 @@ export default function DetailPage({ userId }) {
     isLoading: dataIsLoading,
     error: dataError,
   } = useSWR(`/api/recipes/${id}`);
-  const {
-    data: user,
-    error: userError,
-    isLoading: userIsLoading,
-  } = useSWR(`/api/users/${userId}`);
 
-  function getRecipeProperty(_id, property) {
-    const recipeInteraction = user.recipeInteractions.find(
-      (interaction) => interaction.recipe._id === _id
-    );
-    return recipeInteraction?.[property];
-  }
-
-  if (userError || dataError) {
+  if (error || dataError) {
     return <h1>error</h1>;
   }
 
-  if (userIsLoading || dataIsLoading || !user || !recipe) {
+  if (isLoading || dataIsLoading || !recipe) {
     return <h1>loading recipe...</h1>;
   }
 
@@ -66,6 +54,7 @@ export default function DetailPage({ userId }) {
         width={400}
         height={300}
         alt={`recipe Image ${title}`}
+        priority
       />
       <StyledArticle>
         <IconButton
@@ -85,7 +74,7 @@ export default function DetailPage({ userId }) {
         <Styledh2>ingredients</Styledh2>
         <StyledList>
           {ingredients.map((ingredient) => (
-            <StyledListItem key={_id}>
+            <StyledListItem key={ingredient._id}>
               <StyledP>{ingredient.name}</StyledP>
               <StyledP>
                 {ingredient.quantity} {ingredient.unit}

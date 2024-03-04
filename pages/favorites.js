@@ -1,22 +1,17 @@
 import styled from "styled-components";
-import useSWR from "swr";
 import CardSkeleton from "@/components/Styled/CardSkeleton";
 import MealCard from "@/components/Styled/MealCard";
 import Header from "@/components/Styled/Header";
 
-export default function Favorites({ userId }) {
-  const { data, error, isLoading } = useSWR(`/api/recipes`);
-  const { data: user } = useSWR(`/api/users/${userId}`);
+export default function Favorites({
+  user,
+  error,
+  isLoading,
+  getRecipeProperty,
+}) {
   const favoriteRecipes = user?.recipeInteractions
     .filter((recipe) => recipe.isFavorite)
     .map((recipe) => recipe.recipe);
-
-  function getRecipeProperty(_id, property) {
-    const recipeInteraction = user.recipeInteractions.find(
-      (interaction) => interaction.recipe._id === _id
-    );
-    return recipeInteraction?.[property];
-  }
 
   if (error) {
     return <div>error</div>;
@@ -39,7 +34,6 @@ export default function Favorites({ userId }) {
 
   return (
     <>
-      👤 {user?.userName}
       <Header text="Bookmarked 🥗" />
       <StyledArticle>
         <StyledUl>

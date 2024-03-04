@@ -4,35 +4,23 @@ import Header from "@/components/Styled/Header";
 import CardSkeleton from "@/components/Styled/CardSkeleton";
 import MealCard from "@/components/Styled/MealCard";
 
-export default function HomePage({ userId }) {
+export default function HomePage({ error, isLoading, getRecipeProperty }) {
   const {
-    data,
+    data: recipes,
     error: recipesError,
     isLoading: recipesIsLoading,
   } = useSWR(`/api/recipes`);
-  const {
-    data: user,
-    error: userError,
-    isLoading: userIsLoading,
-  } = useSWR(`/api/users/${userId}`);
 
-  function getRecipeProperty(_id, property) {
-    const recipeInteraction = user.recipeInteractions.find(
-      (interaction) => interaction.recipe._id === _id
-    );
-    return recipeInteraction?.[property];
-  }
-
-  if (recipesError || userError) {
+  if (recipesError || error) {
     return (
       <div>
         <Header text={"Meal Wheel 🥗"} />
-        error
+        {error}
       </div>
     );
   }
 
-  if (recipesIsLoading || userIsLoading) {
+  if (recipesIsLoading || isLoading) {
     return (
       <>
         <Header text={"Meal Wheel 🥗"} />
@@ -46,23 +34,12 @@ export default function HomePage({ userId }) {
     );
   }
 
-  const favoriteRecipes = user?.recipeInteractions.filter(
-    (recipe) => recipe.isFavorite
-  );
-
   return (
     <>
       <Header text={"Meal Wheel 🥗"} />
       <article>
         <StyledUl>
-          {data?.map((recipe) => {
-            // const recipeInteraction = favoriteRecipes.find(
-            //   (r) => r.recipe._id === recipe._id
-            // );
-            // console.log(recipeInteraction);
-            // const isFavorite = recipeInteraction?.isFavorite;
-            // console.log(isFavorite);
-
+          {recipes?.map((recipe) => {
             return (
               <MealCard
                 key={recipe._id}
