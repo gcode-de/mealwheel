@@ -24,14 +24,4 @@ export default async function handler(request, response) {
       response.status(400).json({ error: error.message });
     }
   }
-
-  //   if (request.method === "DELETE") {
-  //     try {
-  //       await Recipe.findByIdAndDelete(id);
-  //       return response.status(200).json("Recipe deleted");
-  //     } catch (error) {
-  //       console.log(error);
-  //       response.status(400).json({ error: error.message });
-  //     }
-  //   }
 }
