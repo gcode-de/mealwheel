@@ -25,31 +25,19 @@ export default function App({ Component, pageProps }) {
       user.recipeInteractions = user.recipeInteractions.map((i) =>
         i.recipe._id === _id ? { ...i, isFavorite: !i.isFavorite } : i
       );
-      const response = await fetch(`/api/users/${user._id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(user),
-      });
-      console.log(await response);
-
-      if (response.ok) {
-        mutate();
-      }
     } else {
       user.recipeInteractions.push({ isFavorite: true, recipe: _id });
-      const response = await fetch(`/api/users/${user._id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(user),
-      });
-      console.log(await response);
-      if (response.ok) {
-        mutate();
-      }
+    }
+
+    const response = await fetch(`/api/users/${user._id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(user),
+    });
+    if (response.ok) {
+      mutate();
     }
   }
 
