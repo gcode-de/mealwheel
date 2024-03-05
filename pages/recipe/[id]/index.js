@@ -58,13 +58,28 @@ export default function DetailPage({
         left="0.5rem"
         top="0.5rem"
       />
-      <StyledImage
-        src={imageLink}
+      {/* <StyledImage
+        src={imageLink || "/img/jason-briscoe-7MAjXGUmaPw-unsplash.jpg"}
         width={400}
         height={300}
+        style={{
+          width: "100%",
+          height: "auto",
+        }}
         alt={`recipe Image ${title}`}
         priority
-      />
+      /> */}
+      <div style={{ position: "relative", width: "400", height: "300px" }}>
+        <Image
+          src={imageLink || "/img/jason-briscoe-7MAjXGUmaPw-unsplash.jpg"}
+          alt={`recipe Image ${title}`}
+          sizes="500px"
+          fill
+          style={{
+            objectFit: "cover",
+          }}
+        />
+      </div>
       <StyledArticle>
         <IconButton
           style="Heart"

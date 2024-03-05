@@ -16,12 +16,24 @@ export default function MealCard({ recipe, isFavorite, onToggleIsFavorite }) {
         }}
       />
       <StyledLink href={`/recipe/${recipe._id}`}>
-        <StyledImage
-          src={recipe.imageLink}
-          alt={recipe.title}
-          height={123}
-          width={123}
-        />
+        {
+          <div
+            style={{ position: "relative", width: "123px", height: "123px" }}
+          >
+            <StyledImage
+              src={
+                recipe.imageLink ||
+                "/img/jason-briscoe-7MAjXGUmaPw-unsplash.jpg"
+              }
+              alt={`recipe Image ${recipe.title}`}
+              sizes="200px"
+              fill
+              style={{
+                objectFit: "cover",
+              }}
+            />
+          </div>
+        }
         <StyledDiv>
           <StyledPTitle>{recipe.title}</StyledPTitle>
           <StyledPDuration>

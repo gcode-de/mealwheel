@@ -12,6 +12,7 @@ const StyledArticle = styled.article`
   padding-top: 3rem;
   position: relative;
   top: -40px;
+  margin-bottom: -40px;
   z-index: 3;
   padding-bottom: 2rem;
 `;

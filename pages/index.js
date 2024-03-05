@@ -45,20 +45,18 @@ export default function HomePage({
   return (
     <>
       <Header text={"Meal Wheel 🥗"} />
-      <article>
-        <StyledUl>
-          {recipes?.map((recipe) => {
-            return (
-              <MealCard
-                key={recipe._id}
-                recipe={recipe}
-                isFavorite={getRecipeProperty(recipe._id, "isFavorite")}
-                onToggleIsFavorite={toggleIsFavorite}
-              />
-            );
-          })}
-        </StyledUl>
-      </article>
+      <StyledUl>
+        {recipes?.map((recipe) => {
+          return (
+            <MealCard
+              key={recipe._id}
+              recipe={recipe}
+              isFavorite={getRecipeProperty(recipe._id, "isFavorite")}
+              onToggleIsFavorite={toggleIsFavorite}
+            />
+          );
+        })}
+      </StyledUl>
       <IconButtonLarge
         style={"plus"}
         onClick={() => router.push("/addRecipe")}
@@ -71,4 +69,5 @@ const StyledUl = styled.ul`
   padding: 10px;
   max-width: 350px;
   margin: 0 auto;
+  margin-bottom: 80px;
 `;
