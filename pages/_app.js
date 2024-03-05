@@ -21,9 +21,15 @@ export default function App({ Component, pageProps }) {
   }
 
   async function toggleIsFavorite(_id) {
-    if (user.recipeInteractions.find((i) => i.recipe._id === _id)) {
-      user.recipeInteractions = user.recipeInteractions.map((i) =>
-        i.recipe._id === _id ? { ...i, isFavorite: !i.isFavorite } : i
+    if (
+      user.recipeInteractions.find(
+        (interaction) => interaction.recipe._id === _id
+      )
+    ) {
+      user.recipeInteractions = user.recipeInteractions.map((interaction) =>
+        interaction.recipe._id === _id
+          ? { ...interaction, isFavorite: !interaction.isFavorite }
+          : interaction
       );
     } else {
       user.recipeInteractions.push({ isFavorite: true, recipe: _id });
@@ -41,9 +47,15 @@ export default function App({ Component, pageProps }) {
     }
   }
   async function toggleHasCooked(_id) {
-    if (user.recipeInteractions.find((i) => i.recipe._id === _id)) {
-      user.recipeInteractions = user.recipeInteractions.map((i) =>
-        i.recipe._id === _id ? { ...i, hasCooked: !i.hasCooked } : i
+    if (
+      user.recipeInteractions.find(
+        (interaction) => interaction.recipe._id === _id
+      )
+    ) {
+      user.recipeInteractions = user.recipeInteractions.map((interaction) =>
+        interaction.recipe._id === _id
+          ? { ...interaction, hasCooked: !interaction.hasCooked }
+          : interaction
       );
     } else {
       user.recipeInteractions.push({ hasCooked: true, recipe: _id });
