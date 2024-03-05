@@ -3,9 +3,12 @@ import useSWR from "swr";
 import Header from "@/components/Styled/Header";
 import CardSkeleton from "@/components/Styled/CardSkeleton";
 import MealCard from "@/components/Styled/MealCard";
+import IconButtonLarge from "@/components/Styled/IconButtonLarge";
+import { useRouter } from "next/router";
 
 export default function HomePage() {
   const { data, error, isLoading } = useSWR(`/api/recipes`);
+  const router = useRouter();
 
   if (error) {
     return (
@@ -40,6 +43,10 @@ export default function HomePage() {
           })}
         </StyledUl>
       </article>
+      <IconButtonLarge
+        style={"plus"}
+        onClick={() => router.push("/addRecipe")}
+      />
     </>
   );
 }
