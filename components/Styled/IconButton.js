@@ -1,9 +1,15 @@
 import styled from "styled-components";
 import ArrowLeft from "@/public/icons/ArrowSmall.svg";
+import ChevronSmall from "@/public/icons/ChevronSmall.svg";
+import Plus from "@/public/icons/Plus.svg";
+import XSmall from "@/public/icons/XSmall.svg";
 
 export default function IconButton({ onClick, style }) {
   const buttonStyles = {
     arrowLeft: <ArrowLeft width={30} height={30} />,
+    chevrondown: <ChevronSmall width={30} height={30} />,
+    plus: <Plus width={30} height={30} />,
+    x: <XSmall width={30} height={30} />,
   };
   return (
     <StyledBox>
