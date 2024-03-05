@@ -15,7 +15,7 @@ export default function CardSkeleton({ amount = 1, $isLoading, text }) {
 const StyledCardSkeleton = styled.li`
   background-color: var(--color-lightgrey);
   list-style-type: none;
-  width: 333px;
+  /* width: 333px; */
   height: 123px;
   margin: 1.25rem 0 0 0;
   padding-top: 40px;

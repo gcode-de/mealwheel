@@ -13,6 +13,7 @@ const StyledHeader = styled.header`
   flex-direction: column;
   align-items: center;
   margin-top: 2.5rem;
+  position: relative;
 `;
 
 const StyledH1 = styled.h1`
@@ -21,6 +22,6 @@ const StyledH1 = styled.h1`
   padding-bottom: 0;
   border-bottom: 1px var(--color-darkgrey) solid;
   color: var(--color-darkgrey);
-  width: 330px;
+  min-width: 80%;
   margin: 0;
 `;

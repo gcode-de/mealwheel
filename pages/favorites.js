@@ -15,17 +15,19 @@ export default function Favorites({
     .map((recipe) => recipe.recipe);
 
   if (error) {
-    return <div>error</div>;
+    <div>
+      <Header text={"Favoriten 🥗"} />
+      Error...
+    </div>;
   }
 
   if (isLoading) {
     return (
       <>
-        User:
-        <Header text="Bookmarked 🥗" />
+        <Header text="Favoriten 🥗" />
         <StyledArticle>
           <StyledUl>
-            Loading Recipes...
+            <h2>Lade Rezepte...</h2>
             <CardSkeleton amount={5} $isLoading />
           </StyledUl>
         </StyledArticle>
@@ -35,7 +37,7 @@ export default function Favorites({
 
   return (
     <>
-      <Header text="Bookmarked 🥗" />
+      <Header text="Favoriten 🥗" />
       <StyledArticle>
         <StyledUl>
           {favoriteRecipes?.map((recipe) => {
@@ -57,8 +59,7 @@ export default function Favorites({
 const StyledArticle = styled.article``;
 
 const StyledUl = styled.ul`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 0;
+  padding: 10px;
+  max-width: 350px;
+  margin: 0 auto;
 `;

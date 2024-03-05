@@ -20,7 +20,7 @@ export default function DetailPage({
     data: recipe,
     isLoading: dataIsLoading,
     error: dataError,
-  } = useSWR(`/api/recipes/${id}`);
+  } = useSWR(id ? `/api/recipes/${id}` : null);
 
   if (error || dataError) {
     return <h1>error</h1>;
@@ -50,7 +50,7 @@ export default function DetailPage({
         onClick={() => {
           router.back();
         }}
-        style={"arrowLeft"}
+        style={"ArrowLeft"}
         left="0.5rem"
         top="0.5rem"
       />
