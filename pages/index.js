@@ -6,20 +6,29 @@ import MealCard from "@/components/Styled/MealCard";
 import IconButtonLarge from "@/components/Styled/IconButtonLarge";
 import { useRouter } from "next/router";
 
-export default function HomePage() {
-  const { data, error, isLoading } = useSWR(`/api/recipes`);
+export default function HomePage({
+  error,
+  isLoading,
+  getRecipeProperty,
+  toggleIsFavorite,
+}) {
+  const {
+    data: recipes,
+    error: recipesError,
+    isLoading: recipesIsLoading,
+  } = useSWR(`/api/recipes`);
   const router = useRouter();
 
-  if (error) {
+  if (recipesError || error) {
     return (
       <div>
         <Header text={"Meal Wheel 🥗"} />
-        error
+        {error}
       </div>
     );
   }
 
-  if (isLoading) {
+  if (recipesIsLoading || isLoading) {
     return (
       <>
         <Header text={"Meal Wheel 🥗"} />
@@ -38,8 +47,15 @@ export default function HomePage() {
       <Header text={"Meal Wheel 🥗"} />
       <article>
         <StyledUl>
-          {data.map((recipe) => {
-            return <MealCard key={recipe._id} recipe={recipe} />;
+          {recipes?.map((recipe) => {
+            return (
+              <MealCard
+                key={recipe._id}
+                recipe={recipe}
+                isFavorite={getRecipeProperty(recipe._id, "isFavorite")}
+                onToggleIsFavorite={toggleIsFavorite}
+              />
+            );
           })}
         </StyledUl>
       </article>

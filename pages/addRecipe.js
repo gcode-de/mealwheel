@@ -3,13 +3,14 @@ import { useRouter } from "next/router";
 import useSWR from "swr";
 
 export default function AddRecipe() {
-  const { mutate } = useSWR("api/recipes");
+  const { mutate } = useSWR("/api/recipes");
   const router = useRouter();
 
   async function addRecipe(recipe) {
+    // try {
     const response = await fetch("/api/recipes", {
       method: "POST",
-      header: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(recipe),
     });
     if (!response.ok) {
@@ -18,6 +19,9 @@ export default function AddRecipe() {
     }
     mutate();
     router.back();
+    // } catch (error) {
+    //   console.error("Fehler beim Hinzufügen des Rezepts:", error);
+    // }
   }
   return <RecipeForm onSubmit={addRecipe} formName={"add-recipe"}></RecipeForm>;
 }

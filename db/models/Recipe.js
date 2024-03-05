@@ -4,13 +4,13 @@ const { Schema } = mongoose;
 const ingredientSchema = new Schema({
   name: { type: String, required: true },
   quantity: { type: Number, required: true },
-  unit: String, // Optional, da im Beispiel ein leerer String als Möglichkeit angegeben wurde
+  unit: { type: String }, // Optional, da im Beispiel ein leerer String als Möglichkeit angegeben wurde
 });
 
 const recipeSchema = new mongoose.Schema({
   title: { type: String, required: true },
   instructions: { type: String, required: true },
-  imageLink: { type: String, required: true },
+  imageLink: { type: String },
   tags: [{ type: String }], // Ein Array von Strings
   youtubeLink: { type: String },
   ingredients: [ingredientSchema], // Verwendet das obige Ingredient-Schema
@@ -24,4 +24,4 @@ const recipeSchema = new mongoose.Schema({
 
 const Recipe = mongoose.models.Recipe || mongoose.model("Recipe", recipeSchema);
 
-module.exports = Recipe;
+export default Recipe;

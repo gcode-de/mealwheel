@@ -3,17 +3,21 @@ import ArrowLeft from "@/public/icons/ArrowSmall.svg";
 import ChevronSmall from "@/public/icons/ChevronSmall.svg";
 import Plus from "@/public/icons/Plus.svg";
 import XSmall from "@/public/icons/XSmall.svg";
+import Heart from "@/public/icons/heart-svgrepo-com.svg";
 
-export default function IconButton({ onClick, style }) {
+export default function IconButton({ onClick, style, left, right, top, fill }) {
   const buttonStyles = {
     arrowLeft: <ArrowLeft width={30} height={30} />,
     chevrondown: <ChevronSmall width={30} height={30} />,
     plus: <Plus width={30} height={30} />,
     x: <XSmall width={30} height={30} />,
+    Heart: <Heart width={30} height={30} />,
   };
   return (
-    <StyledBox>
-      <StyledLinkSvg onClick={onClick}>{buttonStyles[style]}</StyledLinkSvg>
+    <StyledBox $left={left} $right={right} $top={top}>
+      <StyledLinkSvg onClick={onClick} $fill={fill}>
+        {buttonStyles[style]}
+      </StyledLinkSvg>
     </StyledBox>
   );
 }
@@ -22,8 +26,9 @@ const StyledBox = styled.div`
   background-color: white;
   position: absolute;
   z-index: 2;
-  top: 0.5rem;
-  left: 0.5rem;
+  top: ${(props) => props.$top};
+  left: ${(props) => props.$left};
+  right: ${(props) => props.$right};
   width: 40px;
   height: 40px;
   display: flex;
@@ -31,11 +36,12 @@ const StyledBox = styled.div`
   align-items: center;
   border-radius: 100%;
   box-shadow: 4px 8px 16px 0 rgb(0 0 0 / 8%);
+  cursor: pointer;
 `;
 
 const StyledLinkSvg = styled.button`
+  fill: ${(props) => props.$fill};
   height: 30px;
   border: none;
   background: none;
-  cursor: pointer;
 `;

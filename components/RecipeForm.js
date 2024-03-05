@@ -11,7 +11,6 @@ import { useRouter } from "next/router";
 
 export default function RecipeForm({ onSubmit }) {
   const [difficulty, setDifficulty] = useState("easy");
-  //   const [unit, setDifficulty] = useState("easy");
   const [ingredients, setIngredients] = useState([
     {
       quantity: "",
@@ -36,13 +35,12 @@ export default function RecipeForm({ onSubmit }) {
       },
     ]);
   }
-  console.log(ingredients);
   function handleSubmit(event) {
     event.preventDefault();
 
     const formData = new FormData(event.target);
     const data = Object.fromEntries(formData);
-    const newData = [{ ...data, ingredients }];
+    const newData = { ...data, ingredients };
     onSubmit(newData);
     console.log(newData);
   }
@@ -70,6 +68,7 @@ export default function RecipeForm({ onSubmit }) {
             placeholder="Dauer"
             $width={"5rem"}
             required
+            min="0"
           ></StyledInput>
           <StyledP>min</StyledP>
 
@@ -80,8 +79,8 @@ export default function RecipeForm({ onSubmit }) {
             required
           >
             <option value="easy">Anfänger</option>
-            <option value="advanced">Fortgeschritten</option>
-            <option value="chef">Profi</option>
+            <option value="medium">Fortgeschritten</option>
+            <option value="hard">Profi</option>
           </StyledDropDown>
         </StyledListItem>
         <StyledH2>Zutaten</StyledH2>
@@ -95,8 +94,14 @@ export default function RecipeForm({ onSubmit }) {
                 // name="quantity"
                 $width={"3rem"}
                 required
+                min="0"
               ></StyledInput>
-              <StyledDropDown required name="unit">
+              <StyledDropDown
+                required
+                name="unit"
+                onChange={(e) => handleInputChange(e, index, "unit")}
+              >
+                <option value="">-</option>
                 <option value="ml">ml</option>
                 <option value="piece">Stück</option>
                 <option value="gramm">g</option>
@@ -120,7 +125,7 @@ export default function RecipeForm({ onSubmit }) {
         <StyledH2>Anleitung</StyledH2>
         <StyledBigInput
           type="text"
-          name="instruction"
+          name="instructions"
           required
         ></StyledBigInput>
         <StyledH2>Video</StyledH2>
@@ -144,7 +149,7 @@ const StyledBigInput = styled.input`
   border-radius: 10px;
   height: 50px;
   width: 100%;
-  padding: 0.5rem;
+  padding: 0.7rem;
 `;
 const StyledInput = styled.input`
   background-color: var(--color-background);
@@ -153,7 +158,7 @@ const StyledInput = styled.input`
   height: 30px;
   width: ${(props) => (props.$width ? props.$width : "100%")};
   flex-grow: ${(props) => props.$flexGrow};
-  padding: 0.5rem;
+  padding: 0.7rem;
 `;
 
 const StyledDropDown = styled.select`
