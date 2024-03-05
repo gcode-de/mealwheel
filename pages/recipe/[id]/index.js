@@ -11,6 +11,7 @@ export default function DetailPage({
   isLoading,
   getRecipeProperty,
   toggleIsFavorite,
+  toggleHasCooked,
 }) {
   const [content, setContent] = useState("instructions");
   const router = useRouter();
@@ -63,9 +64,22 @@ export default function DetailPage({
       />
       <StyledArticle>
         <IconButton
+          style="Pot"
+          right="5.25rem"
+          top="-1.25rem"
+          fill={
+            getRecipeProperty(_id, "hasCooked")
+              ? "var(--color-highlight)"
+              : "var(--color-lightgrey)"
+          }
+          onClick={() => {
+            toggleHasCooked(_id);
+          }}
+        />
+        <IconButton
           style="Heart"
-          right="1rem"
-          top="-0.5rem"
+          right="2.25rem"
+          top="-1.25rem"
           fill={
             getRecipeProperty(_id, "isFavorite")
               ? "var(--color-highlight)"

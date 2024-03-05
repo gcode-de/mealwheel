@@ -1,11 +1,13 @@
 import styled from "styled-components";
 import ArrowLeft from "@/public/icons/ArrowSmall.svg";
 import Heart from "@/public/icons/heart-svgrepo-com.svg";
+import Pot from "@/public/icons/cooking-pot-fill-svgrepo-com.svg";
 
 export default function IconButton({ onClick, style, left, right, top, fill }) {
   const buttonStyles = {
     arrowLeft: <ArrowLeft width={30} height={30} />,
     Heart: <Heart width={30} height={30} />,
+    Pot: <Pot width={30} height={30} />,
   };
   return (
     <StyledBox $left={left} $right={right} $top={top}>

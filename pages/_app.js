@@ -40,6 +40,26 @@ export default function App({ Component, pageProps }) {
       mutate();
     }
   }
+  async function toggleHasCooked(_id) {
+    if (user.recipeInteractions.find((i) => i.recipe._id === _id)) {
+      user.recipeInteractions = user.recipeInteractions.map((i) =>
+        i.recipe._id === _id ? { ...i, hasCooked: !i.hasCooked } : i
+      );
+    } else {
+      user.recipeInteractions.push({ hasCooked: true, recipe: _id });
+    }
+
+    const response = await fetch(`/api/users/${user._id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(user),
+    });
+    if (response.ok) {
+      mutate();
+    }
+  }
 
   if (error) {
     return (
@@ -78,6 +98,7 @@ export default function App({ Component, pageProps }) {
             user={user}
             getRecipeProperty={getRecipeProperty}
             toggleIsFavorite={toggleIsFavorite}
+            toggleHasCooked={toggleHasCooked}
           />
         </SWRConfig>
       </Layout>
