@@ -8,7 +8,7 @@ export default async function handler(request, response) {
     try {
       const randomRecipes = await Recipe.aggregate([{ $sample: { size: 1 } }]);
 
-      if (!randomRecipes.length) {
+      if (!randomRecipes) {
         return response.status(404).json({ status: "Not Found" });
       }
 

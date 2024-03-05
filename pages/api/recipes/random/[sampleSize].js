@@ -11,7 +11,7 @@ export default async function handler(request, response) {
         { $sample: { size: sampleSize } },
       ]);
 
-      if (!randomRecipes.length) {
+      if (!randomRecipes) {
         return response.status(404).json({ status: "Not Found" });
       }
 
