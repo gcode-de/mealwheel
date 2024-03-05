@@ -12,9 +12,9 @@ export default function NavBar() {
     return router.pathname === path;
   }
   const menuItems = [
-    { href: "/", label: "Discover", Icon: Pizza },
+    { href: "/", label: "Entdecken", Icon: Pizza },
     { href: "/plan", label: "Plan", Icon: Calendar },
-    { href: "/favorites", label: "Favorites", Icon: Heart },
+    { href: "/favorites", label: "Favoriten", Icon: Heart },
   ];
 
   return (

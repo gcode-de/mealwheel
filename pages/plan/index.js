@@ -54,8 +54,10 @@ export default function Plan({
     return (
       <>
         <Header text={"Wochenplan 🥗"} />
-        <p>Loading Recipes...</p>
-        <CardSkeleton amount={5} $isLoading />
+        <h2>Lade Kalender...</h2>
+        <CalendarContainer>
+          <CardSkeleton amount={5} $isLoading />
+        </CalendarContainer>
       </>
     );
   }
@@ -175,8 +177,10 @@ const RandomnessSliderContainer = styled.div`
   }
 `;
 
-const CalendarContainer = styled.div`
-  margin-bottom: 80px;
+const CalendarContainer = styled.ul`
+  padding: 10px;
+  max-width: 350px;
+  margin: 0 auto 80px auto;
   h2 {
     font-size: 1rem;
     margin: 20px 0 -15px 5px;

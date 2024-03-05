@@ -22,6 +22,7 @@ export default function RandomnessSlider({ type, min, max, value, onChange }) {
 const SliderContainer = styled.div`
   position: relative;
   width: 80%;
+  margin: 0 auto;
 `;
 
 const MarksContainer = styled.div`
@@ -32,6 +33,7 @@ const MarksContainer = styled.div`
   height: 4px;
   display: flex;
   align-items: center;
+  z-index: -1;
 `;
 
 const SliderMark = styled.span`
@@ -41,7 +43,6 @@ const SliderMark = styled.span`
   border-radius: 50%;
   background-color: black;
   transform: translateX(-50%);
-  z-index: -1;
 `;
 
 const StyledSlider = styled.input`

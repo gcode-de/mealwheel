@@ -31,7 +31,7 @@ export default function HomePage({
         <Header text={"Meal Wheel 🥗"} />
         <article>
           <StyledUl>
-            Loading recipes...
+            <h2>Lade Rezepte...</h2>
             <CardSkeleton amount={5} $isLoading />
           </StyledUl>
         </article>
@@ -61,8 +61,7 @@ export default function HomePage({
 }
 
 const StyledUl = styled.ul`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 0;
+  padding: 10px;
+  max-width: 350px;
+  margin: 0 auto;
 `;
