@@ -1,50 +1,44 @@
 import styled from "styled-components";
-import useSWR from "swr";
-import Header from "@/components/Styled/Header";
 import CardSkeleton from "@/components/Styled/CardSkeleton";
 import MealCard from "@/components/Styled/MealCard";
+import Header from "@/components/Styled/Header";
 
-export default function HomePage({
+export default function Favorites({
+  user,
   error,
   isLoading,
   getRecipeProperty,
   toggleIsFavorite,
 }) {
-  const {
-    data: recipes,
-    error: recipesError,
-    isLoading: recipesIsLoading,
-  } = useSWR(`/api/recipes`);
+  const favoriteRecipes = user?.recipeInteractions
+    .filter((recipe) => recipe.isFavorite)
+    .map((recipe) => recipe.recipe);
 
-  if (recipesError || error) {
-    return (
-      <div>
-        <Header text={"Meal Wheel 🥗"} />
-        {error}
-      </div>
-    );
+  if (error) {
+    return <div>error</div>;
   }
 
-  if (recipesIsLoading || isLoading) {
+  if (isLoading) {
     return (
       <>
-        <Header text={"Meal Wheel 🥗"} />
-        <article>
+        User:
+        <Header text="Bookmarked 🥗" />
+        <StyledArticle>
           <StyledUl>
-            Loading recipes...
+            Loading Recipes...
             <CardSkeleton amount={5} $isLoading />
           </StyledUl>
-        </article>
+        </StyledArticle>
       </>
     );
   }
 
   return (
     <>
-      <Header text={"Meal Wheel 🥗"} />
-      <article>
+      <Header text="Bookmarked 🥗" />
+      <StyledArticle>
         <StyledUl>
-          {recipes?.map((recipe) => {
+          {favoriteRecipes?.map((recipe) => {
             return (
               <MealCard
                 key={recipe._id}
@@ -55,10 +49,12 @@ export default function HomePage({
             );
           })}
         </StyledUl>
-      </article>
+      </StyledArticle>
     </>
   );
 }
+
+const StyledArticle = styled.article``;
 
 const StyledUl = styled.ul`
   display: flex;
