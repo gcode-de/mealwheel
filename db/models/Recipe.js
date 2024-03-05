@@ -20,6 +20,10 @@ const recipeSchema = new mongoose.Schema({
     enum: ["easy", "medium", "hard"],
   }, // Enum, um die Schwierigkeitsgrade einzuschränken
   duration: { type: Number, required: true }, // Angenommen, dass die Dauer in Minuten angegeben wird
+  author: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+  },
 });
 
 const Recipe = mongoose.models.Recipe || mongoose.model("Recipe", recipeSchema);

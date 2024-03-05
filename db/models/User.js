@@ -12,6 +12,16 @@ const recipeInteractionSchema = new Schema({
   notes: String,
 });
 
+const calendarEntrySchema = new Schema({
+  recipe: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Recipe",
+  },
+  date: Date,
+  numberOfPeople: Number,
+  isDisabled: Boolean,
+});
+
 const userSchema = new Schema({
   firstName: String,
   lastName: String,
@@ -25,6 +35,7 @@ const userSchema = new Schema({
     numberOfRandomMeals: Number,
   },
   recipeInteractions: [recipeInteractionSchema],
+  calendar: [calendarEntrySchema],
 });
 
 const User = mongoose.models.User || mongoose.model("User", userSchema);

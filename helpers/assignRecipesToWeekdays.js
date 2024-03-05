@@ -2,7 +2,9 @@ export default function assignRecipesToWeekdays(
   setWeekdays,
   userRecipes,
   randomRecipes,
-  numberOfRandomRecipes
+  numberOfRandomRecipes,
+  weekdays,
+  user
 ) {
   // Mischen der userRecipes und randomRecipes, um eine zufällige Verteilung zu gewährleisten
   const mixedRandomRecipes = [...randomRecipes].sort(() => 0.5 - Math.random());
@@ -30,10 +32,46 @@ export default function assignRecipesToWeekdays(
   const shuffledRecipes = combinedRecipes.sort(() => 0.5 - Math.random());
 
   // Zuweisen der Rezepte zu den Wochentagen
+  // setWeekdays((currentWeekdays) =>
+  //   currentWeekdays.map((day, index) => ({
+  //     ...day,
+  //     recipe: shuffledRecipes[index] || null, // Null, falls nicht genügend Rezepte vorhanden sind
+  //   }))
+  // );
+
+  weekdays.map((weekday, index) => {
+    if (!user.calendar) {
+      user.calendar = [];
+    }
+    if (
+      user.calendar.find((calendarDay) => calendarDay.date === weekday.date)
+    ) {
+      if (
+        user.calendar.find((calendarDay) => calendarDay.date === weekday.date)
+          .recipe
+      ) {
+        return;
+      }
+      user.calendar.map((calendarDay) =>
+        calendarDay.date === weekday.date
+          ? { ...calendarDay, recipe: shuffledRecipes[index] }
+          : calendarDay
+      );
+    } else {
+      user.calendar.push({
+        date: new Date(weekday.date),
+        recipe: shuffledRecipes[index],
+        isDisabled: false,
+        servings: user.settings.defaultNumberOfPeople,
+      });
+    }
+  });
+
   setWeekdays((currentWeekdays) =>
     currentWeekdays.map((day, index) => ({
       ...day,
-      recipe: shuffledRecipes[index] || null, // Null, falls nicht genügend Rezepte vorhanden sind
+      recipe: user.calendar.find((calendarDay) => calendarDay.date === day.date)
+        .recipe,
     }))
   );
 }

@@ -19,6 +19,7 @@ export default function Plan({
   user,
   getRecipeProperty,
   toggleIsFavorite,
+  mutateUser,
 }) {
   const router = useRouter();
   const weekOffset = Number(router.query.week) || 0;
@@ -26,8 +27,35 @@ export default function Plan({
   const [numberOfRandomRecipes, setNumberOfRandomRecipes] = useState(2);
 
   useEffect(() => {
-    setWeekdays(generateWeekdays(weekOffset));
-  }, [weekOffset]);
+    //generate week days for current view
+    const generatedWeekdays = generateWeekdays(weekOffset);
+
+    //import existing days with recipes from database
+    if (user && generatedWeekdays) {
+      const updatedWeekdays = generatedWeekdays.map((weekday) => {
+        // Konvertieren Sie das Datum des Wochentags in das Format YYYY-MM-DD
+        const weekdayDateString = weekday.date.toISOString().slice(0, 10);
+        // Finden Sie den entsprechenden Tag im Kalender des Benutzers
+        const calendarDay = user.calendar.find(
+          (calendarDay) => calendarDay.date.slice(0, 10) === weekdayDateString
+        );
+
+        // Wenn ein entsprechender Tag gefunden wurde, aktualisieren Sie den Wochentag mit diesen Daten
+        if (calendarDay) {
+          return {
+            ...weekday,
+            recipe: calendarDay.recipe,
+            isDisabled: calendarDay.isDisabled,
+            servings: calendarDay.servings,
+          };
+        }
+
+        return weekday;
+      });
+      console.log(updatedWeekdays);
+      setWeekdays(updatedWeekdays);
+    }
+  }, [weekOffset, user]);
 
   const {
     data: randomRecipes,
@@ -35,12 +63,61 @@ export default function Plan({
     error: randomRecipesError,
   } = useSWR(`/api/recipes/random/7`);
 
+  const getRandomRecipe = () => {
+    return fetch(`/api/recipes/random`);
+  };
+
   const userRecipes = user?.recipeInteractions
     .filter((recipe) => recipe.hasCooked)
     .map((recipe) => recipe.recipe);
 
   const handleSliderChange = (event) => {
     setNumberOfRandomRecipes(parseInt(event.target.value, 10));
+  };
+
+  async function updateUserinDb() {
+    const response = await fetch(`/api/users/${user._id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(user),
+    });
+    if (response.ok) {
+      mutateUser();
+    }
+  }
+
+  function getCalendarDayFromDb(date) {
+    return user.calendar.find((calendarDay) => calendarDay.date === day);
+  }
+
+  const changeNumberOfPeople = async (day, change) => {
+    user.calendar.map((calendarDay) =>
+      calendarDay.date === day
+        ? {
+            ...calendarDay,
+            numberOfPeople: calendarDay.numberOfPeople + change,
+          }
+        : calendarDay
+    );
+    updateUserinDb();
+  };
+
+  const reassignRecipe = async (day) => {
+    user.calendar.map((calendarDay) =>
+      calendarDay.date === day
+        ? { ...calendarDay, recipe: getRandomRecipe() }
+        : calendarDay
+    );
+    updateUserinDb();
+  };
+
+  const removeRecipe = (day) => {
+    user.calendar.map((calendarDay) =>
+      calendarDay.date === day ? { ...calendarDay, recipe: null } : calendarDay
+    );
+    updateUserinDb();
   };
 
   if (error || randomRecipesError) {
@@ -110,11 +187,16 @@ export default function Plan({
                 <MealCard
                   key={weekday.recipe._id}
                   recipe={weekday.recipe}
-                  isFavorite={getRecipeProperty(
-                    weekday.recipe._id,
-                    "isFavorite"
-                  )}
-                  onToggleIsFavorite={toggleIsFavorite}
+                  // isFavorite={getRecipeProperty(
+                  //   weekday.recipe._id,
+                  //   "isFavorite"
+                  // )}
+                  // onToggleIsFavorite={toggleIsFavorite}
+                  numberOfPeople={4}
+                  changeNumberOfPeople={changeNumberOfPeople}
+                  reassignRecipe={reassignRecipe}
+                  removeRecipe={removeRecipe}
+                  day={weekday.date}
                 />
               ) : (
                 <CardSkeleton />
@@ -129,8 +211,11 @@ export default function Plan({
               setWeekdays,
               userRecipes,
               randomRecipes,
-              numberOfRandomRecipes
+              numberOfRandomRecipes,
+              weekdays,
+              user
             );
+            updateUserinDb();
           }}
         >
           Rezepte einfügen
