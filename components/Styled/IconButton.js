@@ -3,14 +3,18 @@ import ArrowLeft from "@/public/icons/ArrowSmall.svg";
 import ChevronSmall from "@/public/icons/ChevronSmall.svg";
 import Plus from "@/public/icons/Plus.svg";
 import XSmall from "@/public/icons/XSmall.svg";
+import TriangleLeft from "@/public/icons/arrow-left-3-svgrepo-com.svg";
+import TriangleRight from "@/public/icons/arrow-right-2-svgrepo-com.svg";
 import Heart from "@/public/icons/heart-svgrepo-com.svg";
 
 export default function IconButton({ onClick, style, left, right, top, fill }) {
   const buttonStyles = {
-    arrowLeft: <ArrowLeft width={30} height={30} />,
     chevrondown: <ChevronSmall width={30} height={30} />,
     plus: <Plus width={30} height={30} />,
     x: <XSmall width={30} height={30} />,
+    ArrowLeft: <ArrowLeft width={30} height={30} />,
+    TriangleLeft: <TriangleLeft width={30} height={28} />,
+    TriangleRight: <TriangleRight width={30} height={30} />,
     Heart: <Heart width={30} height={30} />,
   };
   return (
