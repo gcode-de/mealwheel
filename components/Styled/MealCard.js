@@ -17,9 +17,7 @@ export default function MealCard({ recipe, isFavorite, onToggleIsFavorite }) {
       />
       <StyledLink href={`/recipe/${recipe._id}`}>
         {
-          <div
-            style={{ position: "relative", width: "123px", height: "123px" }}
-          >
+          <ImageContainer>
             <StyledImage
               src={
                 recipe.imageLink ||
@@ -28,11 +26,8 @@ export default function MealCard({ recipe, isFavorite, onToggleIsFavorite }) {
               alt={`recipe Image ${recipe.title}`}
               sizes="200px"
               fill
-              style={{
-                objectFit: "cover",
-              }}
             />
-          </div>
+          </ImageContainer>
         }
         <StyledDiv>
           <StyledPTitle>{recipe.title}</StyledPTitle>
@@ -45,8 +40,15 @@ export default function MealCard({ recipe, isFavorite, onToggleIsFavorite }) {
   );
 }
 
+const ImageContainer = styled.div`
+  position: relative;
+  width: 123px;
+  height: 123px;
+`;
+
 const StyledImage = styled(Image)`
   border-radius: 20px 0 0 20px;
+  objectfit: "cover";
 `;
 
 const StyledLink = styled(Link)`

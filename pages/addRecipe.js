@@ -7,7 +7,6 @@ export default function AddRecipe() {
   const router = useRouter();
 
   async function addRecipe(recipe) {
-    // try {
     const response = await fetch("/api/recipes", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -19,9 +18,6 @@ export default function AddRecipe() {
     }
     mutate();
     router.back();
-    // } catch (error) {
-    //   console.error("Fehler beim Hinzufügen des Rezepts:", error);
-    // }
   }
   return <RecipeForm onSubmit={addRecipe} formName={"add-recipe"}></RecipeForm>;
 }

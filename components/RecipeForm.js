@@ -42,7 +42,6 @@ export default function RecipeForm({ onSubmit }) {
     const data = Object.fromEntries(formData);
     const newData = { ...data, ingredients };
     onSubmit(newData);
-    console.log(newData);
   }
   return (
     <form onSubmit={handleSubmit}>
@@ -113,7 +112,7 @@ export default function RecipeForm({ onSubmit }) {
                 value={ingredient.name}
                 onChange={(e) => handleInputChange(e, index, "name")}
                 type="text"
-                // name="name"
+                name="name"
                 placeholder={`${index + 1}. Zutat`}
               ></StyledInput>
             </StyledListItem>

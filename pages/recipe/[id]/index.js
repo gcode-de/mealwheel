@@ -58,18 +58,9 @@ export default function DetailPage({
         left="0.5rem"
         top="0.5rem"
       />
-      {/* <StyledImage
-        src={imageLink || "/img/jason-briscoe-7MAjXGUmaPw-unsplash.jpg"}
-        width={400}
-        height={300}
-        style={{
-          width: "100%",
-          height: "auto",
-        }}
-        alt={`recipe Image ${title}`}
-        priority
-      /> */}
-      <div style={{ position: "relative", width: "400", height: "300px" }}>
+      <ImageContainer
+        style={{ position: "relative", width: "400", height: "300px" }}
+      >
         <Image
           src={imageLink || "/img/jason-briscoe-7MAjXGUmaPw-unsplash.jpg"}
           alt={`recipe Image ${title}`}
@@ -79,7 +70,7 @@ export default function DetailPage({
             objectFit: "cover",
           }}
         />
-      </div>
+      </ImageContainer>
       <StyledArticle>
         <IconButton
           style="Heart"
@@ -159,11 +150,13 @@ const StyledLink = styled.button`
     color: var(--color-highlight);
   }
 `;
-const StyledImage = styled(Image)`
-  position: relative;
-  top: 0;
-  width: 100%;
+
+const ImageContainer = styled.div`
+  position: "relative";
+  width: "400";
+  height: "300px";
 `;
+
 const StyledListItem = styled.li`
   display: flex;
   justify-content: space-between;
