@@ -11,6 +11,7 @@ import { useRouter } from "next/router";
 
 export default function RecipeForm({ onSubmit }) {
   const [difficulty, setDifficulty] = useState("easy");
+  //   const [unit, setDifficulty] = useState("easy");
   const [ingredients, setIngredients] = useState([
     {
       quantity: "",
@@ -19,6 +20,7 @@ export default function RecipeForm({ onSubmit }) {
     },
   ]);
   const router = useRouter();
+
   function handleInputChange(event, index, field) {
     const newIngredients = [...ingredients];
     newIngredients[index][field] = event.target.value;
@@ -34,13 +36,15 @@ export default function RecipeForm({ onSubmit }) {
       },
     ]);
   }
+  console.log(ingredients);
   function handleSubmit(event) {
     event.preventDefault();
 
     const formData = new FormData(event.target);
     const data = Object.fromEntries(formData);
-    onSubmit(data);
-    console.log(data);
+    const newData = [{ ...data, ingredients }];
+    onSubmit(newData);
+    console.log(newData);
   }
   return (
     <form onSubmit={handleSubmit}>
@@ -88,11 +92,11 @@ export default function RecipeForm({ onSubmit }) {
                 value={ingredient.quantity}
                 onChange={(e) => handleInputChange(e, index, "quantity")}
                 type="number"
-                name={`quantity-${index}`}
+                // name="quantity"
                 $width={"3rem"}
                 required
               ></StyledInput>
-              <StyledDropDown required name={`unit-${index}`}>
+              <StyledDropDown required name="unit">
                 <option value="ml">ml</option>
                 <option value="piece">Stück</option>
                 <option value="gramm">g</option>
@@ -101,9 +105,10 @@ export default function RecipeForm({ onSubmit }) {
                 <option value="Prise">Prise</option>
               </StyledDropDown>
               <StyledInput
-                // value={ingredient.name}
+                value={ingredient.name}
+                onChange={(e) => handleInputChange(e, index, "name")}
                 type="text"
-                name={`name-${index}`}
+                // name="name"
                 placeholder={`${index + 1}. Zutat`}
               ></StyledInput>
             </StyledListItem>
