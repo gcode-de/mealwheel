@@ -13,10 +13,7 @@ export default function NavBar() {
   }
   const menuItems = [
     { href: "/", label: "Discover", Icon: Pizza },
-    { href: "/plan", label: "Plan", Icon: Calendar },
     { href: "/favorites", label: "Favorites", Icon: Heart },
-    { href: "/shopping-list", label: "Shopping", Icon: List },
-    { href: "/settings", label: "Settings", Icon: Gear },
   ];
 
   return (
