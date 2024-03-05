@@ -140,13 +140,7 @@ export default function Plan({
   );
 }
 
-const StyledHeader = styled.header`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  /* margin-top: 2.5rem; */
-  position: relative;
-`;
+const StyledHeader = styled.header``;
 
 const CalendarNavigation = styled.div`
   position: relative;
@@ -161,6 +155,7 @@ const CalendarNavigation = styled.div`
     font-weight: 600;
   }
   margin-bottom: 1.25rem;
+  margin-top: 0.5rem;
 `;
 
 const RandomnessSliderContainer = styled.div`
