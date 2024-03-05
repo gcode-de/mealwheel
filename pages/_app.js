@@ -2,7 +2,18 @@ import GlobalStyle from "../styles";
 import Layout from "@/components/Layout";
 import useSWR, { SWRConfig } from "swr";
 
-const fetcher = (url) => fetch(url).then((response) => response.json());
+const fetcher = async (url) => {
+  const res = await fetch(url);
+
+  if (!res.ok) {
+    const error = new Error("An error occurred while fetching the data.");
+    error.info = await res.json();
+    error.status = res.status;
+    throw error;
+  }
+
+  return res.json();
+};
 
 export default function App({ Component, pageProps }) {
   const userId = "65e0925792f086ae06d2eadb";

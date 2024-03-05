@@ -8,8 +8,8 @@ export default function MealCard({ recipe, isFavorite, onToggleIsFavorite }) {
     <StyledLi>
       <IconButton
         style="Heart"
-        right="-1rem"
-        top="0.25rem"
+        right="-0.5rem"
+        top="-0.5rem"
         fill={isFavorite ? "var(--color-highlight)" : "var(--color-lightgrey)"}
         onClick={() => {
           onToggleIsFavorite(recipe._id);
@@ -45,7 +45,7 @@ const StyledLink = styled(Link)`
   border-radius: 20px;
   z-index: 2;
   /* border: black solid 1px; */
-  box-shadow: 0px 4px 8px 0 rgb(0 0 0 / 25%);
+  box-shadow: 0px 4px 8px 0 rgb(0 0 0 / 8%);
   text-decoration: none;
   color: var(--darkgrey);
 `;

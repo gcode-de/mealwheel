@@ -13,6 +13,7 @@ const StyledHeader = styled.header`
   flex-direction: column;
   align-items: center;
   margin-top: 2.5rem;
+  position: relative;
 `;
 
 const StyledH1 = styled.h1`

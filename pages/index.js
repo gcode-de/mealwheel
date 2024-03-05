@@ -20,7 +20,7 @@ export default function HomePage({
     return (
       <div>
         <Header text={"Meal Wheel 🥗"} />
-        {error}
+        Error...
       </div>
     );
   }

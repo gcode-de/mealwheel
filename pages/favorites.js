@@ -15,7 +15,10 @@ export default function Favorites({
     .map((recipe) => recipe.recipe);
 
   if (error) {
-    return <div>error</div>;
+    <div>
+      <Header text={"Meal Wheel 🥗"} />
+      Error...
+    </div>;
   }
 
   if (isLoading) {
