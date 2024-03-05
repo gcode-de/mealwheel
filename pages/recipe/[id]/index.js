@@ -5,6 +5,10 @@ import useSWR from "swr";
 import styled from "styled-components";
 import Link from "next/link";
 import { useState } from "react";
+import StyledArticle from "@/components/Styled/DetailArticle";
+import StyledList from "@/components/Styled/StyledList";
+import StyledH2 from "@/components/Styled/StyledH2";
+import StyledP from "@/components/Styled/StyledP";
 
 export default function DetailPage({
   error,
@@ -54,13 +58,19 @@ export default function DetailPage({
         left="0.5rem"
         top="0.5rem"
       />
-      <StyledImage
-        src={imageLink}
-        width={400}
-        height={300}
-        alt={`recipe Image ${title}`}
-        priority
-      />
+      <ImageContainer
+        style={{ position: "relative", width: "400", height: "300px" }}
+      >
+        <Image
+          src={imageLink || "/img/jason-briscoe-7MAjXGUmaPw-unsplash.jpg"}
+          alt={`recipe Image ${title}`}
+          sizes="500px"
+          fill
+          style={{
+            objectFit: "cover",
+          }}
+        />
+      </ImageContainer>
       <StyledArticle>
         <IconButton
           style="Heart"
@@ -79,7 +89,7 @@ export default function DetailPage({
         <p>
           {duration} MIN | {difficulty}
         </p>
-        <Styledh2>ingredients</Styledh2>
+        <StyledH2>ingredients</StyledH2>
         <StyledList>
           {ingredients.map((ingredient) => (
             <StyledListItem key={ingredient._id}>
@@ -107,33 +117,12 @@ export default function DetailPage({
   );
 }
 
-const StyledArticle = styled.article`
-  background-color: var(--color-component);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-  border-radius: 40px 40px 0 0;
-  padding-left: 3rem;
-  padding-right: 3rem;
-  position: relative;
-  top: -40px;
-  z-index: 3;
-  padding-bottom: 2rem;
-`;
 const Wrapper = styled.div`
   margin: auto;
   width: 100%;
   position: relative;
 `;
-const StyledList = styled.ul`
-  list-style: none;
-  margin: 0;
-  padding: 1rem;
-  width: 100%;
-  border: 1px solid var(--color-lightgrey);
-  border-radius: 20px;
-`;
+
 const StyledIngredients = styled.article`
   border: 1px solid var(--color-lightgrey);
   border-radius: 20px;
@@ -161,22 +150,16 @@ const StyledLink = styled.button`
     color: var(--color-highlight);
   }
 `;
-const StyledImage = styled(Image)`
-  position: relative;
-  top: 0;
-  width: 100%;
+
+const ImageContainer = styled.div`
+  position: "relative";
+  width: "400";
+  height: "300px";
 `;
+
 const StyledListItem = styled.li`
   display: flex;
   justify-content: space-between;
   width: 100%;
-  margin: 0;
-`;
-const Styledh2 = styled.h2`
-  font-size: large;
-  text-align: left;
-  width: 100%;
-`;
-const StyledP = styled.p`
   margin: 0;
 `;

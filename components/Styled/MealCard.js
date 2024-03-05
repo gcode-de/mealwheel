@@ -16,12 +16,19 @@ export default function MealCard({ recipe, isFavorite, onToggleIsFavorite }) {
         }}
       />
       <StyledLink href={`/recipe/${recipe._id}`}>
-        <StyledImage
-          src={recipe.imageLink}
-          alt={recipe.title}
-          height={123}
-          width={123}
-        />
+        {
+          <ImageContainer>
+            <StyledImage
+              src={
+                recipe.imageLink ||
+                "/img/jason-briscoe-7MAjXGUmaPw-unsplash.jpg"
+              }
+              alt={`recipe Image ${recipe.title}`}
+              sizes="200px"
+              fill
+            />
+          </ImageContainer>
+        }
         <StyledDiv>
           <StyledPTitle>{recipe.title}</StyledPTitle>
           <StyledPDuration>
@@ -33,8 +40,15 @@ export default function MealCard({ recipe, isFavorite, onToggleIsFavorite }) {
   );
 }
 
+const ImageContainer = styled.div`
+  position: relative;
+  width: 123px;
+  height: 123px;
+`;
+
 const StyledImage = styled(Image)`
   border-radius: 20px 0 0 20px;
+  objectfit: "cover";
 `;
 
 const StyledLink = styled(Link)`
