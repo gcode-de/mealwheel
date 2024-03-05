@@ -19,7 +19,11 @@ export default function RecipeForm({ onSubmit }) {
     },
   ]);
   const router = useRouter();
-
+  function handleInputChange(event, index, field) {
+    const newIngredients = [...ingredients];
+    newIngredients[index][field] = event.target.value;
+    setIngredients(newIngredients);
+  }
   function addIngredient() {
     setIngredients([
       ...ingredients,
@@ -82,12 +86,13 @@ export default function RecipeForm({ onSubmit }) {
             <StyledListItem key={index}>
               <StyledInput
                 value={ingredient.quantity}
+                onChange={(e) => handleInputChange(e, index, "quantity")}
                 type="number"
-                name="quantity"
+                name={`quantity-${index}`}
                 $width={"3rem"}
                 required
               ></StyledInput>
-              <StyledDropDown required name={`unit - ${index}`}>
+              <StyledDropDown required name={`unit-${index}`}>
                 <option value="ml">ml</option>
                 <option value="piece">Stück</option>
                 <option value="gramm">g</option>
@@ -96,9 +101,9 @@ export default function RecipeForm({ onSubmit }) {
                 <option value="Prise">Prise</option>
               </StyledDropDown>
               <StyledInput
-                value={ingredient.name}
+                // value={ingredient.name}
                 type="text"
-                name={`name - ${index}`}
+                name={`name-${index}`}
                 placeholder={`${index + 1}. Zutat`}
               ></StyledInput>
             </StyledListItem>
