@@ -6,6 +6,7 @@ import XSmall from "@/public/icons/XSmall.svg";
 import TriangleLeft from "@/public/icons/arrow-left-3-svgrepo-com.svg";
 import TriangleRight from "@/public/icons/arrow-right-2-svgrepo-com.svg";
 import Heart from "@/public/icons/heart-svgrepo-com.svg";
+import Pot from "@/public/icons/cooking-pot-fill-svgrepo-com.svg";
 
 export default function IconButton({ onClick, style, left, right, top, fill }) {
   const buttonStyles = {
@@ -16,6 +17,7 @@ export default function IconButton({ onClick, style, left, right, top, fill }) {
     TriangleLeft: <TriangleLeft width={30} height={28} />,
     TriangleRight: <TriangleRight width={30} height={30} />,
     Heart: <Heart width={30} height={30} />,
+    Pot: <Pot width={30} height={30} />,
   };
   return (
     <StyledBox $left={left} $right={right} $top={top}>
