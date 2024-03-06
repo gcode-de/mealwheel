@@ -5,10 +5,11 @@ import useSWR from "swr";
 import styled from "styled-components";
 import Link from "next/link";
 import { useState } from "react";
-import StyledArticle from "@/components/Styled/DetailArticle";
+import StyledArticle from "@/components/Styled/StyledArticle";
 import StyledList from "@/components/Styled/StyledList";
 import StyledH2 from "@/components/Styled/StyledH2";
 import StyledP from "@/components/Styled/StyledP";
+import StyledListItem from "@/components/Styled/StyledListItem";
 
 export default function DetailPage({
   error,
@@ -169,11 +170,4 @@ const ImageContainer = styled.div`
   position: "relative";
   width: "400";
   height: "300px";
-`;
-
-const StyledListItem = styled.li`
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-  margin: 0;
 `;

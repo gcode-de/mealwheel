@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import StyledArticle from "./Styled/DetailArticle";
+import StyledArticle from "./Styled/StyledArticle";
 import IconButton from "./Styled/IconButton";
 import StyledList from "./Styled/StyledList";
 import { useState } from "react";
@@ -8,6 +8,7 @@ import StyledH2 from "./Styled/StyledH2";
 import Plus from "@/public/icons/Plus.svg";
 import StyledP from "./Styled/StyledP";
 import { useRouter } from "next/router";
+import Button from "./Styled/StyledButton";
 
 export default function RecipeForm({ onSubmit }) {
   const [difficulty, setDifficulty] = useState("easy");
@@ -90,7 +91,6 @@ export default function RecipeForm({ onSubmit }) {
                 value={ingredient.quantity}
                 onChange={(e) => handleInputChange(e, index, "quantity")}
                 type="number"
-                // name="quantity"
                 $width={"3rem"}
                 required
                 min="0"
@@ -129,7 +129,7 @@ export default function RecipeForm({ onSubmit }) {
         ></StyledBigInput>
         <StyledH2>Video</StyledH2>
         <StyledInput type="link" name="youtubeLink"></StyledInput>
-        <button type="submit">speichern</button>
+        <Button type="submit">speichern</Button>
       </StyledArticle>
     </form>
   );

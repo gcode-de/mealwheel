@@ -9,6 +9,7 @@ import Header from "@/components/Styled/Header";
 import MealCard from "@/components/Styled/MealCard";
 import IconButton from "@/components/Styled/IconButton";
 import RandomnessSlider from "@/components/Styled/RandomnessSlider";
+import Button from "@/components/Styled/StyledButton";
 
 import generateWeekdays from "@/helpers/generateWeekdays";
 import assignRecipesToWeekdays from "@/helpers/assignRecipesToWeekdays";
@@ -213,7 +214,7 @@ export default function Plan({
           ))}
       </CalendarContainer>
       <ButtonsContainer>
-        <GenerateButton
+        <Button
           onClick={() => {
             assignRecipesToWeekdays(
               setWeekdays,
@@ -227,7 +228,7 @@ export default function Plan({
           }}
         >
           Rezepte einfügen
-        </GenerateButton>
+        </Button>
       </ButtonsContainer>
     </>
   );
@@ -281,15 +282,4 @@ const ButtonsContainer = styled.div`
   bottom: 80px;
   display: flex;
   justify-content: space-between;
-`;
-const GenerateButton = styled.button`
-  border: none;
-  background-color: var(--color-darkgrey);
-  color: var(--color-background);
-  font-size: 0%.75rem;
-  font-weight: 600;
-  cursor: pointer;
-  border-radius: 10px;
-  width: 9rem;
-  height: 3rem;
 `;
