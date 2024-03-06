@@ -1,4 +1,4 @@
-export default function assignRecipesToWeekdays(
+export default async function assignRecipesToWeekdays(
   setWeekdays,
   userRecipes,
   randomRecipes,
@@ -6,72 +6,77 @@ export default function assignRecipesToWeekdays(
   weekdays,
   user
 ) {
-  // Mischen der userRecipes und randomRecipes, um eine zufällige Verteilung zu gewährleisten
+  // Mischen der Rezepte für eine zufällige Auswahl
   const mixedRandomRecipes = [...randomRecipes].sort(() => 0.5 - Math.random());
   const mixedUserRecipes = [...userRecipes].sort(() => 0.5 - Math.random());
 
   // Berechnen, wie viele Rezepte von jedem Typ verwendet werden sollen
-  const totalRecipesNeeded = 7; // Da wir 7 Tage in der Woche haben
   let randomRecipesToUse = numberOfRandomRecipes;
-  let userRecipesToUse = totalRecipesNeeded - randomRecipesToUse;
+  let userRecipesToUse = Math.max(0, 7 - randomRecipesToUse); // Sicherstellen, dass die Anzahl nicht negativ ist
 
   // Anpassen, falls nicht genug userRecipes vorhanden sind
   if (userRecipesToUse > userRecipes.length) {
     userRecipesToUse = userRecipes.length;
-    randomRecipesToUse = totalRecipesNeeded - userRecipesToUse;
+    randomRecipesToUse = Math.max(0, 7 - userRecipesToUse);
   }
 
-  // Rezepte auswählen
+  // Auswahl der Rezepte
   const selectedRandomRecipes = mixedRandomRecipes.slice(0, randomRecipesToUse);
   const selectedUserRecipes = mixedUserRecipes.slice(0, userRecipesToUse);
 
-  // Kombinieren der ausgewählten Rezepte
-  const combinedRecipes = [...selectedUserRecipes, ...selectedRandomRecipes];
+  // Kombinieren und Mischen der ausgewählten Rezepte
+  const combinedRecipes = [
+    ...selectedUserRecipes,
+    ...selectedRandomRecipes,
+  ].sort(() => 0.5 - Math.random());
 
-  // Mischen der kombinierten Rezepte, um eine zufällige Verteilung auf die Wochentage zu gewährleisten
-  const shuffledRecipes = combinedRecipes.sort(() => 0.5 - Math.random());
+  // Prüfen und aktualisieren des Benutzerkalenders
+  const updatedCalendar = weekdays.map((weekday, index) => {
+    const existingDay = user.calendar.find(
+      (calendarDay) =>
+        new Date(calendarDay.date).toISOString().slice(0, 10) ===
+        weekday.date.toISOString().slice(0, 10)
+    );
 
-  // Zuweisen der Rezepte zu den Wochentagen
-  // setWeekdays((currentWeekdays) =>
-  //   currentWeekdays.map((day, index) => ({
-  //     ...day,
-  //     recipe: shuffledRecipes[index] || null, // Null, falls nicht genügend Rezepte vorhanden sind
-  //   }))
-  // );
-
-  weekdays.map((weekday, index) => {
-    if (!user.calendar) {
-      user.calendar = [];
-    }
-    if (
-      user.calendar.find((calendarDay) => calendarDay.date === weekday.date)
-    ) {
-      if (
-        user.calendar.find((calendarDay) => calendarDay.date === weekday.date)
-          .recipe
-      ) {
-        return;
-      }
-      user.calendar.map((calendarDay) =>
-        calendarDay.date === weekday.date
-          ? { ...calendarDay, recipe: shuffledRecipes[index] }
-          : calendarDay
-      );
-    } else {
-      user.calendar.push({
-        date: new Date(weekday.date),
-        recipe: shuffledRecipes[index],
-        isDisabled: false,
-        servings: user.settings.defaultNumberOfPeople,
-      });
-    }
+    return existingDay
+      ? { ...existingDay, recipe: combinedRecipes[index] ?? existingDay.recipe }
+      : {
+          date: weekday.date,
+          recipe: combinedRecipes[index],
+          isDisabled: false,
+          servings: user.settings.defaultNumberOfPeople,
+        };
   });
 
-  setWeekdays((currentWeekdays) =>
-    currentWeekdays.map((day, index) => ({
-      ...day,
-      recipe: user.calendar.find((calendarDay) => calendarDay.date === day.date)
-        .recipe,
-    }))
+  // Setzen der aktualisierten Wochentage im Zustand
+  setWeekdays(
+    weekdays.map((weekday) => {
+      const dayUpdate = updatedCalendar.find(
+        (calendarDay) =>
+          new Date(calendarDay.date).toISOString().slice(0, 10) ===
+          weekday.date.toISOString().slice(0, 10)
+      );
+
+      return dayUpdate ? { ...weekday, ...dayUpdate } : weekday;
+    })
   );
+
+  //Update Database
+  const response = await fetch(`/api/users/${user._id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      ...user,
+      calendar: [...user.calendar, ...updatedCalendar],
+    }),
+  });
+  if (response.ok) {
+    // Rufen Sie hier mutateUser auf, falls mutateUser eine Funktion ist, die den Benutzerzustand aktualisiert
+    // mutateUser();
+    console.log("User successfully updated");
+  } else {
+    console.error("Failed to update user");
+  }
 }

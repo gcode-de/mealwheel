@@ -125,6 +125,9 @@ const StyledLink = styled(Link)`
   text-decoration: none;
   color: var(--darkgrey);
   cursor: pointer;
+  &:hover {
+    text-decoration: underline;
+  }
 `;
 
 const StyledDiv = styled.div`

@@ -63,8 +63,10 @@ export default function Plan({
     error: randomRecipesError,
   } = useSWR(`/api/recipes/random/7`);
 
-  const getRandomRecipe = () => {
-    return fetch(`/api/recipes/random`);
+  const getRandomRecipe = async () => {
+    const response = await fetch(`/api/recipes/random/`);
+    const recipe = await response.json();
+    return recipe;
   };
 
   const userRecipes = user?.recipeInteractions
@@ -94,7 +96,8 @@ export default function Plan({
 
   const changeNumberOfPeople = async (day, change) => {
     user.calendar.map((calendarDay) =>
-      calendarDay.date === day
+      new Date(calendarDay.date).toISOString().slice(0, 10) ===
+      day.toISOString().slice(0, 10)
         ? {
             ...calendarDay,
             numberOfPeople: calendarDay.numberOfPeople + change,
@@ -106,16 +109,21 @@ export default function Plan({
 
   const reassignRecipe = async (day) => {
     user.calendar.map((calendarDay) =>
-      calendarDay.date === day
-        ? { ...calendarDay, recipe: getRandomRecipe() }
+      new Date(calendarDay.date).toISOString().slice(0, 10) ===
+      day.toISOString().slice(0, 10)
+        ? { ...calendarDay, recipe: getRandomRecipe()[0] }
         : calendarDay
     );
+    console.log(day, getRandomRecipe());
     updateUserinDb();
   };
 
   const removeRecipe = (day) => {
     user.calendar.map((calendarDay) =>
-      calendarDay.date === day ? { ...calendarDay, recipe: null } : calendarDay
+      new Date(calendarDay.date).toISOString().slice(0, 10) ===
+      day.toISOString().slice(0, 10)
+        ? { ...calendarDay, recipe: null }
+        : calendarDay
     );
     updateUserinDb();
   };
@@ -215,7 +223,7 @@ export default function Plan({
               weekdays,
               user
             );
-            updateUserinDb();
+            // updateUserinDb();
           }}
         >
           Rezepte einfügen
