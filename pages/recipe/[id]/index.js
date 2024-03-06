@@ -21,7 +21,7 @@ export default function DetailPage({
   const [content, setContent] = useState("instructions");
   const router = useRouter();
   const { id } = router.query;
-  const servings = Number(router.query.servings);
+  const servings = Number(router.query.servings) || 1;
 
   const {
     data: recipe,
@@ -106,7 +106,8 @@ export default function DetailPage({
           {duration} MIN | {difficulty}
         </p>
         <StyledH2>
-          Zutaten (für {servings === 1 ? `1 Person` : `${servings} Personen`})
+          Zutaten{" "}
+          {servings === 1 ? `(für 1 Person` : `(für ${servings} Personen`})
         </StyledH2>
         <StyledList>
           {ingredients.map((ingredient) => (
