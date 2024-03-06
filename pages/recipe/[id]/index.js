@@ -30,11 +30,11 @@ export default function DetailPage({
   } = useSWR(id ? `/api/recipes/${id}` : null);
 
   if (error || dataError) {
-    return <h1>error</h1>;
+    return <h1>Fehler...</h1>;
   }
 
   if (isLoading || dataIsLoading || !recipe) {
-    return <h1>loading recipe...</h1>;
+    return <h1>Rezept wird geladen...</h1>;
   }
 
   const {
