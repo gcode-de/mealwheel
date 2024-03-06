@@ -1,4 +1,3 @@
-import { useRouter } from "next/router";
 import useSWR from "swr";
 
 import StyledH2 from "@/components/Styled/StyledH2";
@@ -9,6 +8,7 @@ import styled from "styled-components";
 export default function Settings({ user }) {
   const { settings } = user;
   const { weekdaysEnabled } = settings;
+  console.log(weekdaysEnabled);
   const { mutate } = useSWR("/api/users");
 
   async function toggleWeekdays(day) {
@@ -26,6 +26,7 @@ export default function Settings({ user }) {
     }
     mutate();
   }
+
   return (
     <>
       <p>Settings</p>
@@ -37,7 +38,7 @@ export default function Settings({ user }) {
             <button
               key={index}
               onClick={() => toggleWeekdays(object.day)}
-              disabled={object.enabled}
+              disabled={!object.enabled}
             >
               {object.day}
             </button>
@@ -59,3 +60,5 @@ const Wrapper = styled.div`
   display: flex;
   justify-content: space-between;
 `;
+
+// weekdayEnabled = [{day: "Sonntag", enabled: true}, {day: "Montag", enabled: true},{day: "Dienstag", enabled: true}, {day: "Mittwoch", enabled: true}, {day: "Donnerstag", enabled: true}, {day: "Freitag", enabled: true}, {day: "Samstag", enabled: true}]

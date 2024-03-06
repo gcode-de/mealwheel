@@ -16,9 +16,9 @@ export default async function handler(request, response) {
   }
 
   if (request.method === "PUT") {
-    const { weekdaysEnabled } = request.body;
+    const { userId, weekdaysEnabled } = request.body;
     try {
-      const user = await User.findByIdAndUpdate(id);
+      const user = await User.findByIdAndUpdate(userId);
       user.settings.weekdaysEnabled = weekdaysEnabled;
       await user.save();
       return response.status(200).json("User updated");
