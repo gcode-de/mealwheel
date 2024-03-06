@@ -99,7 +99,7 @@ export default function Plan({
       calendarDay.date === day
         ? {
             ...calendarDay,
-            numberOfPeople: calendarDay.numberOfPeople + change,
+            numberOfPeople: Math.max(1, calendarDay.numberOfPeople + change),
           }
         : calendarDay
     );

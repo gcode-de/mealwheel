@@ -105,7 +105,9 @@ export default function DetailPage({
         <p>
           {duration} MIN | {difficulty}
         </p>
-        <StyledH2>Zutaten (für {servings} Personen)</StyledH2>
+        <StyledH2>
+          Zutaten (für {servings === 1 ? `1 Person` : `${servings} Personen`})
+        </StyledH2>
         <StyledList>
           {ingredients.map((ingredient) => (
             <StyledListItem key={ingredient._id}>
