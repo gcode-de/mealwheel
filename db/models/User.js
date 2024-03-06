@@ -18,7 +18,7 @@ const userSchema = new Schema({
   userName: String,
   email: String,
   settings: {
-    weekdaysEnabled: [String],
+    weekdaysEnabled: [{ day: String, enabled: Boolean }],
     mealsPerDay: Number,
     defaultNumberOfPeople: Number,
     defaultDiet: [String],
