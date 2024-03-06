@@ -34,11 +34,9 @@ export default function Plan({
     //import existing days with recipes from database
     if (user && generatedWeekdays) {
       const updatedWeekdays = generatedWeekdays.map((weekday) => {
-        // Konvertieren Sie das Datum des Wochentags in das Format YYYY-MM-DD
-        const weekdayDateString = weekday.date.toISOString().slice(0, 10);
         // Finden Sie den entsprechenden Tag im Kalender des Benutzers
         const calendarDay = user.calendar.find(
-          (calendarDay) => calendarDay.date.slice(0, 10) === weekdayDateString
+          (calendarDay) => calendarDay.date === weekday.date //slice, weil MongoDB das date immer automatisch als ISO-8601-String speichert *side-eye*
         );
 
         // Wenn ein entsprechender Tag gefunden wurde, aktualisieren Sie den Wochentag mit diesen Daten
@@ -53,7 +51,7 @@ export default function Plan({
 
         return weekday;
       });
-      console.log(updatedWeekdays);
+      console.log(updatedWeekdays, user);
       setWeekdays(updatedWeekdays);
     }
   }, [weekOffset, user]);
@@ -64,11 +62,12 @@ export default function Plan({
     error: randomRecipesError,
   } = useSWR(`/api/recipes/random/7`);
 
-  const getRandomRecipe = async () => {
+  async function getRandomRecipe() {
     const response = await fetch(`/api/recipes/random/`);
     const recipe = await response.json();
+    console.log("fetched random recipe:", await recipe[0]);
     return recipe;
-  };
+  }
 
   const userRecipes = user?.recipeInteractions
     .filter((recipe) => recipe.hasCooked)
@@ -79,6 +78,7 @@ export default function Plan({
   };
 
   async function updateUserinDb() {
+    console.log("updating User in db...", user);
     const response = await fetch(`/api/users/${user._id}`, {
       method: "PUT",
       headers: {
@@ -86,19 +86,19 @@ export default function Plan({
       },
       body: JSON.stringify(user),
     });
+    console.log(response);
     if (response.ok) {
       mutateUser();
     }
   }
 
   function getCalendarDayFromDb(date) {
-    return user.calendar.find((calendarDay) => calendarDay.date === day);
+    return user.calendar.find((calendarDay) => calendarDay.date === date);
   }
 
   const changeNumberOfPeople = async (day, change) => {
-    user.calendar.map((calendarDay) =>
-      new Date(calendarDay.date).toISOString().slice(0, 10) ===
-      day.toISOString().slice(0, 10)
+    user.calendar = user.calendar.map((calendarDay) =>
+      calendarDay.date === day
         ? {
             ...calendarDay,
             numberOfPeople: calendarDay.numberOfPeople + change,
@@ -109,22 +109,32 @@ export default function Plan({
   };
 
   const reassignRecipe = async (day) => {
-    user.calendar.map((calendarDay) =>
-      new Date(calendarDay.date).toISOString().slice(0, 10) ===
-      day.toISOString().slice(0, 10)
-        ? { ...calendarDay, recipe: getRandomRecipe()[0] }
-        : calendarDay
-    );
-    console.log(day, getRandomRecipe());
-    updateUserinDb();
+    const randomRecipe = await getRandomRecipe();
+    console.log("Neu zugewiesenes zufälliges Rezept:", randomRecipe[0]);
+
+    if (user.calendar.some((calendarDay) => calendarDay.date === day)) {
+      console.log("Aktualisiere vorhandenen Tag:", day);
+      user.calendar = user.calendar.map((calendarDay) =>
+        calendarDay.date === day
+          ? { ...calendarDay, recipe: randomRecipe[0] }
+          : calendarDay
+      );
+    } else {
+      console.log("Erstelle neuen Tag:", day);
+      user.calendar.push({
+        date: day,
+        recipe: randomRecipe[0],
+        numberOfPeople: user.settings.defaultNumberOfPeople,
+      });
+    }
+
+    await updateUserinDb();
   };
 
   const removeRecipe = (day) => {
-    user.calendar.map((calendarDay) =>
-      new Date(calendarDay.date).toISOString().slice(0, 10) ===
-      day.toISOString().slice(0, 10)
-        ? { ...calendarDay, recipe: null }
-        : calendarDay
+    console.log("remove recipe from date", day);
+    user.calendar = user.calendar.map((calendarDay) =>
+      calendarDay.date === day ? { ...calendarDay, recipe: null } : calendarDay
     );
     updateUserinDb();
   };
@@ -189,29 +199,46 @@ export default function Plan({
 
       <CalendarContainer>
         {weekdays &&
-          weekdays.map((weekday, index) => (
-            <article key={weekday.date} id={weekday.date}>
-              <h2>{weekday.readableDate}</h2>
-              {weekday.recipe ? (
-                <MealCard
-                  key={weekday.recipe._id}
-                  recipe={weekday.recipe}
-                  // isFavorite={getRecipeProperty(
-                  //   weekday.recipe._id,
-                  //   "isFavorite"
-                  // )}
-                  // onToggleIsFavorite={toggleIsFavorite}
-                  numberOfPeople={4}
-                  changeNumberOfPeople={changeNumberOfPeople}
-                  reassignRecipe={reassignRecipe}
-                  removeRecipe={removeRecipe}
-                  day={weekday.date}
-                />
-              ) : (
-                <CardSkeleton />
-              )}
-            </article>
-          ))}
+          weekdays.map((weekday) => {
+            const calendarDay = getCalendarDayFromDb(weekday.date);
+            return (
+              <article key={weekday.date} id={weekday.date}>
+                <h2>{weekday.readableDate}</h2>
+                {calendarDay?.recipe ? (
+                  <MealCard
+                    key={calendarDay.recipe._id}
+                    recipe={calendarDay.recipe}
+                    // isFavorite={getRecipeProperty(
+                    //   calendarDay.recipe._id,
+                    //   "isFavorite"
+                    // )}
+                    // onToggleIsFavorite={toggleIsFavorite}
+                    numberOfPeople={
+                      calendarDay.numberOfPeople !== undefined &&
+                      calendarDay.numberOfPeople !== null
+                        ? Number(calendarDay.numberOfPeople)
+                        : user.settings.defaultNumberOfPeople
+                    }
+                    changeNumberOfPeople={changeNumberOfPeople}
+                    reassignRecipe={reassignRecipe}
+                    removeRecipe={removeRecipe}
+                    day={calendarDay.date}
+                  />
+                ) : (
+                  <CardSkeleton
+                    // key={calendarDay.recipe._id}
+                    numberOfPeople={
+                      calendarDay?.numberOfPeople ||
+                      user.settings.defaultNumberOfPeople
+                    }
+                    changeNumberOfPeople={changeNumberOfPeople}
+                    reassignRecipe={reassignRecipe}
+                    day={calendarDay?.date || weekday.date}
+                  />
+                )}
+              </article>
+            );
+          })}
       </CalendarContainer>
       <ButtonsContainer>
         <Button
@@ -222,7 +249,8 @@ export default function Plan({
               randomRecipes,
               numberOfRandomRecipes,
               weekdays,
-              user
+              user,
+              mutateUser
             );
             // updateUserinDb();
           }}
@@ -282,4 +310,5 @@ const ButtonsContainer = styled.div`
   bottom: 80px;
   display: flex;
   justify-content: space-between;
+  z-index: 2;
 `;

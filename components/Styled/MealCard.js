@@ -50,7 +50,7 @@ export default function MealCard({
       )}
       <CardContainer>
         {
-          <StyledLink href={`/recipe/${recipe._id}`}>
+          <StyledLink href={`/recipe/${recipe._id}?servings=${numberOfPeople}`}>
             <ImageContainer>
               <StyledImage
                 src={
@@ -65,7 +65,7 @@ export default function MealCard({
           </StyledLink>
         }
         <StyledDiv>
-          <StyledLink href={`/recipe/${recipe._id}`}>
+          <StyledLink href={`/recipe/${recipe._id}?servings=${numberOfPeople}`}>
             <StyledPTitle>{recipe.title}</StyledPTitle>
           </StyledLink>
           <StyledPDuration>

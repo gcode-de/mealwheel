@@ -21,6 +21,7 @@ export default function DetailPage({
   const [content, setContent] = useState("instructions");
   const router = useRouter();
   const { id } = router.query;
+  const servings = Number(router.query.servings);
 
   const {
     data: recipe,
@@ -104,7 +105,7 @@ export default function DetailPage({
         <p>
           {duration} MIN | {difficulty}
         </p>
-        <StyledH2>ingredients</StyledH2>
+        <StyledH2>Zutaten (für {servings} Personen)</StyledH2>
         <StyledList>
           {ingredients.map((ingredient) => (
             <StyledListItem key={ingredient._id}>
@@ -117,15 +118,15 @@ export default function DetailPage({
         </StyledList>
         <StyledHyper>
           <StyledLink onClick={() => setContent("instructions")}>
-            instructions
+            Zubereitung
           </StyledLink>
-          <StyledLink onClick={() => setContent("video")}>video</StyledLink>
+          <StyledLink onClick={() => setContent("video")}>Video</StyledLink>
         </StyledHyper>
         {content === "instructions" && (
           <StyledIngredients>{instructions}</StyledIngredients>
         )}
         {content === "video" && (
-          <Link href={youtubeLink}>see youtube video</Link>
+          <Link href={youtubeLink}>auf youtube anschauen</Link>
         )}
       </StyledArticle>
     </Wrapper>

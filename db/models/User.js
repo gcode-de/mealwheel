@@ -17,7 +17,7 @@ const calendarEntrySchema = new Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "Recipe",
   },
-  date: Date,
+  date: String,
   numberOfPeople: Number,
   isDisabled: Boolean,
 });

@@ -4,79 +4,78 @@ export default async function assignRecipesToWeekdays(
   randomRecipes,
   numberOfRandomRecipes,
   weekdays,
-  user
+  user,
+  mutateUser
 ) {
-  // Mischen der Rezepte für eine zufällige Auswahl
-  const mixedRandomRecipes = [...randomRecipes].sort(() => 0.5 - Math.random());
-  const mixedUserRecipes = [...userRecipes].sort(() => 0.5 - Math.random());
+  // Vorbereitung: Identifizieren der bereits zugeordneten Rezepte in den Wochentagen
+  const existingRecipeIds = weekdays
+    .filter((day) => day.recipe)
+    .map((day) => day.recipe);
 
-  // Berechnen, wie viele Rezepte von jedem Typ verwendet werden sollen
-  let randomRecipesToUse = numberOfRandomRecipes;
-  let userRecipesToUse = Math.max(0, 7 - randomRecipesToUse); // Sicherstellen, dass die Anzahl nicht negativ ist
+  // Filtern der Rezepte, um Doppelungen zu vermeiden
+  const availableUserRecipes = userRecipes
+    .filter(
+      (recipe) => !existingRecipeIds.includes(recipe._id) && recipe.hasCooked
+    )
+    .sort(() => Math.random() - 0.5);
 
-  // Anpassen, falls nicht genug userRecipes vorhanden sind
-  if (userRecipesToUse > userRecipes.length) {
-    userRecipesToUse = userRecipes.length;
-    randomRecipesToUse = Math.max(0, 7 - userRecipesToUse);
-  }
+  const availableRandomRecipes = randomRecipes
+    .filter((recipe) => !existingRecipeIds.includes(recipe._id))
+    .sort(() => Math.random() - 0.5)
+    .slice(0, numberOfRandomRecipes);
 
-  // Auswahl der Rezepte
-  const selectedRandomRecipes = mixedRandomRecipes.slice(0, randomRecipesToUse);
-  const selectedUserRecipes = mixedUserRecipes.slice(0, userRecipesToUse);
-
-  // Kombinieren und Mischen der ausgewählten Rezepte
+  // Kombinieren der Rezeptlisten
   const combinedRecipes = [
-    ...selectedUserRecipes,
-    ...selectedRandomRecipes,
-  ].sort(() => 0.5 - Math.random());
+    ...availableUserRecipes,
+    ...availableRandomRecipes,
+  ].sort(() => Math.random() - 0.5);
 
-  // Prüfen und aktualisieren des Benutzerkalenders
-  const updatedCalendar = weekdays.map((weekday, index) => {
-    const existingDay = user.calendar.find(
-      (calendarDay) =>
-        new Date(calendarDay.date).toISOString().slice(0, 10) ===
-        weekday.date.toISOString().slice(0, 10)
-    );
-
-    return existingDay
-      ? { ...existingDay, recipe: combinedRecipes[index] ?? existingDay.recipe }
-      : {
-          date: weekday.date,
-          recipe: combinedRecipes[index],
-          isDisabled: false,
-          servings: user.settings.defaultNumberOfPeople,
-        };
+  // Zuweisung der Rezepte zu Wochentagen, die noch kein Rezept haben
+  const updatedWeekdays = weekdays.map((day) => {
+    if (!day.recipe && combinedRecipes.length > 0) {
+      const recipe = combinedRecipes.shift();
+      return { ...day, recipe: recipe._id };
+    }
+    return day;
   });
 
-  // Setzen der aktualisierten Wochentage im Zustand
-  setWeekdays(
-    weekdays.map((weekday) => {
-      const dayUpdate = updatedCalendar.find(
-        (calendarDay) =>
-          new Date(calendarDay.date).toISOString().slice(0, 10) ===
-          weekday.date.toISOString().slice(0, 10)
-      );
+  // Aktualisierung der UI
+  setWeekdays(updatedWeekdays);
 
-      return dayUpdate ? { ...weekday, ...dayUpdate } : weekday;
-    })
-  );
+  // Vorbereiten der Daten für die Datenbankaktualisierung
+  const updatedCalendar = user.calendar.map((calendarDay) => {
+    const update = updatedWeekdays.find((day) => day.date === calendarDay.date);
+    if (update && update.recipe) {
+      return { ...calendarDay, recipe: update.recipe };
+    }
+    return calendarDay;
+  });
 
-  //Update Database
-  const response = await fetch(`/api/users/${user._id}`, {
+  // Ergänzen neuer Kalendereinträge, falls vorhanden
+  updatedWeekdays.forEach((day) => {
+    if (!user.calendar.find((calendarDay) => calendarDay.date === day.date)) {
+      updatedCalendar.push({
+        date: day.date,
+        recipe: day.recipe,
+        isDisabled: false,
+        servings: user.settings.defaultNumberOfPeople || 4, // Standardwert falls nicht definiert
+      });
+    }
+  });
+
+  // Aktualisierung der Datenbank
+  await fetch(`/api/users/${user._id}`, {
     method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      ...user,
-      calendar: [...user.calendar, ...updatedCalendar],
-    }),
-  });
-  if (response.ok) {
-    // Rufen Sie hier mutateUser auf, falls mutateUser eine Funktion ist, die den Benutzerzustand aktualisiert
-    // mutateUser();
-    console.log("User successfully updated");
-  } else {
-    console.error("Failed to update user");
-  }
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ ...user, calendar: updatedCalendar }),
+  })
+    .then((response) => {
+      if (response.ok) {
+        console.log("User successfully updated");
+        mutateUser(user._id, { ...user, calendar: updatedCalendar }, false);
+      } else {
+        throw new Error("Failed to update user");
+      }
+    })
+    .catch((error) => console.error("Failed to update user", error));
 }
