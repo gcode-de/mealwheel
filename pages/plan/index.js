@@ -9,10 +9,8 @@ import Header from "@/components/Styled/Header";
 import MealCard from "@/components/Styled/MealCard";
 import IconButton from "@/components/Styled/IconButton";
 import RandomnessSlider from "@/components/Styled/RandomnessSlider";
-import Button from "@/components/Styled/StyledButton";
 
 import generateWeekdays from "@/helpers/generateWeekdays";
-import assignRecipesToWeekdays from "@/helpers/assignRecipesToWeekdays";
 
 export default function Plan({
   isLoading,
@@ -208,11 +206,6 @@ export default function Plan({
                   <MealCard
                     key={calendarDay.recipe._id}
                     recipe={calendarDay.recipe}
-                    // isFavorite={getRecipeProperty(
-                    //   calendarDay.recipe._id,
-                    //   "isFavorite"
-                    // )}
-                    // onToggleIsFavorite={toggleIsFavorite}
                     numberOfPeople={
                       calendarDay.numberOfPeople !== undefined &&
                       calendarDay.numberOfPeople !== null
@@ -226,7 +219,6 @@ export default function Plan({
                   />
                 ) : (
                   <CardSkeleton
-                    // key={calendarDay.recipe._id}
                     numberOfPeople={
                       calendarDay?.numberOfPeople ||
                       user.settings.defaultNumberOfPeople
@@ -240,24 +232,6 @@ export default function Plan({
             );
           })}
       </CalendarContainer>
-      <ButtonsContainer>
-        <Button
-          onClick={() => {
-            assignRecipesToWeekdays(
-              setWeekdays,
-              userRecipes,
-              randomRecipes,
-              numberOfRandomRecipes,
-              weekdays,
-              user,
-              mutateUser
-            );
-            // updateUserinDb();
-          }}
-        >
-          Rezepte einfügen
-        </Button>
-      </ButtonsContainer>
     </>
   );
 }
@@ -303,12 +277,4 @@ const CalendarContainer = styled.ul`
     margin: 20px 0 -15px 5px;
     padding: 0;
   }
-`;
-
-const ButtonsContainer = styled.div`
-  position: fixed;
-  bottom: 80px;
-  display: flex;
-  justify-content: space-between;
-  z-index: 2;
 `;
