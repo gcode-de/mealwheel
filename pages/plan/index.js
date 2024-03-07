@@ -134,7 +134,7 @@ export default function Plan({
       });
     }
 
-    //set day to s !importantDisabled
+    //set day to  !isDisabled
     user.calendar = user.calendar.map((calendarDay) =>
       calendarDay.date === day
         ? { ...calendarDay, isDisabled: false }
@@ -151,16 +151,16 @@ export default function Plan({
     updateUserinDb(user, mutateUser);
   };
 
+  const checkIfWeekdayIsDefaultEnabled = (date) => {
+    return user.settings.weekdaysEnabled[new Date(date).getDay()];
+  };
+
   if (error || randomRecipesError) {
     <div>
       <Header text={"Wochenplan 🥗"} />
       Daten konnten nicht geladen werden...
     </div>;
   }
-
-  const checkIfWeekdayIsDefaultEnabled = (date) => {
-    return user.settings.weekdaysEnabled[new Date(date).getDay()];
-  };
 
   if (isLoading || randomRecipesIsLoading) {
     return (

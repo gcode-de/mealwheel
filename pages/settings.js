@@ -20,15 +20,6 @@ export default function Settings({ user, mutateUser }) {
     !user.settings.weekdaysEnabled ||
     user.settings.weekdaysEnabled.length === 0
   ) {
-    // const setWeekdays = [
-    //   { day: "Sonntag", enabled: false },
-    //   { day: "Montag", enabled: true },
-    //   { day: "Dienstag", enabled: true },
-    //   { day: "Mittwoch", enabled: true },
-    //   { day: "Donnerstag", enabled: true },
-    //   { day: "Freitag", enabled: true },
-    //   { day: "Samstag", enabled: false },
-    // ];
     const setWeekdays = {
       0: false,
       1: true,
