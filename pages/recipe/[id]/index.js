@@ -270,7 +270,7 @@ const StyledForm = styled.form`
   align-items: center;
   gap: 10px;
   justify-content: space-between;
-  transition: all 0.3s ease-in-out;
+  transition: opacity 0.3s ease-in-out, margin 0.2s ease-out;
   opacity: ${({ $isVisible }) => ($isVisible ? "1" : "0")};
   height: ${({ $isVisible }) => ($isVisible ? "auto" : "0")};
   margin: ${({ $isVisible }) => ($isVisible ? "1rem 0 2rem 0" : "0")};
