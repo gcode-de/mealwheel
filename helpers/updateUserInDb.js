@@ -8,6 +8,6 @@ export default async function updateUserinDb(user, mutateUser) {
     body: JSON.stringify(user),
   });
   if (response.ok) {
-    mutateUser();
+    await mutateUser();
   }
 }

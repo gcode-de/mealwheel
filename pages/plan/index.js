@@ -79,10 +79,8 @@ export default function Plan({
     return user.calendar.find((calendarDay) => calendarDay.date === date);
   }
 
-  const toggleDayIsDisabled = (day) => {
-    console.log("toggle", day);
-    createUserCalenderIfMissing();
-
+  const toggleDayIsDisabled = async (day) => {
+    await createUserCalenderIfMissing();
     if (user.calendar.some((calendarDay) => calendarDay.date === day)) {
       user.calendar = user.calendar.map((calendarDay) =>
         calendarDay.date === day
@@ -92,10 +90,10 @@ export default function Plan({
     } else {
       user.calendar.push({
         date: day,
-        isDisabled: true,
+        isDisabled: checkIfWeekdayIsDefaultEnabled(day), //TO DO!
       });
     }
-    updateUserinDb(user, mutateUser);
+    await updateUserinDb(user, mutateUser);
   };
 
   const changeNumberOfPeople = async (day, change) => {
@@ -107,7 +105,7 @@ export default function Plan({
           }
         : calendarDay
     );
-    updateUserinDb(user, mutateUser);
+    await updateUserinDb(user, mutateUser);
   };
 
   const createUserCalenderIfMissing = async () => {
