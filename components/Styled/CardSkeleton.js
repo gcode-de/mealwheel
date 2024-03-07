@@ -5,11 +5,13 @@ export default function CardSkeleton({
   amount = 1,
   $isLoading,
   text,
+  $height,
   numberOfPeople,
   changeNumberOfPeople,
   reassignRecipe,
   day,
 }) {
+  console.log($height);
   return (
     <>
       {Array.from({ length: amount }, (_, index) => (
@@ -36,7 +38,7 @@ const StyledCardSkeleton = styled.li`
   position: relative;
   background-color: var(--color-lightgrey);
   list-style-type: none;
-  height: 123px;
+  height: ${({ $height }) => ($height === "small" ? "50px" : "123px")};
   margin: 1.25rem 0 0 0;
   padding-top: 40px;
   text-align: center;
