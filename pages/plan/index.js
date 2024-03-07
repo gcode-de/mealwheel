@@ -11,7 +11,6 @@ import IconButton from "@/components/Styled/IconButton";
 import RandomnessSlider from "@/components/Styled/RandomnessSlider";
 
 import generateWeekdays from "@/helpers/generateWeekdays";
-import assignRecipesToWeekdays from "@/helpers/assignRecipesToWeekdays";
 
 export default function Plan({
   isLoading,
@@ -19,6 +18,7 @@ export default function Plan({
   user,
   getRecipeProperty,
   toggleIsFavorite,
+  mutateUser,
 }) {
   const router = useRouter();
   const weekOffset = Number(router.query.week) || 0;
@@ -26,8 +26,28 @@ export default function Plan({
   const [numberOfRandomRecipes, setNumberOfRandomRecipes] = useState(2);
 
   useEffect(() => {
-    setWeekdays(generateWeekdays(weekOffset));
-  }, [weekOffset]);
+    const generatedWeekdays = generateWeekdays(weekOffset);
+
+    if (user && generatedWeekdays) {
+      const updatedWeekdays = generatedWeekdays.map((weekday) => {
+        const calendarDay = user.calendar.find(
+          (calendarDay) => calendarDay.date === weekday.date
+        );
+
+        if (calendarDay) {
+          return {
+            ...weekday,
+            recipe: calendarDay.recipe,
+            isDisabled: calendarDay.isDisabled,
+            servings: calendarDay.servings,
+          };
+        }
+
+        return weekday;
+      });
+      setWeekdays(updatedWeekdays);
+    }
+  }, [weekOffset, user]);
 
   const {
     data: randomRecipes,
@@ -35,12 +55,74 @@ export default function Plan({
     error: randomRecipesError,
   } = useSWR(`/api/recipes/random/7`);
 
+  async function getRandomRecipe() {
+    const response = await fetch(`/api/recipes/random/`);
+    const recipe = await response.json();
+    return recipe;
+  }
+
   const userRecipes = user?.recipeInteractions
     .filter((recipe) => recipe.hasCooked)
     .map((recipe) => recipe.recipe);
 
   const handleSliderChange = (event) => {
     setNumberOfRandomRecipes(parseInt(event.target.value, 10));
+  };
+
+  async function updateUserinDb() {
+    const response = await fetch(`/api/users/${user._id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(user),
+    });
+    if (response.ok) {
+      mutateUser();
+    }
+  }
+
+  function getCalendarDayFromDb(date) {
+    return user.calendar.find((calendarDay) => calendarDay.date === date);
+  }
+
+  const changeNumberOfPeople = async (day, change) => {
+    user.calendar = user.calendar.map((calendarDay) =>
+      calendarDay.date === day
+        ? {
+            ...calendarDay,
+            numberOfPeople: Math.max(1, calendarDay.numberOfPeople + change),
+          }
+        : calendarDay
+    );
+    updateUserinDb();
+  };
+
+  const reassignRecipe = async (day) => {
+    const randomRecipe = await getRandomRecipe();
+
+    if (user.calendar.some((calendarDay) => calendarDay.date === day)) {
+      user.calendar = user.calendar.map((calendarDay) =>
+        calendarDay.date === day
+          ? { ...calendarDay, recipe: randomRecipe[0] }
+          : calendarDay
+      );
+    } else {
+      user.calendar.push({
+        date: day,
+        recipe: randomRecipe[0],
+        numberOfPeople: user.settings.defaultNumberOfPeople,
+      });
+    }
+
+    await updateUserinDb();
+  };
+
+  const removeRecipe = (day) => {
+    user.calendar = user.calendar.map((calendarDay) =>
+      calendarDay.date === day ? { ...calendarDay, recipe: null } : calendarDay
+    );
+    updateUserinDb();
   };
 
   if (error || randomRecipesError) {
@@ -103,39 +185,36 @@ export default function Plan({
 
       <CalendarContainer>
         {weekdays &&
-          weekdays.map((weekday, index) => (
-            <article key={weekday.date} id={weekday.date}>
-              <h2>{weekday.readableDate}</h2>
-              {weekday.recipe ? (
-                <MealCard
-                  key={weekday.recipe._id}
-                  recipe={weekday.recipe}
-                  isFavorite={getRecipeProperty(
-                    weekday.recipe._id,
-                    "isFavorite"
-                  )}
-                  onToggleIsFavorite={toggleIsFavorite}
-                />
-              ) : (
-                <CardSkeleton />
-              )}
-            </article>
-          ))}
-      </CalendarContainer>
-      <ButtonsContainer>
-        <GenerateButton
-          onClick={() => {
-            assignRecipesToWeekdays(
-              setWeekdays,
-              userRecipes,
-              randomRecipes,
-              numberOfRandomRecipes
+          weekdays.map((weekday) => {
+            const calendarDay = getCalendarDayFromDb(weekday.date);
+            return (
+              <article key={weekday.date} id={weekday.date}>
+                <h2>{weekday.readableDate}</h2>
+                {calendarDay?.recipe ? (
+                  <MealCard
+                    key={calendarDay.recipe._id}
+                    recipe={calendarDay.recipe}
+                    numberOfPeople={
+                      calendarDay.numberOfPeople !== undefined &&
+                      calendarDay.numberOfPeople !== null
+                        ? Number(calendarDay.numberOfPeople)
+                        : user.settings.defaultNumberOfPeople
+                    }
+                    changeNumberOfPeople={changeNumberOfPeople}
+                    reassignRecipe={reassignRecipe}
+                    removeRecipe={removeRecipe}
+                    day={calendarDay.date}
+                  />
+                ) : (
+                  <CardSkeleton
+                    reassignRecipe={reassignRecipe}
+                    day={calendarDay?.date || weekday.date}
+                  />
+                )}
+              </article>
             );
-          }}
-        >
-          Rezepte einfügen
-        </GenerateButton>
-      </ButtonsContainer>
+          })}
+      </CalendarContainer>
     </>
   );
 }
@@ -181,22 +260,4 @@ const CalendarContainer = styled.ul`
     margin: 20px 0 -15px 5px;
     padding: 0;
   }
-`;
-
-const ButtonsContainer = styled.div`
-  position: fixed;
-  bottom: 80px;
-  display: flex;
-  justify-content: space-between;
-`;
-const GenerateButton = styled.button`
-  border: none;
-  background-color: var(--color-darkgrey);
-  color: var(--color-background);
-  font-size: 0%.75rem;
-  font-weight: 600;
-  cursor: pointer;
-  border-radius: 10px;
-  width: 9rem;
-  height: 3rem;
 `;

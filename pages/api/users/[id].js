@@ -7,7 +7,9 @@ export default async function handler(request, response) {
   const { id } = request.query;
 
   if (request.method === "GET") {
-    const user = await User.findById(id).populate("recipeInteractions.recipe");
+    const user = await User.findById(id)
+      .populate("recipeInteractions.recipe")
+      .populate("calendar.recipe");
 
     if (!user) {
       return response.status(404).json({ status: "Not Found" });
@@ -17,16 +19,9 @@ export default async function handler(request, response) {
   }
 
   if (request.method === "PUT") {
-    const { weekdaysEnabled } = request.body;
     try {
-      const user = await User.findByIdAndUpdate(
-        id,
-        { "settings.weekdaysEnabled": weekdaysEnabled },
-        { new: true, runValidators: true }
-      );
-      if (!user) {
-        return response.status(404).json({ status: "Not Found" });
-      }
+      await User.findByIdAndUpdate(id, request.body);
+      console.log(request.body);
       return response.status(200).json("User updated");
     } catch (error) {
       console.log(error);

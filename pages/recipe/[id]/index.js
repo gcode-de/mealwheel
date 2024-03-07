@@ -5,10 +5,11 @@ import useSWR from "swr";
 import styled from "styled-components";
 import Link from "next/link";
 import { useState } from "react";
-import StyledArticle from "@/components/Styled/DetailArticle";
+import StyledArticle from "@/components/Styled/StyledArticle";
 import StyledList from "@/components/Styled/StyledList";
 import StyledH2 from "@/components/Styled/StyledH2";
 import StyledP from "@/components/Styled/StyledP";
+import StyledListItem from "@/components/Styled/StyledListItem";
 
 export default function DetailPage({
   error,
@@ -20,6 +21,7 @@ export default function DetailPage({
   const [content, setContent] = useState("instructions");
   const router = useRouter();
   const { id } = router.query;
+  const servings = Number(router.query.servings) || 1;
 
   const {
     data: recipe,
@@ -28,11 +30,11 @@ export default function DetailPage({
   } = useSWR(id ? `/api/recipes/${id}` : null);
 
   if (error || dataError) {
-    return <h1>error</h1>;
+    return <h1>Fehler...</h1>;
   }
 
   if (isLoading || dataIsLoading || !recipe) {
-    return <h1>loading recipe...</h1>;
+    return <h1>Rezept wird geladen...</h1>;
   }
 
   const {
@@ -103,7 +105,10 @@ export default function DetailPage({
         <p>
           {duration} MIN | {difficulty}
         </p>
-        <StyledH2>ingredients</StyledH2>
+        <StyledH2>
+          Zutaten{" "}
+          {servings === 1 ? `(für 1 Person` : `(für ${servings} Personen`})
+        </StyledH2>
         <StyledList>
           {ingredients.map((ingredient) => (
             <StyledListItem key={ingredient._id}>
@@ -116,15 +121,15 @@ export default function DetailPage({
         </StyledList>
         <StyledHyper>
           <StyledLink onClick={() => setContent("instructions")}>
-            instructions
+            Zubereitung
           </StyledLink>
-          <StyledLink onClick={() => setContent("video")}>video</StyledLink>
+          <StyledLink onClick={() => setContent("video")}>Video</StyledLink>
         </StyledHyper>
         {content === "instructions" && (
           <StyledIngredients>{instructions}</StyledIngredients>
         )}
         {content === "video" && (
-          <Link href={youtubeLink}>see youtube video</Link>
+          <Link href={youtubeLink}>auf youtube anschauen</Link>
         )}
       </StyledArticle>
     </Wrapper>
@@ -169,11 +174,4 @@ const ImageContainer = styled.div`
   position: "relative";
   width: "400";
   height: "300px";
-`;
-
-const StyledListItem = styled.li`
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-  margin: 0;
 `;
