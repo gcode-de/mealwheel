@@ -36,7 +36,6 @@ const StyledCardSkeleton = styled.li`
   position: relative;
   background-color: var(--color-lightgrey);
   list-style-type: none;
-  /* width: 333px; */
   height: 123px;
   margin: 1.25rem 0 0 0;
   padding-top: 40px;

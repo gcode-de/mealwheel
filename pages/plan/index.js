@@ -26,18 +26,14 @@ export default function Plan({
   const [numberOfRandomRecipes, setNumberOfRandomRecipes] = useState(2);
 
   useEffect(() => {
-    //generate week days for current view
     const generatedWeekdays = generateWeekdays(weekOffset);
 
-    //import existing days with recipes from database
     if (user && generatedWeekdays) {
       const updatedWeekdays = generatedWeekdays.map((weekday) => {
-        // Finden Sie den entsprechenden Tag im Kalender des Benutzers
         const calendarDay = user.calendar.find(
-          (calendarDay) => calendarDay.date === weekday.date //slice, weil MongoDB das date immer automatisch als ISO-8601-String speichert *side-eye*
+          (calendarDay) => calendarDay.date === weekday.date
         );
 
-        // Wenn ein entsprechender Tag gefunden wurde, aktualisieren Sie den Wochentag mit diesen Daten
         if (calendarDay) {
           return {
             ...weekday,
@@ -49,7 +45,6 @@ export default function Plan({
 
         return weekday;
       });
-      console.log(updatedWeekdays, user);
       setWeekdays(updatedWeekdays);
     }
   }, [weekOffset, user]);
@@ -63,7 +58,6 @@ export default function Plan({
   async function getRandomRecipe() {
     const response = await fetch(`/api/recipes/random/`);
     const recipe = await response.json();
-    console.log("fetched random recipe:", await recipe[0]);
     return recipe;
   }
 
@@ -76,7 +70,6 @@ export default function Plan({
   };
 
   async function updateUserinDb() {
-    console.log("updating User in db...", user);
     const response = await fetch(`/api/users/${user._id}`, {
       method: "PUT",
       headers: {
@@ -84,7 +77,6 @@ export default function Plan({
       },
       body: JSON.stringify(user),
     });
-    console.log(response);
     if (response.ok) {
       mutateUser();
     }
@@ -108,17 +100,14 @@ export default function Plan({
 
   const reassignRecipe = async (day) => {
     const randomRecipe = await getRandomRecipe();
-    console.log("Neu zugewiesenes zufälliges Rezept:", randomRecipe[0]);
 
     if (user.calendar.some((calendarDay) => calendarDay.date === day)) {
-      console.log("Aktualisiere vorhandenen Tag:", day);
       user.calendar = user.calendar.map((calendarDay) =>
         calendarDay.date === day
           ? { ...calendarDay, recipe: randomRecipe[0] }
           : calendarDay
       );
     } else {
-      console.log("Erstelle neuen Tag:", day);
       user.calendar.push({
         date: day,
         recipe: randomRecipe[0],
@@ -130,7 +119,6 @@ export default function Plan({
   };
 
   const removeRecipe = (day) => {
-    console.log("remove recipe from date", day);
     user.calendar = user.calendar.map((calendarDay) =>
       calendarDay.date === day ? { ...calendarDay, recipe: null } : calendarDay
     );
@@ -219,11 +207,6 @@ export default function Plan({
                   />
                 ) : (
                   <CardSkeleton
-                    numberOfPeople={
-                      calendarDay?.numberOfPeople ||
-                      user.settings.defaultNumberOfPeople
-                    }
-                    changeNumberOfPeople={changeNumberOfPeople}
                     reassignRecipe={reassignRecipe}
                     day={calendarDay?.date || weekday.date}
                   />
