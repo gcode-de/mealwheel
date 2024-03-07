@@ -1,10 +1,13 @@
-import IconButton from "@/components/Styled/IconButton";
 import Image from "next/image";
-import { useRouter } from "next/router";
-import useSWR from "swr";
-import styled from "styled-components";
 import Link from "next/link";
+import styled from "styled-components";
+import useSWR from "swr";
 import { useState } from "react";
+import { useRouter } from "next/router";
+
+import updateUserinDb from "@/helpers/updateUserInDb";
+
+import IconButton from "@/components/Styled/IconButton";
 import StyledArticle from "@/components/Styled/StyledArticle";
 import StyledList from "@/components/Styled/StyledList";
 import StyledH2 from "@/components/Styled/StyledH2";
@@ -12,6 +15,8 @@ import StyledP from "@/components/Styled/StyledP";
 import StyledListItem from "@/components/Styled/StyledListItem";
 
 export default function DetailPage({
+  user,
+  mutateUser,
   error,
   isLoading,
   getRecipeProperty,
@@ -28,6 +33,59 @@ export default function DetailPage({
     isLoading: dataIsLoading,
     error: dataError,
   } = useSWR(id ? `/api/recipes/${id}` : null);
+
+  const [selectedDate, setSelectedDate] = useState("");
+
+  const assignRecipeToCalendarDay = async (recipeId, selectedDate) => {
+    //generate ISO-Date
+    const isoDate = new Date(selectedDate);
+    isoDate.setUTCHours(0, 0, 0, 0);
+    const dbDate = isoDate.toISOString();
+
+    const localDate = isoDate.toLocaleDateString("de-DE", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+
+    //create calendar property in user object if missing
+    if (!user.calendar) {
+      user.calendar = [];
+      await updateUserinDb();
+    }
+
+    //add recipe to calendarDay in user object
+    if (user.calendar.some((calendarDay) => calendarDay.date === dbDate)) {
+      user.calendar = user.calendar.map((calendarDay) =>
+        calendarDay.date === dbDate
+          ? { ...calendarDay, recipe: recipeId }
+          : calendarDay
+      );
+    } else {
+      user.calendar.push({
+        date: dbDate,
+        recipe: recipeId,
+        numberOfPeople: user.settings.defaultNumberOfPeople,
+      });
+    }
+
+    //set day to  !isDisabled
+    user.calendar = user.calendar.map((calendarDay) =>
+      calendarDay.date === dbDate
+        ? { ...calendarDay, isDisabled: false }
+        : calendarDay
+    );
+
+    //push user object to database
+    await updateUserinDb(user, mutateUser);
+    window.alert(`Das Rezept wurde für ${localDate} eingeplant.`);
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    assignRecipeToCalendarDay(id, selectedDate);
+  };
 
   if (error || dataError) {
     return <h1>Fehler...</h1>;
@@ -105,6 +163,19 @@ export default function DetailPage({
         <p>
           {duration} MIN | {difficulty}
         </p>
+        <StyledForm onSubmit={handleSubmit}>
+          <label htmlFor="date">Einplanen:</label>
+          <input
+            type="date"
+            name="date"
+            value={selectedDate}
+            required
+            onChange={(event) => {
+              setSelectedDate(event.target.value);
+            }}
+          />
+          <button type="submit">speichern</button>
+        </StyledForm>
         <StyledH2>
           Zutaten{" "}
           {servings === 1 ? `(für 1 Person` : `(für ${servings} Personen`})
@@ -174,4 +245,28 @@ const ImageContainer = styled.div`
   position: "relative";
   width: "400";
   height: "300px";
+`;
+
+const StyledForm = styled.form`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: space-between;
+  button {
+    width: 80px;
+    line-height: 1.1rem;
+    padding: 0.25rem 0.5rem;
+    border: none;
+    border-radius: 10px;
+    background-color: var(--color-darkgrey);
+    color: var(--color-background);
+    cursor: pointer;
+  }
+  input {
+    padding: 0.25rem 0.5rem;
+    border: none;
+    border-radius: 10px;
+    background-color: var(--color-background);
+  }
+  margin: 1rem 0;
 `;

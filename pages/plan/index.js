@@ -75,10 +75,6 @@ export default function Plan({
     setNumberOfRandomRecipes(parseInt(event.target.value, 10));
   };
 
-  function getCalendarDayFromDb(date) {
-    return user.calendar.find((calendarDay) => calendarDay.date === date);
-  }
-
   const toggleDayIsDisabled = async (day) => {
     await createUserCalenderIfMissing();
     if (user.calendar.some((calendarDay) => calendarDay.date === day)) {
@@ -90,7 +86,7 @@ export default function Plan({
     } else {
       user.calendar.push({
         date: day,
-        isDisabled: checkIfWeekdayIsDefaultEnabled(day), //TO DO!
+        isDisabled: checkIfWeekdayIsDefaultEnabled(day),
       });
     }
     await updateUserinDb(user, mutateUser);
