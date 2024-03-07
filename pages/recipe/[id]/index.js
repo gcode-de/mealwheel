@@ -62,18 +62,16 @@ export default function DetailPage({
         top="0.5rem"
       />
       <ImageContainer
-        style={{ position: "relative", width: "400", height: "300px" }}
-      >
-        <Image
-          src={imageLink || "/img/jason-briscoe-7MAjXGUmaPw-unsplash.jpg"}
-          alt={`recipe Image ${title}`}
-          sizes="500px"
-          fill
-          style={{
-            objectFit: "cover",
-          }}
-        />
-      </ImageContainer>
+        src={imageLink || "/img/jason-briscoe-7MAjXGUmaPw-unsplash.jpg"}
+        alt={`recipe Image ${title}`}
+        width={400}
+        height={400}
+        sizes="500px"
+        // fill
+        // style={{
+        //   objectFit: "cover",
+        // }}
+      />
       <StyledArticle>
         <IconButton
           style="Pot"
@@ -170,8 +168,8 @@ const StyledLink = styled.button`
   }
 `;
 
-const ImageContainer = styled.div`
-  position: "relative";
-  width: "400";
-  height: "300px";
+const ImageContainer = styled(Image)`
+  position: relative;
+  width: 100%;
+  height: auto;
 `;
