@@ -4,6 +4,7 @@ import StyledH2 from "@/components/Styled/StyledH2";
 import StyledList from "@/components/Styled/StyledList";
 import StyledP from "@/components/Styled/StyledP";
 import styled from "styled-components";
+import Header from "@/components/Styled/Header";
 
 export default function Settings({ user }) {
   if (!user) {
@@ -57,31 +58,33 @@ export default function Settings({ user }) {
 
   return (
     <>
-      <p>Settings</p>
-      <StyledH2>Anpassung Menü-Planer</StyledH2>
-      <StyledList>
-        <StyledP>Tage, für geplant werden soll:</StyledP>
-        <Wrapper>
-          {weekdaysEnabled.slice(1).map((object, index) => (
-            <WeekdayButton
-              key={index}
-              onClick={() => toggleWeekdays(object.day)}
-              $enabled={object.enabled}
-            >
-              {object.day.slice(0, 2)}
-            </WeekdayButton>
-          ))}
-          {weekdaysEnabled.slice(0, 1).map((object, index) => (
-            <WeekdayButton
-              key={index}
-              onClick={() => toggleWeekdays(object.day)}
-              $enabled={object.enabled}
-            >
-              {object.day.slice(0, 2)}
-            </WeekdayButton>
-          ))}
-        </Wrapper>
-      </StyledList>
+      <Header text="Einstellungen 🥗" />
+      <StyledArticle>
+        <StyledH2>Anpassung Menü-Planer</StyledH2>
+        <StyledList>
+          <StyledP>Tage, für geplant werden soll:</StyledP>
+          <Wrapper>
+            {weekdaysEnabled.slice(1).map((object, index) => (
+              <WeekdayButton
+                key={index}
+                onClick={() => toggleWeekdays(object.day)}
+                $enabled={object.enabled}
+              >
+                {object.day.slice(0, 2)}
+              </WeekdayButton>
+            ))}
+            {weekdaysEnabled.slice(0, 1).map((object, index) => (
+              <WeekdayButton
+                key={index}
+                onClick={() => toggleWeekdays(object.day)}
+                $enabled={object.enabled}
+              >
+                {object.day.slice(0, 2)}
+              </WeekdayButton>
+            ))}
+          </Wrapper>
+        </StyledList>
+      </StyledArticle>
     </>
   );
 }
@@ -95,9 +98,13 @@ const WeekdayButton = styled.button`
     props.$enabled ? "var(--color-highlight)" : "var(--color-lightgrey)"};
   text-decoration: ${(props) => (props.$enabled ? "none" : "line-through")};
   border: none;
-  height: 2.5rem;
-  width: 2.5rem;
+  height: 2rem;
+  width: 2rem;
   border-radius: 8px;
   margin-top: 1rem;
   margin-bottom: 1rem;
+`;
+const StyledArticle = styled.article`
+  margin-right: 2.5rem;
+  margin-left: 2.5rem;
 `;
