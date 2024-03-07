@@ -2,8 +2,6 @@ import RecipeForm from "@/components/RecipeForm";
 import { useRouter } from "next/router";
 import useSWR from "swr";
 import React, { useState } from "react";
-import NextProgress from "nextjs-progressbar";
-import Image from "next/image";
 
 export default function AddRecipe() {
   const [imageUrl, setImageUrl] = useState("");
@@ -43,19 +41,12 @@ export default function AddRecipe() {
 
   return (
     <>
-      <div>
-        <NextProgress
-          color="#29D"
-          startPosition={0.3}
-          stopDelayMs={200}
-          height={3}
-        />
-        {imageUrl && (
-          <Image src={imageUrl} alt="Uploaded Image" width={300} height={250} />
-        )}
-        <input type="file" onChange={uploadImage} />
-      </div>
-      <RecipeForm onSubmit={addRecipe} formName={"add-recipe"}></RecipeForm>
+      <RecipeForm
+        onChange={uploadImage}
+        onSubmit={addRecipe}
+        formName={"add-recipe"}
+        imageUrl={imageUrl}
+      ></RecipeForm>
     </>
   );
 }
