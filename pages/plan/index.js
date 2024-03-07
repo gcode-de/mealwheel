@@ -10,6 +10,7 @@ import MealCard from "@/components/Styled/MealCard";
 import IconButton from "@/components/Styled/IconButton";
 import RandomnessSlider from "@/components/Styled/RandomnessSlider";
 import PowerIcon from "@/public/icons/power-material-svgrepo-com.svg";
+import PowerIcon from "@/public/icons/power-material-svgrepo-com.svg";
 
 import generateWeekdays from "@/helpers/generateWeekdays";
 import updateUserinDb from "@/helpers/updateUserInDb";
@@ -75,6 +76,31 @@ export default function Plan({
     setNumberOfRandomRecipes(parseInt(event.target.value, 10));
   };
 
+  async function updateUserinDb() {
+    const response = await fetch(`/api/users/${user._id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(user),
+    });
+    if (response.ok) {
+      mutateUser();
+    }
+  }
+
+  function getCalendarDayFromDb(date) {
+    return user.calendar.find((calendarDay) => calendarDay.date === date);
+  }
+
+  const toggleDayIsDisabled = (day) => {
+    user.calendar = user.calendar.map((calendarDay) =>
+      calendarDay.date === day
+        ? { ...calendarDay, isDisabled: calendarDay.isDisabled || true }
+        : calendarDay
+    );
+    updateUserinDb();
+  };
   const toggleDayIsDisabled = (day) => {
     user.calendar = user.calendar.map((calendarDay) =>
       calendarDay.date === day
@@ -105,8 +131,18 @@ export default function Plan({
   //   }
   // };
 
+  // const createUserCalenderIfMissing = async () => {
+  //   console.log("check calendar", user?.calendar);
+  //   if (!user.calendar) {
+  //     console.log("create empty calendar array for user");
+  //     user.calendar = [];
+  //     await updateUserinDb();
+  //   }
+  // };
+
   const reassignRecipe = async (day) => {
     const randomRecipe = await getRandomRecipe();
+    // createUserCalenderIfMissing();
     // createUserCalenderIfMissing();
     if (user.calendar.some((calendarDay) => calendarDay.date === day)) {
       user.calendar = user.calendar.map((calendarDay) =>
@@ -196,6 +232,16 @@ export default function Plan({
             const calendarDay = getCalendarDayFromDb(weekday.date);
             return (
               <article key={weekday.date} id={weekday.date}>
+                {/* <StyledH2 $dayIsDisabled={calendarDay?.isDisabled || false}>
+                  <StyledPowerIcon
+                    $dayIsDisabled={calendarDay?.isDisabled || false}
+                    onClick={() => {
+                      toggleDayIsDisabled(calendarDay?.date);
+                    }}
+                  />
+                  {calendarDay?.isDisabled}
+                  {weekday.readableDate}
+                </StyledH2> */}
                 <StyledH2 $dayIsDisabled={calendarDay?.isDisabled || false}>
                   <StyledPowerIcon
                     $dayIsDisabled={calendarDay?.isDisabled || false}
@@ -271,6 +317,24 @@ const CalendarContainer = styled.ul`
   padding: 10px;
   max-width: 350px;
   margin: 0 auto 80px auto;
+`;
+
+const StyledH2 = styled.h2`
+  font-size: 1rem;
+  margin: 20px 0 -15px 0;
+  padding: 0;
+  text-decoration: ${(props) => (props.$dayIsDisabled ? "underline" : "")};
+`;
+
+const StyledPowerIcon = styled(PowerIcon)`
+  width: 1.5rem;
+  height: 1.5rem;
+  margin: -0.5rem 0.3rem 0 -0.2rem;
+  position: relative;
+  top: 0.3rem;
+  fill: ${(props) =>
+    props.$dayIsDisabled ? "var(--color-lightgrey)" : "var(--color-highlight)"};
+  cursor: pointer;
 `;
 
 const StyledH2 = styled.h2`
