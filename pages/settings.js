@@ -11,6 +11,30 @@ export default function Settings({ user }) {
   const { settings } = user;
   const { weekdaysEnabled } = settings;
 
+  if (!weekdaysEnabled) {
+    const setWeekdays = [
+      { day: "Sonntag", enabled: false },
+      { day: "Montag", enabled: true },
+      { day: "Dienstag", enabled: true },
+      { day: "Mittwoch", enabled: true },
+      { day: "Donnerstag", enabled: true },
+      { day: "Freitag", enabled: true },
+      { day: "Samstag", enabled: false },
+    ];
+    async function addWeekdays() {
+      const response = await fetch(`/api/users/${user._id}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ weekdaysEnabled: setWeekdays }),
+      });
+      if (!response.ok) {
+        console.error(response.status);
+        return;
+      }
+    }
+    addWeekdays();
+  }
+
   async function toggleWeekdays(day) {
     const updatedWeekdays = weekdaysEnabled?.map((o) =>
       o.day === day ? { ...o, enabled: !o.enabled } : o
