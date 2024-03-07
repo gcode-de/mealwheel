@@ -134,6 +134,13 @@ export default function Plan({
       });
     }
 
+    //set day to s !importantDisabled
+    user.calendar = user.calendar.map((calendarDay) =>
+      calendarDay.date === day
+        ? { ...calendarDay, isDisabled: false }
+        : calendarDay
+    );
+
     await updateUserinDb(user, mutateUser);
   };
 
@@ -214,13 +221,13 @@ export default function Plan({
               <article key={weekday.date} id={weekday.date}>
                 <StyledH2
                   $dayIsDisabled={
-                    calendarDay?.isDisabled ||
+                    calendarDay?.isDisabled ??
                     !checkIfWeekdayIsDefaultEnabled(weekday.date)
                   }
                 >
                   <StyledPowerIcon
                     $dayIsDisabled={
-                      calendarDay?.isDisabled ||
+                      calendarDay?.isDisabled ??
                       !checkIfWeekdayIsDefaultEnabled(weekday.date)
                     }
                     onClick={() => {
@@ -230,7 +237,7 @@ export default function Plan({
                   {calendarDay?.isDisabled}
                   {weekday.readableDate}
                 </StyledH2>
-                {calendarDay?.recipe ? (
+                {calendarDay?.recipe && !calendarDay?.isDisabled ? (
                   <MealCard
                     key={calendarDay.recipe._id}
                     recipe={calendarDay.recipe}
@@ -250,7 +257,7 @@ export default function Plan({
                     reassignRecipe={reassignRecipe}
                     day={calendarDay?.date || weekday.date}
                     $height={
-                      calendarDay?.isDisabled ||
+                      calendarDay?.isDisabled ??
                       !checkIfWeekdayIsDefaultEnabled(weekday.date)
                         ? "small"
                         : ""
