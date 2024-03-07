@@ -6,12 +6,15 @@ import StyledP from "@/components/Styled/StyledP";
 import styled from "styled-components";
 
 export default function Settings({ user }) {
+  if (!user) {
+    return <p>kein Benutzer gefunden..</p>;
+  }
   const { mutate } = useSWR(`/api/users/${user._id}`);
 
   const { settings } = user;
   const { weekdaysEnabled } = settings;
 
-  if (!weekdaysEnabled) {
+  if (!weekdaysEnabled || weekdaysEnabled.length === 0) {
     const setWeekdays = [
       { day: "Sonntag", enabled: false },
       { day: "Montag", enabled: true },
@@ -23,7 +26,7 @@ export default function Settings({ user }) {
     ];
     async function addWeekdays() {
       const response = await fetch(`/api/users/${user._id}`, {
-        method: "POST",
+        method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ weekdaysEnabled: setWeekdays }),
       });
@@ -59,7 +62,16 @@ export default function Settings({ user }) {
       <StyledList>
         <StyledP>Tage, für geplant werden soll:</StyledP>
         <Wrapper>
-          {weekdaysEnabled.map((object, index) => (
+          {weekdaysEnabled.slice(1).map((object, index) => (
+            <WeekdayButton
+              key={index}
+              onClick={() => toggleWeekdays(object.day)}
+              $enabled={object.enabled}
+            >
+              {object.day.slice(0, 2)}
+            </WeekdayButton>
+          ))}
+          {weekdaysEnabled.slice(0, 1).map((object, index) => (
             <WeekdayButton
               key={index}
               onClick={() => toggleWeekdays(object.day)}
