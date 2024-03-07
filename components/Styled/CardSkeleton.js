@@ -1,10 +1,30 @@
 import styled from "styled-components";
+import IconButton from "./IconButton";
 
-export default function CardSkeleton({ amount = 1, $isLoading, text }) {
+export default function CardSkeleton({
+  amount = 1,
+  $isLoading,
+  text,
+  numberOfPeople,
+  changeNumberOfPeople,
+  reassignRecipe,
+  day,
+}) {
   return (
     <>
       {Array.from({ length: amount }, (_, index) => (
         <StyledCardSkeleton key={index} $isLoading={$isLoading}>
+          {reassignRecipe !== undefined && (
+            <IconButton
+              style="Reload"
+              right="-1rem"
+              top="1rem"
+              onClick={() => {
+                reassignRecipe(day);
+              }}
+            />
+          )}
+
           {text}
         </StyledCardSkeleton>
       ))}
@@ -13,9 +33,9 @@ export default function CardSkeleton({ amount = 1, $isLoading, text }) {
 }
 
 const StyledCardSkeleton = styled.li`
+  position: relative;
   background-color: var(--color-lightgrey);
   list-style-type: none;
-  /* width: 333px; */
   height: 123px;
   margin: 1.25rem 0 0 0;
   padding-top: 40px;
