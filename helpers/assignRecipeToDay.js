@@ -29,7 +29,6 @@ export default async function assignRecipesToCalendarDays(
       });
     }
   });
-  console.log(user);
   // Benutzerobjekt in die Datenbank pushen
   await updateUserInDb(user, mutateUser);
 }

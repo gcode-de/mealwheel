@@ -15,15 +15,19 @@ export default function MealCard({
 }) {
   return (
     <StyledLi>
-      <IconButton
-        style="Heart"
-        right="-0.5rem"
-        top="-0.5rem"
-        fill={isFavorite ? "var(--color-highlight)" : "var(--color-lightgrey)"}
-        onClick={() => {
-          onToggleIsFavorite(recipe._id);
-        }}
-      />
+      {isFavorite !== null && (
+        <IconButton
+          style="Heart"
+          right="-0.5rem"
+          top="-0.5rem"
+          fill={
+            isFavorite ? "var(--color-highlight)" : "var(--color-lightgrey)"
+          }
+          onClick={() => {
+            onToggleIsFavorite(recipe._id);
+          }}
+        />
+      )}
       {reassignRecipe !== undefined && (
         <IconButton
           style="Reload"
