@@ -13,6 +13,7 @@ import PowerIcon from "@/public/icons/power-material-svgrepo-com.svg";
 
 import generateWeekdays from "@/helpers/generateWeekdays";
 import assignRecipeToCalendarDay from "@/helpers/assignRecipeToDay";
+import populateEmptyWeekdays from "@/helpers/populateEmptyWeekdays";
 import updateUserinDb from "@/helpers/updateUserInDb";
 
 export default function Plan({
@@ -61,7 +62,6 @@ export default function Plan({
 
         if (isDayActive && !calendarDay?.recipe) {
           countAssignableDays.push(weekday.date);
-          console.log(countAssignableDays, countAssignableDays.length);
         }
       });
 
@@ -76,17 +76,13 @@ export default function Plan({
     data: randomRecipes,
     isLoading: randomRecipesIsLoading,
     error: randomRecipesError,
-  } = useSWR(`/api/recipes/random/7`);
+  } = useSWR(`/api/recipes/random/10`);
 
   async function getRandomRecipe() {
     const response = await fetch(`/api/recipes/random/`);
     const recipe = await response.json();
     return recipe;
   }
-
-  const userRecipes = user?.recipeInteractions
-    .filter((recipe) => recipe.hasCooked)
-    .map((recipe) => recipe.recipe);
 
   function getCalendarDayFromDb(date) {
     return user.calendar.find((calendarDay) => calendarDay.date === date);
@@ -258,6 +254,21 @@ export default function Plan({
             );
           })}
       </CalendarContainer>
+      <ButtonsContainer>
+        <GenerateButton
+          onClick={() => {
+            populateEmptyWeekdays(
+              weekdays,
+              assignableDays,
+              randomRecipes,
+              user,
+              mutateUser
+            );
+          }}
+        >
+          Rezepte einfügen
+        </GenerateButton>
+      </ButtonsContainer>
     </>
   );
 }
@@ -317,4 +328,22 @@ const StyledPowerIcon = styled(PowerIcon)`
   fill: ${(props) =>
     props.$dayIsDisabled ? "var(--color-lightgrey)" : "var(--color-highlight)"};
   cursor: pointer;
+`;
+
+const ButtonsContainer = styled.div`
+  position: fixed;
+  bottom: 80px;
+  display: flex;
+  justify-content: space-between;
+`;
+const GenerateButton = styled.button`
+  border: none;
+  background-color: var(--color-darkgrey);
+  color: var(--color-background);
+  font-size: 0%.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 10px;
+  width: 9rem;
+  height: 3rem;
 `;
