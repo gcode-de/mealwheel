@@ -10,5 +10,6 @@ const Button = styled.button`
   border-radius: 10px;
   width: 9rem;
   height: 3rem;
+  margin-top: 1rem;
 `;
 export default Button;
