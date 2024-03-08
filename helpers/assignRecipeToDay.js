@@ -16,7 +16,11 @@ export default async function assignRecipesToCalendarDays(
       // Rezept zum existierenden Kalendertag hinzufügen
       user.calendar = user.calendar.map((calendarDay) =>
         calendarDay.date === dbDate
-          ? { ...calendarDay, recipe: recipeId, isDisabled: false }
+          ? {
+              ...calendarDay,
+              recipe: recipeId,
+              isDisabled: recipeId !== null ? false : null,
+            }
           : calendarDay
       );
     } else {
@@ -25,7 +29,7 @@ export default async function assignRecipesToCalendarDays(
         date: dbDate,
         recipe: recipeId,
         numberOfPeople: user.settings.defaultNumberOfPeople,
-        isDisabled: recipeId !== null ? false : true,
+        isDisabled: recipeId !== null ? false : null,
       });
     }
   });
