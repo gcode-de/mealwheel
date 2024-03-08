@@ -70,7 +70,7 @@ export default function Settings({ user, mutateUser }) {
       <Spacer />
       <StyledH2>Anpassung Menü-Planer</StyledH2>
       <StyledList>
-        <StyledP>Tage, für geplant werden soll:</StyledP>
+        <StyledP>Tage, für die geplant werden soll:</StyledP>
         <Wrapper>
           {
             // Konvertieren der Objekt-Einträge in ein Array und Sortierung
