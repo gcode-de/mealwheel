@@ -6,8 +6,10 @@ export default function EditRecipe() {
   const router = useRouter();
   const { id } = router.query;
   const { data, isLoading, mutate } = useSWR(`/api/recipes/${id}`);
-  console.log(data);
+  // console.log(data);
+
   async function handleEdit(data) {
+    console.log(data);
     const response = await fetch(`/api/recipes/${id}`, {
       method: "PUT",
       headers: {

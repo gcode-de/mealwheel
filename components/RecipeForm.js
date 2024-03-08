@@ -65,7 +65,7 @@ export default function RecipeForm({ onSubmit, data }) {
 
     const formData = new FormData(event.target);
     const data = Object.fromEntries(formData);
-    const newData = { ...data, ingredients };
+    const newData = { ...data, ingredients, imageLink: imageUrl };
     onSubmit(newData);
   }
   return (
@@ -140,7 +140,7 @@ export default function RecipeForm({ onSubmit, data }) {
                   required
                   min="0"
                   aria-label="add ingredient quantity for the recipe"
-                  defaultValue={ingredient.quantity || ""}
+                  // defaultValue={ingredient.quantity || ""}
                 />
                 <StyledDropDown
                   required
@@ -163,7 +163,7 @@ export default function RecipeForm({ onSubmit, data }) {
                   name="name"
                   placeholder={`${index + 1}. Zutat`}
                   aria-label="add igredient name for the recipe"
-                  defaultValue={ingredient.name}
+                  // defaultValue={ingredient.name}
                 />
               </StyledListItem>
             ))}

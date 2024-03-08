@@ -8,7 +8,7 @@ export default function AddRecipe() {
   const router = useRouter();
 
   async function addRecipe(recipe) {
-    const newRecipe = { ...recipe, imageLink: imageUrl };
+    const newRecipe = { ...recipe };
     const response = await fetch("/api/recipes", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
