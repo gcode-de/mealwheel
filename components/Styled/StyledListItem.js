@@ -7,7 +7,7 @@ const StyledListItem = styled.li`
   width: 100%;
   margin: 0;
   gap: 0.5rem;
-  margin-bottom: 0.5rem;
-  margin-top: 0.5rem;
+  margin-bottom: var(--gap-between);
+  margin-top: var(--gap-between);
 `;
 export default StyledListItem;
