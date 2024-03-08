@@ -68,7 +68,7 @@ export default function Plan({
     .map((recipe) => recipe.recipe);
 
   function getCalendarDayFromDb(date) {
-    return user.calendar.find((calendarDay) => calendarDay.date === date);
+    return user.calendar.findOne((calendarDay) => calendarDay.date === date);
   }
 
   const handleSliderChange = (event) => {
