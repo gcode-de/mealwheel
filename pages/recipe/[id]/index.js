@@ -67,10 +67,6 @@ export default function DetailPage({
         width={400}
         height={400}
         sizes="500px"
-        // fill
-        // style={{
-        //   objectFit: "cover",
-        // }}
       />
       <StyledArticle>
         <IconButton

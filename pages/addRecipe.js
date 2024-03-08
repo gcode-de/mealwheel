@@ -8,8 +8,8 @@ export default function AddRecipe() {
   const { mutate } = useSWR("/api/recipes");
   const router = useRouter();
 
-  const uploadImage = async (e) => {
-    const files = e.target.files;
+  const uploadImage = async (event) => {
+    const files = event.target.files;
     const data = new FormData();
     data.append("file", files[0]);
     data.append("upload_preset", "meal_wheel");
@@ -40,13 +40,11 @@ export default function AddRecipe() {
   }
 
   return (
-    <>
-      <RecipeForm
-        onChange={uploadImage}
-        onSubmit={addRecipe}
-        formName={"add-recipe"}
-        imageUrl={imageUrl}
-      ></RecipeForm>
-    </>
+    <RecipeForm
+      onChange={uploadImage}
+      onSubmit={addRecipe}
+      formName={"add-recipe"}
+      imageUrl={imageUrl}
+    ></RecipeForm>
   );
 }

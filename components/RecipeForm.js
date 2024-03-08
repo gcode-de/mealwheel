@@ -46,7 +46,7 @@ export default function RecipeForm({ onSubmit, onChange, imageUrl }) {
     onSubmit(newData);
   }
   return (
-    <Fragment>
+    <>
       <StyledTop $height={imageUrl}>
         <IconButton
           right="1rem"
@@ -76,7 +76,8 @@ export default function RecipeForm({ onSubmit, onChange, imageUrl }) {
             name="title"
             placeholder="Titel"
             required
-          ></StyledBigInput>
+            aria-label="add titel of the recipe"
+          />
           <StyledListItem>
             <StyledInput
               type="number"
@@ -85,11 +86,12 @@ export default function RecipeForm({ onSubmit, onChange, imageUrl }) {
               $width={"5rem"}
               required
               min="0"
-            ></StyledInput>
+              aria-label="add duration to cook for the recipe"
+            />
             <StyledP>min</StyledP>
 
             <StyledDropDown
-              onChange={(e) => setDifficulty(e.target.value)}
+              onChange={(event) => setDifficulty(event.target.value)}
               value={difficulty}
               name="difficulty"
               required
@@ -105,16 +107,19 @@ export default function RecipeForm({ onSubmit, onChange, imageUrl }) {
               <StyledListItem key={index}>
                 <StyledInput
                   value={ingredient.quantity}
-                  onChange={(e) => handleInputChange(e, index, "quantity")}
+                  onChange={(event) =>
+                    handleInputChange(event, index, "quantity")
+                  }
                   type="number"
                   $width={"3rem"}
                   required
                   min="0"
-                ></StyledInput>
+                  aria-label="add ingredient quantity for the recipe"
+                />
                 <StyledDropDown
                   required
                   name="unit"
-                  onChange={(e) => handleInputChange(e, index, "unit")}
+                  onChange={(event) => handleInputChange(event, index, "unit")}
                 >
                   <option value="">-</option>
                   <option value="ml">ml</option>
@@ -126,11 +131,12 @@ export default function RecipeForm({ onSubmit, onChange, imageUrl }) {
                 </StyledDropDown>
                 <StyledInput
                   value={ingredient.name}
-                  onChange={(e) => handleInputChange(e, index, "name")}
+                  onChange={(event) => handleInputChange(event, index, "name")}
                   type="text"
                   name="name"
                   placeholder={`${index + 1}. Zutat`}
-                ></StyledInput>
+                  aria-label="add igredient name for the recipe"
+                />
               </StyledListItem>
             ))}
             <AddIngredientButton type="button" onClick={addIngredient}>
@@ -142,13 +148,14 @@ export default function RecipeForm({ onSubmit, onChange, imageUrl }) {
             type="text"
             name="instructions"
             required
-          ></StyledBigInput>
+            aria-label="add instructions for creating the recipe"
+          />
           <StyledH2>Video</StyledH2>
           <StyledInput type="link" name="youtubeLink"></StyledInput>
           <Button type="submit">speichern</Button>
         </StyledArticle>
       </form>
-    </Fragment>
+    </>
   );
 }
 
