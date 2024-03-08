@@ -137,6 +137,15 @@ export default function Plan({
     assignRecipeToCalendarDay({ [day]: null }, user, mutateUser);
   };
 
+  const removeAllRecipes = (weekdays) => {
+    const recipeDatePairs = weekdays.reduce((obj, day) => {
+      obj[day.date] = null;
+      return obj;
+    }, {});
+
+    assignRecipeToCalendarDay(recipeDatePairs, user, mutateUser);
+  };
+
   const checkIfWeekdayIsDefaultEnabled = (date) => {
     return user.settings.weekdaysEnabled[new Date(date).getDay()];
   };
@@ -265,20 +274,30 @@ export default function Plan({
           })}
       </CalendarContainer>
       <ButtonsContainer>
-        <GenerateButton
-          onClick={() => {
-            populateEmptyWeekdays(
-              weekdays,
-              assignableDays,
-              randomRecipes,
-              numberOfRandomRecipes,
-              user,
-              mutateUser
-            );
-          }}
-        >
-          Rezepte einfügen
-        </GenerateButton>
+        {assignableDays.length !== 0 ? (
+          <GenerateButton
+            onClick={() => {
+              populateEmptyWeekdays(
+                weekdays,
+                assignableDays,
+                randomRecipes,
+                numberOfRandomRecipes,
+                user,
+                mutateUser
+              );
+            }}
+          >
+            🧩 Plan füllen
+          </GenerateButton>
+        ) : (
+          <GenerateButton
+            onClick={() => {
+              removeAllRecipes(weekdays);
+            }}
+          >
+            ⚠️ Plan löschen
+          </GenerateButton>
+        )}
       </ButtonsContainer>
     </>
   );
