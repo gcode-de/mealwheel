@@ -92,7 +92,7 @@ export default function DetailPage({
         sizes="500px"
       />
       <StyledArticle>
-        <Link href={`/${id}/edit`}>
+        <Link href={`/recipe/${id}/edit`}>
           <IconButton
             style="Edit"
             right="11.25rem"

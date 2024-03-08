@@ -14,4 +14,10 @@ export default async function handler(request, response) {
 
     response.status(200).json(recipe);
   }
+
+  if (request.method === "PUT") {
+    const recipe = request.body;
+    await Recipe.findByIdAndUpdate(id, recipe);
+    return response.status(200).json({ status: `Recipe ${id} updated!` });
+  }
 }

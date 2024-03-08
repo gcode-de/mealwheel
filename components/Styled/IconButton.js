@@ -9,7 +9,7 @@ import TriangleRight from "@/public/icons/arrow-right-2-svgrepo-com.svg";
 import Heart from "@/public/icons/heart-svgrepo-com.svg";
 import Pot from "@/public/icons/cooking-pot-fill-svgrepo-com.svg";
 import Calendar from "@/public/icons/calendar-1-svgrepo-com.svg";
-import Edit from "@/public/icons/edit-3-svgrepo-com.svg";
+import Edit from "@/public/icons/edit-3-svgrepo-com (2).svg";
 
 export default function IconButton({ onClick, style, left, right, top, fill }) {
   const buttonStyles = {
