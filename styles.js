@@ -22,7 +22,7 @@ export default createGlobalStyle`
 
     --gap-out: 2rem; 
     --gap-between: 0.5rem; //halber Abstand
-    --height-header: 4rem; 
+    --height-header: 5rem; 
     --height-nav: 4rem; 
 
     --border-radius-small: 10px;

@@ -18,6 +18,7 @@ export default function ProfilePage() {
         top="var(--gap-out)"
         left="var(--gap-out)"
         onClick={() => router.push("/profile/settings")}
+        fill="var(--color-lightgrey)"
       />
       <WrapperCenter>
         <StyledProfile>
@@ -29,16 +30,12 @@ export default function ProfilePage() {
       </StyledList>
       <Wrapper>
         <StyledLink href="/favorites">
-          <StyledList>
-            <Heart width={40} height={40} />
-            <StyledP>Favoriten</StyledP>
-          </StyledList>
+          <Heart width={40} height={40} />
+          <StyledP>Favoriten</StyledP>
         </StyledLink>
         <StyledLink href="/profile/hasCooked">
-          <StyledList>
-            <Pot width={40} height={40} />
-            <StyledP>gekocht</StyledP>
-          </StyledList>
+          <Pot width={40} height={40} />
+          <StyledP>gekocht</StyledP>
         </StyledLink>
       </Wrapper>
     </>
@@ -70,4 +67,17 @@ const StyledLink = styled(Link)`
   display: flex;
   flex-direction: column;
   align-items: center;
+  fill: var(--color-lightgrey);
+  color: var(--color-lightgrey);
+  justify-content: center;
+  cursor: pointer;
+  margin-right: var(--gap-out);
+  margin-left: var(--gap-out);
+  margin-top: var(--gap-between);
+  margin-bottom: var(--gap-between);
+  border: 1px solid var(--color-lightgrey);
+  border-radius: var(--border-radius-medium);
+  background-color: var(--color-component);
+  height: 6rem;
+  width: 6rem;
 `;
