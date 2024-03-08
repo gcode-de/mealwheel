@@ -92,6 +92,14 @@ export default function DetailPage({
         sizes="500px"
       />
       <StyledArticle>
+        <Link href={`/${id}/edit`}>
+          <IconButton
+            style="Edit"
+            right="11.25rem"
+            top="-1.25rem"
+            fill={"var(--color-lightgrey)"}
+          />
+        </Link>
         <IconButton
           style="Calendar"
           right="8.25rem"

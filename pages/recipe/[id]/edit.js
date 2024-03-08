@@ -3,9 +3,9 @@ import { useRouter } from "next/router";
 
 export default function EditRecipe() {
   const router = useRouter();
-  const { ...recipeData } = router.query;
+  const { id } = router.query;
 
-  console.log(recipeData);
+  console.log(id);
 
-  return <RecipeForm value={recipeData} />;
+  return <RecipeForm />;
 }
