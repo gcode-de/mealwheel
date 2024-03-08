@@ -5,6 +5,7 @@ export default function CardSkeleton({
   amount = 1,
   $isLoading,
   text,
+  $height,
   numberOfPeople,
   changeNumberOfPeople,
   reassignRecipe,
@@ -13,7 +14,11 @@ export default function CardSkeleton({
   return (
     <>
       {Array.from({ length: amount }, (_, index) => (
-        <StyledCardSkeleton key={index} $isLoading={$isLoading}>
+        <StyledCardSkeleton
+          key={index}
+          $isLoading={$isLoading}
+          $height={$height}
+        >
           {reassignRecipe !== undefined && (
             <IconButton
               style="Reload"
@@ -36,7 +41,7 @@ const StyledCardSkeleton = styled.li`
   position: relative;
   background-color: var(--color-lightgrey);
   list-style-type: none;
-  height: 123px;
+  height: ${({ $height }) => ($height === "small" ? "60px" : "123px")};
   margin: 1.25rem 0 0 0;
   padding-top: 40px;
   text-align: center;

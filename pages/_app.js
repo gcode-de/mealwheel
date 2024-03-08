@@ -25,7 +25,7 @@ export default function App({ Component, pageProps }) {
   } = useSWR(`/api/users/${userId}`, fetcher);
 
   function getRecipeProperty(_id, property) {
-    const recipeInteraction = user.recipeInteractions.find(
+    const recipeInteraction = user?.recipeInteractions.find(
       (interaction) => interaction.recipe._id === _id
     );
     return recipeInteraction?.[property];

@@ -15,6 +15,7 @@ export default function NavBar() {
     { href: "/", label: "Entdecken", Icon: Pizza },
     { href: "/plan", label: "Plan", Icon: Calendar },
     { href: "/favorites", label: "Favoriten", Icon: Heart },
+    { href: "/settings", label: "Settings", Icon: Gear },
   ];
 
   return (
