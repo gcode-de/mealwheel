@@ -130,11 +130,11 @@ export default function Plan({
 
   const reassignRecipe = async (day) => {
     const randomRecipe = await getRandomRecipe();
-    assignRecipeToCalendarDay(randomRecipe[0], day, user, mutateUser);
+    assignRecipeToCalendarDay({ [day]: randomRecipe[0] }, user, mutateUser);
   };
 
   const removeRecipe = (day) => {
-    assignRecipeToCalendarDay(null, day, user, mutateUser);
+    assignRecipeToCalendarDay({ [day]: null }, user, mutateUser);
   };
 
   const checkIfWeekdayIsDefaultEnabled = (date) => {
@@ -335,6 +335,7 @@ const ButtonsContainer = styled.div`
   bottom: 80px;
   display: flex;
   justify-content: space-between;
+  z-index: 2;
 `;
 const GenerateButton = styled.button`
   border: none;

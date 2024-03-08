@@ -7,17 +7,33 @@ export default async function populateEmptyWeekdays(
   user,
   mutateUser
 ) {
+  // Erstellen der Kalendereigenschaft im Benutzerobjekt, falls sie fehlt
+  if (!user.calendar) {
+    user.calendar = [];
+  }
+
   const hasCookedRecipes = user?.recipeInteractions
     .filter((recipe) => recipe.hasCooked)
     .map((recipe) => recipe.recipe);
 
-  let recipesInWeek = weekdays.filter(
-    (weekday) => weekday?.recipe !== undefined && weekday?.recipe !== null
-  );
-  // .map((weekday) => weekday.recipe);
+  //find all recipes that all already planned fr the week to avoid them
+  let recipesInWeek = weekdays
+    .filter((weekday) => {
+      const calendarDay = user.calendar.find(
+        (day) => day.date === weekday.date
+      );
+      return (
+        calendarDay.isDisabled === false &&
+        calendarDay.recipe !== undefined &&
+        calendarDay.recipe !== null
+      );
+    })
+    .map(
+      (weekday) =>
+        user.calendar.find((day) => day.date === weekday.date).recipe._id
+    );
 
   console.log(recipesInWeek);
 
-  //assignRecipeToCalendarDay(recipeId, dayDate, user, mutateUser);
-  //pushRecipe to recipesInWeek
+  //   assignRecipeToCalendarDay(recipeId, dayDate, user, mutateUser);
 }

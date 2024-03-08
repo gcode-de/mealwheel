@@ -45,7 +45,7 @@ export default function DetailPage({
     isoDate.setUTCHours(0, 0, 0, 0);
     const dbDate = isoDate.toISOString();
 
-    await assignRecipeToCalendarDay(id, dbDate, user, mutateUser);
+    await assignRecipeToCalendarDay({ [dbDate]: id }, user, mutateUser);
 
     const localDate = new Date(dbDate).toLocaleDateString("de-DE", {
       weekday: "long",
