@@ -5,7 +5,7 @@ import useSWR from "swr";
 import { useState } from "react";
 import { useRouter } from "next/router";
 
-import updateUserinDb from "@/helpers/updateUserInDb";
+import assignRecipeToCalendarDay from "@/helpers/assignRecipeToDay";
 
 import IconButton from "@/components/Styled/IconButton";
 import StyledArticle from "@/components/Styled/StyledArticle";
@@ -37,56 +37,19 @@ export default function DetailPage({
   const [selectedDate, setSelectedDate] = useState("");
   const [calendarFormIsVisible, setCalendarFormIsVisible] = useState(false);
 
-  const assignRecipeToCalendarDay = async (recipeId, selectedDate) => {
-    //generate ISO-Date
-    const isoDate = new Date(selectedDate);
-    isoDate.setUTCHours(0, 0, 0, 0);
-    const dbDate = isoDate.toISOString();
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    await assignRecipeToCalendarDay(id, selectedDate, user, mutateUser);
 
-    const localDate = isoDate.toLocaleDateString("de-DE", {
+    const localDate = new Date(selectedDate).toLocaleDateString("de-DE", {
       weekday: "long",
       year: "numeric",
       month: "long",
       day: "numeric",
     });
 
-    //create calendar property in user object if missing
-    if (!user.calendar) {
-      user.calendar = [];
-      await updateUserinDb();
-    }
-
-    //add recipe to calendarDay in user object
-    if (user.calendar.some((calendarDay) => calendarDay.date === dbDate)) {
-      user.calendar = user.calendar.map((calendarDay) =>
-        calendarDay.date === dbDate
-          ? { ...calendarDay, recipe: recipeId }
-          : calendarDay
-      );
-    } else {
-      user.calendar.push({
-        date: dbDate,
-        recipe: recipeId,
-        numberOfPeople: user.settings.defaultNumberOfPeople,
-      });
-    }
-
-    //set day to  !isDisabled
-    user.calendar = user.calendar.map((calendarDay) =>
-      calendarDay.date === dbDate
-        ? { ...calendarDay, isDisabled: false }
-        : calendarDay
-    );
-
-    //push user object to database
-    await updateUserinDb(user, mutateUser);
     setCalendarFormIsVisible(false);
     window.alert(`Das Rezept wurde für ${localDate} eingeplant.`);
-  };
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    assignRecipeToCalendarDay(id, selectedDate);
   };
 
   if (error || dataError) {
