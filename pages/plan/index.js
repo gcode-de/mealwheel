@@ -26,31 +26,51 @@ export default function Plan({
   const router = useRouter();
   const weekOffset = Number(router.query.week) || 0;
   const [weekdays, setWeekdays] = useState();
-  const [numberOfRandomRecipes, setNumberOfRandomRecipes] = useState(2);
+  const [assignableDays, setAssignableDays] = useState([]);
+  const [numberOfRandomRecipes, setNumberOfRandomRecipes] = useState(0);
 
   useEffect(() => {
     const generatedWeekdays = generateWeekdays(weekOffset);
 
     if (user && generatedWeekdays) {
-      const updatedWeekdays = generatedWeekdays.map((weekday) => {
-        const calendarDay = user.calendar.find(
-          (calendarDay) => calendarDay.date === weekday.date
-        );
+      setWeekdays(generatedWeekdays);
 
-        if (calendarDay) {
-          return {
-            ...weekday,
-            recipe: calendarDay.recipe,
-            isDisabled: calendarDay.isDisabled,
-            servings: calendarDay.servings,
-          };
+      let countAssignableDays = [];
+      //count days of currently selected week
+      //that are not disabled manuallly,
+      //that are not disabled by default and also not manually enabled,
+      //and that don't have a reference to a recipe
+      generatedWeekdays.forEach((weekday) => {
+        const calendarDay = user.calendar.find(
+          (day) => day.date === weekday.date
+        );
+        const dayOfWeek = new Date(weekday.date).getDay();
+
+        const isDayManuallyDisabled = calendarDay?.hasOwnProperty("isDisabled")
+          ? calendarDay.isDisabled
+          : null;
+
+        let isDayActive;
+        if (isDayManuallyDisabled !== null) {
+          // prioritize manual setting
+          isDayActive = !isDayManuallyDisabled;
+        } else {
+          // fallback to default setting
+          isDayActive = user.settings.weekdaysEnabled[dayOfWeek];
         }
 
-        return weekday;
+        if (isDayActive && !calendarDay?.recipe) {
+          countAssignableDays.push(weekday.date);
+          console.log(countAssignableDays, countAssignableDays.length);
+        }
       });
-      setWeekdays(updatedWeekdays);
+
+      setAssignableDays(countAssignableDays);
+
+      numberOfRandomRecipes > countAssignableDays.length &&
+        setNumberOfRandomRecipes(countAssignableDays.length);
     }
-  }, [weekOffset, user]);
+  }, [weekOffset, user, numberOfRandomRecipes]);
 
   const {
     data: randomRecipes,
@@ -175,7 +195,7 @@ export default function Plan({
             <RandomnessSlider
               type="range"
               min="0"
-              max={weekdays.length}
+              max={assignableDays.length}
               value={numberOfRandomRecipes}
               onChange={handleSliderChange}
             />
