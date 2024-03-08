@@ -7,5 +7,6 @@ const StyledList = styled.ul`
   width: 100%;
   border: 1px solid var(--color-lightgrey);
   border-radius: 20px;
+  background-color: var(--color-component);
 `;
 export default StyledList;

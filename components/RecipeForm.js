@@ -1,15 +1,17 @@
 import styled from "styled-components";
-import StyledArticle from "./Styled/DetailArticle";
+import StyledArticle from "./Styled/StyledArticle";
 import IconButton from "./Styled/IconButton";
 import StyledList from "./Styled/StyledList";
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import StyledListItem from "./Styled/StyledListItem";
 import StyledH2 from "./Styled/StyledH2";
 import Plus from "@/public/icons/Plus.svg";
 import StyledP from "./Styled/StyledP";
 import { useRouter } from "next/router";
+import Button from "./Styled/StyledButton";
+import Image from "next/image";
 
-export default function RecipeForm({ onSubmit }) {
+export default function RecipeForm({ onSubmit, onChange, imageUrl }) {
   const [difficulty, setDifficulty] = useState("easy");
   const [ingredients, setIngredients] = useState([
     {
@@ -44,99 +46,144 @@ export default function RecipeForm({ onSubmit }) {
     onSubmit(newData);
   }
   return (
-    <form onSubmit={handleSubmit}>
-      <StyledTop>
+    <>
+      <StyledTop $height={imageUrl}>
         <IconButton
+          right="1rem"
+          top="1rem"
           style={"x"}
           onClick={() => {
             router.back();
           }}
         ></IconButton>
+        {imageUrl && (
+          <StyledImageCloudinary
+            src={imageUrl}
+            alt="Uploaded Image"
+            width={100}
+            height={300}
+          />
+        )}
+        <StyledImageUploadContainer>
+          <Plus width={40} height={40} />
+          <StyledImageUpload type="file" onChange={onChange} />
+        </StyledImageUploadContainer>
       </StyledTop>
-      <StyledArticle>
-        <StyledBigInput
-          type="text"
-          name="title"
-          placeholder="Titel"
-          required
-        ></StyledBigInput>
-        <StyledListItem>
-          <StyledInput
-            type="number"
-            name="duration"
-            placeholder="Dauer"
-            $width={"5rem"}
+      <form onSubmit={handleSubmit}>
+        <StyledArticle>
+          <StyledBigInput
+            type="text"
+            name="title"
+            placeholder="Titel"
             required
-            min="0"
-          ></StyledInput>
-          <StyledP>min</StyledP>
+            aria-label="add titel of the recipe"
+          />
+          <StyledListItem>
+            <StyledInput
+              type="number"
+              name="duration"
+              placeholder="Dauer"
+              $width={"5rem"}
+              required
+              min="0"
+              aria-label="add duration to cook for the recipe"
+            />
+            <StyledP>min</StyledP>
 
-          <StyledDropDown
-            onChange={(e) => setDifficulty(e.target.value)}
-            value={difficulty}
-            name="difficulty"
+            <StyledDropDown
+              onChange={(event) => setDifficulty(event.target.value)}
+              value={difficulty}
+              name="difficulty"
+              required
+            >
+              <option value="easy">Anfänger</option>
+              <option value="medium">Fortgeschritten</option>
+              <option value="hard">Profi</option>
+            </StyledDropDown>
+          </StyledListItem>
+          <StyledH2>Zutaten</StyledH2>
+          <StyledList>
+            {ingredients.map((ingredient, index) => (
+              <StyledListItem key={index}>
+                <StyledInput
+                  value={ingredient.quantity}
+                  onChange={(event) =>
+                    handleInputChange(event, index, "quantity")
+                  }
+                  type="number"
+                  $width={"3rem"}
+                  required
+                  min="0"
+                  aria-label="add ingredient quantity for the recipe"
+                />
+                <StyledDropDown
+                  required
+                  name="unit"
+                  onChange={(event) => handleInputChange(event, index, "unit")}
+                >
+                  <option value="">-</option>
+                  <option value="ml">ml</option>
+                  <option value="piece">Stück</option>
+                  <option value="gramm">g</option>
+                  <option value="EL">EL</option>
+                  <option value="TL">TL</option>
+                  <option value="Prise">Prise</option>
+                </StyledDropDown>
+                <StyledInput
+                  value={ingredient.name}
+                  onChange={(event) => handleInputChange(event, index, "name")}
+                  type="text"
+                  name="name"
+                  placeholder={`${index + 1}. Zutat`}
+                  aria-label="add igredient name for the recipe"
+                />
+              </StyledListItem>
+            ))}
+            <AddIngredientButton type="button" onClick={addIngredient}>
+              <Plus width={20} height={20} />
+            </AddIngredientButton>
+          </StyledList>
+          <StyledH2>Anleitung</StyledH2>
+          <StyledBigInput
+            type="text"
+            name="instructions"
             required
-          >
-            <option value="easy">Anfänger</option>
-            <option value="medium">Fortgeschritten</option>
-            <option value="hard">Profi</option>
-          </StyledDropDown>
-        </StyledListItem>
-        <StyledH2>Zutaten</StyledH2>
-        <StyledList>
-          {ingredients.map((ingredient, index) => (
-            <StyledListItem key={index}>
-              <StyledInput
-                value={ingredient.quantity}
-                onChange={(e) => handleInputChange(e, index, "quantity")}
-                type="number"
-                // name="quantity"
-                $width={"3rem"}
-                required
-                min="0"
-              ></StyledInput>
-              <StyledDropDown
-                required
-                name="unit"
-                onChange={(e) => handleInputChange(e, index, "unit")}
-              >
-                <option value="">-</option>
-                <option value="ml">ml</option>
-                <option value="piece">Stück</option>
-                <option value="gramm">g</option>
-                <option value="EL">EL</option>
-                <option value="TL">TL</option>
-                <option value="Prise">Prise</option>
-              </StyledDropDown>
-              <StyledInput
-                value={ingredient.name}
-                onChange={(e) => handleInputChange(e, index, "name")}
-                type="text"
-                name="name"
-                placeholder={`${index + 1}. Zutat`}
-              ></StyledInput>
-            </StyledListItem>
-          ))}
-          <AddIngredientButton type="button" onClick={addIngredient}>
-            <Plus width={20} height={20} />
-          </AddIngredientButton>
-        </StyledList>
-        <StyledH2>Anleitung</StyledH2>
-        <StyledBigInput
-          type="text"
-          name="instructions"
-          required
-        ></StyledBigInput>
-        <StyledH2>Video</StyledH2>
-        <StyledInput type="link" name="youtubeLink"></StyledInput>
-        <button type="submit">speichern</button>
-      </StyledArticle>
-    </form>
+            aria-label="add instructions for creating the recipe"
+          />
+          <StyledH2>Video</StyledH2>
+          <StyledInput type="link" name="youtubeLink"></StyledInput>
+          <Button type="submit">speichern</Button>
+        </StyledArticle>
+      </form>
+    </>
   );
 }
 
+const StyledImageUpload = styled.input`
+  display: none;
+`;
+
+const StyledImageCloudinary = styled(Image)`
+  width: 100%;
+  height: auto;
+`;
+
+const StyledImageUploadContainer = styled.label`
+  display: inline-block;
+  background-color: white;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 100%;
+  box-shadow: 4px 8px 16px 0 rgb(0 0 0 / 8%);
+  cursor: pointer;
+  position: absolute;
+`;
+
 const StyledTop = styled.div`
-  height: 300px;
+  height: ${(props) => (props.$height ? "none" : "300px")};
   position: relative;
   display: flex;
   justify-content: center;

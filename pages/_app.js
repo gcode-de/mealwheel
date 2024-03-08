@@ -25,7 +25,7 @@ export default function App({ Component, pageProps }) {
   } = useSWR(`/api/users/${userId}`, fetcher);
 
   function getRecipeProperty(_id, property) {
-    const recipeInteraction = user.recipeInteractions.find(
+    const recipeInteraction = user?.recipeInteractions.find(
       (interaction) => interaction.recipe._id === _id
     );
     return recipeInteraction?.[property];
@@ -57,6 +57,7 @@ export default function App({ Component, pageProps }) {
       mutate();
     }
   }
+
   async function toggleHasCooked(_id) {
     if (
       user.recipeInteractions.find(
@@ -122,6 +123,7 @@ export default function App({ Component, pageProps }) {
             getRecipeProperty={getRecipeProperty}
             toggleIsFavorite={toggleIsFavorite}
             toggleHasCooked={toggleHasCooked}
+            mutateUser={mutate}
           />
         </SWRConfig>
       </Layout>

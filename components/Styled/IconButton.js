@@ -3,10 +3,12 @@ import ArrowLeft from "@/public/icons/ArrowSmall.svg";
 import ChevronSmall from "@/public/icons/ChevronSmall.svg";
 import Plus from "@/public/icons/Plus.svg";
 import XSmall from "@/public/icons/XSmall.svg";
+import Reload from "@/public/icons/reload-svgrepo-com.svg";
 import TriangleLeft from "@/public/icons/arrow-left-3-svgrepo-com.svg";
 import TriangleRight from "@/public/icons/arrow-right-2-svgrepo-com.svg";
 import Heart from "@/public/icons/heart-svgrepo-com.svg";
 import Pot from "@/public/icons/cooking-pot-fill-svgrepo-com.svg";
+import Calendar from "@/public/icons/calendar-1-svgrepo-com.svg";
 
 export default function IconButton({ onClick, style, left, right, top, fill }) {
   const buttonStyles = {
@@ -18,6 +20,8 @@ export default function IconButton({ onClick, style, left, right, top, fill }) {
     TriangleRight: <TriangleRight width={30} height={30} />,
     Heart: <Heart width={30} height={30} />,
     Pot: <Pot width={30} height={30} />,
+    Reload: <Reload width={30} height={30} />,
+    Calendar: <Calendar width={30} height={30} />,
   };
   return (
     <StyledBox $left={left} $right={right} $top={top}>
@@ -46,8 +50,9 @@ const StyledBox = styled.div`
 `;
 
 const StyledLinkSvg = styled.button`
-  fill: ${(props) => props.$fill};
+  fill: ${(props) => props.$fill || "var(--color-font)"};
   height: 30px;
   border: none;
   background: none;
+  cursor: pointer;
 `;
