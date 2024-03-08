@@ -1,19 +1,24 @@
-import StyledArticle from "@/components/Styled/DetailArticle";
 import IconButton from "@/components/Styled/IconButton";
 import StyledList from "@/components/Styled/StyledList";
-import Image from "next/image";
+
 import Link from "next/link";
 import styled from "styled-components";
 import Heart from "@/public/icons/heart-svgrepo-com.svg";
-import StyledH2 from "@/components/Styled/StyledH2";
-import IconButtonLarge from "@/components/Styled/IconButtonLarge";
+
 import Pot from "@/public/icons/cooking-pot-fill-svgrepo-com.svg";
 import StyledP from "@/components/Styled/StyledP";
+import { useRouter } from "next/router";
 
 export default function ProfilePage() {
+  const router = useRouter();
   return (
     <>
-      <IconButton style="settings" top="1rem" left="1rem" />
+      <IconButton
+        style="Settings"
+        top="var(--gap-out)"
+        left="var(--gap-out)"
+        onClick={() => router.push("/profile/settings")}
+      />
       <WrapperCenter>
         <StyledProfile>
           <h1>🙋‍♀️</h1>
@@ -23,18 +28,18 @@ export default function ProfilePage() {
         <p>Hallo Mensch!</p>
       </StyledList>
       <Wrapper>
-        <Link href="/favorites">
+        <StyledLink href="/favorites">
           <StyledList>
             <Heart width={40} height={40} />
+            <StyledP>Favoriten</StyledP>
           </StyledList>
-          <StyledP>Favoriten</StyledP>
-        </Link>
-        <Link href="/profile/hasCooked">
+        </StyledLink>
+        <StyledLink href="/profile/hasCooked">
           <StyledList>
             <Pot width={40} height={40} />
+            <StyledP>gekocht</StyledP>
           </StyledList>
-          <StyledP>gekocht</StyledP>
-        </Link>
+        </StyledLink>
       </Wrapper>
     </>
   );
@@ -46,6 +51,8 @@ const Wrapper = styled.div`
 const WrapperCenter = styled.div`
   display: flex;
   justify-content: center;
+  position: relative;
+  bottom: -30px;
 `;
 const StyledProfile = styled.div`
   background-color: white;
@@ -55,5 +62,12 @@ const StyledProfile = styled.div`
   box-shadow: 4px 8px 16px 0 rgb(0 0 0 / 8%);
   display: flex;
   justify-content: center;
+  align-items: center;
+`;
+const StyledLink = styled(Link)`
+  text-decoration: none;
+  color: var(--color-font);
+  display: flex;
+  flex-direction: column;
   align-items: center;
 `;

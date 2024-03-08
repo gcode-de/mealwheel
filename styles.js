@@ -36,7 +36,7 @@ export default createGlobalStyle`
     max-width: 400px;
     background-color: var(--color-background);
     color: var(--color-font);
-    padding-bottom: 5rem;
+    padding-bottom: 69px;
     position: relative;
   }
 `;

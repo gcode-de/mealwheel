@@ -12,7 +12,7 @@ const StyledHeader = styled.header`
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: 2.5rem;
+  margin-top: 0.5rem;
   position: relative;
 `;
 

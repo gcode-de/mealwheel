@@ -7,8 +7,11 @@ import StyledList from "@/components/Styled/StyledList";
 import StyledP from "@/components/Styled/StyledP";
 import styled from "styled-components";
 import Header from "@/components/Styled/Header";
+import IconButton from "@/components/Styled/IconButton";
+import { useRouter } from "next/router";
 
 export default function Settings({ user, mutateUser }) {
+  const router = useRouter();
   if (!user) {
     return <p>kein Benutzer gefunden..</p>;
   }
@@ -60,7 +63,14 @@ export default function Settings({ user, mutateUser }) {
 
   return (
     <>
-      <Header text="Einstellungen 🥗" />
+      <Wrapper>
+        <IconButton
+          style="ArrowLeft"
+          onClick={() => router.back()}
+          // left={"var(--gap-out)"}
+        />
+        <Header text="Einstellungen 🥗" />
+      </Wrapper>
       <StyledArticle>
         <StyledH2>Anpassung Menü-Planer</StyledH2>
         <StyledList>
