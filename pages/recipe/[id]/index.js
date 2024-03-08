@@ -1,10 +1,13 @@
-import IconButton from "@/components/Styled/IconButton";
 import Image from "next/image";
-import { useRouter } from "next/router";
-import useSWR from "swr";
-import styled from "styled-components";
 import Link from "next/link";
+import styled from "styled-components";
+import useSWR from "swr";
 import { useState } from "react";
+import { useRouter } from "next/router";
+
+import assignRecipeToCalendarDay from "@/helpers/assignRecipeToDay";
+
+import IconButton from "@/components/Styled/IconButton";
 import StyledArticle from "@/components/Styled/StyledArticle";
 import StyledList from "@/components/Styled/StyledList";
 import StyledH2 from "@/components/Styled/StyledH2";
@@ -12,6 +15,8 @@ import StyledP from "@/components/Styled/StyledP";
 import StyledListItem from "@/components/Styled/StyledListItem";
 
 export default function DetailPage({
+  user,
+  mutateUser,
   error,
   isLoading,
   getRecipeProperty,
@@ -28,6 +33,24 @@ export default function DetailPage({
     isLoading: dataIsLoading,
     error: dataError,
   } = useSWR(id ? `/api/recipes/${id}` : null);
+
+  const [selectedDate, setSelectedDate] = useState("");
+  const [calendarFormIsVisible, setCalendarFormIsVisible] = useState(false);
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    await assignRecipeToCalendarDay(id, selectedDate, user, mutateUser);
+
+    const localDate = new Date(selectedDate).toLocaleDateString("de-DE", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+
+    setCalendarFormIsVisible(false);
+    window.alert(`Das Rezept wurde für ${localDate} eingeplant.`);
+  };
 
   if (error || dataError) {
     return <h1>Fehler...</h1>;
@@ -70,6 +93,19 @@ export default function DetailPage({
       />
       <StyledArticle>
         <IconButton
+          style="Calendar"
+          right="8.25rem"
+          top="-1.25rem"
+          fill={
+            calendarFormIsVisible
+              ? "var(--color-highlight)"
+              : "var(--color-lightgrey)"
+          }
+          onClick={() => {
+            setCalendarFormIsVisible((prevState) => !prevState);
+          }}
+        />
+        <IconButton
           style="Pot"
           right="5.25rem"
           top="-1.25rem"
@@ -95,6 +131,20 @@ export default function DetailPage({
             toggleIsFavorite(_id);
           }}
         />
+        <StyledForm onSubmit={handleSubmit} $isVisible={calendarFormIsVisible}>
+          <h3>Dieses Rezept einplanen:</h3>
+          <label htmlFor="date">Datum:</label>
+          <input
+            type="date"
+            name="date"
+            value={selectedDate}
+            required
+            onChange={(event) => {
+              setSelectedDate(event.target.value);
+            }}
+          />
+          <button type="submit">speichern</button>
+        </StyledForm>
         <h1>{title}</h1>
         <p>
           {duration} MIN | {difficulty}
@@ -168,4 +218,39 @@ const ImageContainer = styled(Image)`
   position: relative;
   width: 100%;
   height: auto;
+`;
+
+const StyledForm = styled.form`
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  justify-content: space-between;
+  transition: opacity 0.3s ease-in-out, margin 0.2s ease-out;
+  opacity: ${({ $isVisible }) => ($isVisible ? "1" : "0")};
+  height: ${({ $isVisible }) => ($isVisible ? "auto" : "0")};
+  margin: ${({ $isVisible }) => ($isVisible ? "1rem 0 2rem 0" : "0")};
+  overflow: hidden;
+  h3 {
+    flex-basis: 100%;
+    margin: 0;
+  }
+  label {
+  }
+  button {
+    width: 80px;
+    line-height: 1.1rem;
+    padding: 0.25rem 0.5rem;
+    border: none;
+    border-radius: 10px;
+    background-color: var(--color-darkgrey);
+    color: var(--color-background);
+    cursor: pointer;
+  }
+  input {
+    padding: 0.25rem 0.5rem;
+    border: none;
+    border-radius: 10px;
+    background-color: var(--color-background);
+  }
 `;
