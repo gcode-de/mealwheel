@@ -174,7 +174,11 @@ export default function Plan({
               router.push(`/plan?week=${weekOffset - 1}`);
             }}
           />
-          <Link href={`/plan?week=0`}>zur aktuellen Woche</Link>
+          {weekOffset === 0 || weekOffset === undefined ? (
+            `Ansicht: aktuelle Woche`
+          ) : (
+            <Link href={`/plan?week=0`}>zur aktuellen Woche</Link>
+          )}
           <IconButton
             style="TriangleRight"
             right="3rem"
@@ -186,10 +190,15 @@ export default function Plan({
         </CalendarNavigation>
 
         <RandomnessSliderContainer>
-          <p>Zufällige Rezepte: {numberOfRandomRecipes}</p>
+          {assignableDays.length > 0 ? (
+            <p>Zufällige Rezepte: {numberOfRandomRecipes}</p>
+          ) : (
+            <p>Alle Tage geplant.</p>
+          )}
           {weekdays && (
             <RandomnessSlider
               type="range"
+              $isActive={assignableDays.length > 0}
               min="0"
               max={assignableDays.length}
               value={numberOfRandomRecipes}
