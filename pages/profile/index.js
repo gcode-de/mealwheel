@@ -14,10 +14,11 @@ export default function ProfilePage() {
   return (
     <>
       <IconButton
+        as={Link}
         style="Settings"
         top="var(--gap-out)"
         left="var(--gap-out)"
-        onClick={() => router.push("/profile/settings")}
+        href="/profile/settings"
         fill="var(--color-lightgrey)"
       />
       <WrapperCenter>

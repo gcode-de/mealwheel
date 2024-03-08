@@ -55,15 +55,12 @@ export default function HasCooked({
         <StyledUl>
           {favoriteRecipes?.map((recipe) => {
             return (
-              <>
-                <MealCard
-                  key={recipe._id}
-                  recipe={recipe}
-                  isFavorite={getRecipeProperty(recipe._id, "hasCooked")}
-                  onToggleIsFavorite={toggleHasCooked}
-                ></MealCard>
-                {/* <IconButton style="Pot" /> */}
-              </>
+              <MealCard
+                key={recipe._id}
+                recipe={recipe}
+                isFavorite={getRecipeProperty(recipe._id, "hasCooked")}
+                onToggleIsFavorite={toggleHasCooked}
+              ></MealCard>
             );
           })}
         </StyledUl>
