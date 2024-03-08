@@ -2,15 +2,11 @@ import updateUserinDb from "./updateUserInDb";
 
 export default async function assignRecipeToCalendarDay(
   recipeId,
-  selectedDate,
+  dbDate,
   user,
   mutateUser
 ) {
-  //generate ISO-Date
-  const isoDate = new Date(selectedDate);
-  isoDate.setUTCHours(0, 0, 0, 0);
-  const dbDate = isoDate.toISOString();
-
+  console.log(recipeId, dbDate);
   //create calendar property in user object if missing
   if (!user.calendar) {
     user.calendar = [];

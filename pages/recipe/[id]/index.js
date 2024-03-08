@@ -39,9 +39,15 @@ export default function DetailPage({
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    await assignRecipeToCalendarDay(id, selectedDate, user, mutateUser);
 
-    const localDate = new Date(selectedDate).toLocaleDateString("de-DE", {
+    //generate ISO-Date
+    const isoDate = new Date(selectedDate);
+    isoDate.setUTCHours(0, 0, 0, 0);
+    const dbDate = isoDate.toISOString();
+
+    await assignRecipeToCalendarDay(id, dbDate, user, mutateUser);
+
+    const localDate = new Date(dbDate).toLocaleDateString("de-DE", {
       weekday: "long",
       year: "numeric",
       month: "long",

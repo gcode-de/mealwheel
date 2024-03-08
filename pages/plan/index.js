@@ -12,6 +12,7 @@ import RandomnessSlider from "@/components/Styled/RandomnessSlider";
 import PowerIcon from "@/public/icons/power-material-svgrepo-com.svg";
 
 import generateWeekdays from "@/helpers/generateWeekdays";
+import assignRecipeToCalendarDay from "@/helpers/assignRecipeToDay";
 import updateUserinDb from "@/helpers/updateUserInDb";
 
 export default function Plan({
@@ -68,16 +69,12 @@ export default function Plan({
     .map((recipe) => recipe.recipe);
 
   function getCalendarDayFromDb(date) {
-    return user.calendar.findOne((calendarDay) => calendarDay.date === date);
+    return user.calendar.find((calendarDay) => calendarDay.date === date);
   }
 
   const handleSliderChange = (event) => {
     setNumberOfRandomRecipes(parseInt(event.target.value, 10));
   };
-
-  function getCalendarDayFromDb(date) {
-    return user.calendar.find((calendarDay) => calendarDay.date === date);
-  }
 
   const toggleDayIsDisabled = async (day) => {
     await createUserCalenderIfMissing();
@@ -117,36 +114,11 @@ export default function Plan({
 
   const reassignRecipe = async (day) => {
     const randomRecipe = await getRandomRecipe();
-    createUserCalenderIfMissing();
-    if (user.calendar.some((calendarDay) => calendarDay.date === day)) {
-      user.calendar = user.calendar.map((calendarDay) =>
-        calendarDay.date === day
-          ? { ...calendarDay, recipe: randomRecipe[0] }
-          : calendarDay
-      );
-    } else {
-      user.calendar.push({
-        date: day,
-        recipe: randomRecipe[0],
-        numberOfPeople: user.settings.defaultNumberOfPeople,
-      });
-    }
-
-    //set day to  !isDisabled
-    user.calendar = user.calendar.map((calendarDay) =>
-      calendarDay.date === day
-        ? { ...calendarDay, isDisabled: false }
-        : calendarDay
-    );
-
-    await updateUserinDb(user, mutateUser);
+    assignRecipeToCalendarDay(randomRecipe[0], day, user, mutateUser);
   };
 
   const removeRecipe = (day) => {
-    user.calendar = user.calendar.map((calendarDay) =>
-      calendarDay.date === day ? { ...calendarDay, recipe: null } : calendarDay
-    );
-    updateUserinDb(user, mutateUser);
+    assignRecipeToCalendarDay(null, day, user, mutateUser);
   };
 
   const checkIfWeekdayIsDefaultEnabled = (date) => {
