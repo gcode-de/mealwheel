@@ -6,7 +6,6 @@ export default async function assignRecipeToCalendarDay(
   user,
   mutateUser
 ) {
-  console.log(recipeId, dbDate);
   //create calendar property in user object if missing
   if (!user.calendar) {
     user.calendar = [];
