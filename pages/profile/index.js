@@ -80,4 +80,8 @@ const StyledLink = styled(Link)`
   background-color: var(--color-component);
   height: 6rem;
   width: 6rem;
+  &:hover {
+    fill: var(--color-highlight);
+    color: var(--color-highlight);
+  }
 `;
