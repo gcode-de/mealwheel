@@ -17,7 +17,7 @@ export default function ProfilePage() {
         style="Settings"
         top="var(--gap-out)"
         left="var(--gap-out)"
-        onClick={() => router.back()}
+        onClick={() => router.push("/settings/profile")}
         fill="var(--color-lightgrey)"
       />
       <WrapperCenter>
