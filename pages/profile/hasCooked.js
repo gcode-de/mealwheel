@@ -8,7 +8,7 @@ import { useRouter } from "next/router";
 import StyledH2 from "@/components/Styled/StyledH2";
 import Spacer from "@/components/Styled/Spacer";
 
-export default function hasCooked({
+export default function HasCooked({
   user,
   error,
   isLoading,
@@ -43,7 +43,6 @@ export default function hasCooked({
 
   return (
     <>
-      {/* <Header text="schon gekocht 🥗" /> */}
       <IconButton
         style="ArrowLeft"
         top="var(--gap-out)"
