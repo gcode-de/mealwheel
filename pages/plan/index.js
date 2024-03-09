@@ -231,14 +231,6 @@ export default function Plan({
     );
   };
 
-  // const onDragEnd = (event) => {
-  //   const { active, over } = event;
-  //   if (active.id === over.id) {
-  //     return;
-  //   }
-  //   console.log("onDragEnd", active, over);
-  // };
-
   function onDragEnd({ active, over }) {
     if (!over || active.id === over.id) {
       return;
@@ -251,10 +243,7 @@ export default function Plan({
       return;
     }
 
-    // Erstelle ein Array mit den Dates aus weekdays
     const datesArray = weekdays.map((day) => day.date);
-
-    // Erstelle ein Array mit den Rezept-IDs für die jeweiligen Dates
     const recipesArray = weekdays.map(
       (day) => getCalendarDayFromDb(day.date)?.recipe?._id
     );
@@ -269,8 +258,6 @@ export default function Plan({
       return acc;
     }, {});
 
-    // Weiterverarbeitung des dateRecipePairs-Objekts...
-    console.log(dateRecipePairs);
     assignRecipesToCalendarDays(dateRecipePairs, user, mutateUser);
   }
 
