@@ -1,5 +1,6 @@
 import Link from "next/link";
 import styled from "styled-components";
+import { Fragment } from "react";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import useSWR from "swr";
@@ -17,6 +18,10 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import {
+  restrictToVerticalAxis,
+  restrictToParentElement,
+} from "@dnd-kit/modifiers";
 
 import CardSkeleton from "@/components/Styled/CardSkeleton";
 import Header from "@/components/Styled/Header";
@@ -27,6 +32,7 @@ import PowerIcon from "@/public/icons/power-material-svgrepo-com.svg";
 
 import generateWeekdays from "@/helpers/generateWeekdays";
 import updateUserinDb from "@/helpers/updateUserInDb";
+import assignRecipesToCalendarDays from "@/helpers/assignRecipeToDay";
 
 export default function Plan({
   isLoading,
@@ -188,31 +194,12 @@ export default function Plan({
     const style = { transform: CSS.Transform.toString(transform), transition };
     return (
       <article
-        // key={weekday.date}
         {...attributes}
         {...listeners}
         id={weekday.date}
         ref={setNodeRef}
         style={style}
       >
-        {/* <StyledH2
-          $dayIsDisabled={
-            calendarDay?.isDisabled ??
-            !checkIfWeekdayIsDefaultEnabled(weekday.date)
-          }
-        >
-          <StyledPowerIcon
-            $dayIsDisabled={
-              calendarDay?.isDisabled ??
-              !checkIfWeekdayIsDefaultEnabled(weekday.date)
-            }
-            onClick={() => {
-              toggleDayIsDisabled(weekday.date);
-            }}
-          />
-          {calendarDay?.isDisabled}
-          {weekday.readableDate}
-        </StyledH2> */}
         {calendarDay?.recipe && !calendarDay?.isDisabled ? (
           <MealCard
             key={calendarDay.recipe._id}
@@ -244,13 +231,48 @@ export default function Plan({
     );
   };
 
-  const onDragEnd = (event) => {
-    const { active, over } = event;
-    if (active.id === over.id) {
+  // const onDragEnd = (event) => {
+  //   const { active, over } = event;
+  //   if (active.id === over.id) {
+  //     return;
+  //   }
+  //   console.log("onDragEnd", active, over);
+  // };
+
+  function onDragEnd({ active, over }) {
+    if (!over || active.id === over.id) {
       return;
     }
-    console.log("onDragEnd", active, over);
-  };
+
+    const fromIndex = weekdays.findIndex((day) => day.date === active.id);
+    const toIndex = weekdays.findIndex((day) => day.date === over.id);
+
+    if (fromIndex < 0 || toIndex < 0) {
+      return;
+    }
+
+    // Erstelle ein Array mit den Dates aus weekdays
+    const datesArray = weekdays.map((day) => day.date);
+
+    // Erstelle ein Array mit den Rezept-IDs für die jeweiligen Dates
+    const recipesArray = weekdays.map(
+      (day) => getCalendarDayFromDb(day.date)?.recipe?._id
+    );
+
+    // Verschiebe die Rezept-ID im recipesArray basierend auf der Drag-and-Drop Aktion
+    const [movedItem] = recipesArray.splice(fromIndex, 1);
+    recipesArray.splice(toIndex, 0, movedItem);
+
+    // Kombiniere datesArray und recipesArray zu einem Objekt mit "Date: Rezept-ID"-Paaren
+    const dateRecipePairs = datesArray.reduce((acc, date, index) => {
+      acc[date] = recipesArray[index]; // Zuweisung der Rezept-ID zum entsprechenden Datum
+      return acc;
+    }, {});
+
+    // Weiterverarbeitung des dateRecipePairs-Objekts...
+    console.log(dateRecipePairs);
+    assignRecipesToCalendarDays(dateRecipePairs, user, mutateUser);
+  }
 
   if (error || randomRecipesError) {
     <div>
@@ -315,6 +337,7 @@ export default function Plan({
           collisionDetection={closestCenter}
           onDragEnd={onDragEnd}
           sensors={sensors}
+          modifiers={[restrictToVerticalAxis, restrictToParentElement]}
         >
           <SortableContext
             items={weekdays.map((weekday) => weekday.date)}
@@ -324,7 +347,7 @@ export default function Plan({
               weekdays.map((weekday) => {
                 const calendarDay = getCalendarDayFromDb(weekday.date);
                 return (
-                  <>
+                  <Fragment key={weekday.date}>
                     <StyledH2
                       $dayIsDisabled={
                         calendarDay?.isDisabled ??
@@ -348,7 +371,7 @@ export default function Plan({
                       weekday={weekday}
                       calendarDay={calendarDay}
                     />
-                  </>
+                  </Fragment>
                 );
               })}
           </SortableContext>
