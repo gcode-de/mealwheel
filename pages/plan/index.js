@@ -3,6 +3,20 @@ import styled from "styled-components";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import useSWR from "swr";
+import {
+  DndContext,
+  closestCenter,
+  useSensor,
+  useSensors,
+  MouseSensor,
+  TouchSensor,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  useSortable,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
 import CardSkeleton from "@/components/Styled/CardSkeleton";
 import Header from "@/components/Styled/Header";
@@ -24,7 +38,7 @@ export default function Plan({
 }) {
   const router = useRouter();
   const weekOffset = Number(router.query.week) || 0;
-  const [weekdays, setWeekdays] = useState();
+  const [weekdays, setWeekdays] = useState([]);
   const [numberOfRandomRecipes, setNumberOfRandomRecipes] = useState(2);
 
   useEffect(() => {
@@ -153,6 +167,91 @@ export default function Plan({
     return user.settings.weekdaysEnabled[new Date(date).getDay()];
   };
 
+  const mouseSensor = useSensor(MouseSensor, {
+    activationConstraint: {
+      distance: 10, // Drag wird nach 10 Pixel Bewegung aktiviert
+    },
+  });
+
+  const touchSensor = useSensor(TouchSensor, {
+    activationConstraint: {
+      delay: 250, // Drag wird nach einer Verzögerung von 250ms aktiviert
+      tolerance: 5, // Drag wird aktiviert, wenn die Berührung um 5 Pixel bewegt wurde
+    },
+  });
+
+  const sensors = useSensors(mouseSensor, touchSensor);
+
+  const SortableWeekday = ({ weekday, calendarDay }) => {
+    const { attributes, listeners, setNodeRef, transform, transition } =
+      useSortable({ id: weekday.date });
+    const style = { transform: CSS.Transform.toString(transform), transition };
+    return (
+      <article
+        // key={weekday.date}
+        {...attributes}
+        {...listeners}
+        id={weekday.date}
+        ref={setNodeRef}
+        style={style}
+      >
+        {/* <StyledH2
+          $dayIsDisabled={
+            calendarDay?.isDisabled ??
+            !checkIfWeekdayIsDefaultEnabled(weekday.date)
+          }
+        >
+          <StyledPowerIcon
+            $dayIsDisabled={
+              calendarDay?.isDisabled ??
+              !checkIfWeekdayIsDefaultEnabled(weekday.date)
+            }
+            onClick={() => {
+              toggleDayIsDisabled(weekday.date);
+            }}
+          />
+          {calendarDay?.isDisabled}
+          {weekday.readableDate}
+        </StyledH2> */}
+        {calendarDay?.recipe && !calendarDay?.isDisabled ? (
+          <MealCard
+            key={calendarDay.recipe._id}
+            recipe={calendarDay.recipe}
+            numberOfPeople={
+              calendarDay.numberOfPeople !== undefined &&
+              calendarDay.numberOfPeople !== null
+                ? Number(calendarDay.numberOfPeople)
+                : user.settings.defaultNumberOfPeople
+            }
+            changeNumberOfPeople={changeNumberOfPeople}
+            reassignRecipe={reassignRecipe}
+            removeRecipe={removeRecipe}
+            day={calendarDay.date}
+          />
+        ) : (
+          <CardSkeleton
+            reassignRecipe={reassignRecipe}
+            day={calendarDay?.date || weekday.date}
+            $height={
+              calendarDay?.isDisabled ??
+              !checkIfWeekdayIsDefaultEnabled(weekday.date)
+                ? "small"
+                : ""
+            }
+          />
+        )}
+      </article>
+    );
+  };
+
+  const onDragEnd = (event) => {
+    const { active, over } = event;
+    if (active.id === over.id) {
+      return;
+    }
+    console.log("onDragEnd", active, over);
+  };
+
   if (error || randomRecipesError) {
     <div>
       <Header text={"Wochenplan 🥗"} />
@@ -212,59 +311,48 @@ export default function Plan({
       </StyledHeader>
 
       <CalendarContainer>
-        {weekdays &&
-          weekdays.map((weekday) => {
-            const calendarDay = getCalendarDayFromDb(weekday.date);
-            return (
-              <article key={weekday.date} id={weekday.date}>
-                <StyledH2
-                  $dayIsDisabled={
-                    calendarDay?.isDisabled ??
-                    !checkIfWeekdayIsDefaultEnabled(weekday.date)
-                  }
-                >
-                  <StyledPowerIcon
-                    $dayIsDisabled={
-                      calendarDay?.isDisabled ??
-                      !checkIfWeekdayIsDefaultEnabled(weekday.date)
-                    }
-                    onClick={() => {
-                      toggleDayIsDisabled(weekday.date);
-                    }}
-                  />
-                  {calendarDay?.isDisabled}
-                  {weekday.readableDate}
-                </StyledH2>
-                {calendarDay?.recipe && !calendarDay?.isDisabled ? (
-                  <MealCard
-                    key={calendarDay.recipe._id}
-                    recipe={calendarDay.recipe}
-                    numberOfPeople={
-                      calendarDay.numberOfPeople !== undefined &&
-                      calendarDay.numberOfPeople !== null
-                        ? Number(calendarDay.numberOfPeople)
-                        : user.settings.defaultNumberOfPeople
-                    }
-                    changeNumberOfPeople={changeNumberOfPeople}
-                    reassignRecipe={reassignRecipe}
-                    removeRecipe={removeRecipe}
-                    day={calendarDay.date}
-                  />
-                ) : (
-                  <CardSkeleton
-                    reassignRecipe={reassignRecipe}
-                    day={calendarDay?.date || weekday.date}
-                    $height={
-                      calendarDay?.isDisabled ??
-                      !checkIfWeekdayIsDefaultEnabled(weekday.date)
-                        ? "small"
-                        : ""
-                    }
-                  />
-                )}
-              </article>
-            );
-          })}
+        <DndContext
+          collisionDetection={closestCenter}
+          onDragEnd={onDragEnd}
+          sensors={sensors}
+        >
+          <SortableContext
+            items={weekdays.map((weekday) => weekday.date)}
+            strategy={verticalListSortingStrategy}
+          >
+            {weekdays &&
+              weekdays.map((weekday) => {
+                const calendarDay = getCalendarDayFromDb(weekday.date);
+                return (
+                  <>
+                    <StyledH2
+                      $dayIsDisabled={
+                        calendarDay?.isDisabled ??
+                        !checkIfWeekdayIsDefaultEnabled(weekday.date)
+                      }
+                    >
+                      <StyledPowerIcon
+                        $dayIsDisabled={
+                          calendarDay?.isDisabled ??
+                          !checkIfWeekdayIsDefaultEnabled(weekday.date)
+                        }
+                        onClick={() => {
+                          toggleDayIsDisabled(weekday.date);
+                        }}
+                      />
+                      {calendarDay?.isDisabled}
+                      {weekday.readableDate}
+                    </StyledH2>
+                    <SortableWeekday
+                      key={weekday.date}
+                      weekday={weekday}
+                      calendarDay={calendarDay}
+                    />
+                  </>
+                );
+              })}
+          </SortableContext>
+        </DndContext>
       </CalendarContainer>
     </>
   );

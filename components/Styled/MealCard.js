@@ -122,6 +122,7 @@ const CardContainer = styled.div`
 `;
 
 const StyledLink = styled(Link)`
+  width: fit-content;
   text-decoration: none;
   color: var(--darkgrey);
   cursor: pointer;
@@ -145,6 +146,7 @@ const StyledPTitle = styled.p`
   margin-bottom: 0;
   margin-left: 1.5rem;
   margin-top: 0;
+  width: fit-content;
 `;
 const StyledPDuration = styled.p`
   font-size: 13px;
