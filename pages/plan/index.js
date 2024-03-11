@@ -212,6 +212,7 @@ export default function Plan({
             reassignRecipe={reassignRecipe}
             removeRecipe={removeRecipe}
             day={calendarDay.date}
+            isFavorite={null}
           />
         ) : (
           <CardSkeleton
