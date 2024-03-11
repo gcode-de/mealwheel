@@ -245,11 +245,12 @@ const StyledForm = styled.form`
   flex-wrap: wrap;
   align-items: center;
   gap: 10px;
+  width: calc(100% - (2 * var(--gap-out)));
   justify-content: space-between;
   transition: opacity 0.3s ease-in-out, margin 0.2s ease-out;
   opacity: ${({ $isVisible }) => ($isVisible ? "1" : "0")};
   height: ${({ $isVisible }) => ($isVisible ? "auto" : "0")};
-  margin: ${({ $isVisible }) => ($isVisible ? "1rem 0 2rem 0" : "0")};
+  margin: ${({ $isVisible }) => ($isVisible ? "2.5rem 0 0 0" : "0")};
   overflow: hidden;
   h3 {
     flex-basis: 100%;

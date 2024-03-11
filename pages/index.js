@@ -66,8 +66,8 @@ export default function HomePage({
 }
 
 const StyledUl = styled.ul`
-  padding: 10px;
-  max-width: 350px;
-  margin: 0 auto;
+  padding: 0;
+  width: calc(100% - (2 * var(--gap-out)));
+  margin: auto;
   margin-bottom: 80px;
 `;

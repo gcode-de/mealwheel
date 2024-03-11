@@ -5,7 +5,7 @@ import useSWR from "swr";
 export default function EditRecipe() {
   const router = useRouter();
   const { id } = router.query;
-  const { data, isLoading, mutate } = useSWR(`/api/recipes/${id}`);
+  const { data, isLoading } = useSWR(`/api/recipes/${id}`);
 
   async function handleEdit(data) {
     const response = await fetch(`/api/recipes/${id}`, {

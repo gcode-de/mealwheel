@@ -105,17 +105,17 @@ const ImageContainer = styled.div`
 
 const StyledImage = styled(Image)`
   border-radius: 20px 0 0 20px;
-  objectfit: "cover";
+  object-fit: cover;
 `;
 
 const CardContainer = styled.div`
   background-color: var(--color-component);
-  margin: 1.25rem 0 0 0;
+  margin-top: calc(2.5 * var(--gap-between));
+  margin-bottom: var(--gap-between);
   display: flex;
   flex-direction: row;
   border-radius: 20px;
   z-index: 2;
-  /* border: black solid 1px; */
   box-shadow: 0px 4px 8px 0 rgb(0 0 0 / 8%);
   text-decoration: none;
   color: var(--darkgrey);
@@ -158,6 +158,7 @@ const StyledPDuration = styled.p`
 const StyledLi = styled.li`
   list-style-type: none;
   position: relative;
+  padding: 0;
 `;
 
 const NumberOfPeopleContainer = styled.div`

@@ -283,24 +283,23 @@ export default function Plan({
     <>
       <StyledHeader>
         <Header text={"Wochenplan 🥗"} />
-
         <CalendarNavigation>
           <IconButton
             style="TriangleLeft"
-            left="3rem"
+            left="var(--gap-out)"
             top="0.5rem"
             onClick={() => {
               router.push(`/plan?week=${weekOffset - 1}`);
             }}
           />
           {weekOffset === 0 || weekOffset === undefined ? (
-            `Ansicht: aktuelle Woche`
+            `aktuelle Woche`
           ) : (
             <Link href={`/plan?week=0`}>zur aktuellen Woche</Link>
           )}
           <IconButton
             style="TriangleRight"
-            right="3rem"
+            right="var(--gap-out)"
             top="0.5rem"
             onClick={() => {
               router.push(`/plan?week=${weekOffset + 1}`);
@@ -406,7 +405,7 @@ const StyledHeader = styled.header``;
 
 const CalendarNavigation = styled.div`
   position: relative;
-  width: 100%;
+  /* width: 100%; */
   height: 3rem;
   text-align: center;
   padding: 1.25rem;
@@ -465,6 +464,7 @@ const ButtonsContainer = styled.div`
   display: flex;
   justify-content: space-between;
   z-index: 2;
+  left: var(--gap-out);
 `;
 const GenerateButton = styled.button`
   border: none;

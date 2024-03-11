@@ -94,6 +94,7 @@ export default function RecipeForm({ onSubmit, data }) {
       </StyledTop>
       <form onSubmit={handleSubmit}>
         <StyledArticle>
+          <Spacer />
           <StyledBigInput
             type="text"
             name="title"
@@ -129,7 +130,7 @@ export default function RecipeForm({ onSubmit, data }) {
           <StyledH2>Zutaten</StyledH2>
           <StyledList>
             {ingredients.map((ingredient, index) => (
-              <StyledListItem key={index}>
+              <StyledIngredients key={index}>
                 <StyledInput
                   value={ingredient.quantity}
                   onChange={(event) =>
@@ -163,7 +164,7 @@ export default function RecipeForm({ onSubmit, data }) {
                   placeholder={`${index + 1}. Zutat`}
                   aria-label="add igredient name for the recipe"
                 />
-              </StyledListItem>
+              </StyledIngredients>
             ))}
             <AddIngredientButton type="button" onClick={addIngredient}>
               <Plus width={20} height={20} />
@@ -225,7 +226,7 @@ const StyledBigInput = styled.input`
   border: none;
   border-radius: 10px;
   height: 50px;
-  width: 100%;
+  width: calc(100% - (2 * var(--gap-out)));
   padding: 0.7rem;
 `;
 const StyledInput = styled.input`
@@ -233,7 +234,7 @@ const StyledInput = styled.input`
   border: none;
   border-radius: 10px;
   height: 30px;
-  width: ${(props) => (props.$width ? props.$width : "100%")};
+  width: calc(100% - (2 * var(--gap-out)));
   flex-grow: ${(props) => props.$flexGrow};
   padding: 0.7rem;
 `;
@@ -252,4 +253,18 @@ const AddIngredientButton = styled.button`
   background-color: var(--color-background);
   border-radius: 10px;
   height: 30px;
+`;
+const Spacer = styled.div`
+  margin-top: 2rem;
+  position: relative;
+`;
+const StyledIngredients = styled.li`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  gap: 0.5rem;
+  margin-bottom: var(--gap-between);
+  margin-top: var(--gap-between);
+  padding: 0;
 `;
