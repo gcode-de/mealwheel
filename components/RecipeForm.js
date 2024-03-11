@@ -140,7 +140,6 @@ export default function RecipeForm({ onSubmit, data }) {
                   required
                   min="0"
                   aria-label="add ingredient quantity for the recipe"
-                  // defaultValue={ingredient.quantity || ""}
                 />
                 <StyledDropDown
                   required
@@ -163,7 +162,6 @@ export default function RecipeForm({ onSubmit, data }) {
                   name="name"
                   placeholder={`${index + 1}. Zutat`}
                   aria-label="add igredient name for the recipe"
-                  // defaultValue={ingredient.name}
                 />
               </StyledListItem>
             ))}
@@ -184,7 +182,7 @@ export default function RecipeForm({ onSubmit, data }) {
             type="link"
             name="youtubeLink"
             defaultValue={data?.youtubeLink}
-          ></StyledInput>
+          />
           <Button type="submit">speichern</Button>
         </StyledArticle>
       </form>

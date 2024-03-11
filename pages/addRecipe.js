@@ -22,5 +22,5 @@ export default function AddRecipe() {
     router.back();
   }
 
-  return <RecipeForm onSubmit={addRecipe} formName={"add-recipe"}></RecipeForm>;
+  return <RecipeForm onSubmit={addRecipe} formName={"add-recipe"} />;
 }
