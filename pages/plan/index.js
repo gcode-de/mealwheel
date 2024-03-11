@@ -1,8 +1,27 @@
 import Link from "next/link";
 import styled from "styled-components";
+import { Fragment } from "react";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import useSWR from "swr";
+import {
+  DndContext,
+  closestCenter,
+  useSensor,
+  useSensors,
+  MouseSensor,
+  TouchSensor,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  useSortable,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import {
+  restrictToVerticalAxis,
+  restrictToParentElement,
+} from "@dnd-kit/modifiers";
 
 import CardSkeleton from "@/components/Styled/CardSkeleton";
 import Header from "@/components/Styled/Header";
@@ -15,6 +34,7 @@ import generateWeekdays from "@/helpers/generateWeekdays";
 import assignRecipeToCalendarDay from "@/helpers/assignRecipeToDay";
 import populateEmptyWeekdays from "@/helpers/populateEmptyWeekdays";
 import updateUserinDb from "@/helpers/updateUserInDb";
+import assignRecipesToCalendarDays from "@/helpers/assignRecipeToDay";
 
 export default function Plan({
   isLoading,
@@ -26,9 +46,13 @@ export default function Plan({
 }) {
   const router = useRouter();
   const weekOffset = Number(router.query.week) || 0;
-  const [weekdays, setWeekdays] = useState();
+
+  const [weekdays, setWeekdays] = useState([]);
+  const [numberOfRandomRecipes, setNumberOfRandomRecipes] = useState(2);
+
   const [assignableDays, setAssignableDays] = useState([]);
   const [numberOfRandomRecipes, setNumberOfRandomRecipes] = useState(0);
+
 
   useEffect(() => {
     const generatedWeekdays = generateWeekdays(weekOffset);
@@ -150,6 +174,94 @@ export default function Plan({
     return user.settings.weekdaysEnabled[new Date(date).getDay()];
   };
 
+  const mouseSensor = useSensor(MouseSensor, {
+    activationConstraint: {
+      distance: 10, // Drag wird nach 10 Pixel Bewegung aktiviert
+    },
+  });
+
+  const touchSensor = useSensor(TouchSensor, {
+    activationConstraint: {
+      delay: 250, // Drag wird nach einer Verzögerung von 250ms aktiviert
+      tolerance: 5, // Drag wird aktiviert, wenn die Berührung um 5 Pixel bewegt wurde
+    },
+  });
+
+  const sensors = useSensors(mouseSensor, touchSensor);
+
+  const SortableWeekday = ({ weekday, calendarDay }) => {
+    const { attributes, listeners, setNodeRef, transform, transition } =
+      useSortable({ id: weekday.date });
+    const style = { transform: CSS.Transform.toString(transform), transition };
+    return (
+      <article
+        {...attributes}
+        {...listeners}
+        id={weekday.date}
+        ref={setNodeRef}
+        style={style}
+      >
+        {calendarDay?.recipe && !calendarDay?.isDisabled ? (
+          <MealCard
+            key={calendarDay.recipe._id}
+            recipe={calendarDay.recipe}
+            numberOfPeople={
+              calendarDay.numberOfPeople !== undefined &&
+              calendarDay.numberOfPeople !== null
+                ? Number(calendarDay.numberOfPeople)
+                : user.settings.defaultNumberOfPeople
+            }
+            changeNumberOfPeople={changeNumberOfPeople}
+            reassignRecipe={reassignRecipe}
+            removeRecipe={removeRecipe}
+            day={calendarDay.date}
+          />
+        ) : (
+          <CardSkeleton
+            reassignRecipe={reassignRecipe}
+            day={calendarDay?.date || weekday.date}
+            $height={
+              calendarDay?.isDisabled ??
+              !checkIfWeekdayIsDefaultEnabled(weekday.date)
+                ? "small"
+                : ""
+            }
+          />
+        )}
+      </article>
+    );
+  };
+
+  function onDragEnd({ active, over }) {
+    if (!over || active.id === over.id) {
+      return;
+    }
+
+    const fromIndex = weekdays.findIndex((day) => day.date === active.id);
+    const toIndex = weekdays.findIndex((day) => day.date === over.id);
+
+    if (fromIndex < 0 || toIndex < 0) {
+      return;
+    }
+
+    const datesArray = weekdays.map((day) => day.date);
+    const recipesArray = weekdays.map(
+      (day) => getCalendarDayFromDb(day.date)?.recipe?._id
+    );
+
+    // Verschiebe die Rezept-ID im recipesArray basierend auf der Drag-and-Drop Aktion
+    const [movedItem] = recipesArray.splice(fromIndex, 1);
+    recipesArray.splice(toIndex, 0, movedItem);
+
+    // Kombiniere datesArray und recipesArray zu einem Objekt mit "Date: Rezept-ID"-Paaren
+    const dateRecipePairs = datesArray.reduce((acc, date, index) => {
+      acc[date] = recipesArray[index]; // Zuweisung der Rezept-ID zum entsprechenden Datum
+      return acc;
+    }, {});
+
+    assignRecipesToCalendarDays(dateRecipePairs, user, mutateUser);
+  }
+
   if (error || randomRecipesError) {
     <div>
       <Header text={"Wochenplan 🥗"} />
@@ -218,60 +330,51 @@ export default function Plan({
       </StyledHeader>
 
       <CalendarContainer>
-        {weekdays &&
-          weekdays.map((weekday) => {
-            const calendarDay = getCalendarDayFromDb(weekday.date);
-            return (
-              <article key={weekday.date} id={weekday.date}>
-                <StyledH2
-                  $dayIsDisabled={
-                    calendarDay?.isDisabled ??
-                    !checkIfWeekdayIsDefaultEnabled(weekday.date)
-                  }
-                >
-                  <StyledPowerIcon
-                    $dayIsDisabled={
-                      calendarDay?.isDisabled ??
-                      !checkIfWeekdayIsDefaultEnabled(weekday.date)
-                    }
-                    onClick={() => {
-                      toggleDayIsDisabled(weekday.date);
-                    }}
-                  />
-                  {calendarDay?.isDisabled}
-                  {weekday.readableDate}
-                </StyledH2>
-                {calendarDay?.recipe && !calendarDay?.isDisabled ? (
-                  <MealCard
-                    key={calendarDay.recipe._id}
-                    recipe={calendarDay.recipe}
-                    numberOfPeople={
-                      calendarDay.numberOfPeople !== undefined &&
-                      calendarDay.numberOfPeople !== null
-                        ? Number(calendarDay.numberOfPeople)
-                        : user.settings.defaultNumberOfPeople
-                    }
-                    changeNumberOfPeople={changeNumberOfPeople}
-                    reassignRecipe={reassignRecipe}
-                    removeRecipe={removeRecipe}
-                    day={calendarDay.date}
-                    isFavorite={null}
-                  />
-                ) : (
-                  <CardSkeleton
-                    reassignRecipe={reassignRecipe}
-                    day={calendarDay?.date || weekday.date}
-                    $height={
-                      calendarDay?.isDisabled ??
-                      !checkIfWeekdayIsDefaultEnabled(weekday.date)
-                        ? "small"
-                        : ""
-                    }
-                  />
-                )}
-              </article>
-            );
-          })}
+
+        <DndContext
+          collisionDetection={closestCenter}
+          onDragEnd={onDragEnd}
+          sensors={sensors}
+          modifiers={[restrictToVerticalAxis, restrictToParentElement]}
+        >
+          <SortableContext
+            items={weekdays.map((weekday) => weekday.date)}
+            strategy={verticalListSortingStrategy}
+          >
+            {weekdays &&
+              weekdays.map((weekday) => {
+                const calendarDay = getCalendarDayFromDb(weekday.date);
+                return (
+                  <Fragment key={weekday.date}>
+                    <StyledH2
+                      $dayIsDisabled={
+                        calendarDay?.isDisabled ??
+                        !checkIfWeekdayIsDefaultEnabled(weekday.date)
+                      }
+                    >
+                      <StyledPowerIcon
+                        $dayIsDisabled={
+                          calendarDay?.isDisabled ??
+                          !checkIfWeekdayIsDefaultEnabled(weekday.date)
+                        }
+                        onClick={() => {
+                          toggleDayIsDisabled(weekday.date);
+                        }}
+                      />
+                      {calendarDay?.isDisabled}
+                      {weekday.readableDate}
+                    </StyledH2>
+                    <SortableWeekday
+                      key={weekday.date}
+                      weekday={weekday}
+                      calendarDay={calendarDay}
+                    />
+                  </Fragment>
+                );
+              })}
+          </SortableContext>
+        </DndContext>
+
       </CalendarContainer>
       <ButtonsContainer>
         {assignableDays.length !== 0 ? (
