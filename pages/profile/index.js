@@ -17,11 +17,11 @@ export default function ProfilePage() {
   const router = useRouter();
   const { isAuthenticated, isLoading, user: kindeUser } = useKindeAuth();
 
-  useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
-      router.push("/api/auth/login");
-    }
-  }, [isLoading, isAuthenticated, router]);
+  // useEffect(() => {
+  //   if (!isLoading && !isAuthenticated) {
+  //     router.push("/api/auth/login");
+  //   }
+  // }, [isLoading, isAuthenticated, router]);
 
   console.log(kindeUser);
   return (
@@ -36,7 +36,7 @@ export default function ProfilePage() {
       <WrapperCenter>
         <StyledLogoutLink>Log out</StyledLogoutLink>
         <StyledProfile>
-          {kindeUser ? (
+          {kindeUser.picture ? (
             <Image
               src={kindeUser?.picture}
               alt="Profile Picture"

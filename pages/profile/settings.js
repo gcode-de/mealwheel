@@ -11,7 +11,7 @@ import Spacer from "@/components/Styled/Spacer";
 export default function Settings({ user, mutateUser }) {
   const router = useRouter();
   if (!user) {
-    return <p>kein Benutzer gefunden..</p>;
+    return <p>Benutzer nicht gefunden...</p>;
   }
 
   const { settings } = user;
