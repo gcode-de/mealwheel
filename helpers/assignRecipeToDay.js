@@ -1,46 +1,38 @@
-import updateUserinDb from "./updateUserInDb";
+import updateUserInDb from "./updateUserInDb";
 
-export default async function assignRecipeToCalendarDay(
-  recipeId,
-  selectedDate,
+export default async function assignRecipesToCalendarDays(
+  recipeDatePairs,
   user,
   mutateUser
 ) {
-  //generate ISO-Date
-  const isoDate = new Date(selectedDate);
-  isoDate.setUTCHours(0, 0, 0, 0);
-  const dbDate = isoDate.toISOString();
-
-  //create calendar property in user object if missing
+  // Erstellen der Kalendereigenschaft im Benutzerobjekt, falls sie fehlt
   if (!user.calendar) {
     user.calendar = [];
-    await updateUserinDb();
   }
 
-  //add recipe to calendarDay in user object
-  if (user.calendar.some((calendarDay) => calendarDay.date === dbDate)) {
-    user.calendar = user.calendar.map((calendarDay) =>
-      calendarDay.date === dbDate
-        ? { ...calendarDay, recipe: recipeId }
-        : calendarDay
-    );
-  } else {
-    user.calendar.push({
-      date: dbDate,
-      recipe: recipeId,
-      numberOfPeople: user.settings.defaultNumberOfPeople,
-    });
-  }
-
-  //set day to !isDisabled if recipe provided
-  if (recipeId !== null) {
-    user.calendar = user.calendar.map((calendarDay) =>
-      calendarDay.date === dbDate
-        ? { ...calendarDay, isDisabled: false }
-        : calendarDay
-    );
-  }
-
-  //push user object to database
-  await updateUserinDb(user, mutateUser);
+  // Iterieren über jedes Paar von Datum und Rezept-ID im Objekt
+  Object.entries(recipeDatePairs).forEach(([dbDate, recipeId]) => {
+    if (user.calendar.some((calendarDay) => calendarDay.date === dbDate)) {
+      // Rezept zum existierenden Kalendertag hinzufügen
+      user.calendar = user.calendar.map((calendarDay) =>
+        calendarDay.date === dbDate
+          ? {
+              ...calendarDay,
+              recipe: recipeId,
+              isDisabled: recipeId !== null ? false : null,
+            }
+          : calendarDay
+      );
+    } else {
+      // Neuen Kalendertag mit Rezept hinzufügen
+      user.calendar.push({
+        date: dbDate,
+        recipe: recipeId,
+        numberOfPeople: user.settings.defaultNumberOfPeople,
+        isDisabled: recipeId !== null ? false : null,
+      });
+    }
+  });
+  // Benutzerobjekt in die Datenbank pushen
+  await updateUserInDb(user, mutateUser);
 }

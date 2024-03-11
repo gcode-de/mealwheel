@@ -12,6 +12,8 @@ import RandomnessSlider from "@/components/Styled/RandomnessSlider";
 import PowerIcon from "@/public/icons/power-material-svgrepo-com.svg";
 
 import generateWeekdays from "@/helpers/generateWeekdays";
+import assignRecipeToCalendarDay from "@/helpers/assignRecipeToDay";
+import populateEmptyWeekdays from "@/helpers/populateEmptyWeekdays";
 import updateUserinDb from "@/helpers/updateUserInDb";
 
 export default function Plan({
@@ -25,37 +27,56 @@ export default function Plan({
   const router = useRouter();
   const weekOffset = Number(router.query.week) || 0;
   const [weekdays, setWeekdays] = useState();
-  const [numberOfRandomRecipes, setNumberOfRandomRecipes] = useState(2);
+  const [assignableDays, setAssignableDays] = useState([]);
+  const [numberOfRandomRecipes, setNumberOfRandomRecipes] = useState(0);
 
   useEffect(() => {
     const generatedWeekdays = generateWeekdays(weekOffset);
 
     if (user && generatedWeekdays) {
-      const updatedWeekdays = generatedWeekdays.map((weekday) => {
-        const calendarDay = user.calendar.find(
-          (calendarDay) => calendarDay.date === weekday.date
-        );
+      setWeekdays(generatedWeekdays);
 
-        if (calendarDay) {
-          return {
-            ...weekday,
-            recipe: calendarDay.recipe,
-            isDisabled: calendarDay.isDisabled,
-            servings: calendarDay.servings,
-          };
+      let countAssignableDays = [];
+      //count days of currently selected week
+      //that are not disabled manuallly,
+      //that are not disabled by default and also not manually enabled,
+      //and that don't have a reference to a recipe
+      generatedWeekdays.forEach((weekday) => {
+        const calendarDay = user.calendar.find(
+          (day) => day.date === weekday.date
+        );
+        const dayOfWeek = new Date(weekday.date).getDay();
+
+        const isDayManuallyDisabled = calendarDay?.hasOwnProperty("isDisabled")
+          ? calendarDay.isDisabled
+          : null;
+
+        let isDayActive;
+        if (isDayManuallyDisabled !== null) {
+          // prioritize manual setting
+          isDayActive = !isDayManuallyDisabled;
+        } else {
+          // fallback to default setting
+          isDayActive = user.settings.weekdaysEnabled[dayOfWeek];
         }
 
-        return weekday;
+        if (isDayActive && !calendarDay?.recipe) {
+          countAssignableDays.push(weekday.date);
+        }
       });
-      setWeekdays(updatedWeekdays);
+
+      setAssignableDays(countAssignableDays);
+
+      numberOfRandomRecipes > countAssignableDays.length &&
+        setNumberOfRandomRecipes(countAssignableDays.length);
     }
-  }, [weekOffset, user]);
+  }, [weekOffset, user, numberOfRandomRecipes]);
 
   const {
     data: randomRecipes,
     isLoading: randomRecipesIsLoading,
     error: randomRecipesError,
-  } = useSWR(`/api/recipes/random/7`);
+  } = useSWR(`/api/recipes/random/10`);
 
   async function getRandomRecipe() {
     const response = await fetch(`/api/recipes/random/`);
@@ -63,21 +84,13 @@ export default function Plan({
     return recipe;
   }
 
-  const userRecipes = user?.recipeInteractions
-    .filter((recipe) => recipe.hasCooked)
-    .map((recipe) => recipe.recipe);
-
   function getCalendarDayFromDb(date) {
-    return user.calendar.findOne((calendarDay) => calendarDay.date === date);
+    return user.calendar.find((calendarDay) => calendarDay.date === date);
   }
 
   const handleSliderChange = (event) => {
     setNumberOfRandomRecipes(parseInt(event.target.value, 10));
   };
-
-  function getCalendarDayFromDb(date) {
-    return user.calendar.find((calendarDay) => calendarDay.date === date);
-  }
 
   const toggleDayIsDisabled = async (day) => {
     await createUserCalenderIfMissing();
@@ -117,36 +130,20 @@ export default function Plan({
 
   const reassignRecipe = async (day) => {
     const randomRecipe = await getRandomRecipe();
-    createUserCalenderIfMissing();
-    if (user.calendar.some((calendarDay) => calendarDay.date === day)) {
-      user.calendar = user.calendar.map((calendarDay) =>
-        calendarDay.date === day
-          ? { ...calendarDay, recipe: randomRecipe[0] }
-          : calendarDay
-      );
-    } else {
-      user.calendar.push({
-        date: day,
-        recipe: randomRecipe[0],
-        numberOfPeople: user.settings.defaultNumberOfPeople,
-      });
-    }
-
-    //set day to  !isDisabled
-    user.calendar = user.calendar.map((calendarDay) =>
-      calendarDay.date === day
-        ? { ...calendarDay, isDisabled: false }
-        : calendarDay
-    );
-
-    await updateUserinDb(user, mutateUser);
+    assignRecipeToCalendarDay({ [day]: randomRecipe[0] }, user, mutateUser);
   };
 
   const removeRecipe = (day) => {
-    user.calendar = user.calendar.map((calendarDay) =>
-      calendarDay.date === day ? { ...calendarDay, recipe: null } : calendarDay
-    );
-    updateUserinDb(user, mutateUser);
+    assignRecipeToCalendarDay({ [day]: null }, user, mutateUser);
+  };
+
+  const removeAllRecipes = (weekdays) => {
+    const recipeDatePairs = weekdays.reduce((obj, day) => {
+      obj[day.date] = null;
+      return obj;
+    }, {});
+
+    assignRecipeToCalendarDay(recipeDatePairs, user, mutateUser);
   };
 
   const checkIfWeekdayIsDefaultEnabled = (date) => {
@@ -186,7 +183,11 @@ export default function Plan({
               router.push(`/plan?week=${weekOffset - 1}`);
             }}
           />
-          <Link href={`/plan?week=0`}>zur aktuellen Woche</Link>
+          {weekOffset === 0 || weekOffset === undefined ? (
+            `Ansicht: aktuelle Woche`
+          ) : (
+            <Link href={`/plan?week=0`}>zur aktuellen Woche</Link>
+          )}
           <IconButton
             style="TriangleRight"
             right="3rem"
@@ -198,12 +199,17 @@ export default function Plan({
         </CalendarNavigation>
 
         <RandomnessSliderContainer>
-          <p>Zufällige Rezepte: {numberOfRandomRecipes}</p>
+          {assignableDays.length > 0 ? (
+            <p>Zufällige Rezepte: {numberOfRandomRecipes}</p>
+          ) : (
+            <p>Alle Tage geplant.</p>
+          )}
           {weekdays && (
             <RandomnessSlider
               type="range"
+              $isActive={assignableDays.length > 0}
               min="0"
-              max={weekdays.length}
+              max={assignableDays.length}
               value={numberOfRandomRecipes}
               onChange={handleSliderChange}
             />
@@ -249,6 +255,7 @@ export default function Plan({
                     reassignRecipe={reassignRecipe}
                     removeRecipe={removeRecipe}
                     day={calendarDay.date}
+                    isFavorite={null}
                   />
                 ) : (
                   <CardSkeleton
@@ -266,6 +273,32 @@ export default function Plan({
             );
           })}
       </CalendarContainer>
+      <ButtonsContainer>
+        {assignableDays.length !== 0 ? (
+          <GenerateButton
+            onClick={() => {
+              populateEmptyWeekdays(
+                weekdays,
+                assignableDays,
+                randomRecipes,
+                numberOfRandomRecipes,
+                user,
+                mutateUser
+              );
+            }}
+          >
+            🧩 Plan füllen
+          </GenerateButton>
+        ) : (
+          <GenerateButton
+            onClick={() => {
+              removeAllRecipes(weekdays);
+            }}
+          >
+            ⚠️ Plan löschen
+          </GenerateButton>
+        )}
+      </ButtonsContainer>
     </>
   );
 }
@@ -325,4 +358,23 @@ const StyledPowerIcon = styled(PowerIcon)`
   fill: ${(props) =>
     props.$dayIsDisabled ? "var(--color-lightgrey)" : "var(--color-highlight)"};
   cursor: pointer;
+`;
+
+const ButtonsContainer = styled.div`
+  position: fixed;
+  bottom: 80px;
+  display: flex;
+  justify-content: space-between;
+  z-index: 2;
+`;
+const GenerateButton = styled.button`
+  border: none;
+  background-color: var(--color-darkgrey);
+  color: var(--color-background);
+  font-size: 0%.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 10px;
+  width: 9rem;
+  height: 3rem;
 `;

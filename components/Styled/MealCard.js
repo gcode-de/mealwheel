@@ -15,7 +15,7 @@ export default function MealCard({
 }) {
   return (
     <StyledLi>
-      {isFavorite !== undefined && (
+      {isFavorite !== null && (
         <IconButton
           style="Heart"
           right="-0.5rem"
@@ -161,7 +161,7 @@ const StyledLi = styled.li`
 const NumberOfPeopleContainer = styled.div`
   display: flex;
   gap: 10px;
-  width: 100%;
+  width: min-content;
   justify-content: start;
   margin: 0.75rem 0 0 1.5rem;
   font-size: 1.25rem;
