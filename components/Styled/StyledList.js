@@ -2,6 +2,8 @@ import styled from "styled-components";
 
 const StyledList = styled.ul`
   list-style: none;
+  padding-top: var(--gap-between);
+  padding-bottom: var(--gap-between);
   padding-right: calc(2 * var(--gap-between));
   padding-left: calc(2 * var(--gap-between));
   width: calc(100% - (2 * var(--gap-out)));

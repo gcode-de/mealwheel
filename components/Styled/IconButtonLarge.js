@@ -23,8 +23,7 @@ const StyledBox = styled.div`
   position: fixed;
   z-index: 300;
   bottom: 6rem;
-  left: 50%;
-  transform: translateX(-50%);
+  left: var(--gap-out);
   width: 60px;
   height: 60px;
   display: flex;

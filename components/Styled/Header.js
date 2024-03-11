@@ -12,7 +12,7 @@ const StyledHeader = styled.header`
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: 0.5rem;
+  margin-top: 1rem;
   position: relative;
 `;
 
@@ -24,4 +24,5 @@ const StyledH1 = styled.h1`
   color: var(--color-darkgrey);
   min-width: 80%;
   margin: 0;
+  width: calc(100% - (2 * var(--gap-out)));
 `;
