@@ -2,11 +2,15 @@ import styled from "styled-components";
 
 const StyledList = styled.ul`
   list-style: none;
-  margin: 0;
-  padding: 1rem;
-  width: 100%;
+  padding-right: calc(2 * var(--gap-between));
+  padding-left: calc(2 * var(--gap-between));
+  width: calc(100% - (2 * var(--gap-out)));
   border: 1px solid var(--color-lightgrey);
-  border-radius: 20px;
+  border-radius: var(--border-radius-medium);
   background-color: var(--color-component);
+  margin-right: var(--gap-out);
+  margin-left: var(--gap-out);
+  margin-top: var(--gap-between);
+  margin-bottom: var(--gap-between);
 `;
 export default StyledList;

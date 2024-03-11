@@ -41,7 +41,7 @@ const StyledCardSkeleton = styled.li`
   position: relative;
   background-color: var(--color-lightgrey);
   list-style-type: none;
-  height: ${({ $height }) => ($height === "small" ? "60px" : "123px")};
+  height: 123px;
   margin: 1.25rem 0 0 0;
   padding-top: 40px;
   text-align: center;

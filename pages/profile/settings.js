@@ -1,14 +1,15 @@
-import useSWR from "swr";
-
 import updateUserinDb from "@/helpers/updateUserInDb";
 
 import StyledH2 from "@/components/Styled/StyledH2";
 import StyledList from "@/components/Styled/StyledList";
 import StyledP from "@/components/Styled/StyledP";
 import styled from "styled-components";
-import Header from "@/components/Styled/Header";
+import IconButton from "@/components/Styled/IconButton";
+import { useRouter } from "next/router";
+import Spacer from "@/components/Styled/Spacer";
 
 export default function Settings({ user, mutateUser }) {
+  const router = useRouter();
   if (!user) {
     return <p>kein Benutzer gefunden..</p>;
   }
@@ -60,39 +61,43 @@ export default function Settings({ user, mutateUser }) {
 
   return (
     <>
-      <Header text="Einstellungen 🥗" />
-      <StyledArticle>
-        <StyledH2>Anpassung Menü-Planer</StyledH2>
-        <StyledList>
-          <StyledP>Tage, für geplant werden soll:</StyledP>
-          <Wrapper>
-            {
-              // Konvertieren der Objekt-Einträge in ein Array und Sortierung
-              Object.entries(weekdaysEnabled)
-                // Sortierung, sodass Sonntag (0) am Ende der Liste steht
-                .sort(([day1], [day2]) => {
-                  // Beide Schlüssel in Zahlen umwandeln
-                  const dayNum1 = parseInt(day1, 10);
-                  const dayNum2 = parseInt(day2, 10);
+      <IconButton
+        style="ArrowLeft"
+        onClick={() => router.back()}
+        left={"var(--gap-out)"}
+        top={"var(--gap-out)"}
+      />
+      <Spacer />
+      <StyledH2>Anpassung Menü-Planer</StyledH2>
+      <StyledList>
+        <StyledP>Tage, für die geplant werden soll:</StyledP>
+        <Wrapper>
+          {
+            // Konvertieren der Objekt-Einträge in ein Array und Sortierung
+            Object.entries(weekdaysEnabled)
+              // Sortierung, sodass Sonntag (0) am Ende der Liste steht
+              .sort(([day1], [day2]) => {
+                // Beide Schlüssel in Zahlen umwandeln
+                const dayNum1 = parseInt(day1, 10);
+                const dayNum2 = parseInt(day2, 10);
 
-                  // Sonntag (0) wird als größer behandelt, um ihn ans Ende zu verschieben
-                  if (dayNum1 === 0) return 1;
-                  if (dayNum2 === 0) return -1;
-                  return dayNum1 - dayNum2;
-                })
-                .map(([day, isEnabled]) => (
-                  <WeekdayButton
-                    key={day}
-                    onClick={() => toggleWeekdays(day)}
-                    $enabled={isEnabled}
-                  >
-                    {weekdayLabels[day]}
-                  </WeekdayButton>
-                ))
-            }
-          </Wrapper>
-        </StyledList>
-      </StyledArticle>
+                // Sonntag (0) wird als größer behandelt, um ihn ans Ende zu verschieben
+                if (dayNum1 === 0) return 1;
+                if (dayNum2 === 0) return -1;
+                return dayNum1 - dayNum2;
+              })
+              .map(([day, isEnabled]) => (
+                <WeekdayButton
+                  key={day}
+                  onClick={() => toggleWeekdays(day)}
+                  $enabled={isEnabled}
+                >
+                  {weekdayLabels[day]}
+                </WeekdayButton>
+              ))
+          }
+        </Wrapper>
+      </StyledList>
     </>
   );
 }
@@ -113,8 +118,4 @@ const WeekdayButton = styled.button`
   margin-top: 1rem;
   margin-bottom: 1rem;
   cursor: pointer;
-`;
-const StyledArticle = styled.article`
-  margin-right: 2.5rem;
-  margin-left: 2.5rem;
 `;

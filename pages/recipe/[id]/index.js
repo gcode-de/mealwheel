@@ -39,9 +39,15 @@ export default function DetailPage({
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    await assignRecipeToCalendarDay(id, selectedDate, user, mutateUser);
 
-    const localDate = new Date(selectedDate).toLocaleDateString("de-DE", {
+    //generate ISO-Date
+    const isoDate = new Date(selectedDate);
+    isoDate.setUTCHours(0, 0, 0, 0);
+    const dbDate = isoDate.toISOString();
+
+    await assignRecipeToCalendarDay({ [dbDate]: id }, user, mutateUser);
+
+    const localDate = new Date(dbDate).toLocaleDateString("de-DE", {
       weekday: "long",
       year: "numeric",
       month: "long",
@@ -153,10 +159,10 @@ export default function DetailPage({
           />
           <button type="submit">speichern</button>
         </StyledForm>
-        <h1>{title}</h1>
-        <p>
+        <StyledTitle>{title}</StyledTitle>
+        <StyledP>
           {duration} MIN | {difficulty}
-        </p>
+        </StyledP>
         <StyledH2>
           Zutaten{" "}
           {servings === 1 ? `(für 1 Person` : `(für ${servings} Personen`})
@@ -198,14 +204,20 @@ const StyledIngredients = styled.article`
   border: 1px solid var(--color-lightgrey);
   border-radius: 20px;
   padding: 1rem;
-  margin-top: 1rem;
+  margin-right: var(--gap-out);
+  margin-left: var(--gap-out);
+  margin-top: var(--gap-between);
+  margin-bottom: var(--gap-between);
+  width: calc(100% - (2 * var(--gap-out)));
 `;
 
 const StyledHyper = styled.div`
   display: flex;
-  margin-top: 2rem;
-  margin-bottom: 1rem;
-  width: 100%;
+  margin-right: var(--gap-out);
+  margin-left: var(--gap-out);
+  margin-top: var(--gap-between);
+  margin-bottom: var(--gap-between);
+  width: calc(100% - (2 * var(--gap-out)));
   justify-content: space-between;
   border-bottom: 1px solid var(--color-darkgrey);
 `;
@@ -261,4 +273,12 @@ const StyledForm = styled.form`
     border-radius: 10px;
     background-color: var(--color-background);
   }
+`;
+const StyledTitle = styled.h1`
+  margin-right: var(--gap-out);
+  margin-left: var(--gap-out);
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  width: calc(100% - (2 * var(--gap-out)));
+  text-align: center;
 `;

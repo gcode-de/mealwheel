@@ -19,6 +19,15 @@ export default createGlobalStyle`
     --color-darkgrey: #4D4A4A; 
     --color-lightgrey: #928F8F;
     --color-font: #1E1E1E;
+
+    --gap-out: 2rem; 
+    --gap-between: 0.5rem; //halber Abstand
+    --height-header: 5rem; 
+    --height-nav: 4rem; 
+
+    --border-radius-small: 10px;
+    --border-radius-medium: 20px;
+    --border-radius-large: 40px; 
   }
   body {
     margin: auto;
@@ -27,6 +36,7 @@ export default createGlobalStyle`
     max-width: 400px;
     background-color: var(--color-background);
     color: var(--color-font);
-    padding-bottom: 5rem;
+    padding-bottom: 69px;
+    position: relative;
   }
 `;

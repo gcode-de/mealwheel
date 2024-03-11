@@ -6,6 +6,8 @@ import Calendar from "../public/icons/calendar-1-svgrepo-com.svg";
 import Heart from "../public/icons/heart-svgrepo-com.svg";
 import List from "../public/icons/list-check-svgrepo-com.svg";
 import Gear from "../public/icons/settings-svgrepo-com.svg";
+import Profile from "../public/icons/user-svgrepo-com.svg";
+
 export default function NavBar() {
   const router = useRouter();
   function isActive(path) {
@@ -15,7 +17,7 @@ export default function NavBar() {
     { href: "/", label: "Entdecken", Icon: Pizza },
     { href: "/plan", label: "Plan", Icon: Calendar },
     { href: "/favorites", label: "Favoriten", Icon: Heart },
-    { href: "/settings", label: "Settings", Icon: Gear },
+    { href: "/profile", label: "Profil", Icon: Profile },
   ];
 
   return (

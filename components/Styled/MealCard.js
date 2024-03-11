@@ -15,7 +15,7 @@ export default function MealCard({
 }) {
   return (
     <StyledLi>
-      {isFavorite !== undefined && (
+      {isFavorite !== null && (
         <IconButton
           style="Heart"
           right="-0.5rem"
@@ -122,6 +122,7 @@ const CardContainer = styled.div`
 `;
 
 const StyledLink = styled(Link)`
+  width: fit-content;
   text-decoration: none;
   color: var(--darkgrey);
   cursor: pointer;
@@ -145,6 +146,7 @@ const StyledPTitle = styled.p`
   margin-bottom: 0;
   margin-left: 1.5rem;
   margin-top: 0;
+  width: fit-content;
 `;
 const StyledPDuration = styled.p`
   font-size: 13px;
@@ -161,7 +163,7 @@ const StyledLi = styled.li`
 const NumberOfPeopleContainer = styled.div`
   display: flex;
   gap: 10px;
-  width: 100%;
+  width: min-content;
   justify-content: start;
   margin: 0.75rem 0 0 1.5rem;
   font-size: 1.25rem;
