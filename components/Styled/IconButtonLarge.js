@@ -24,6 +24,7 @@ const StyledBox = styled.div`
   z-index: 300;
   bottom: 6rem;
   left: var(--gap-out);
+  /* left: 50%; */
   width: 60px;
   height: 60px;
   display: flex;

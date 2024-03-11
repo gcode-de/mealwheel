@@ -2,6 +2,7 @@ import styled from "styled-components";
 import CardSkeleton from "@/components/Styled/CardSkeleton";
 import MealCard from "@/components/Styled/MealCard";
 import Header from "@/components/Styled/Header";
+import StyledUl from "@/components/StyledUl";
 
 export default function Favorites({
   user,
@@ -57,9 +58,3 @@ export default function Favorites({
 }
 
 const StyledArticle = styled.article``;
-
-const StyledUl = styled.ul`
-  padding: 10px;
-  max-width: 350px;
-  margin: 0 auto;
-`;
