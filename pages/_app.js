@@ -1,6 +1,8 @@
 import GlobalStyle from "../styles";
 import Layout from "@/components/Layout";
 import useSWR, { SWRConfig } from "swr";
+import { useKindeAuth } from "@kinde-oss/kinde-auth-nextjs";
+import { useRouter } from "next/router";
 
 const fetcher = async (url) => {
   const res = await fetch(url);
@@ -16,6 +18,12 @@ const fetcher = async (url) => {
 };
 
 export default function App({ Component, pageProps }) {
+  const router = useRouter();
+  const {
+    isAuthenticated: kindeIsAuthenticated,
+    isLoading: kindeIsLoading,
+    user: kindeUser,
+  } = useKindeAuth();
   const userId = "65e0925792f086ae06d2eadb";
   const {
     data: user,
@@ -32,6 +40,10 @@ export default function App({ Component, pageProps }) {
   }
 
   async function toggleIsFavorite(_id) {
+    if (!kindeIsAuthenticated) {
+      router.push("/api/auth/login");
+      return;
+    }
     if (
       user.recipeInteractions.find(
         (interaction) => interaction.recipe._id === _id
@@ -59,6 +71,10 @@ export default function App({ Component, pageProps }) {
   }
 
   async function toggleHasCooked(_id) {
+    if (!kindeIsAuthenticated) {
+      router.push("/api/auth/login");
+      return;
+    }
     if (
       user.recipeInteractions.find(
         (interaction) => interaction.recipe._id === _id
