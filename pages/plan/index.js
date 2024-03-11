@@ -48,11 +48,8 @@ export default function Plan({
   const weekOffset = Number(router.query.week) || 0;
 
   const [weekdays, setWeekdays] = useState([]);
-  const [numberOfRandomRecipes, setNumberOfRandomRecipes] = useState(2);
-
   const [assignableDays, setAssignableDays] = useState([]);
   const [numberOfRandomRecipes, setNumberOfRandomRecipes] = useState(0);
-
 
   useEffect(() => {
     const generatedWeekdays = generateWeekdays(weekOffset);
@@ -330,7 +327,6 @@ export default function Plan({
       </StyledHeader>
 
       <CalendarContainer>
-
         <DndContext
           collisionDetection={closestCenter}
           onDragEnd={onDragEnd}
@@ -374,7 +370,6 @@ export default function Plan({
               })}
           </SortableContext>
         </DndContext>
-
       </CalendarContainer>
       <ButtonsContainer>
         {assignableDays.length !== 0 ? (
