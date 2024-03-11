@@ -1,14 +1,23 @@
 import styled from "styled-components";
 
-export default function RandomnessSlider({ type, min, max, value, onChange }) {
+export default function RandomnessSlider({
+  type,
+  min,
+  max,
+  value,
+  onChange,
+  $isActive,
+}) {
+  console.log($isActive);
   return (
-    <SliderContainer>
+    <SliderContainer $isActive={$isActive}>
       <StyledSlider
         type={type}
         min={min}
         max={max}
         value={value}
         onChange={onChange}
+        $isActive={$isActive}
       />
       <MarksContainer>
         {Array.from({ length: max + 1 }).map((_, index) => (
@@ -23,6 +32,7 @@ const SliderContainer = styled.div`
   position: relative;
   width: 80%;
   margin: 0 auto;
+  opacity: ${(props) => !props.$isActive && "0.2"};
 `;
 
 const MarksContainer = styled.div`
@@ -57,7 +67,7 @@ const StyledSlider = styled.input`
   &::-webkit-slider-runnable-track {
     width: 100%;
     height: 4px;
-    cursor: pointer;
+    cursor: ${(props) => (props.$isActive ? "pointer" : "")};
     animate: 0.2s;
     box-shadow: 0px 0px 0px #000000;
     background: var(--color-font);
@@ -71,7 +81,7 @@ const StyledSlider = styled.input`
     width: 25px;
     border-radius: 25px;
     background: var(--color-component);
-    cursor: pointer;
+    cursor: ${(props) => (props.$isActive ? "pointer" : "")};
     -webkit-appearance: none;
     margin-top: -13px;
   }
@@ -81,7 +91,7 @@ const StyledSlider = styled.input`
   &::-moz-range-track {
     width: 100%;
     height: 4px;
-    cursor: pointer;
+    cursor: ${(props) => (props.$isActive ? "pointer" : "")};
     animate: 0.2s;
     box-shadow: 0px 0px 0px #000000;
     background: #000000;
@@ -95,12 +105,12 @@ const StyledSlider = styled.input`
     width: 25px;
     border-radius: 25px;
     background: none;
-    cursor: pointer;
+    cursor: ${(props) => (props.$isActive ? "pointer" : "")};
   }
   &::-ms-track {
     width: 100%;
     height: 4px;
-    cursor: pointer;
+    cursor: ${(props) => (props.$isActive ? "pointer" : "")};
     animate: 0.2s;
     background: transparent;
     border-color: transparent;
