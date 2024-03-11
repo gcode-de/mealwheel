@@ -17,13 +17,7 @@ export default function ProfilePage() {
   const router = useRouter();
   const { isAuthenticated, isLoading, user: kindeUser } = useKindeAuth();
 
-  // useEffect(() => {
-  //   if (!isLoading && !isAuthenticated) {
-  //     router.push("/api/auth/login");
-  //   }
-  // }, [isLoading, isAuthenticated, router]);
-
-  console.log(kindeUser);
+  console.log(kindeUser.id);
   return (
     <>
       <IconButton

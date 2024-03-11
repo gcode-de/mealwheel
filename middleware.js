@@ -5,11 +5,5 @@ export default function middleware(req) {
   });
 }
 export const config = {
-  matcher: [
-    "/favorites",
-    "/profile/settings",
-    "/profile/hasCooked",
-    "/profile/myRecipes",
-    "/profile",
-  ],
+  matcher: ["/profile/:path*"],
 };

@@ -16,7 +16,7 @@ export default function NavBar() {
   const menuItems = [
     { href: "/", label: "Entdecken", Icon: Pizza },
     { href: "/plan", label: "Plan", Icon: Calendar },
-    { href: "/favorites", label: "Favoriten", Icon: Heart },
+    { href: "/profile/favorites", label: "Favoriten", Icon: Heart },
     { href: "/profile", label: "Profil", Icon: Profile },
   ];
 

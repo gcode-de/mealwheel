@@ -3,6 +3,7 @@ import Layout from "@/components/Layout";
 import useSWR, { SWRConfig } from "swr";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-nextjs";
 import { useRouter } from "next/router";
+import updateUserinDb from "@/helpers/updateUserInDb";
 
 const fetcher = async (url) => {
   const res = await fetch(url);
@@ -24,7 +25,8 @@ export default function App({ Component, pageProps }) {
     isLoading: kindeIsLoading,
     user: kindeUser,
   } = useKindeAuth();
-  const userId = "65e0925792f086ae06d2eadb";
+  console.log(kindeUser);
+  const userId = kindeUser?.id || "65e0925792f086ae06d2eadb";
   const {
     data: user,
     isLoading,
@@ -58,16 +60,7 @@ export default function App({ Component, pageProps }) {
       user.recipeInteractions.push({ isFavorite: true, recipe: _id });
     }
 
-    const response = await fetch(`/api/users/${user._id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(user),
-    });
-    if (response.ok) {
-      mutate();
-    }
+    await updateUserinDb(user, mutateUser);
   }
 
   async function toggleHasCooked(_id) {
@@ -89,16 +82,7 @@ export default function App({ Component, pageProps }) {
       user.recipeInteractions.push({ hasCooked: true, recipe: _id });
     }
 
-    const response = await fetch(`/api/users/${user._id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(user),
-    });
-    if (response.ok) {
-      mutate();
-    }
+    await updateUserinDb(user, mutateUser);
   }
 
   if (error) {
