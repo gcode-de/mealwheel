@@ -1,10 +1,10 @@
-import styled from "styled-components";
 import useSWR from "swr";
 import Header from "@/components/Styled/Header";
 import CardSkeleton from "@/components/Styled/CardSkeleton";
 import MealCard from "@/components/Styled/MealCard";
 import IconButtonLarge from "@/components/Styled/IconButtonLarge";
 import { useRouter } from "next/router";
+import StyledUl from "@/components/StyledUl";
 
 export default function HomePage({
   error,
@@ -64,10 +64,3 @@ export default function HomePage({
     </>
   );
 }
-
-const StyledUl = styled.ul`
-  padding: 0;
-  width: calc(100% - (2 * var(--gap-out)));
-  margin: auto;
-  margin-bottom: 80px;
-`;

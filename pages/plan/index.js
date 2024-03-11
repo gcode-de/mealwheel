@@ -434,9 +434,10 @@ const RandomnessSliderContainer = styled.div`
 `;
 
 const CalendarContainer = styled.ul`
-  padding: 10px;
-  max-width: 350px;
-  margin: 0 auto 80px auto;
+  padding: 0;
+  width: calc(100% - (2 * var(--gap-out)));
+  margin: auto;
+  margin-bottom: 80px;
 `;
 
 const StyledH2 = styled.h2`
