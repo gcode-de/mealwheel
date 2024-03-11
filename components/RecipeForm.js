@@ -11,16 +11,39 @@ import { useRouter } from "next/router";
 import Button from "./Styled/StyledButton";
 import Image from "next/image";
 
-export default function RecipeForm({ onSubmit, onChange, imageUrl }) {
-  const [difficulty, setDifficulty] = useState("easy");
-  const [ingredients, setIngredients] = useState([
-    {
-      quantity: "",
-      unit: "",
-      name: "",
-    },
-  ]);
+export default function RecipeForm({ onSubmit, data }) {
+  const [imageUrl, setImageUrl] = useState(data ? data.imageLink : "");
+  const [difficulty, setDifficulty] = useState(
+    data && data.difficulty ? data.difficulty : "easy"
+  );
+  const [ingredients, setIngredients] = useState(
+    data
+      ? data.ingredients
+      : [
+          {
+            quantity: "",
+            unit: "",
+            name: "",
+          },
+        ]
+  );
   const router = useRouter();
+
+  const uploadImage = async (event) => {
+    const files = event.target.files;
+    const data = new FormData();
+    data.append("file", files[0]);
+    data.append("upload_preset", "meal_wheel");
+    const uploadResponse = await fetch(
+      "https://api.cloudinary.com/v1_1/mealwheel/image/upload",
+      {
+        method: "POST",
+        body: data,
+      }
+    );
+    const file = await uploadResponse.json();
+    setImageUrl(file.secure_url);
+  };
 
   function handleInputChange(event, index, field) {
     const newIngredients = [...ingredients];
@@ -42,7 +65,7 @@ export default function RecipeForm({ onSubmit, onChange, imageUrl }) {
 
     const formData = new FormData(event.target);
     const data = Object.fromEntries(formData);
-    const newData = { ...data, ingredients };
+    const newData = { ...data, ingredients, imageLink: imageUrl };
     onSubmit(newData);
   }
   return (
@@ -66,7 +89,7 @@ export default function RecipeForm({ onSubmit, onChange, imageUrl }) {
         )}
         <StyledImageUploadContainer>
           <Plus width={40} height={40} />
-          <StyledImageUpload type="file" onChange={onChange} />
+          <StyledImageUpload type="file" onChange={uploadImage} />
         </StyledImageUploadContainer>
       </StyledTop>
       <form onSubmit={handleSubmit}>
@@ -77,6 +100,7 @@ export default function RecipeForm({ onSubmit, onChange, imageUrl }) {
             placeholder="Titel"
             required
             aria-label="add titel of the recipe"
+            defaultValue={data?.title}
           />
           <StyledListItem>
             <StyledInput
@@ -87,6 +111,7 @@ export default function RecipeForm({ onSubmit, onChange, imageUrl }) {
               required
               min="0"
               aria-label="add duration to cook for the recipe"
+              defaultValue={data?.duration}
             />
             <StyledP>min</StyledP>
 
@@ -120,6 +145,7 @@ export default function RecipeForm({ onSubmit, onChange, imageUrl }) {
                   required
                   name="unit"
                   onChange={(event) => handleInputChange(event, index, "unit")}
+                  defaultValue={ingredient.unit}
                 >
                   <option value="">-</option>
                   <option value="ml">ml</option>
@@ -149,9 +175,14 @@ export default function RecipeForm({ onSubmit, onChange, imageUrl }) {
             name="instructions"
             required
             aria-label="add instructions for creating the recipe"
+            defaultValue={data?.instructions}
           />
           <StyledH2>Video</StyledH2>
-          <StyledInput type="link" name="youtubeLink"></StyledInput>
+          <StyledInput
+            type="link"
+            name="youtubeLink"
+            defaultValue={data?.youtubeLink}
+          />
           <Button type="submit">speichern</Button>
         </StyledArticle>
       </form>
