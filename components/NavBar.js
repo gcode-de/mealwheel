@@ -7,6 +7,7 @@ import Heart from "../public/icons/heart-svgrepo-com.svg";
 import List from "../public/icons/list-check-svgrepo-com.svg";
 import Gear from "../public/icons/settings-svgrepo-com.svg";
 import Profile from "../public/icons/user-svgrepo-com.svg";
+import Shopping from "../public/icons/cart-svgrepo-com.svg";
 
 export default function NavBar() {
   const router = useRouter();
@@ -17,6 +18,7 @@ export default function NavBar() {
     { href: "/", label: "Entdecken", Icon: Pizza },
     { href: "/plan", label: "Plan", Icon: Calendar },
     { href: "/favorites", label: "Favoriten", Icon: Heart },
+    { href: "/shopping", label: "Shopping", Icon: Shopping },
     { href: "/profile", label: "Profil", Icon: Profile },
   ];
 

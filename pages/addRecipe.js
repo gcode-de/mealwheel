@@ -1,7 +1,7 @@
 import RecipeForm from "@/components/RecipeForm";
 import { useRouter } from "next/router";
 import useSWR from "swr";
-import React, { useState } from "react";
+import React from "react";
 
 export default function AddRecipe() {
   const { mutate } = useSWR("/api/recipes");

@@ -21,6 +21,11 @@ const calendarEntrySchema = new Schema({
   numberOfPeople: Number,
   isDisabled: Boolean,
 });
+const shoppingItem = new Schema({
+  name: { type: String, required: true },
+  quantity: { type: Number, required: true },
+  unit: { type: String },
+});
 
 const userSchema = new Schema({
   firstName: String,
@@ -36,6 +41,7 @@ const userSchema = new Schema({
   },
   recipeInteractions: [recipeInteractionSchema],
   calendar: [calendarEntrySchema],
+  shoppingList: [shoppingItem],
 });
 
 const User = mongoose.models.User || mongoose.model("User", userSchema);
