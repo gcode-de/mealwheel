@@ -1,6 +1,27 @@
 import mongoose from "mongoose";
 const { Schema } = mongoose;
 
+async function cleanupRecipeReferences(recipeId) {
+  try {
+    await mongoose
+      .model("User")
+      .updateMany(
+        { "recipeInteractions.recipe": recipeId },
+        { $pull: { recipeInteractions: { recipe: recipeId } } }
+      );
+
+    await mongoose
+      .model("User")
+      .updateMany(
+        { "calendar.recipe": recipeId },
+        { $pull: { calendar: { recipe: recipeId } } }
+      );
+  } catch (error) {
+    console.error("Fehler beim Bereinigen der Rezeptreferenzen: ", error);
+    throw error;
+  }
+}
+
 const ingredientSchema = new Schema({
   name: { type: String, required: true },
   quantity: { type: Number, required: true },
@@ -29,3 +50,4 @@ const recipeSchema = new mongoose.Schema({
 const Recipe = mongoose.models.Recipe || mongoose.model("Recipe", recipeSchema);
 
 export default Recipe;
+export { cleanupRecipeReferences };

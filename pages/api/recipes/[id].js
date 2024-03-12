@@ -1,5 +1,6 @@
 import dbConnect from "../../../db/connect";
 import Recipe from "../../../db/models/Recipe";
+import { cleanupRecipeReferences } from "../../../db/models/Recipe";
 
 export default async function handler(request, response) {
   await dbConnect();
@@ -23,12 +24,15 @@ export default async function handler(request, response) {
 
   if (request.method === "DELETE") {
     const { user, author } = request.body;
-    console.log(user, author);
     if (user === author) {
-      await Recipe.findOneAndDelete(id);
-      return response.status(200).json({ status: `Recipe ${id} updated!` });
+      // Zuerst die Bereinigung der Referenzen durchführen
+      await cleanupRecipeReferences(id);
+
+      // Rezept löschen
+      await Recipe.findByIdAndDelete(id);
+      return response.status(200).json({ status: `Recipe ${id} deleted!` });
     } else {
-      return response.status(401).json({ status: "unathorized" });
+      return response.status(401).json({ status: "unauthorized" });
     }
   }
 }

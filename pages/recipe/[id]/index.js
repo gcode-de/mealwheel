@@ -61,6 +61,9 @@ export default function DetailPage({
   };
 
   async function handleDelete() {
+    if (confirm("Dieses Rezept löschen?") !== true) {
+      return;
+    }
     const response = await fetch(`/api/recipes/${id}`, {
       method: "DELETE",
       headers: {
