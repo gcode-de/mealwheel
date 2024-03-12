@@ -28,7 +28,7 @@ export default function ProfilePage() {
         fill="var(--color-lightgrey)"
       />
       <WrapperCenter>
-        <StyledLogoutLink>Log out</StyledLogoutLink>
+        <StyledLogoutLink postLogoutRedirectURL="/">Log out</StyledLogoutLink>
         <StyledProfile>
           {kindeUser.picture ? (
             <Image

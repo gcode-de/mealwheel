@@ -32,17 +32,19 @@ export default function Login({ user, error, isLoading }) {
       <Header text="Login 🥗" />
       <StyledArticle>
         <LoginLink
-          authUrlParams={{
-            lang: "de-DE",
-          }}
+          // authUrlParams={{
+          //   lang: "de-DE",
+          // }}
+          postLoginRedirectURL="/profile"
         >
           Einloggen
         </LoginLink>
 
         <RegisterLink
-          authUrlParams={{
-            lang: "de-DE",
-          }}
+          // authUrlParams={{
+          //   lang: "de-DE",
+          // }}
+          postLoginRedirectURL="/profile"
         >
           Registrieren
         </RegisterLink>
