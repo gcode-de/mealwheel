@@ -18,6 +18,21 @@ export default function ShoppingList({ user, mutateUser }) {
   if (!user) {
     return;
   }
+  user.shoppingList = Array.from(
+    user.shoppingList
+      .reduce((map, obj) => {
+        const { name, quantity, unit } = obj;
+        const existingObj = map.get(name + unit); // Kombination aus Name und Einheit
+        if (existingObj) {
+          existingObj.quantity += quantity;
+        } else {
+          map.set(name + unit, { name, quantity, unit });
+        }
+        return map;
+      }, new Map())
+      .values()
+  );
+  //   console.log(mergedIngredients);
 
   async function handleSubmit(event) {
     event.preventDefault();
