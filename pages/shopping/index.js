@@ -32,7 +32,6 @@ export default function ShoppingList({ user, mutateUser }) {
       }, new Map())
       .values()
   );
-  //   console.log(mergedIngredients);
 
   async function handleSubmit(event) {
     event.preventDefault();

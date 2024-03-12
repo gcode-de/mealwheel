@@ -314,7 +314,7 @@ export default function Plan({
     );
     updateUserinDb(user, mutateUser);
   }
-  console.log(user.shoppingList);
+
   return (
     <>
       <StyledHeader>
