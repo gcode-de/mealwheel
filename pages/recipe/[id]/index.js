@@ -60,25 +60,6 @@ export default function DetailPage({
     window.alert(`Das Rezept wurde für ${localDate} eingeplant.`);
   };
 
-  async function handleDelete() {
-    if (confirm("Dieses Rezept löschen?") !== true) {
-      return;
-    }
-    const response = await fetch(`/api/recipes/${id}`, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ user: user._id, author: recipe.author }),
-    });
-
-    if (response.ok) {
-      router.back();
-    } else {
-      console.log("Löschen fehlgeschlagen", response.body);
-    }
-  }
-
   if (error || dataError) {
     return <h1>Fehler...</h1>;
   }
@@ -212,7 +193,6 @@ export default function DetailPage({
         {content === "video" && (
           <Link href={youtubeLink}>auf youtube anschauen</Link>
         )}
-        {userIsAuthor && <button onClick={handleDelete}>Rezept löschen</button>}
       </StyledArticle>
     </Wrapper>
   );
