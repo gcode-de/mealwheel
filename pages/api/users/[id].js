@@ -7,12 +7,22 @@ export default async function handler(request, response) {
   const { id } = request.query;
 
   if (request.method === "GET") {
-    const user = await User.findById(id)
+    let user = await User.findById(id)
       .populate("recipeInteractions.recipe")
       .populate("calendar.recipe");
+    console.log(user);
+
+    // if (!user) {
+    //   return response.status(404).json({ status: "Not Found" });
+    // }
 
     if (!user) {
-      return response.status(404).json({ status: "Not Found" });
+      user = await User.create({
+        _id: id,
+        calendar: [],
+        recipeInteractions: [],
+        settings: {},
+      });
     }
 
     response.status(200).json(user);

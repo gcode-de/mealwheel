@@ -1,7 +1,9 @@
 import GlobalStyle from "../styles";
 import Layout from "@/components/Layout";
 import useSWR, { SWRConfig } from "swr";
-import { useKindeAuth } from "@kinde-oss/kinde-auth-nextjs";
+import { KindeProvider } from "@kinde-oss/kinde-auth-nextjs";
+import Auth from "@/pages/auth";
+
 import { useRouter } from "next/router";
 import updateUserinDb from "@/helpers/updateUserInDb";
 
@@ -20,13 +22,8 @@ const fetcher = async (url) => {
 
 export default function App({ Component, pageProps }) {
   const router = useRouter();
-  const {
-    isAuthenticated: kindeIsAuthenticated,
-    isLoading: kindeIsLoading,
-    user: kindeUser,
-  } = useKindeAuth();
-  console.log(kindeUser);
-  const userId = kindeUser?.id || "65e0925792f086ae06d2eadb";
+
+  const userId = "65e0925792f086ae06d2eadb";
   const {
     data: user,
     isLoading,
@@ -113,20 +110,24 @@ export default function App({ Component, pageProps }) {
 
   return (
     <>
-      <Layout>
-        <GlobalStyle />
-        <SWRConfig value={{ fetcher }}>
-          <Component
-            {...pageProps}
-            userId={userId}
-            user={user}
-            getRecipeProperty={getRecipeProperty}
-            toggleIsFavorite={toggleIsFavorite}
-            toggleHasCooked={toggleHasCooked}
-            mutateUser={mutate}
-          />
-        </SWRConfig>
-      </Layout>
+      <KindeProvider>
+        <Auth>
+          <Layout>
+            <GlobalStyle />
+            <SWRConfig value={{ fetcher }}>
+              <Component
+                {...pageProps}
+                userId={userId}
+                user={user}
+                getRecipeProperty={getRecipeProperty}
+                toggleIsFavorite={toggleIsFavorite}
+                toggleHasCooked={toggleHasCooked}
+                mutateUser={mutate}
+              />
+            </SWRConfig>
+          </Layout>
+        </Auth>
+      </KindeProvider>
     </>
   );
 }
