@@ -20,4 +20,15 @@ export default async function handler(request, response) {
     await Recipe.findByIdAndUpdate(id, recipe);
     return response.status(200).json({ status: `Recipe ${id} updated!` });
   }
+
+  if (request.method === "DELETE") {
+    const { user, author } = request.body;
+    console.log(user, author);
+    if (user === author) {
+      await Recipe.findOneAndDelete(id);
+      return response.status(200).json({ status: `Recipe ${id} updated!` });
+    } else {
+      return response.status(401).json({ status: "unathorized" });
+    }
+  }
 }

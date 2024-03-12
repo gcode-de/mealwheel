@@ -34,6 +34,8 @@ export default function DetailPage({
     error: dataError,
   } = useSWR(id ? `/api/recipes/${id}` : null);
 
+  const userIsAuthor = user?._id === recipe?.author;
+
   const [selectedDate, setSelectedDate] = useState("");
   const [calendarFormIsVisible, setCalendarFormIsVisible] = useState(false);
 
@@ -57,6 +59,22 @@ export default function DetailPage({
     setCalendarFormIsVisible(false);
     window.alert(`Das Rezept wurde für ${localDate} eingeplant.`);
   };
+
+  async function handleDelete() {
+    const response = await fetch(`/api/recipes/${id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ user: user._id, author: recipe.author }),
+    });
+
+    if (response.ok) {
+      router.back();
+    } else {
+      console.log("Löschen fehlgeschlagen", response.body);
+    }
+  }
 
   if (error || dataError) {
     return <h1>Fehler...</h1>;
@@ -98,14 +116,16 @@ export default function DetailPage({
         sizes="500px"
       />
       <StyledArticle>
-        <Link href={`/recipe/${id}/edit`}>
-          <IconButton
-            style="Edit"
-            right="11.25rem"
-            top="-1.25rem"
-            fill={"var(--color-lightgrey)"}
-          />
-        </Link>
+        {userIsAuthor && (
+          <Link href={`/recipe/${id}/edit`}>
+            <IconButton
+              style="Edit"
+              right="11.25rem"
+              top="-1.25rem"
+              fill={"var(--color-lightgrey)"}
+            />
+          </Link>
+        )}
         <IconButton
           style="Calendar"
           right="8.25rem"
@@ -189,6 +209,7 @@ export default function DetailPage({
         {content === "video" && (
           <Link href={youtubeLink}>auf youtube anschauen</Link>
         )}
+        {userIsAuthor && <button onClick={handleDelete}>Rezept löschen</button>}
       </StyledArticle>
     </Wrapper>
   );
