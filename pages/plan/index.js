@@ -44,6 +44,7 @@ export default function Plan({
   getRecipeProperty,
   toggleIsFavorite,
   mutateUser,
+  recipes,
 }) {
   const router = useRouter();
   const weekOffset = Number(router.query.week) || 0;
@@ -280,6 +281,39 @@ export default function Plan({
     );
   }
 
+  function saveToShopping() {
+    const recipesId = weekdays.map(
+      (day) => getCalendarDayFromDb(day.date)?.recipe?._id
+    );
+    const findRecipes = recipesId.map(
+      (id) => recipes.find((recipe) => recipe._id === id)?.ingredients
+    );
+    const servingsPerDay = weekdays.map(
+      (day) => getCalendarDayFromDb(day.date)?.numberOfPeople
+    );
+
+    const multipliedQuantities = findRecipes
+      .map((ingredients, index) => {
+        if (ingredients) {
+          return ingredients.map((ingredient) => {
+            return {
+              ...ingredient,
+              quantity: ingredient.quantity * servingsPerDay[index],
+            };
+          });
+        }
+        return [];
+      })
+      .filter((recipe) => recipe.length > 0);
+    const combinedIngredients = multipliedQuantities.reduce(
+      (acc, curr) => acc.concat(curr),
+      []
+    );
+    user.shoppingList.push(
+      ...combinedIngredients.map((ingredient) => ingredient)
+    );
+    updateUserinDb(user, mutateUser);
+  }
   return (
     <>
       <StyledHeader>
@@ -373,7 +407,11 @@ export default function Plan({
         </DndContext>
       </CalendarContainer>
 
-      <IconButtonLarge style={"saveShopping"} bottom="10rem" />
+      <IconButtonLarge
+        style={"saveShopping"}
+        bottom="10rem"
+        onClick={() => saveToShopping()}
+      />
       {assignableDays.length !== 0 ? (
         <IconButtonLarge
           style={"generate"}
@@ -458,12 +496,3 @@ const StyledPowerIcon = styled(PowerIcon)`
     props.$dayIsDisabled ? "var(--color-lightgrey)" : "var(--color-highlight)"};
   cursor: pointer;
 `;
-
-// const ButtonsContainer = styled.div`
-/* position: fixed;
-  bottom: 10rem;
-  left: var(--gap-out);
-  display: flex;
-  flex-direction: column; */
-//   z-index: 1000;
-// `;
