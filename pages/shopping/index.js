@@ -11,7 +11,6 @@ import StyledInput from "@/components/Styled/StyledInput";
 import StyledDropDown from "@/components/Styled/StyledDropDown";
 import StyledH2 from "@/components/Styled/StyledH2";
 import StyledListItem from "@/components/Styled/StyledListItem";
-import StyledP from "@/components/Styled/StyledP";
 
 import updateUserinDb from "@/helpers/updateUserInDb";
 
@@ -29,7 +28,7 @@ export default function ShoppingList({ user, mutateUser }) {
       user.shoppingList = [];
     }
     user.shoppingList.push({ ...data, isChecked: false });
-    console.log(user);
+
     await updateUserinDb(user, mutateUser);
   }
 
@@ -37,16 +36,11 @@ export default function ShoppingList({ user, mutateUser }) {
     const updatedShoppingList = [...user.shoppingList];
     updatedShoppingList[index].isChecked =
       !updatedShoppingList[index].isChecked;
-    // Sortiere die Einkaufsliste so, dass durchgestrichene Elemente am Ende stehen
     updatedShoppingList.sort((a, b) => (a.isChecked && !b.isChecked ? 1 : -1));
     user.shoppingList = updatedShoppingList;
-    console.log(user);
+
     updateUserinDb(user, mutateUser);
   }
-
-  const { unit } = user.shoppingList;
-  console.log(unit);
-  //   const { piece: Stück } = unit;
 
   return (
     <>

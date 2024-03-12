@@ -5,7 +5,6 @@ import Recipe from "../../../db/models/Recipe";
 export default async function handler(request, response) {
   await dbConnect();
   const { id } = request.query;
-  console.log(request.query);
 
   if (request.method === "GET") {
     const user = await User.findById(id)
