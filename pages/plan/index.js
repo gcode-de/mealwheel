@@ -208,11 +208,14 @@ export default function Plan({
                 ? Number(calendarDay.numberOfPeople)
                 : user.settings.defaultNumberOfPeople
             }
-            changeNumberOfPeople={changeNumberOfPeople}
+            changeNumberOfPeople={(change) =>
+              changeNumberOfPeople(calendarDay.date, change)
+            }
             reassignRecipe={reassignRecipe}
             removeRecipe={removeRecipe}
             day={calendarDay.date}
             isFavorite={null}
+            user={user}
           />
         ) : (
           <CardSkeleton
