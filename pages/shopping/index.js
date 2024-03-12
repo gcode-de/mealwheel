@@ -61,8 +61,12 @@ export default function ShoppingList({ user, mutateUser }) {
                   onChange={() => handleCheckboxChange(index)}
                 ></StyledCheckbox>
                 <StyledCheck>
-                  <StyledCheckItem $flex={0.1}>{item.quantity}</StyledCheckItem>
-                  <StyledCheckItem $flex={1}>{item.unit}</StyledCheckItem>
+                  <StyledNumberUnit>
+                    <StyledCheckItem $flex={0.1}>
+                      {item.quantity}
+                    </StyledCheckItem>
+                    <StyledCheckItem $flex={1}>{item.unit}</StyledCheckItem>
+                  </StyledNumberUnit>
                   <StyledCheckItem $flex={2}>{item.name}</StyledCheckItem>
                 </StyledCheck>
               </StyledListItem>
@@ -75,12 +79,11 @@ export default function ShoppingList({ user, mutateUser }) {
             <StyledInput
               type="number"
               $width={"3rem"}
-              required
               min="0"
               aria-label="add ingredient quantity for the recipe"
               name="quantity"
             />
-            <StyledDropDown required name="unit">
+            <StyledDropDown name="unit">
               <option value="">-</option>
               <option value="ml">ml</option>
               <option value="piece">Stück</option>
@@ -94,6 +97,7 @@ export default function ShoppingList({ user, mutateUser }) {
               name="name"
               placeholder="neues Item"
               aria-label="add igredient name for the recipe"
+              required
             />
           </StyledIngredients>
           <AddButton type="submit" $color="var(--color-background)">
@@ -123,4 +127,8 @@ const StyledCheckbox = styled.input`
   background-color: var(--color-background);
   color: pink;
   height: 20px;
+`;
+const StyledNumberUnit = styled.div`
+  width: 40%;
+  display: flex;
 `;
