@@ -3,16 +3,18 @@ import ArrowLeft from "@/public/icons/ArrowSmall.svg";
 import ChevronSmall from "@/public/icons/ChevronSmall.svg";
 import Plus from "@/public/icons/Plus.svg";
 import XSmall from "@/public/icons/XSmall.svg";
+import ArrowUp from "@/public/icons/arrow-up-svgrepo-com.svg";
 
-export default function IconButtonLarge({ onClick, style }) {
+export default function IconButtonLarge({ onClick, style, bottom }) {
   const buttonStyles = {
     arrowLeft: <ArrowLeft width={30} height={30} />,
     chevrondown: <ChevronSmall width={30} height={30} />,
     plus: <Plus width={30} height={30} />,
     x: <XSmall width={30} height={30} />,
+    arrowUp: <ArrowUp width={30} height={30} />,
   };
   return (
-    <StyledBox>
+    <StyledBox $bottom={bottom}>
       <StyledLinkSvg onClick={onClick}>{buttonStyles[style]}</StyledLinkSvg>
     </StyledBox>
   );
@@ -22,9 +24,8 @@ const StyledBox = styled.div`
   background-color: white;
   position: fixed;
   z-index: 300;
-  bottom: 6rem;
+  bottom: ${(props) => props.$bottom};
   left: var(--gap-out);
-  /* left: 50%; */
   width: 60px;
   height: 60px;
   display: flex;

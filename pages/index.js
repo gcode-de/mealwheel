@@ -5,6 +5,7 @@ import MealCard from "@/components/Styled/MealCard";
 import IconButtonLarge from "@/components/Styled/IconButtonLarge";
 import { useRouter } from "next/router";
 import StyledUl from "@/components/StyledUl";
+import ScrollToTop from "@/components/ScrollToTopButton";
 
 export default function HomePage({
   error,
@@ -57,8 +58,10 @@ export default function HomePage({
           );
         })}
       </StyledUl>
+      <ScrollToTop />
       <IconButtonLarge
         style={"plus"}
+        bottom="6rem"
         onClick={() => router.push("/addRecipe")}
       />
     </>
