@@ -1,5 +1,6 @@
 import { useState } from "react";
 import useSWR from "swr";
+import styled from "styled-components";
 
 import StyledList from "@/components/Styled/StyledList";
 import AddButton from "@/components/Styled/AddButton";
@@ -27,10 +28,25 @@ export default function ShoppingList({ user, mutateUser }) {
     if (!user.shoppingList) {
       user.shoppingList = [];
     }
-    user.shoppingList.push(data);
-
+    user.shoppingList.push({ ...data, isChecked: false });
+    console.log(user);
     await updateUserinDb(user, mutateUser);
   }
+
+  function handleCheckboxChange(index) {
+    const updatedShoppingList = [...user.shoppingList];
+    updatedShoppingList[index].isChecked =
+      !updatedShoppingList[index].isChecked;
+    // Sortiere die Einkaufsliste so, dass durchgestrichene Elemente am Ende stehen
+    updatedShoppingList.sort((a, b) => (a.isChecked && !b.isChecked ? 1 : -1));
+    user.shoppingList = updatedShoppingList;
+    console.log(user);
+    updateUserinDb(user, mutateUser);
+  }
+
+  const { unit } = user.shoppingList;
+  console.log(unit);
+  //   const { piece: Stück } = unit;
 
   return (
     <>
@@ -39,11 +55,22 @@ export default function ShoppingList({ user, mutateUser }) {
         {!user.shoppingList
           ? "noch nichts"
           : user.shoppingList.map((item, index) => (
-              <StyledListItem key={index}>
-                <input type="checkbox"></input>
-                <StyledP>{item.quantity}</StyledP>
-                <StyledP>{item.unit}</StyledP>
-                <StyledP>{item.name}</StyledP>
+              <StyledListItem
+                key={index}
+                style={{
+                  textDecoration: item.isChecked ? "line-through" : "none",
+                }}
+              >
+                <StyledCheckbox
+                  type="checkbox"
+                  checked={item.isChecked}
+                  onChange={() => handleCheckboxChange(index)}
+                ></StyledCheckbox>
+                <StyledCheck>
+                  <StyledCheckItem $flex={0.1}>{item.quantity}</StyledCheckItem>
+                  <StyledCheckItem $flex={1}>{item.unit}</StyledCheckItem>
+                  <StyledCheckItem $flex={2}>{item.name}</StyledCheckItem>
+                </StyledCheck>
               </StyledListItem>
             ))}
       </StyledList>
@@ -83,3 +110,23 @@ export default function ShoppingList({ user, mutateUser }) {
     </>
   );
 }
+const StyledCheck = styled.div`
+  background-color: var(--color-background);
+  border-radius: var(--border-radius-small);
+  height: 30px;
+  width: 100%;
+  padding: 0.7rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+`;
+const StyledCheckItem = styled.p`
+  border-radius: var(--border-radius-small);
+  flex-grow: ${(props) => props.$flex};
+`;
+const StyledCheckbox = styled.input`
+  background-color: var(--color-background);
+  color: pink;
+  height: 20px;
+`;

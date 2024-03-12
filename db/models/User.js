@@ -22,9 +22,10 @@ const calendarEntrySchema = new Schema({
   isDisabled: Boolean,
 });
 const shoppingItem = new Schema({
-  name: String,
-  quantity: Number,
-  unit: String,
+  name: { type: String, required: true },
+  quantity: { type: Number, required: true },
+  unit: { type: String, required: true },
+  isChecked: Boolean,
 });
 
 const userSchema = new Schema({

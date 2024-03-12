@@ -1,6 +1,6 @@
 export default async function updateUserinDb(user, mutateUser) {
   if (!user) return;
-  console.log(user);
+
   const response = await fetch(`/api/users/${user._id}`, {
     method: "PUT",
     headers: {
