@@ -17,7 +17,7 @@ export default function ProfilePage() {
   const router = useRouter();
   const { isAuthenticated, isLoading, user: kindeUser } = useKindeAuth();
 
-  console.log(kindeUser.id);
+  console.log(kindeUser?.id);
   return (
     <>
       <IconButton
@@ -30,7 +30,7 @@ export default function ProfilePage() {
       <WrapperCenter>
         <StyledLogoutLink postLogoutRedirectURL="/">Log out</StyledLogoutLink>
         <StyledProfile>
-          {kindeUser.picture ? (
+          {kindeUser?.picture ? (
             <Image
               src={kindeUser?.picture}
               alt="Profile Picture"
@@ -46,7 +46,7 @@ export default function ProfilePage() {
         <p>Hallo, {kindeUser?.given_name || `Mensch`}!</p>
       </StyledList>
       <Wrapper>
-        <StyledLink href="/favorites">
+        <StyledLink href="/profile/favorites">
           <Heart width={40} height={40} />
           <StyledP>Favoriten</StyledP>
         </StyledLink>
