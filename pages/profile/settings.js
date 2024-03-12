@@ -61,8 +61,7 @@ export default function Settings({ user, mutateUser }) {
   }
 
   async function changeDefaultNumberOfPeople(change) {
-    user.settings.defaultNumberOfPeople =
-      user.settings.defaultNumberOfPeople + change;
+    user.settings.defaultNumberOfPeople += change;
     await updateUserinDb(user, mutateUser);
   }
 
