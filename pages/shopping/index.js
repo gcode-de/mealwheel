@@ -1,45 +1,57 @@
+import { useState } from "react";
+import useSWR from "swr";
+
+import StyledList from "@/components/Styled/StyledList";
 import AddButton from "@/components/Styled/AddButton";
 import Header from "@/components/Styled/Header";
-import StyledList from "@/components/Styled/StyledList";
 import Plus from "@/public/icons/Plus.svg";
-import { useState } from "react";
 import StyledIngredients from "@/components/Styled/StyledIngredients";
 import StyledInput from "@/components/Styled/StyledInput";
 import StyledDropDown from "@/components/Styled/StyledDropDown";
 import StyledH2 from "@/components/Styled/StyledH2";
+import StyledListItem from "@/components/Styled/StyledListItem";
+import StyledP from "@/components/Styled/StyledP";
 
-export default function ShoppingList({ user }) {
-  const [shoppingItem, setshoppingItem] = useState(
-    user ? user.shoppingList : []
-  );
-  console.log(user);
+import updateUserinDb from "@/helpers/updateUserInDb";
 
-  function handleSubmit(event) {
+export default function ShoppingList({ user, mutateUser }) {
+  if (!user) {
+    return;
+  }
+
+  async function handleSubmit(event) {
     event.preventDefault();
     const formData = new FormData(event.target);
     const data = Object.fromEntries(formData);
-    setshoppingItem([...shoppingItem, data]);
+    data.quantity = Number(data.quantity);
+    if (!user.shoppingList) {
+      user.shoppingList = [];
+    }
+    user.shoppingList.push(data);
+
+    await updateUserinDb(user, mutateUser);
   }
-  console.log(shoppingItem);
+
   return (
     <>
       <Header text="Einkaufsliste" />
       <StyledList>
-        {shoppingItem.map((item, index) => (
-          <li key={index}>
-            <input type="checkbox"></input>
-            <p>{item.quantity}</p>
-            <p>{item.unit}</p>
-            <p>{item.name}</p>
-          </li>
-        ))}
+        {!user.shoppingList
+          ? "noch nichts"
+          : user.shoppingList.map((item, index) => (
+              <StyledListItem key={index}>
+                <input type="checkbox"></input>
+                <StyledP>{item.quantity}</StyledP>
+                <StyledP>{item.unit}</StyledP>
+                <StyledP>{item.name}</StyledP>
+              </StyledListItem>
+            ))}
       </StyledList>
       <StyledH2>neue Zutat:</StyledH2>
       <form onSubmit={handleSubmit}>
         <StyledList>
           <StyledIngredients>
             <StyledInput
-              //   onChange={(event) => handleInputChange(event, index, "quantity")}
               type="number"
               $width={"3rem"}
               required
@@ -47,11 +59,7 @@ export default function ShoppingList({ user }) {
               aria-label="add ingredient quantity for the recipe"
               name="quantity"
             />
-            <StyledDropDown
-              required
-              name="unit"
-              //   onChange={(event) => handleInputChange(event, index, "unit")}
-            >
+            <StyledDropDown required name="unit">
               <option value="">-</option>
               <option value="ml">ml</option>
               <option value="piece">Stück</option>
@@ -61,7 +69,6 @@ export default function ShoppingList({ user }) {
               <option value="Prise">Prise</option>
             </StyledDropDown>
             <StyledInput
-              //   onChange={(event) => handleInputChange(event, index, "name")}
               type="text"
               name="name"
               placeholder="neues Item"

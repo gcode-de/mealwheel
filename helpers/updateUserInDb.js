@@ -1,5 +1,6 @@
 export default async function updateUserinDb(user, mutateUser) {
   if (!user) return;
+  console.log(user);
   const response = await fetch(`/api/users/${user._id}`, {
     method: "PUT",
     headers: {
@@ -9,5 +10,7 @@ export default async function updateUserinDb(user, mutateUser) {
   });
   if (response.ok) {
     await mutateUser();
+  } else {
+    throw new Error("Failed to update user data.");
   }
 }

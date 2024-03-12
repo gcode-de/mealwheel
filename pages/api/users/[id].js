@@ -5,6 +5,7 @@ import Recipe from "../../../db/models/Recipe";
 export default async function handler(request, response) {
   await dbConnect();
   const { id } = request.query;
+  console.log(request.query);
 
   if (request.method === "GET") {
     const user = await User.findById(id)
@@ -21,6 +22,7 @@ export default async function handler(request, response) {
   if (request.method === "PUT") {
     try {
       await User.findByIdAndUpdate(id, request.body);
+
       return response.status(200).json("User updated");
     } catch (error) {
       console.log(error);

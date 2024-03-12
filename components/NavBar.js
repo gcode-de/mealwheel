@@ -1,13 +1,13 @@
 import Link from "next/link";
 import styled from "styled-components";
 import { useRouter } from "next/router";
-import Pizza from "../public/icons/pizza-svgrepo-com.svg";
-import Calendar from "../public/icons/calendar-1-svgrepo-com.svg";
+import Pizza from "../public/icons/svg/plate_7409529.svg";
+import Calendar from "../public/icons/svg/calendar-days_9795297.svg";
 import Heart from "../public/icons/heart-svgrepo-com.svg";
 import List from "../public/icons/list-check-svgrepo-com.svg";
 import Gear from "../public/icons/settings-svgrepo-com.svg";
-import Profile from "../public/icons/user-svgrepo-com.svg";
-import Shopping from "../public/icons/cart-svgrepo-com.svg";
+import Profile from "../public/icons/svg/profile.svg";
+import Shopping from "../public/icons/svg/square-u_10457596.svg";
 
 export default function NavBar() {
   const router = useRouter();
@@ -18,7 +18,7 @@ export default function NavBar() {
     { href: "/", label: "Entdecken", Icon: Pizza },
     { href: "/plan", label: "Plan", Icon: Calendar },
     { href: "/favorites", label: "Favoriten", Icon: Heart },
-    { href: "/shopping", label: "Shopping", Icon: Shopping },
+    { href: "/shopping", label: "Einkauf", Icon: Shopping },
     { href: "/profile", label: "Profil", Icon: Profile },
   ];
 
@@ -55,6 +55,8 @@ const StyledNavElement = styled(Link)`
     $active ? "var(--color-highlight)" : "var(--color-lightgrey)"};
   fill: ${({ $active }) =>
     $active ? "var(--color-highlight)" : "var(--color-lightgrey)"};
+  /* stroke: ${({ $active }) =>
+    $active ? "var(--color-highlight)" : "var(--color-lightgrey)"}; */
   text-decoration: none;
   font-size: 0.8rem;
   font-weight: 500;
