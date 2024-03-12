@@ -1,15 +1,20 @@
+import StyledListItem from "./Styled/StyledListItem";
+import { useState } from "react";
+import { useRouter } from "next/router";
+import Image from "next/image";
+
 import styled from "styled-components";
 import StyledArticle from "./Styled/StyledArticle";
 import IconButton from "./Styled/IconButton";
 import StyledList from "./Styled/StyledList";
-import { Fragment, useState } from "react";
-import StyledListItem from "./Styled/StyledListItem";
 import StyledH2 from "./Styled/StyledH2";
-import Plus from "@/public/icons/Plus.svg";
-import StyledP from "./Styled/StyledP";
-import { useRouter } from "next/router";
 import Button from "./Styled/StyledButton";
-import Image from "next/image";
+import StyledP from "./Styled/StyledP";
+import AddButton from "./Styled/AddButton";
+import Plus from "@/public/icons/Plus.svg";
+import StyledIngredients from "./Styled/StyledIngredients";
+import StyledInput from "./Styled/StyledInput";
+import StyledDropDown from "./Styled/StyledDropDown";
 
 export default function RecipeForm({ onSubmit, data }) {
   const [imageUrl, setImageUrl] = useState(data ? data.imageLink : "");
@@ -166,9 +171,13 @@ export default function RecipeForm({ onSubmit, data }) {
                 />
               </StyledIngredients>
             ))}
-            <AddIngredientButton type="button" onClick={addIngredient}>
+            <AddButton
+              type="button"
+              $color="var(--color-background)"
+              onClick={addIngredient}
+            >
               <Plus width={20} height={20} />
-            </AddIngredientButton>
+            </AddButton>
           </StyledList>
           <StyledH2>Anleitung</StyledH2>
           <StyledBigInput
@@ -229,42 +238,8 @@ const StyledBigInput = styled.input`
   width: calc(100% - (2 * var(--gap-out)));
   padding: 0.7rem;
 `;
-const StyledInput = styled.input`
-  background-color: var(--color-background);
-  border: none;
-  border-radius: 10px;
-  height: 30px;
-  width: calc(100% - (2 * var(--gap-out)));
-  flex-grow: ${(props) => props.$flexGrow};
-  padding: 0.7rem;
-`;
 
-const StyledDropDown = styled.select`
-  background-color: transparent;
-  border: 1px solid var(--color-lightgrey);
-  border-radius: 10px;
-  display: flex;
-  height: 30px;
-  align-items: center;
-`;
-const AddIngredientButton = styled.button`
-  width: 3rem;
-  border: none;
-  background-color: var(--color-background);
-  border-radius: 10px;
-  height: 30px;
-`;
 const Spacer = styled.div`
   margin-top: 2rem;
   position: relative;
-`;
-const StyledIngredients = styled.li`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  gap: 0.5rem;
-  margin-bottom: var(--gap-between);
-  margin-top: var(--gap-between);
-  padding: 0;
 `;
