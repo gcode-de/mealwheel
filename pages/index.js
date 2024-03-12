@@ -6,6 +6,7 @@ import IconButtonLarge from "@/components/Styled/IconButtonLarge";
 import { useRouter } from "next/router";
 import StyledUl from "@/components/StyledUl";
 import ScrollToTop from "@/components/ScrollToTopButton";
+import LoadingComponent from "@/components/Loading";
 
 export default function HomePage({
   error,
@@ -33,12 +34,13 @@ export default function HomePage({
     return (
       <>
         <Header text={"Meal Wheel 🥗"} />
-        <article>
+        <LoadingComponent />
+        {/* <article>
           <StyledUl>
             <h2>Lade Rezepte...</h2>
             <CardSkeleton amount={5} $isLoading />
           </StyledUl>
-        </article>
+        </article> */}
       </>
     );
   }

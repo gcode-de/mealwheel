@@ -35,6 +35,7 @@ import assignRecipeToCalendarDay from "@/helpers/assignRecipeToDay";
 import populateEmptyWeekdays from "@/helpers/populateEmptyWeekdays";
 import updateUserinDb from "@/helpers/updateUserInDb";
 import assignRecipesToCalendarDays from "@/helpers/assignRecipeToDay";
+import LoadingComponent from "@/components/Loading";
 
 export default function Plan({
   isLoading,
@@ -271,7 +272,7 @@ export default function Plan({
     return (
       <>
         <Header text={"Wochenplan 🥗"} />
-        <h2>Lade Kalender...</h2>
+        <LoadingComponent />
         <CalendarContainer>
           <CardSkeleton amount={5} $isLoading />
         </CalendarContainer>

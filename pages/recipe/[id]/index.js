@@ -13,6 +13,7 @@ import StyledList from "@/components/Styled/StyledList";
 import StyledH2 from "@/components/Styled/StyledH2";
 import StyledP from "@/components/Styled/StyledP";
 import StyledListItem from "@/components/Styled/StyledListItem";
+import LoadingComponent from "@/components/Loading";
 
 export default function DetailPage({
   user,
@@ -63,7 +64,7 @@ export default function DetailPage({
   }
 
   if (isLoading || dataIsLoading || !recipe) {
-    return <h1>Rezept wird geladen...</h1>;
+    <LoadingComponent />;
   }
 
   const {
