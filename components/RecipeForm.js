@@ -15,6 +15,7 @@ import Plus from "@/public/icons/Plus.svg";
 import StyledIngredients from "./Styled/StyledIngredients";
 import StyledInput from "./Styled/StyledInput";
 import StyledDropDown from "./Styled/StyledDropDown";
+import { notifySuccess, notifyError } from "/helpers/toast";
 
 export default function RecipeForm({ onSubmit, data }) {
   const [imageUrl, setImageUrl] = useState(data ? data.imageLink : "");
@@ -39,15 +40,20 @@ export default function RecipeForm({ onSubmit, data }) {
     const data = new FormData();
     data.append("file", files[0]);
     data.append("upload_preset", "meal_wheel");
-    const uploadResponse = await fetch(
-      "https://api.cloudinary.com/v1_1/mealwheel/image/upload",
-      {
-        method: "POST",
-        body: data,
-      }
-    );
-    const file = await uploadResponse.json();
-    setImageUrl(file.secure_url);
+    try {
+      const uploadResponse = await fetch(
+        "https://api.cloudinary.com/v1_1/mealwheel/image/upload",
+        {
+          method: "POST",
+          body: data,
+        }
+      );
+      const file = await uploadResponse.json();
+      setImageUrl(file.secure_url);
+      notifySuccess("Bild hinzugefügt");
+    } catch (error) {
+      notifyError("Bild konnte nicht hinzugefügt werden");
+    }
   };
 
   function handleInputChange(event, index, field) {

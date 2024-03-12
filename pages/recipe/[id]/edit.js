@@ -1,6 +1,7 @@
 import RecipeForm from "@/components/RecipeForm";
 import { useRouter } from "next/router";
 import useSWR from "swr";
+import { notifySuccess, notifyError } from "/helpers/toast";
 
 export default function EditRecipe() {
   const router = useRouter();
@@ -18,12 +19,23 @@ export default function EditRecipe() {
 
     if (response.ok) {
       router.back();
+      return true;
     }
+    return false;
   }
 
   if (isLoading) {
     return <div>is Loading...</div>;
   }
 
-  return <RecipeForm onSubmit={handleEdit} data={data} />;
+  return (
+    <RecipeForm
+      onSubmit={() =>
+        handleEdit()
+          ? notifySuccess("Rezept geändert")
+          : notifyError("Rezept konnte nicht geändert werden")
+      }
+      data={data}
+    />
+  );
 }

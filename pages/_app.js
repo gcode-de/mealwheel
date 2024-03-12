@@ -1,6 +1,9 @@
 import GlobalStyle from "../styles";
 import Layout from "@/components/Layout";
 import useSWR, { SWRConfig } from "swr";
+import { ToastContainer } from "react-toastify";
+
+import "react-toastify/dist/ReactToastify.css";
 
 const fetcher = async (url) => {
   const res = await fetch(url);
@@ -115,6 +118,7 @@ export default function App({ Component, pageProps }) {
     <>
       <Layout>
         <GlobalStyle />
+        <ToastContainer />
         <SWRConfig value={{ fetcher }}>
           <Component
             {...pageProps}
