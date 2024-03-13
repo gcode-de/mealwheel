@@ -64,7 +64,7 @@ export default function DetailPage({
   }
 
   if (isLoading || dataIsLoading || !recipe) {
-    <LoadingComponent />;
+    return <LoadingComponent />;
   }
 
   const {
