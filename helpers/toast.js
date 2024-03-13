@@ -9,7 +9,6 @@ const toastBody = {
   draggable: true,
   progress: undefined,
   theme: "light",
-  // transition: Bounce,
 };
 
 export const notifySuccess = (message) => toast.success(message, toastBody);
