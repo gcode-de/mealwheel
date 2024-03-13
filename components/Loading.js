@@ -5,8 +5,10 @@ export default function LoadingComponent() {
   return <RotatingSVG />;
 }
 const RotatingSVG = styled(PlateWheel)`
-  margin: 50% auto;
-  width: 80px;
+  margin: 4rem auto;
+  /* margin-top: 2rem;
+  margin-bottom: 2rem; */
+  width: 50px;
   display: flex;
   justify-content: center;
   animation: rotate 2s linear infinite;

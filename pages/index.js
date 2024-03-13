@@ -35,12 +35,11 @@ export default function HomePage({
       <>
         <Header text={"Meal Wheel 🥗"} />
         <LoadingComponent />
-        {/* <article>
+        <article>
           <StyledUl>
-            <h2>Lade Rezepte...</h2>
-            <CardSkeleton amount={5} $isLoading />
+            <CardSkeleton amount={3} $isLoading />
           </StyledUl>
-        </article> */}
+        </article>
       </>
     );
   }
