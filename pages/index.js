@@ -1,6 +1,6 @@
 import useSWR from "swr";
 import Header from "@/components/Styled/Header";
-import CardSkeleton from "@/components/Styled/CardSkeleton";
+
 import MealCard from "@/components/Styled/MealCard";
 import IconButtonLarge from "@/components/Styled/IconButtonLarge";
 import { useRouter } from "next/router";
@@ -34,12 +34,7 @@ export default function HomePage({
     return (
       <>
         <Header text={"Meal Wheel 🥗"} />
-        <LoadingComponent />
-        <article>
-          <StyledUl>
-            <CardSkeleton amount={3} $isLoading />
-          </StyledUl>
-        </article>
+        <LoadingComponent amount />
       </>
     );
   }

@@ -27,12 +27,7 @@ export default function Favorites({
     return (
       <>
         <Header text="Favoriten 🥗" />
-        <StyledArticle>
-          <StyledUl>
-            <LoadingComponent />
-            <CardSkeleton amount={3} $isLoading />
-          </StyledUl>
-        </StyledArticle>
+        <LoadingComponent amount />
       </>
     );
   }

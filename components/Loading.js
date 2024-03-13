@@ -1,13 +1,20 @@
 import styled from "styled-components";
 import PlateWheel from "/public/icons/svg/plate-wheel.svg";
+import StyledUl from "./StyledUl";
+import CardSkeleton from "@/components/Styled/CardSkeleton";
 
-export default function LoadingComponent() {
-  return <RotatingSVG />;
+export default function LoadingComponent({ amount }) {
+  return (
+    <>
+      <StyledUl>
+        <RotatingSVG />
+        {amount && <CardSkeleton amount={3} $isLoading />};
+      </StyledUl>
+    </>
+  );
 }
 const RotatingSVG = styled(PlateWheel)`
   margin: 4rem auto;
-  /* margin-top: 2rem;
-  margin-bottom: 2rem; */
   width: 50px;
   display: flex;
   justify-content: center;

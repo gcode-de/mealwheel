@@ -272,10 +272,7 @@ export default function Plan({
     return (
       <>
         <Header text={"Wochenplan 🥗"} />
-        <LoadingComponent />
-        <CalendarContainer>
-          <CardSkeleton amount={3} $isLoading />
-        </CalendarContainer>
+        <LoadingComponent amount />
       </>
     );
   }
