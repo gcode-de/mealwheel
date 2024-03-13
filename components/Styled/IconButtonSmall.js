@@ -4,8 +4,8 @@ import XSmall from "@/public/icons/XSmall.svg";
 
 export default function IconButtonSmall({ onClick, style, bottom, right }) {
   const buttonStyles = {
-    penCircle: <PenCircle width={"1rem"} height={"1rem"} />,
-    x: <XSmall width={"1rem"} height={"1rem"} />,
+    penCircle: <PenCircle width={"1.2rem"} height={"1.2rem"} />,
+    x: <XSmall width={"1.3rem"} height={"1.3rem"} />,
   };
   return (
     <StyledBox $bottom={bottom} $right={right}>
@@ -20,8 +20,8 @@ const StyledBox = styled.div`
   z-index: 3;
   bottom: ${(props) => props.$bottom};
   right: ${(props) => props.$right};
-  width: 1.5rem;
-  height: 1.5rem;
+  width: 2rem;
+  height: 2rem;
   display: flex;
   justify-content: center;
   align-items: center;

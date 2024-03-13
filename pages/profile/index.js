@@ -205,4 +205,5 @@ const StyledImageUpload = styled.input`
 
 const StyledProfilePicture = styled(Image)`
   border-radius: 50%;
+  object-fit: cover;
 `;
