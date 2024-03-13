@@ -4,8 +4,8 @@ import StyledP from "@/components/Styled/StyledP";
 
 import IconButtonSmall from "@/components/Styled/IconButtonSmall";
 import Heart from "@/public/icons/heart-svgrepo-com.svg";
-import PenCircle from "@/public/icons/svg/pen-circle_10742831.svg";
 import Pot from "@/public/icons/cooking-pot-fill-svgrepo-com.svg";
+import Plus from "@/public/icons/Plus.svg";
 
 import styled from "styled-components";
 import Link from "next/link";
@@ -19,10 +19,22 @@ export default function ProfilePage({ user, mutateUser }) {
   const [editUsername, setEditUsername] = useState(false);
   const [editImage, setEditImage] = useState(false);
 
-  const updateProfileImage = async (e) => {
-    // API-Aufruf, um das Profilbild zu aktualisieren
-    const file = e.target.files[0];
-    // Logik zum Hochladen des Bildes und Aktualisieren der URL
+  const uploadImage = async (event) => {
+    const files = event.target.files;
+    const data = new FormData();
+    data.append("file", files[0]);
+    data.append("upload_preset", "meal_wheel");
+    const uploadResponse = await fetch(
+      "https://api.cloudinary.com/v1_1/mealwheel/image/upload",
+      {
+        method: "POST",
+        body: data,
+      }
+    );
+    const file = await uploadResponse.json();
+    user = { ...user, profilePictureLink: file.secure_url };
+    console.log(user.profilePictureLink);
+    updateUserinDb(user, mutateUser);
     setEditImage(false);
   };
 
@@ -47,22 +59,21 @@ export default function ProfilePage({ user, mutateUser }) {
         <StyledProfile>
           {!editImage ? (
             (user?.profilePictureLink && (
-              <Image
-                src={user?.picture}
+              <StyledProfilePicture
+                src={user?.profilePictureLink}
                 alt="Profile Picture"
-                width={60}
-                height={60}
+                width={106}
+                height={106}
               />
             )) || <h1>🙋‍♀️</h1>
           ) : (
-            <input
-              type="file"
-              style={{ display: editImage ? "block" : "none" }}
-              onChange={updateProfileImage}
-            />
+            <StyledImageUploadContainer>
+              <Plus width={40} height={40} />
+              <StyledImageUpload type="file" onChange={uploadImage} />
+            </StyledImageUploadContainer>
           )}
           <IconButtonSmall
-            style={"penCircle"}
+            style={!editImage ? "penCircle" : "x"}
             bottom={"0.5rem"}
             right={"0.5rem"}
             onClick={() => setEditImage((previousValue) => !previousValue)}
@@ -90,7 +101,7 @@ export default function ProfilePage({ user, mutateUser }) {
           </StyledUsernameForm>
         )}
         <IconButtonSmall
-          style={"penCircle"}
+          style={!editUsername ? "penCircle" : "x"}
           bottom={"-0.2rem"}
           right={"-0.2rem"}
           onClick={() => setEditUsername((previousValue) => !previousValue)}
@@ -158,11 +169,11 @@ const StyledLink = styled(Link)`
 
 const StyledUsernameForm = styled.form`
   display: flex;
-  justify-content: space-between;
   margin: 9px 0;
   input {
     border: none;
     margin: 1;
+    flex: 1;
   }
   button {
     border: none;
@@ -174,6 +185,24 @@ const StyledUsernameForm = styled.form`
     border-radius: 10px;
     width: 7rem;
     height: 2rem;
-    /* margin-top: 1rem; */
   }
+`;
+const StyledImageUploadContainer = styled.label`
+  display: inline-block;
+  background-color: white;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 100%;
+  cursor: pointer;
+  position: absolute;
+`;
+const StyledImageUpload = styled.input`
+  display: none;
+`;
+
+const StyledProfilePicture = styled(Image)`
+  border-radius: 50%;
 `;

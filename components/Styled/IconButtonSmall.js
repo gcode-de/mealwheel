@@ -1,9 +1,11 @@
 import styled from "styled-components";
 import PenCircle from "@/public/icons/svg/pen-circle_10742831.svg";
+import XSmall from "@/public/icons/XSmall.svg";
 
 export default function IconButtonSmall({ onClick, style, bottom, right }) {
   const buttonStyles = {
     penCircle: <PenCircle width={"1rem"} height={"1rem"} />,
+    x: <XSmall width={"1rem"} height={"1rem"} />,
   };
   return (
     <StyledBox $bottom={bottom} $right={right}>
@@ -32,4 +34,6 @@ const StyledLinkSvg = styled.button`
   border: none;
   background: none;
   cursor: pointer;
+  fill: var(--color-lightgrey);
+  stroke: var(--color-lightgrey);
 `;
