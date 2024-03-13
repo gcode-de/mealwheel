@@ -12,7 +12,7 @@ import IconButtonLarge from "@/components/Styled/IconButtonLarge";
 
 import updateUserinDb from "@/helpers/updateUserInDb";
 
-export default function ShoppingList({ user, mutateUser, isLoading }) {
+export default function ShoppingList({ user, mutateUser }) {
   if (!user) {
     return;
   }
