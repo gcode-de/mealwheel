@@ -14,7 +14,7 @@ import StyledListItem from "@/components/Styled/StyledListItem";
 
 import updateUserinDb from "@/helpers/updateUserInDb";
 
-export default function ShoppingList({ user, mutateUser }) {
+export default function ShoppingList({ user, mutateUser, isLoading }) {
   if (!user) {
     return;
   }
