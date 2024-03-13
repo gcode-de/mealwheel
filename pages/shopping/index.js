@@ -19,12 +19,12 @@ export default function ShoppingList({ user, mutateUser, isLoading }) {
   user.shoppingList = Array.from(
     user.shoppingList
       .reduce((map, obj) => {
-        const { name, quantity, unit } = obj;
-        const existingObj = map.get(name + unit); // Kombination aus Name und Einheit
+        const { id, name, quantity, unit, isChecked } = obj;
+        const existingObj = map.get(name + unit);
         if (existingObj) {
           existingObj.quantity += quantity;
         } else {
-          map.set(name + unit, { name, quantity, unit });
+          map.set(name + unit, { id, name, quantity, unit, isChecked });
         }
         return map;
       }, new Map())
@@ -44,67 +44,64 @@ export default function ShoppingList({ user, mutateUser, isLoading }) {
     await updateUserinDb(user, mutateUser);
   }
 
-  function handleCheckboxChange(id) {
-    const updatedShoppingList = [...user.shoppingList];
-    const itemIndex = updatedShoppingList.findIndex((item) => item.id === id);
+  function handleCheckboxChange(ind) {
+    const toggleChecked = user.shoppingList.map((item, index) =>
+      index === ind ? { ...item, isChecked: !item.isChecked } : item
+    );
+    toggleChecked.sort((a, b) => {
+      if (a.isChecked === b.isChecked) {
+        return a.index - b.index;
+      }
+      return a.isChecked ? 1 : -1;
+    });
+    user.shoppingList = toggleChecked;
 
-    if (itemIndex !== -1) {
-      updatedShoppingList[itemIndex].isChecked =
-        !updatedShoppingList[itemIndex].isChecked;
-      updatedShoppingList.sort((a, b) => {
-        if (a.isChecked === b.isChecked) {
-          return a.index - b.index;
-        }
-        return a.isChecked ? 1 : -1;
-      });
-      user.shoppingList = updatedShoppingList;
+    updateUserinDb(user, mutateUser);
 
+    setTimeout(() => {
+      const deleteChecked = user.shoppingList.filter((item) => !item.isChecked);
+      user.shoppingList = deleteChecked;
       updateUserinDb(user, mutateUser);
-
-    const checkedItem = updatedShoppingList[itemIndex];
-    if (checkedItem.isChecked) {
-      setTimeout(() => {
-        const updatedShoppingListAfterTimeout = [...user.shoppingList];
-        const itemIndexAfterTimeout = updatedShoppingListAfterTimeout.findIndex(item => item.id === itemId);
-        if (itemIndexAfterTimeout !== -1) {
-          updatedShoppingListAfterTimeout.splice(itemIndexAfterTimeout, 1);
-          user.shoppingList = updatedShoppingListAfterTimeout;
-          // Entferne das Objekt aus der Datenbank
-          updateUserinDb(user, mutateUser);
-        }
-      }, 5000);
-    }
+    }, 10000);
   }
 
+  function clearShopping() {
+    user.shoppingList = [];
+    updateUserinDb(user, mutateUser);
+  }
   return (
     <>
       <Header text="Einkaufsliste" />
       <StyledList>
-        {!user.shoppingList
-          ? "noch nichts"
-          : user.shoppingList.map((item, index) => (
-              <StyledListItem
-                key={index}
-                style={{
-                  textDecoration: item.isChecked ? "line-through" : "none",
-                }}
-              >
-                <StyledCheck>
-                  <StyledNumberUnit>
-                    <StyledCheckItem $flex={0.1}>
-                      {item.quantity}
-                    </StyledCheckItem>
-                    <StyledCheckItem $flex={1}>{item.unit}</StyledCheckItem>
-                  </StyledNumberUnit>
-                  <StyledCheckItem $flex={2}>{item.name}</StyledCheckItem>
-                </StyledCheck>
-                <StyledCheckbox
-                  type="checkbox"
-                  checked={item.isChecked}
-                  onChange={() => handleCheckboxChange(item.id)}
-                ></StyledCheckbox>
-              </StyledListItem>
-            ))}
+        {user.shoppingList.length === 0 ? (
+          <StyledListItem>
+            <StyledCheck>nichts zu erledigen</StyledCheck>
+          </StyledListItem>
+        ) : (
+          user.shoppingList.map((item, index) => (
+            <StyledListItem key={index}>
+              <StyledCheck>
+                <StyledNumberUnit>
+                  <StyledCheckItem $text={item.isChecked} $flex={0.1}>
+                    {item.quantity}
+                  </StyledCheckItem>
+                  <StyledCheckItem $text={item.isChecked} $flex={1}>
+                    {item.unit}
+                  </StyledCheckItem>
+                </StyledNumberUnit>
+                <StyledCheckItem $text={item.isChecked} $flex={2}>
+                  {item.name}
+                </StyledCheckItem>
+              </StyledCheck>
+
+              <StyledCheckbox
+                type="checkbox"
+                checked={item.isChecked}
+                onChange={() => handleCheckboxChange(index)}
+              ></StyledCheckbox>
+            </StyledListItem>
+          ))
+        )}
         <form onSubmit={handleSubmit}>
           <StyledIngredients>
             <StyledInput
@@ -137,7 +134,7 @@ export default function ShoppingList({ user, mutateUser, isLoading }) {
         </form>
       </StyledList>
       <Spacer />
-      <IconButtonLarge style={"trash"} bottom="6rem" onClick="" />
+      <IconButtonLarge style={"trash"} bottom="6rem" onClick={clearShopping} />
     </>
   );
 }
@@ -155,6 +152,7 @@ const StyledCheck = styled.div`
 const StyledCheckItem = styled.p`
   border-radius: var(--border-radius-small);
   flex-grow: ${(props) => props.$flex};
+  text-decoration: ${(props) => (props.$text ? "line-through" : "none")};
 `;
 const StyledCheckbox = styled.input`
   background-color: var(--color-background);
