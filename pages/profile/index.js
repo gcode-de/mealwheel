@@ -2,7 +2,6 @@ import IconButton from "@/components/Styled/IconButton";
 import StyledList from "@/components/Styled/StyledList";
 import BookUser from "@/public/icons/svg/book-user_9856365.svg";
 import StyledP from "@/components/Styled/StyledP";
-import IconButtonSmall from "@/components/Styled/IconButtonSmall";
 import Heart from "@/public/icons/heart-svgrepo-com.svg";
 import Pot from "@/public/icons/cooking-pot-fill-svgrepo-com.svg";
 import Plus from "@/public/icons/Plus.svg";
@@ -16,8 +15,7 @@ import updateUserinDb from "@/helpers/updateUserInDb";
 
 export default function ProfilePage({ user, mutateUser }) {
   const router = useRouter();
-  const [editUsername, setEditUsername] = useState(false);
-  const [editImage, setEditImage] = useState(false);
+  const [editUser, setEditUser] = useState(false);
 
   const uploadImage = async (event) => {
     const files = event.target.files;
@@ -56,7 +54,7 @@ export default function ProfilePage({ user, mutateUser }) {
       />
       <WrapperCenter>
         <StyledProfile>
-          {!editImage ? (
+          {!editUser ? (
             (user?.profilePictureLink && (
               <StyledProfilePicture
                 src={user?.profilePictureLink}
@@ -71,20 +69,10 @@ export default function ProfilePage({ user, mutateUser }) {
               <StyledImageUpload type="file" onChange={uploadImage} />
             </StyledImageUploadContainer>
           )}
-          <IconButtonSmall
-            style={!editImage ? "penCircle" : "x"}
-            bottom={"0.5rem"}
-            right={"0.5rem"}
-            onClick={() => setEditImage((previousValue) => !previousValue)}
-          />
         </StyledProfile>
       </WrapperCenter>
       <StyledList>
-        {/* <p>
-          Hallo,{" "}
-          {user?.username || user?.firstName || user?.email || "Gastnutzer"}!
-        </p> */}
-        {!editUsername ? (
+        {!editUser ? (
           <p>
             Hallo,{" "}
             {user?.userName || user?.firstName || user?.email || "Gastnutzer"}!
@@ -99,11 +87,11 @@ export default function ProfilePage({ user, mutateUser }) {
             <button>Speichern</button>
           </StyledUsernameForm>
         )}
-        <IconButtonSmall
-          style={!editUsername ? "penCircle" : "x"}
-          bottom={"-0.2rem"}
-          right={"-0.2rem"}
-          onClick={() => setEditUsername((previousValue) => !previousValue)}
+        <IconButton
+          style={!editUser ? "Edit" : "x"}
+          top={"-1.75rem"}
+          right={"2rem"}
+          onClick={() => setEditUser((previousValue) => !previousValue)}
         />
       </StyledList>
       <Wrapper>
