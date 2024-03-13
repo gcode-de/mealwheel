@@ -1,7 +1,7 @@
 import Link from "next/link";
 import styled from "styled-components";
 import { useRouter } from "next/router";
-import Pizza from "../public/icons/svg/plate_7409529.svg";
+import Pizza from "../public/icons/svg/restaurant_7409576.svg";
 import Calendar from "../public/icons/svg/calendar-days_9795297.svg";
 import Heart from "../public/icons/heart-svgrepo-com.svg";
 import List from "../public/icons/list-check-svgrepo-com.svg";
@@ -17,7 +17,7 @@ export default function NavBar() {
   const menuItems = [
     { href: "/", label: "Entdecken", Icon: Pizza },
     { href: "/plan", label: "Plan", Icon: Calendar },
-    { href: "/favorites", label: "Favoriten", Icon: Heart },
+    { href: "/profile/favorites", label: "Favoriten", Icon: Heart },
     { href: "/shopping", label: "Einkauf", Icon: Shopping },
     { href: "/profile", label: "Profil", Icon: Profile },
   ];

@@ -1,23 +1,27 @@
 import styled from "styled-components";
+
 import CardSkeleton from "@/components/Styled/CardSkeleton";
 import MealCard from "@/components/Styled/MealCard";
 import Header from "@/components/Styled/Header";
-import StyledUl from "@/components/StyledUl";
+import IconButton from "@/components/Styled/IconButton";
+import { useRouter } from "next/router";
+import StyledH2 from "@/components/Styled/StyledH2";
+import Spacer from "@/components/Styled/Spacer";
 
-export default function Favorites({
+export default function MyRecipes({
   user,
   error,
   isLoading,
   getRecipeProperty,
   toggleIsFavorite,
+  recipes,
 }) {
-  const favoriteRecipes = user?.recipeInteractions
-    .filter((recipe) => recipe.isFavorite)
-    .map((recipe) => recipe.recipe);
+  const router = useRouter();
+  const myRecipes = recipes?.filter((recipe) => recipe?.author === user?._id);
 
   if (error) {
     <div>
-      <Header text={"Favoriten 🥗"} />
+      <Header text={"schon gekocht 🥗"} />
       Error...
     </div>;
   }
@@ -25,7 +29,7 @@ export default function Favorites({
   if (isLoading) {
     return (
       <>
-        <Header text="Favoriten 🥗" />
+        <Header text="schon gekocht 🥗" />
         <StyledArticle>
           <StyledUl>
             <h2>Lade Rezepte...</h2>
@@ -38,17 +42,24 @@ export default function Favorites({
 
   return (
     <>
-      <Header text="Favoriten 🥗" />
+      <IconButton
+        style="ArrowLeft"
+        top="var(--gap-out)"
+        left="var(--gap-out)"
+        onClick={() => router.back()}
+      />
+      <Spacer />
+      <StyledH2>Von mir erstellte Rezepte</StyledH2>
       <StyledArticle>
         <StyledUl>
-          {favoriteRecipes?.map((recipe) => {
+          {myRecipes?.map((recipe) => {
             return (
               <MealCard
                 key={recipe._id}
                 recipe={recipe}
                 isFavorite={getRecipeProperty(recipe._id, "isFavorite")}
                 onToggleIsFavorite={toggleIsFavorite}
-              />
+              ></MealCard>
             );
           })}
         </StyledUl>
@@ -58,3 +69,9 @@ export default function Favorites({
 }
 
 const StyledArticle = styled.article``;
+
+const StyledUl = styled.ul`
+  padding: 10px;
+  max-width: 350px;
+  margin: 0 auto;
+`;

@@ -1,5 +1,3 @@
-import { useState } from "react";
-import useSWR from "swr";
 import styled from "styled-components";
 
 import StyledList from "@/components/Styled/StyledList";
@@ -9,8 +7,8 @@ import Plus from "@/public/icons/Plus.svg";
 import StyledIngredients from "@/components/Styled/StyledIngredients";
 import StyledInput from "@/components/Styled/StyledInput";
 import StyledDropDown from "@/components/Styled/StyledDropDown";
-import StyledH2 from "@/components/Styled/StyledH2";
 import StyledListItem from "@/components/Styled/StyledListItem";
+import IconButtonLarge from "@/components/Styled/IconButtonLarge";
 
 import updateUserinDb from "@/helpers/updateUserInDb";
 
@@ -21,12 +19,12 @@ export default function ShoppingList({ user, mutateUser }) {
   user.shoppingList = Array.from(
     user.shoppingList
       .reduce((map, obj) => {
-        const { name, quantity, unit } = obj;
-        const existingObj = map.get(name + unit); // Kombination aus Name und Einheit
+        const { id, name, quantity, unit, isChecked } = obj;
+        const existingObj = map.get(name + unit);
         if (existingObj) {
           existingObj.quantity += quantity;
         } else {
-          map.set(name + unit, { name, quantity, unit });
+          map.set(name + unit, { id, name, quantity, unit, isChecked });
         }
         return map;
       }, new Map())
@@ -46,49 +44,65 @@ export default function ShoppingList({ user, mutateUser }) {
     await updateUserinDb(user, mutateUser);
   }
 
-  function handleCheckboxChange(index) {
-    const updatedShoppingList = [...user.shoppingList];
-    updatedShoppingList[index].isChecked =
-      !updatedShoppingList[index].isChecked;
-    updatedShoppingList.sort((a, b) => (a.isChecked && !b.isChecked ? 1 : -1));
-    user.shoppingList = updatedShoppingList;
+  function handleCheckboxChange(ind) {
+    const toggleChecked = user.shoppingList.map((item, index) =>
+      index === ind ? { ...item, isChecked: !item.isChecked } : item
+    );
+    toggleChecked.sort((a, b) => {
+      if (a.isChecked === b.isChecked) {
+        return a.index - b.index;
+      }
+      return a.isChecked ? 1 : -1;
+    });
+    user.shoppingList = toggleChecked;
 
     updateUserinDb(user, mutateUser);
+
+    setTimeout(() => {
+      const deleteChecked = user.shoppingList.filter((item) => !item.isChecked);
+      user.shoppingList = deleteChecked;
+      updateUserinDb(user, mutateUser);
+    }, 10000);
   }
 
+  function clearShopping() {
+    user.shoppingList = [];
+    updateUserinDb(user, mutateUser);
+  }
   return (
     <>
       <Header text="Einkaufsliste" />
       <StyledList>
-        {!user.shoppingList
-          ? "noch nichts"
-          : user.shoppingList.map((item, index) => (
-              <StyledListItem
-                key={index}
-                style={{
-                  textDecoration: item.isChecked ? "line-through" : "none",
-                }}
-              >
-                <StyledCheckbox
-                  type="checkbox"
-                  checked={item.isChecked}
-                  onChange={() => handleCheckboxChange(index)}
-                ></StyledCheckbox>
-                <StyledCheck>
-                  <StyledNumberUnit>
-                    <StyledCheckItem $flex={0.1}>
-                      {item.quantity}
-                    </StyledCheckItem>
-                    <StyledCheckItem $flex={1}>{item.unit}</StyledCheckItem>
-                  </StyledNumberUnit>
-                  <StyledCheckItem $flex={2}>{item.name}</StyledCheckItem>
-                </StyledCheck>
-              </StyledListItem>
-            ))}
-      </StyledList>
-      <StyledH2>neue Zutat:</StyledH2>
-      <form onSubmit={handleSubmit}>
-        <StyledList>
+        {user.shoppingList.length === 0 ? (
+          <StyledListItem>
+            <StyledCheck>nichts zu erledigen</StyledCheck>
+          </StyledListItem>
+        ) : (
+          user.shoppingList.map((item, index) => (
+            <StyledListItem key={index}>
+              <StyledCheck>
+                <StyledNumberUnit>
+                  <StyledCheckItem $text={item.isChecked} $flex={0.1}>
+                    {item.quantity}
+                  </StyledCheckItem>
+                  <StyledCheckItem $text={item.isChecked} $flex={1}>
+                    {item.unit}
+                  </StyledCheckItem>
+                </StyledNumberUnit>
+                <StyledCheckItem $text={item.isChecked} $flex={2}>
+                  {item.name}
+                </StyledCheckItem>
+              </StyledCheck>
+
+              <StyledCheckbox
+                type="checkbox"
+                checked={item.isChecked}
+                onChange={() => handleCheckboxChange(index)}
+              ></StyledCheckbox>
+            </StyledListItem>
+          ))
+        )}
+        <form onSubmit={handleSubmit}>
           <StyledIngredients>
             <StyledInput
               type="number"
@@ -109,16 +123,18 @@ export default function ShoppingList({ user, mutateUser }) {
             <StyledInput
               type="text"
               name="name"
-              placeholder="neues Item"
+              placeholder="neue Zutat"
               aria-label="add igredient name for the recipe"
               required
             />
+            <AddButton type="submit" $color="var(--color-background)">
+              <Plus width={20} height={20} />
+            </AddButton>
           </StyledIngredients>
-          <AddButton type="submit" $color="var(--color-background)">
-            <Plus width={20} height={20} />
-          </AddButton>
-        </StyledList>
-      </form>
+        </form>
+      </StyledList>
+      <Spacer />
+      <IconButtonLarge style={"trash"} bottom="6rem" onClick={clearShopping} />
     </>
   );
 }
@@ -136,13 +152,19 @@ const StyledCheck = styled.div`
 const StyledCheckItem = styled.p`
   border-radius: var(--border-radius-small);
   flex-grow: ${(props) => props.$flex};
+  text-decoration: ${(props) => (props.$text ? "line-through" : "none")};
 `;
 const StyledCheckbox = styled.input`
   background-color: var(--color-background);
-  color: pink;
+  margin: 0;
+  width: 37px;
   height: 20px;
 `;
 const StyledNumberUnit = styled.div`
   width: 40%;
   display: flex;
+`;
+const Spacer = styled.div`
+  height: 6rem;
+  position: relative;
 `;

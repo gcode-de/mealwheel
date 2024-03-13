@@ -1,7 +1,7 @@
 import IconButton from "@/components/Styled/IconButton";
 import StyledList from "@/components/Styled/StyledList";
+import BookUser from "@/public/icons/svg/book-user_9856365.svg";
 import StyledP from "@/components/Styled/StyledP";
-
 import IconButtonSmall from "@/components/Styled/IconButtonSmall";
 import Heart from "@/public/icons/heart-svgrepo-com.svg";
 import Pot from "@/public/icons/cooking-pot-fill-svgrepo-com.svg";
@@ -107,7 +107,7 @@ export default function ProfilePage({ user, mutateUser }) {
         />
       </StyledList>
       <Wrapper>
-        <StyledLink href="/favorites">
+        <StyledLink href="/profile/favorites">
           <Heart width={40} height={40} />
           <StyledP>Favoriten</StyledP>
         </StyledLink>
@@ -115,13 +115,19 @@ export default function ProfilePage({ user, mutateUser }) {
           <Pot width={40} height={40} />
           <StyledP>gekocht</StyledP>
         </StyledLink>
+        <StyledLink href="/profile/myRecipes">
+          <BookUser width={40} height={40} />
+          <StyledP>eigene</StyledP>
+        </StyledLink>
       </Wrapper>
     </>
   );
 }
 const Wrapper = styled.div`
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
+  margin: 0 var(--gap-out);
 `;
 const WrapperCenter = styled.div`
   display: flex;
@@ -151,8 +157,6 @@ const StyledLink = styled(Link)`
   color: var(--color-lightgrey);
   justify-content: center;
   cursor: pointer;
-  margin-right: var(--gap-out);
-  margin-left: var(--gap-out);
   margin-top: var(--gap-between);
   margin-bottom: var(--gap-between);
   border: 1px solid var(--color-lightgrey);
