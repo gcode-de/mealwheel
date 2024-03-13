@@ -44,6 +44,7 @@ export default function ShoppingList({ user, mutateUser, isLoading }) {
     user.shoppingList.push({ ...data, isChecked: false });
 
     await updateUserinDb(user, mutateUser);
+    event.target.reset();
   }
 
   function handleCheckboxChange(index) {
