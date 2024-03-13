@@ -81,7 +81,7 @@ export default function ProfilePage({ user, mutateUser }) {
           <StyledUsernameForm onSubmit={updateUsername}>
             <input
               name="username"
-              defaultValue={user?.username}
+              defaultValue={user?.userName}
               placeholder="Dein Benutzername"
             />
             <button>Speichern</button>
