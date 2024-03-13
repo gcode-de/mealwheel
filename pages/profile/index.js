@@ -33,7 +33,6 @@ export default function ProfilePage({ user, mutateUser }) {
     );
     const file = await uploadResponse.json();
     user = { ...user, profilePictureLink: file.secure_url };
-    console.log(user.profilePictureLink);
     updateUserinDb(user, mutateUser);
     setEditImage(false);
   };
