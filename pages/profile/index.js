@@ -32,7 +32,7 @@ export default function ProfilePage({ user, mutateUser }) {
     const file = await uploadResponse.json();
     user = { ...user, profilePictureLink: file.secure_url };
     updateUserinDb(user, mutateUser);
-    setEditImage(false);
+    setEditUser(false);
   };
 
   const updateUsername = async (event) => {
@@ -40,7 +40,7 @@ export default function ProfilePage({ user, mutateUser }) {
     const newName = event.target.elements.username.value;
     user.userName = newName;
     updateUserinDb(user, mutateUser);
-    setEditUsername(false);
+    setEditUser(false);
   };
 
   return (
