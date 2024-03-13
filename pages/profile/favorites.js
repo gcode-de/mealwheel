@@ -2,6 +2,8 @@ import styled from "styled-components";
 import CardSkeleton from "@/components/Styled/CardSkeleton";
 import MealCard from "@/components/Styled/MealCard";
 import Header from "@/components/Styled/Header";
+import StyledUl from "@/components/StyledUl";
+import LoadingComponent from "@/components/Loading";
 
 export default function Favorites({
   user,
@@ -25,12 +27,7 @@ export default function Favorites({
     return (
       <>
         <Header text="Favoriten 🥗" />
-        <StyledArticle>
-          <StyledUl>
-            <h2>Lade Rezepte...</h2>
-            <CardSkeleton amount={5} $isLoading />
-          </StyledUl>
-        </StyledArticle>
+        <LoadingComponent amount />
       </>
     );
   }
@@ -57,9 +54,3 @@ export default function Favorites({
 }
 
 const StyledArticle = styled.article``;
-
-const StyledUl = styled.ul`
-  padding: 10px;
-  max-width: 350px;
-  margin: 0 auto;
-`;

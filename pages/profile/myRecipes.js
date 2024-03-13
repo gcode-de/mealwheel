@@ -7,19 +7,17 @@ import IconButton from "@/components/Styled/IconButton";
 import { useRouter } from "next/router";
 import StyledH2 from "@/components/Styled/StyledH2";
 import Spacer from "@/components/Styled/Spacer";
-import LoadingComponent from "@/components/Loading";
 
-export default function HasCooked({
+export default function MyRecipes({
   user,
   error,
   isLoading,
   getRecipeProperty,
   toggleIsFavorite,
+  recipes,
 }) {
   const router = useRouter();
-  const favoriteRecipes = user?.recipeInteractions
-    .filter((recipe) => recipe.hasCooked)
-    .map((recipe) => recipe.recipe);
+  const myRecipes = recipes?.filter((recipe) => recipe?.author === user?._id);
 
   if (error) {
     <div>
@@ -32,7 +30,12 @@ export default function HasCooked({
     return (
       <>
         <Header text="schon gekocht 🥗" />
-        <LoadingComponent amount />
+        <StyledArticle>
+          <StyledUl>
+            <h2>Lade Rezepte...</h2>
+            <CardSkeleton amount={5} $isLoading />
+          </StyledUl>
+        </StyledArticle>
       </>
     );
   }
@@ -46,15 +49,16 @@ export default function HasCooked({
         onClick={() => router.back()}
       />
       <Spacer />
-      <StyledH2>schon gekocht</StyledH2>
+      <StyledH2>Von mir erstellte Rezepte</StyledH2>
       <StyledArticle>
         <StyledUl>
-          {favoriteRecipes?.map((recipe) => {
+          {myRecipes?.map((recipe) => {
             return (
               <MealCard
                 key={recipe._id}
                 recipe={recipe}
-                isFavorite={null}
+                isFavorite={getRecipeProperty(recipe._id, "isFavorite")}
+                onToggleIsFavorite={toggleIsFavorite}
               ></MealCard>
             );
           })}

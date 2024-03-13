@@ -7,6 +7,7 @@ import styled from "styled-components";
 import IconButton from "@/components/Styled/IconButton";
 import { useRouter } from "next/router";
 import Spacer from "@/components/Styled/Spacer";
+import SetNumberOfPeople from "@/components/Styled/SetNumberOfPeople";
 
 export default function Settings({ user, mutateUser }) {
   const router = useRouter();
@@ -59,6 +60,11 @@ export default function Settings({ user, mutateUser }) {
     await updateUserinDb(user, mutateUser);
   }
 
+  async function changeDefaultNumberOfPeople(change) {
+    user.settings.defaultNumberOfPeople += change;
+    await updateUserinDb(user, mutateUser);
+  }
+
   return (
     <>
       <IconButton
@@ -96,6 +102,15 @@ export default function Settings({ user, mutateUser }) {
                 </WeekdayButton>
               ))
           }
+        </Wrapper>
+      </StyledList>
+      <StyledList>
+        <StyledP>Standard-Anzahl Portionen:</StyledP>
+        <Wrapper>
+          <SetNumberOfPeople
+            numberOfPeople={user.settings.defaultNumberOfPeople}
+            handleChange={changeDefaultNumberOfPeople}
+          />
         </Wrapper>
       </StyledList>
     </>

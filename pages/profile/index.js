@@ -12,12 +12,45 @@ import { useKindeAuth } from "@kinde-oss/kinde-auth-nextjs";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 import { LogoutLink } from "@kinde-oss/kinde-auth-nextjs/components";
+import BookUser from "@/public/icons/svg/book-user_9856365.svg";
+import Plus from "@/public/icons/Plus.svg";
 
-export default function ProfilePage() {
+import { useState } from "react";
+import updateUserinDb from "@/helpers/updateUserInDb";
+
+export default function ProfilePage({ user, mutateUser }) {
   const router = useRouter();
   const { isAuthenticated, isLoading, user: kindeUser } = useKindeAuth();
 
   console.log(kindeUser?.id);
+  const [editUser, setEditUser] = useState(false);
+
+  const uploadImage = async (event) => {
+    const files = event.target.files;
+    const data = new FormData();
+    data.append("file", files[0]);
+    data.append("upload_preset", "meal_wheel");
+    const uploadResponse = await fetch(
+      "https://api.cloudinary.com/v1_1/mealwheel/image/upload",
+      {
+        method: "POST",
+        body: data,
+      }
+    );
+    const file = await uploadResponse.json();
+    user = { ...user, profilePictureLink: file.secure_url };
+    updateUserinDb(user, mutateUser);
+    setEditUser(false);
+  };
+
+  const updateUsername = async (event) => {
+    event.preventDefault();
+    const newName = event.target.elements.username.value;
+    user.userName = newName;
+    updateUserinDb(user, mutateUser);
+    setEditUser(false);
+  };
+
   return (
     <>
       <IconButton
@@ -30,20 +63,45 @@ export default function ProfilePage() {
       <WrapperCenter>
         <StyledLogoutLink postLogoutRedirectURL="/">Log out</StyledLogoutLink>
         <StyledProfile>
-          {kindeUser?.picture ? (
-            <Image
-              src={kindeUser?.picture}
-              alt="Profile Picture"
-              width={60}
-              height={60}
-            />
+          {!editUser ? (
+            (user?.profilePictureLink && (
+              <StyledProfilePicture
+                src={user?.profilePictureLink}
+                alt="Profile Picture"
+                width={106}
+                height={106}
+              />
+            )) || <h1>🙋‍♀️</h1>
           ) : (
-            <h1>🙋‍♀️</h1>
+            <StyledImageUploadContainer>
+              <Plus width={40} height={40} />
+              <StyledImageUpload type="file" onChange={uploadImage} />
+            </StyledImageUploadContainer>
           )}
         </StyledProfile>
       </WrapperCenter>
       <StyledList>
-        <p>Hallo, {kindeUser?.given_name || `Mensch`}!</p>
+        {!editUser ? (
+          <p>
+            Hallo,{" "}
+            {user?.userName || user?.firstName || user?.email || "Gastnutzer"}!
+          </p>
+        ) : (
+          <StyledUsernameForm onSubmit={updateUsername}>
+            <input
+              name="username"
+              defaultValue={user?.userName}
+              placeholder="Dein Benutzername"
+            />
+            <button>Speichern</button>
+          </StyledUsernameForm>
+        )}
+        <IconButton
+          style={!editUser ? "Edit" : "x"}
+          top={"-1.75rem"}
+          right={"2rem"}
+          onClick={() => setEditUser((previousValue) => !previousValue)}
+        />
       </StyledList>
       <Wrapper>
         <StyledLink href="/profile/favorites">
@@ -54,13 +112,19 @@ export default function ProfilePage() {
           <Pot width={40} height={40} />
           <StyledP>gekocht</StyledP>
         </StyledLink>
+        <StyledLink href="/profile/myRecipes">
+          <BookUser width={40} height={40} />
+          <StyledP>eigene</StyledP>
+        </StyledLink>
       </Wrapper>
     </>
   );
 }
 const Wrapper = styled.div`
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
+  margin: 0 var(--gap-out);
 `;
 const WrapperCenter = styled.div`
   display: flex;
@@ -77,6 +141,8 @@ const StyledProfile = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  position: relative;
+  z-index: 2;
 `;
 const StyledLink = styled(Link)`
   text-decoration: none;
@@ -88,8 +154,6 @@ const StyledLink = styled(Link)`
   color: var(--color-lightgrey);
   justify-content: center;
   cursor: pointer;
-  margin-right: var(--gap-out);
-  margin-left: var(--gap-out);
   margin-top: var(--gap-between);
   margin-bottom: var(--gap-between);
   border: 1px solid var(--color-lightgrey);
@@ -117,4 +181,44 @@ const StyledLogoutLink = styled(LogoutLink)`
     fill: var(--color-highlight);
     color: var(--color-highlight);
   }
+`;
+const StyledUsernameForm = styled.form`
+  display: flex;
+  margin: 9px 0;
+  input {
+    border: none;
+    margin: 1;
+    flex: 1;
+  }
+  button {
+    border: none;
+    background-color: var(--color-darkgrey);
+    color: var(--color-background);
+    font-size: 0%.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 10px;
+    width: 7rem;
+    height: 2rem;
+  }
+`;
+const StyledImageUploadContainer = styled.label`
+  display: inline-block;
+  background-color: white;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 100%;
+  cursor: pointer;
+  position: absolute;
+`;
+const StyledImageUpload = styled.input`
+  display: none;
+`;
+
+const StyledProfilePicture = styled(Image)`
+  border-radius: 50%;
+  object-fit: cover;
 `;

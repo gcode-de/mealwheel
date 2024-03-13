@@ -6,6 +6,9 @@ import Auth from "@/pages/auth";
 
 import { useRouter } from "next/router";
 import updateUserinDb from "@/helpers/updateUserInDb";
+import { ToastContainer } from "react-toastify";
+
+import "react-toastify/dist/ReactToastify.css";
 
 const fetcher = async (url) => {
   const res = await fetch(url);
@@ -30,6 +33,11 @@ export default function App({ Component, pageProps }) {
     error,
     mutate,
   } = useSWR(`/api/users/${userId}`, fetcher);
+  const {
+    data: recipes,
+    error: recipesError,
+    isLoading: recipesIsLoading,
+  } = useSWR(`/api/recipes`, fetcher);
 
   function getRecipeProperty(_id, property) {
     const recipeInteraction = user?.recipeInteractions.find(
@@ -123,6 +131,9 @@ export default function App({ Component, pageProps }) {
                 toggleIsFavorite={toggleIsFavorite}
                 toggleHasCooked={toggleHasCooked}
                 mutateUser={mutate}
+                recipes={recipes}
+                recipesError={recipesError}
+                recipesIsLoading={recipesIsLoading}
               />
             </SWRConfig>
           </Layout>

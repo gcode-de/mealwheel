@@ -19,6 +19,10 @@ export default async function assignRecipesToCalendarDays(
           ? {
               ...calendarDay,
               recipe: recipeId,
+              numberOfPeople:
+                recipeId === null
+                  ? user.settings.defaultNumberOfPeople
+                  : calendarDay.numberOfPeople,
               isDisabled: recipeId !== null ? false : null,
             }
           : calendarDay

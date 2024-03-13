@@ -9,5 +9,7 @@ export default async function updateUserinDb(user, mutateUser) {
   });
   if (response.ok) {
     await mutateUser();
+  } else {
+    throw new Error("Failed to update user data.");
   }
 }
