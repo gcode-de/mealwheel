@@ -109,7 +109,7 @@ export default function HomePage({
         <>
           <StyledH2>Schwierigkeit</StyledH2>
           <StyledResetButton onClick={resetCategories}>
-            alles Zurücksetzen
+            alles zurücksetzen
           </StyledResetButton>
           <StyledCategoriesDiv>
             <StyledCategoryButton
@@ -185,6 +185,12 @@ export default function HomePage({
             >
               Keto
             </StyledCategoryButton>
+            <StyledCategoryButton
+              onClick={() => toggleNutrition(5)}
+              isActive={isNutritionButton[5]}
+            >
+              low carb
+            </StyledCategoryButton>
           </StyledCategoriesDiv>
         </>
       )}
@@ -223,13 +229,13 @@ const StyledResetButton = styled.button`
   background-color: transparent;
   border: none;
   position: absolute;
-  top: 4rem;
+  top: 3.75rem;
   right: 1.5rem;
-  font-weight: bold;
+  font-size: smaller;
 `;
 
 const StyledH2 = styled.h2`
-  font-size: large;
+  font-size: small;
   text-align: left;
   width: calc(100% - (2 * var(--gap-out)));
   margin-right: var(--gap-out);
@@ -242,7 +248,7 @@ const StyledH2 = styled.h2`
 
 const StyledCategoriesDiv = styled.div`
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   flex-wrap: wrap;
   max-width: calc(100% - (2 * var(--gap-out)));
   margin: auto;
@@ -258,8 +264,6 @@ const StyledCategoryButton = styled.button`
   border-radius: var(--border-radius-small);
   width: 6rem;
   height: 1.75rem;
-  margin-right: 0.5rem;
-  margin-left: 0.5rem;
   margin-bottom: 0.5rem;
   padding: 0.25rem;
 `;
