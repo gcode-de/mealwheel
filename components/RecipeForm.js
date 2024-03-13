@@ -246,9 +246,9 @@ export default function RecipeForm({ onSubmit, onDelete, data }) {
           />
           <StyledCheckboxContainer>
             <label htmlFor="public">
-              <StyledHiddenCheckbox type="checkbox" id="public" />
+              öffentlich sichtbar
+              <StyledHiddenCheckbox type="checkbox" id="public" name="public" />
               <StyledSliderCheckbox htmlFor="public" />
-              öffentlich
             </label>
           </StyledCheckboxContainer>
           <Button type="submit">speichern</Button>
@@ -326,36 +326,29 @@ const StyledCategoryButton = styled.button`
 `;
 
 const StyledCheckboxContainer = styled.div`
-  display: flex;
-  align-items: center;
-  margin-bottom: 1rem;
-
   label {
-    display: flex;
-    align-items: center;
     color: var(--color-text);
     font-size: 1rem;
-    position: relative;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    margin-top: 1rem;
   }
 `;
 
 const StyledHiddenCheckbox = styled.input`
   display: none;
 `;
-
 const StyledSliderCheckbox = styled.span`
-  position: absolute;
-  margin-top: var(--gap-between);
-  margin-bottom: 1rem;
-  top: 0.25rem;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  position: relative;
+  margin-left: 1rem;
+  margin-top: 0rem;
   height: 2rem;
+  width: 3.5rem;
   background-color: var(--color-background);
   border-radius: 1rem;
   cursor: pointer;
+  box-shadow: inset 0 0 5px rgba(77, 74, 74, 0.1);
 
   &:before {
     content: "";
@@ -374,6 +367,6 @@ const StyledSliderCheckbox = styled.span`
   }
 
   input:checked + &:before {
-    transform: translateX(2rem);
+    transform: translateX(1.5rem);
   }
 `;
