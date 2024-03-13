@@ -33,6 +33,7 @@ const userSchema = new Schema({
   lastName: String,
   userName: String,
   email: String,
+  imageLink: { type: String },
   settings: {
     weekdaysEnabled: {},
     mealsPerDay: Number,

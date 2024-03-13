@@ -9,7 +9,7 @@ import Pot from "@/public/icons/cooking-pot-fill-svgrepo-com.svg";
 import StyledP from "@/components/Styled/StyledP";
 import { useRouter } from "next/router";
 
-export default function ProfilePage() {
+export default function ProfilePage({ user }) {
   const router = useRouter();
   return (
     <>
@@ -26,7 +26,7 @@ export default function ProfilePage() {
         </StyledProfile>
       </WrapperCenter>
       <StyledList>
-        <p>Hallo Mensch!</p>
+        <p>Hallo, {user.username || "user.email" || "Gastnutzer"}!</p>
       </StyledList>
       <Wrapper>
         <StyledLink href="/favorites">
