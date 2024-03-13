@@ -4,6 +4,7 @@ import styled from "styled-components";
 import useSWR from "swr";
 import { useState } from "react";
 import { useRouter } from "next/router";
+import { notifySuccess, notifyError } from "/helpers/toast";
 
 import assignRecipeToCalendarDay from "@/helpers/assignRecipeToDay";
 
@@ -13,6 +14,7 @@ import StyledList from "@/components/Styled/StyledList";
 import StyledH2 from "@/components/Styled/StyledH2";
 import StyledP from "@/components/Styled/StyledP";
 import StyledListItem from "@/components/Styled/StyledListItem";
+import LoadingComponent from "@/components/Loading";
 
 export default function DetailPage({
   user,
@@ -46,18 +48,21 @@ export default function DetailPage({
     const isoDate = new Date(selectedDate);
     isoDate.setUTCHours(0, 0, 0, 0);
     const dbDate = isoDate.toISOString();
+    try {
+      await assignRecipeToCalendarDay({ [dbDate]: id }, user, mutateUser);
 
-    await assignRecipeToCalendarDay({ [dbDate]: id }, user, mutateUser);
+      const localDate = new Date(dbDate).toLocaleDateString("de-DE", {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      });
 
-    const localDate = new Date(dbDate).toLocaleDateString("de-DE", {
-      weekday: "long",
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
-
-    setCalendarFormIsVisible(false);
-    window.alert(`Das Rezept wurde für ${localDate} eingeplant.`);
+      setCalendarFormIsVisible(false);
+      notifySuccess(`Das Rezept wurde für ${localDate} eingeplant.`);
+    } catch (error) {
+      notifyError("Das Rezept konnte nicht eingeplant werden.");
+    }
   };
 
   if (error || dataError) {
@@ -65,7 +70,7 @@ export default function DetailPage({
   }
 
   if (isLoading || dataIsLoading || !recipe) {
-    return <h1>Rezept wird geladen...</h1>;
+    return <LoadingComponent />;
   }
 
   const {
