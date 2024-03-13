@@ -32,8 +32,19 @@ export default function RecipeForm({ onSubmit, onDelete, data }) {
           },
         ]
   );
+  const [isNutritionButton, setIsNutritionButton] = useState([
+    false,
+    false,
+    false,
+  ]);
 
   const router = useRouter();
+
+  function toggleNutrition(index) {
+    const updatedState = [...isNutritionButton];
+    updatedState[index] = !updatedState[index];
+    setIsNutritionButton(updatedState);
+  }
 
   const uploadImage = async (event) => {
     const files = event.target.files;
@@ -181,6 +192,44 @@ export default function RecipeForm({ onSubmit, onDelete, data }) {
             </AddButton>
           </StyledList>
           <StyledH2>Ernährungsformen</StyledH2>
+          <StyledCategoriesDiv>
+            <StyledCategoryButton
+              onClick={() => toggleNutrition(0)}
+              isActive={isNutritionButton[0]}
+            >
+              vegan
+            </StyledCategoryButton>
+            <StyledCategoryButton
+              onClick={() => toggleNutrition(1)}
+              isActive={isNutritionButton[1]}
+            >
+              vegetarisch
+            </StyledCategoryButton>
+            <StyledCategoryButton
+              onClick={() => toggleNutrition(2)}
+              isActive={isNutritionButton[2]}
+            >
+              Fleisch
+            </StyledCategoryButton>
+            <StyledCategoryButton
+              onClick={() => toggleNutrition(3)}
+              isActive={isNutritionButton[3]}
+            >
+              pescetarisch
+            </StyledCategoryButton>
+            <StyledCategoryButton
+              onClick={() => toggleNutrition(4)}
+              isActive={isNutritionButton[4]}
+            >
+              Keto
+            </StyledCategoryButton>
+            <StyledCategoryButton
+              onClick={() => toggleNutrition(5)}
+              isActive={isNutritionButton[5]}
+            >
+              low carb
+            </StyledCategoryButton>
+          </StyledCategoriesDiv>
           <StyledH2>Anleitung</StyledH2>
           <StyledBigInput
             type="text"
@@ -195,6 +244,13 @@ export default function RecipeForm({ onSubmit, onDelete, data }) {
             name="youtubeLink"
             defaultValue={data?.youtubeLink}
           />
+          <StyledCheckboxContainer>
+            <label htmlFor="public">
+              <StyledHiddenCheckbox type="checkbox" id="public" />
+              <StyledSliderCheckbox htmlFor="public" />
+              öffentlich
+            </label>
+          </StyledCheckboxContainer>
           <Button type="submit">speichern</Button>
           {onDelete && <Button onClick={onDelete}>Rezept löschen</Button>}
         </StyledArticle>
@@ -245,4 +301,79 @@ const StyledBigInput = styled.input`
 const Spacer = styled.div`
   margin-top: 2rem;
   position: relative;
+`;
+
+const StyledCategoriesDiv = styled.div`
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  max-width: calc(100% - (2 * var(--gap-out)));
+  margin: auto;
+  margin-top: 0.25rem;
+`;
+
+const StyledCategoryButton = styled.button`
+  background-color: ${(props) =>
+    props.isActive ? "var(--color-darkgrey)" : "var(--color-component)"};
+  color: ${(props) =>
+    props.isActive ? "var(--color-component)" : "var(--color-darkgrey)"};
+  border: solid var(--color-darkgrey) 1px;
+  border-radius: var(--border-radius-small);
+  width: 6rem;
+  height: 1.75rem;
+  margin-bottom: 0.5rem;
+  padding: 0.25rem;
+`;
+
+const StyledCheckboxContainer = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+
+  label {
+    display: flex;
+    align-items: center;
+    color: var(--color-text);
+    font-size: 1rem;
+    position: relative;
+    cursor: pointer;
+  }
+`;
+
+const StyledHiddenCheckbox = styled.input`
+  display: none;
+`;
+
+const StyledSliderCheckbox = styled.span`
+  position: absolute;
+  margin-top: var(--gap-between);
+  margin-bottom: 1rem;
+  top: 0.25rem;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2rem;
+  background-color: var(--color-background);
+  border-radius: 1rem;
+  cursor: pointer;
+
+  &:before {
+    content: "";
+    position: absolute;
+    top: 0.25rem;
+    left: 0.25rem;
+    width: 1.5rem;
+    height: 1.5rem;
+    background-color: var(--color-component);
+    border-radius: 50%;
+    transition: transform 0.3s ease-in-out;
+  }
+
+  input:checked + & {
+    background-color: var(--color-darkgrey);
+  }
+
+  input:checked + &:before {
+    transform: translateX(2rem);
+  }
 `;
