@@ -4,12 +4,12 @@ import useSWR from "swr";
 import React from "react";
 import { notifySuccess, notifyError } from "/helpers/toast";
 
-export default function AddRecipe() {
+export default function AddRecipe({ user }) {
   const { mutate } = useSWR("/api/recipes");
   const router = useRouter();
 
   async function addRecipe(recipe) {
-    const newRecipe = { ...recipe };
+    const newRecipe = { ...recipe, author: user._id };
     const response = await fetch("/api/recipes", {
       method: "POST",
       headers: { "Content-Type": "application/json" },

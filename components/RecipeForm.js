@@ -17,7 +17,7 @@ import StyledInput from "./Styled/StyledInput";
 import StyledDropDown from "./Styled/StyledDropDown";
 import { notifySuccess, notifyError } from "/helpers/toast";
 
-export default function RecipeForm({ onSubmit, data }) {
+export default function RecipeForm({ onSubmit, onDelete, data }) {
   const [imageUrl, setImageUrl] = useState(data ? data.imageLink : "");
   const [difficulty, setDifficulty] = useState(
     data && data.difficulty ? data.difficulty : "easy"
@@ -200,6 +200,7 @@ export default function RecipeForm({ onSubmit, data }) {
             defaultValue={data?.youtubeLink}
           />
           <Button type="submit">speichern</Button>
+          {onDelete && <Button onClick={onDelete}>Rezept löschen</Button>}
         </StyledArticle>
       </form>
     </>
