@@ -32,6 +32,7 @@ export default function RecipeForm({ onSubmit, onDelete, data }) {
           },
         ]
   );
+
   const router = useRouter();
 
   const uploadImage = async (event) => {
@@ -179,6 +180,7 @@ export default function RecipeForm({ onSubmit, onDelete, data }) {
               <Plus width={20} height={20} />
             </AddButton>
           </StyledList>
+          <StyledH2>Ernährungsformen</StyledH2>
           <StyledH2>Anleitung</StyledH2>
           <StyledBigInput
             type="text"
