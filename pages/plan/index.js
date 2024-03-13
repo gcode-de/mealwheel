@@ -39,7 +39,6 @@ import LoadingComponent from "@/components/Loading";
 import IconButtonLarge from "@/components/Styled/IconButtonLarge";
 import { notifySuccess, notifyError } from "/helpers/toast";
 
-
 export default function Plan({
   isLoading,
   error,
@@ -313,8 +312,12 @@ export default function Plan({
       []
     );
     user.shoppingList.push(
-      ...combinedIngredients.map((ingredient) => ingredient)
+      ...combinedIngredients.map((ingredient) => ({
+        ...ingredient,
+        isChecked: false,
+      }))
     );
+
     updateUserinDb(user, mutateUser);
     notifySuccess("Einkaufsliste aktualisiert");
   }

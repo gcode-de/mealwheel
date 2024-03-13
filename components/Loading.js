@@ -8,7 +8,7 @@ export default function LoadingComponent({ amount }) {
     <>
       <StyledUl>
         <RotatingSVG />
-        {amount && <CardSkeleton amount={3} $isLoading />};
+        {amount && <CardSkeleton amount={3} $isLoading />}
       </StyledUl>
     </>
   );
