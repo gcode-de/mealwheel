@@ -1,5 +1,3 @@
-import { useState } from "react";
-import useSWR from "swr";
 import styled from "styled-components";
 
 import StyledList from "@/components/Styled/StyledList";
@@ -9,8 +7,8 @@ import Plus from "@/public/icons/Plus.svg";
 import StyledIngredients from "@/components/Styled/StyledIngredients";
 import StyledInput from "@/components/Styled/StyledInput";
 import StyledDropDown from "@/components/Styled/StyledDropDown";
-import StyledH2 from "@/components/Styled/StyledH2";
 import StyledListItem from "@/components/Styled/StyledListItem";
+import IconButtonLarge from "@/components/Styled/IconButtonLarge";
 
 import updateUserinDb from "@/helpers/updateUserInDb";
 
@@ -46,14 +44,37 @@ export default function ShoppingList({ user, mutateUser }) {
     await updateUserinDb(user, mutateUser);
   }
 
-  function handleCheckboxChange(index) {
+  function handleCheckboxChange(id) {
     const updatedShoppingList = [...user.shoppingList];
-    updatedShoppingList[index].isChecked =
-      !updatedShoppingList[index].isChecked;
-    updatedShoppingList.sort((a, b) => (a.isChecked && !b.isChecked ? 1 : -1));
-    user.shoppingList = updatedShoppingList;
+    const itemIndex = updatedShoppingList.findIndex((item) => item.id === id);
 
-    updateUserinDb(user, mutateUser);
+    if (itemIndex !== -1) {
+      updatedShoppingList[itemIndex].isChecked =
+        !updatedShoppingList[itemIndex].isChecked;
+      updatedShoppingList.sort((a, b) => {
+        if (a.isChecked === b.isChecked) {
+          return a.index - b.index;
+        }
+        return a.isChecked ? 1 : -1;
+      });
+      user.shoppingList = updatedShoppingList;
+
+      updateUserinDb(user, mutateUser);
+
+      if (updatedShoppingList[itemIndex].isChecked) {
+        setTimeout(() => {
+          const updatedShoppingListAfterTimeout = [...user.shoppingList];
+          const itemIndexAfterTimeout =
+            updatedShoppingListAfterTimeout.findIndex((item) => item.id === id);
+          if (itemIndexAfterTimeout !== -1) {
+            updatedShoppingListAfterTimeout.splice(itemIndexAfterTimeout, 1);
+            user.shoppingList = updatedShoppingListAfterTimeout;
+
+            updateUserinDb(user, mutateUser);
+          }
+        }, 5000);
+      }
+    }
   }
 
   return (
@@ -69,11 +90,6 @@ export default function ShoppingList({ user, mutateUser }) {
                   textDecoration: item.isChecked ? "line-through" : "none",
                 }}
               >
-                <StyledCheckbox
-                  type="checkbox"
-                  checked={item.isChecked}
-                  onChange={() => handleCheckboxChange(index)}
-                ></StyledCheckbox>
                 <StyledCheck>
                   <StyledNumberUnit>
                     <StyledCheckItem $flex={0.1}>
@@ -83,12 +99,14 @@ export default function ShoppingList({ user, mutateUser }) {
                   </StyledNumberUnit>
                   <StyledCheckItem $flex={2}>{item.name}</StyledCheckItem>
                 </StyledCheck>
+                <StyledCheckbox
+                  type="checkbox"
+                  checked={item.isChecked}
+                  onChange={() => handleCheckboxChange(item.id)}
+                ></StyledCheckbox>
               </StyledListItem>
             ))}
-      </StyledList>
-      <StyledH2>neue Zutat:</StyledH2>
-      <form onSubmit={handleSubmit}>
-        <StyledList>
+        <form onSubmit={handleSubmit}>
           <StyledIngredients>
             <StyledInput
               type="number"
@@ -109,16 +127,18 @@ export default function ShoppingList({ user, mutateUser }) {
             <StyledInput
               type="text"
               name="name"
-              placeholder="neues Item"
+              placeholder="neue Zutat"
               aria-label="add igredient name for the recipe"
               required
             />
+            <AddButton type="submit" $color="var(--color-background)">
+              <Plus width={20} height={20} />
+            </AddButton>
           </StyledIngredients>
-          <AddButton type="submit" $color="var(--color-background)">
-            <Plus width={20} height={20} />
-          </AddButton>
-        </StyledList>
-      </form>
+        </form>
+      </StyledList>
+      <Spacer />
+      <IconButtonLarge style={"trash"} bottom="6rem" onClick="" />
     </>
   );
 }
@@ -139,10 +159,15 @@ const StyledCheckItem = styled.p`
 `;
 const StyledCheckbox = styled.input`
   background-color: var(--color-background);
-  color: pink;
+  margin: 0;
+  width: 37px;
   height: 20px;
 `;
 const StyledNumberUnit = styled.div`
   width: 40%;
   display: flex;
+`;
+const Spacer = styled.div`
+  height: 6rem;
+  position: relative;
 `;
