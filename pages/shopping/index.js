@@ -61,19 +61,18 @@ export default function ShoppingList({ user, mutateUser }) {
 
       updateUserinDb(user, mutateUser);
 
-      if (updatedShoppingList[itemIndex].isChecked) {
-        setTimeout(() => {
-          const updatedShoppingListAfterTimeout = [...user.shoppingList];
-          const itemIndexAfterTimeout =
-            updatedShoppingListAfterTimeout.findIndex((item) => item.id === id);
-          if (itemIndexAfterTimeout !== -1) {
-            updatedShoppingListAfterTimeout.splice(itemIndexAfterTimeout, 1);
-            user.shoppingList = updatedShoppingListAfterTimeout;
-
-            updateUserinDb(user, mutateUser);
-          }
-        }, 5000);
-      }
+    const checkedItem = updatedShoppingList[itemIndex];
+    if (checkedItem.isChecked) {
+      setTimeout(() => {
+        const updatedShoppingListAfterTimeout = [...user.shoppingList];
+        const itemIndexAfterTimeout = updatedShoppingListAfterTimeout.findIndex(item => item.id === itemId);
+        if (itemIndexAfterTimeout !== -1) {
+          updatedShoppingListAfterTimeout.splice(itemIndexAfterTimeout, 1);
+          user.shoppingList = updatedShoppingListAfterTimeout;
+          // Entferne das Objekt aus der Datenbank
+          updateUserinDb(user, mutateUser);
+        }
+      }, 5000);
     }
   }
 
