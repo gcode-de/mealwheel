@@ -14,5 +14,6 @@ const StyledList = styled.ul`
   margin-left: var(--gap-out);
   margin-top: var(--gap-between);
   margin-bottom: var(--gap-between);
+  position: relative;
 `;
 export default StyledList;

@@ -1,16 +1,39 @@
 import IconButton from "@/components/Styled/IconButton";
 import StyledList from "@/components/Styled/StyledList";
-
-import Link from "next/link";
-import styled from "styled-components";
-import Heart from "@/public/icons/heart-svgrepo-com.svg";
-
-import Pot from "@/public/icons/cooking-pot-fill-svgrepo-com.svg";
 import StyledP from "@/components/Styled/StyledP";
-import { useRouter } from "next/router";
 
-export default function ProfilePage({ user }) {
+import IconButtonSmall from "@/components/Styled/IconButtonSmall";
+import Heart from "@/public/icons/heart-svgrepo-com.svg";
+import PenCircle from "@/public/icons/svg/pen-circle_10742831.svg";
+import Pot from "@/public/icons/cooking-pot-fill-svgrepo-com.svg";
+
+import styled from "styled-components";
+import Link from "next/link";
+import Image from "next/image";
+import { useRouter } from "next/router";
+import { useState } from "react";
+import updateUserinDb from "@/helpers/updateUserInDb";
+
+export default function ProfilePage({ user, mutateUser }) {
   const router = useRouter();
+  const [editUsername, setEditUsername] = useState(false);
+  const [editImage, setEditImage] = useState(false);
+
+  const updateProfileImage = async (e) => {
+    // API-Aufruf, um das Profilbild zu aktualisieren
+    const file = e.target.files[0];
+    // Logik zum Hochladen des Bildes und Aktualisieren der URL
+    setEditImage(false);
+  };
+
+  const updateUsername = async (event) => {
+    event.preventDefault();
+    const newName = event.target.elements.username.value;
+    user.userName = newName;
+    updateUserinDb(user, mutateUser);
+    setEditUsername(false);
+  };
+
   return (
     <>
       <IconButton
@@ -22,11 +45,56 @@ export default function ProfilePage({ user }) {
       />
       <WrapperCenter>
         <StyledProfile>
-          <h1>🙋‍♀️</h1>
+          {!editImage ? (
+            (user?.profilePictureLink && (
+              <Image
+                src={user?.picture}
+                alt="Profile Picture"
+                width={60}
+                height={60}
+              />
+            )) || <h1>🙋‍♀️</h1>
+          ) : (
+            <input
+              type="file"
+              style={{ display: editImage ? "block" : "none" }}
+              onChange={updateProfileImage}
+            />
+          )}
+          <IconButtonSmall
+            style={"penCircle"}
+            bottom={"0.5rem"}
+            right={"0.5rem"}
+            onClick={() => setEditImage((previousValue) => !previousValue)}
+          />
         </StyledProfile>
       </WrapperCenter>
       <StyledList>
-        <p>Hallo, {user.username || "user.email" || "Gastnutzer"}!</p>
+        {/* <p>
+          Hallo,{" "}
+          {user?.username || user?.firstName || user?.email || "Gastnutzer"}!
+        </p> */}
+        {!editUsername ? (
+          <p>
+            Hallo,{" "}
+            {user?.userName || user?.firstName || user?.email || "Gastnutzer"}!
+          </p>
+        ) : (
+          <StyledUsernameForm onSubmit={updateUsername}>
+            <input
+              name="username"
+              defaultValue={user?.username}
+              placeholder="Dein Benutzername"
+            />
+            <button>Speichern</button>
+          </StyledUsernameForm>
+        )}
+        <IconButtonSmall
+          style={"penCircle"}
+          bottom={"-0.2rem"}
+          right={"-0.2rem"}
+          onClick={() => setEditUsername((previousValue) => !previousValue)}
+        />
       </StyledList>
       <Wrapper>
         <StyledLink href="/favorites">
@@ -60,6 +128,8 @@ const StyledProfile = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  position: relative;
+  z-index: 2;
 `;
 const StyledLink = styled(Link)`
   text-decoration: none;
@@ -83,5 +153,27 @@ const StyledLink = styled(Link)`
   &:hover {
     fill: var(--color-highlight);
     color: var(--color-highlight);
+  }
+`;
+
+const StyledUsernameForm = styled.form`
+  display: flex;
+  justify-content: space-between;
+  margin: 9px 0;
+  input {
+    border: none;
+    margin: 1;
+  }
+  button {
+    border: none;
+    background-color: var(--color-darkgrey);
+    color: var(--color-background);
+    font-size: 0%.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 10px;
+    width: 7rem;
+    height: 2rem;
+    /* margin-top: 1rem; */
   }
 `;
