@@ -13,7 +13,7 @@ export default function MyRecipes({
   error,
   isLoading,
   getRecipeProperty,
-  onToggleIsFavorite,
+  toggleIsFavorite,
   recipes,
 }) {
   const router = useRouter();
@@ -58,7 +58,7 @@ export default function MyRecipes({
                 key={recipe._id}
                 recipe={recipe}
                 isFavorite={getRecipeProperty(recipe._id, "isFavorite")}
-                onToggleIsFavorite={onToggleIsFavorite}
+                onToggleIsFavorite={toggleIsFavorite}
               ></MealCard>
             );
           })}
