@@ -34,6 +34,8 @@ export default function DetailPage({
     error: dataError,
   } = useSWR(id ? `/api/recipes/${id}` : null);
 
+  const userIsAuthor = user?._id === recipe?.author;
+
   const [selectedDate, setSelectedDate] = useState("");
   const [calendarFormIsVisible, setCalendarFormIsVisible] = useState(false);
 
@@ -98,14 +100,16 @@ export default function DetailPage({
         sizes="500px"
       />
       <StyledArticle>
-        <Link href={`/recipe/${id}/edit`}>
-          <IconButton
-            style="Edit"
-            right="11.25rem"
-            top="-1.25rem"
-            fill={"var(--color-lightgrey)"}
-          />
-        </Link>
+        {userIsAuthor && (
+          <Link href={`/recipe/${id}/edit`}>
+            <IconButton
+              style="Edit"
+              right="11.25rem"
+              top="-1.25rem"
+              fill={"var(--color-lightgrey)"}
+            />
+          </Link>
+        )}
         <IconButton
           style="Calendar"
           right="8.25rem"
