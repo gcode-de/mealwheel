@@ -35,6 +35,7 @@ import assignRecipeToCalendarDay from "@/helpers/assignRecipeToDay";
 import populateEmptyWeekdays from "@/helpers/populateEmptyWeekdays";
 import updateUserinDb from "@/helpers/updateUserInDb";
 import assignRecipesToCalendarDays from "@/helpers/assignRecipeToDay";
+import IconButtonLarge from "@/components/Styled/IconButtonLarge";
 
 export default function Plan({
   isLoading,
@@ -43,6 +44,7 @@ export default function Plan({
   getRecipeProperty,
   toggleIsFavorite,
   mutateUser,
+  recipes,
 }) {
   const router = useRouter();
   const weekOffset = Number(router.query.week) || 0;
@@ -282,6 +284,40 @@ export default function Plan({
     );
   }
 
+  function saveToShopping() {
+    const recipesId = weekdays.map(
+      (day) => getCalendarDayFromDb(day.date)?.recipe?._id
+    );
+    const findRecipes = recipesId.map(
+      (id) => recipes.find((recipe) => recipe._id === id)?.ingredients
+    );
+    const servingsPerDay = weekdays.map(
+      (day) => getCalendarDayFromDb(day.date)?.numberOfPeople
+    );
+
+    const multipliedQuantities = findRecipes
+      .map((ingredients, index) => {
+        if (ingredients) {
+          return ingredients.map((ingredient) => {
+            return {
+              ...ingredient,
+              quantity: ingredient.quantity * servingsPerDay[index],
+            };
+          });
+        }
+        return [];
+      })
+      .filter((recipe) => recipe.length > 0);
+    const combinedIngredients = multipliedQuantities.reduce(
+      (acc, curr) => acc.concat(curr),
+      []
+    );
+    user.shoppingList.push(
+      ...combinedIngredients.map((ingredient) => ingredient)
+    );
+    updateUserinDb(user, mutateUser);
+  }
+
   return (
     <>
       <StyledHeader>
@@ -374,32 +410,36 @@ export default function Plan({
           </SortableContext>
         </DndContext>
       </CalendarContainer>
-      <ButtonsContainer>
-        {assignableDays.length !== 0 ? (
-          <GenerateButton
-            onClick={() => {
-              populateEmptyWeekdays(
-                weekdays,
-                assignableDays,
-                randomRecipes,
-                numberOfRandomRecipes,
-                user,
-                mutateUser
-              );
-            }}
-          >
-            🧩 Plan füllen
-          </GenerateButton>
-        ) : (
-          <GenerateButton
-            onClick={() => {
-              removeAllRecipes(weekdays);
-            }}
-          >
-            ⚠️ Plan löschen
-          </GenerateButton>
-        )}
-      </ButtonsContainer>
+
+      <IconButtonLarge
+        style={"saveShopping"}
+        bottom="10rem"
+        onClick={() => saveToShopping()}
+      />
+      {assignableDays.length !== 0 ? (
+        <IconButtonLarge
+          style={"generate"}
+          bottom="6rem"
+          onClick={() => {
+            populateEmptyWeekdays(
+              weekdays,
+              assignableDays,
+              randomRecipes,
+              numberOfRandomRecipes,
+              user,
+              mutateUser
+            );
+          }}
+        />
+      ) : (
+        <IconButtonLarge
+          style={"trash"}
+          bottom="6rem"
+          onClick={() => {
+            removeAllRecipes(weekdays);
+          }}
+        />
+      )}
     </>
   );
 }
@@ -408,7 +448,6 @@ const StyledHeader = styled.header``;
 
 const CalendarNavigation = styled.div`
   position: relative;
-  /* width: 100%; */
   height: 3rem;
   text-align: center;
   padding: 1.25rem;
@@ -460,24 +499,4 @@ const StyledPowerIcon = styled(PowerIcon)`
   fill: ${(props) =>
     props.$dayIsDisabled ? "var(--color-lightgrey)" : "var(--color-highlight)"};
   cursor: pointer;
-`;
-
-const ButtonsContainer = styled.div`
-  position: fixed;
-  bottom: 80px;
-  display: flex;
-  justify-content: space-between;
-  z-index: 2;
-  left: var(--gap-out);
-`;
-const GenerateButton = styled.button`
-  border: none;
-  background-color: var(--color-darkgrey);
-  color: var(--color-background);
-  font-size: 0%.75rem;
-  font-weight: 600;
-  cursor: pointer;
-  border-radius: 10px;
-  width: 9rem;
-  height: 3rem;
 `;

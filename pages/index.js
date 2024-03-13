@@ -12,12 +12,10 @@ export default function HomePage({
   isLoading,
   getRecipeProperty,
   toggleIsFavorite,
+  recipes,
+  recipesError,
+  recipesIsLoading,
 }) {
-  const {
-    data: recipes,
-    error: recipesError,
-    isLoading: recipesIsLoading,
-  } = useSWR(`/api/recipes`);
   const router = useRouter();
 
   if (recipesError || error) {
