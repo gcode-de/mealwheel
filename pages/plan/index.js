@@ -36,6 +36,7 @@ import populateEmptyWeekdays from "@/helpers/populateEmptyWeekdays";
 import updateUserinDb from "@/helpers/updateUserInDb";
 import assignRecipesToCalendarDays from "@/helpers/assignRecipeToDay";
 import IconButtonLarge from "@/components/Styled/IconButtonLarge";
+import { notifySuccess, notifyError } from "/helpers/toast";
 
 export default function Plan({
   isLoading,
@@ -316,6 +317,7 @@ export default function Plan({
       ...combinedIngredients.map((ingredient) => ingredient)
     );
     updateUserinDb(user, mutateUser);
+    notifySuccess("Einkaufsliste aktualisiert");
   }
 
   return (
