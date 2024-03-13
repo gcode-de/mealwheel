@@ -1,11 +1,12 @@
 import useSWR from "swr";
 import Header from "@/components/Styled/Header";
-import CardSkeleton from "@/components/Styled/CardSkeleton";
+
 import MealCard from "@/components/Styled/MealCard";
 import IconButtonLarge from "@/components/Styled/IconButtonLarge";
 import { useRouter } from "next/router";
 import StyledUl from "@/components/StyledUl";
 import ScrollToTop from "@/components/ScrollToTopButton";
+import LoadingComponent from "@/components/Loading";
 
 export default function HomePage({
   error,
@@ -31,12 +32,7 @@ export default function HomePage({
     return (
       <>
         <Header text={"Meal Wheel 🥗"} />
-        <article>
-          <StyledUl>
-            <h2>Lade Rezepte...</h2>
-            <CardSkeleton amount={5} $isLoading />
-          </StyledUl>
-        </article>
+        <LoadingComponent amount />
       </>
     );
   }
