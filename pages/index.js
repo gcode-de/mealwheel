@@ -1,13 +1,15 @@
-import useSWR from "swr";
 import Header from "@/components/Styled/Header";
 import CardSkeleton from "@/components/Styled/CardSkeleton";
 import MealCard from "@/components/Styled/MealCard";
-import IconButtonLarge from "@/components/Styled/IconButtonLarge";
-import { useRouter } from "next/router";
 import StyledUl from "@/components/StyledUl";
+import IconButtonLarge from "@/components/Styled/IconButtonLarge";
 import ScrollToTop from "@/components/ScrollToTopButton";
-import { useState } from "react";
+import { filterTags } from "@/helpers/filterTags";
+
+import { useRouter } from "next/router";
+import useSWR from "swr";
 import styled from "styled-components";
+import { useState } from "react";
 
 export default function HomePage({
   error,
@@ -23,21 +25,46 @@ export default function HomePage({
   const router = useRouter();
 
   const [isFilterButton, setIsFilterButton] = useState(false);
-  const [isDifficultyButton, setIsDifficultyButton] = useState([
-    false,
-    false,
-    false,
-  ]);
-  const [isDurationButton, setIsDurationButton] = useState([
-    false,
-    false,
-    false,
-  ]);
-  const [isNutritionButton, setIsNutritionButton] = useState([
-    false,
-    false,
-    false,
-  ]);
+
+  function toggleFilter() {
+    setIsFilterButton(!isFilterButton);
+  }
+
+  const [filters, setFilters] = useState(() => {
+    return filterTags.reduce((acc, { type }) => {
+      acc[type] = [];
+      return acc;
+    }, {});
+  });
+
+  function handleFilterChange(type, value) {
+    setFilters((prevFilters) => {
+      const isAlreadySelected = prevFilters[type].includes(value);
+
+      if (isAlreadySelected) {
+        return {
+          ...prevFilters,
+          [type]: prevFilters[type].filter((item) => item !== value),
+        };
+      } else {
+        return {
+          ...prevFilters,
+          [type]: [...prevFilters[type], value],
+        };
+      }
+    });
+  }
+
+  function resetCategories() {
+    setFilters((prevFilters) => {
+      const resetFilters = Object.keys(prevFilters).reduce((acc, key) => {
+        acc[key] = [];
+        return acc;
+      }, {});
+
+      return resetFilters;
+    });
+  }
 
   if (recipesError || error) {
     return (
@@ -62,34 +89,6 @@ export default function HomePage({
     );
   }
 
-  function toggleFilter() {
-    setIsFilterButton(!isFilterButton);
-  }
-
-  function toggleDifficulty(index) {
-    const updatedState = [...isDifficultyButton];
-    updatedState[index] = !updatedState[index];
-    setIsDifficultyButton(updatedState);
-  }
-
-  function toggleDuration(index) {
-    const updatedState = [...isDurationButton];
-    updatedState[index] = !updatedState[index];
-    setIsDurationButton(updatedState);
-  }
-
-  function toggleNutrition(index) {
-    const updatedState = [...isNutritionButton];
-    updatedState[index] = !updatedState[index];
-    setIsNutritionButton(updatedState);
-  }
-
-  function resetCategories() {
-    setIsDifficultyButton([false, false, false]);
-    setIsDurationButton([false, false, false]);
-    setIsNutritionButton([false, false, false, false, false]);
-  }
-
   return (
     <>
       <Header text={"Meal Wheel 🥗"} />
@@ -107,91 +106,25 @@ export default function HomePage({
       </StyledFilterButton>
       {isFilterButton && (
         <>
-          <StyledH2>Schwierigkeit</StyledH2>
-          <StyledResetButton onClick={resetCategories}>
+          <StyledResetButton type="button" onClick={resetCategories}>
             alles zurücksetzen
           </StyledResetButton>
-          <StyledCategoriesDiv>
-            <StyledCategoryButton
-              onClick={() => toggleDifficulty(0)}
-              isActive={isDifficultyButton[0]}
-            >
-              einfach
-            </StyledCategoryButton>
-            <StyledCategoryButton
-              onClick={() => toggleDifficulty(1)}
-              isActive={isDifficultyButton[1]}
-            >
-              mittel
-            </StyledCategoryButton>
-            <StyledCategoryButton
-              onClick={() => toggleDifficulty(2)}
-              isActive={isDifficultyButton[2]}
-            >
-              hart
-            </StyledCategoryButton>
-          </StyledCategoriesDiv>
-          <StyledH2>Zubereitungsdauer</StyledH2>
-          <StyledCategoriesDiv>
-            <StyledCategoryButton
-              onClick={() => toggleDuration(0)}
-              isActive={isDurationButton[0]}
-            >
-              {" "}
-              {"< 10"} Min
-            </StyledCategoryButton>
-            <StyledCategoryButton
-              onClick={() => toggleDuration(1)}
-              isActive={isDurationButton[1]}
-            >
-              10 - 20 Min
-            </StyledCategoryButton>
-            <StyledCategoryButton
-              onClick={() => toggleDuration(2)}
-              isActive={isDurationButton[2]}
-            >
-              {"> 20 Min"}
-            </StyledCategoryButton>
-          </StyledCategoriesDiv>
-          <StyledH2>Ernährung</StyledH2>
-          <StyledCategoriesDiv>
-            <StyledCategoryButton
-              onClick={() => toggleNutrition(0)}
-              isActive={isNutritionButton[0]}
-            >
-              vegan
-            </StyledCategoryButton>
-            <StyledCategoryButton
-              onClick={() => toggleNutrition(1)}
-              isActive={isNutritionButton[1]}
-            >
-              vegetarisch
-            </StyledCategoryButton>
-            <StyledCategoryButton
-              onClick={() => toggleNutrition(2)}
-              isActive={isNutritionButton[2]}
-            >
-              Fleisch
-            </StyledCategoryButton>
-            <StyledCategoryButton
-              onClick={() => toggleNutrition(3)}
-              isActive={isNutritionButton[3]}
-            >
-              pescetarisch
-            </StyledCategoryButton>
-            <StyledCategoryButton
-              onClick={() => toggleNutrition(4)}
-              isActive={isNutritionButton[4]}
-            >
-              Keto
-            </StyledCategoryButton>
-            <StyledCategoryButton
-              onClick={() => toggleNutrition(5)}
-              isActive={isNutritionButton[5]}
-            >
-              low carb
-            </StyledCategoryButton>
-          </StyledCategoriesDiv>
+          {filterTags.map(({ label, type, options }) => (
+            <div key={type}>
+              <StyledH2>{label}</StyledH2>
+              <StyledCategoriesDiv>
+                {options.map((option) => (
+                  <StyledCategoryButton
+                    key={option.value}
+                    $isActive={filters[type]?.includes(option.value)}
+                    onClick={() => handleFilterChange(type, option.value)}
+                  >
+                    {option.label}
+                  </StyledCategoryButton>
+                ))}
+              </StyledCategoriesDiv>
+            </div>
+          ))}
         </>
       )}
 
@@ -223,6 +156,7 @@ const StyledFilterButton = styled.button`
   position: absolute;
   top: 1rem;
   right: 2rem;
+  cursor: pointer;
 `;
 
 const StyledResetButton = styled.button`
@@ -232,12 +166,15 @@ const StyledResetButton = styled.button`
   top: 3.75rem;
   right: 1.5rem;
   font-size: smaller;
+  cursor: pointer;
+  z-index: 2;
 `;
 
 const StyledH2 = styled.h2`
   font-size: small;
   text-align: left;
-  width: calc(100% - (2 * var(--gap-out)));
+  width: max-content;
+  max-width: calc(100% - (2 * var(--gap-out)));
   margin-right: var(--gap-out);
   margin-left: var(--gap-out);
   margin-top: var(--gap-between);
@@ -257,13 +194,14 @@ const StyledCategoriesDiv = styled.div`
 
 const StyledCategoryButton = styled.button`
   background-color: ${(props) =>
-    props.isActive ? "var(--color-darkgrey)" : "var(--color-component)"};
+    props.$isActive ? "var(--color-darkgrey)" : "var(--color-component)"};
   color: ${(props) =>
-    props.isActive ? "var(--color-component)" : "var(--color-darkgrey)"};
+    props.$isActive ? "var(--color-component)" : "var(--color-darkgrey)"};
   border: solid var(--color-darkgrey) 1px;
   border-radius: var(--border-radius-small);
   width: 6rem;
   height: 1.75rem;
   margin-bottom: 0.5rem;
   padding: 0.25rem;
+  cursor: pointer;
 `;
