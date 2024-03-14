@@ -43,17 +43,17 @@ function handleDurationFilter(value) {
     (acc, range) => {
       const [min, max] = range.split("&&");
       if (min && max) {
-        acc.$and.push({
+        acc.$or.push({
           duration: { $gte: parseInt(min), $lte: parseInt(max) },
         });
       } else if (min) {
-        acc.$and.push({ duration: { $gte: parseInt(min) } });
+        acc.$or.push({ duration: { $gte: parseInt(min) } });
       } else if (max) {
-        acc.$and.push({ duration: { $lte: parseInt(max) } });
+        acc.$or.push({ duration: { $lte: parseInt(max) } });
       }
       return acc;
     },
-    { $and: [] }
+    { $or: [] }
   );
-  return durationQuery.$and.length ? { $and: durationQuery.$and } : {};
+  return durationQuery.$or.length ? { $or: durationQuery.$or } : {};
 }
