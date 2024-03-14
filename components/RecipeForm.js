@@ -15,7 +15,6 @@ import Plus from "@/public/icons/Plus.svg";
 import StyledIngredients from "./Styled/StyledIngredients";
 import StyledInput from "./Styled/StyledInput";
 import StyledDropDown from "./Styled/StyledDropDown";
-import { notifySuccess, notifyError } from "/helpers/toast";
 
 export default function RecipeForm({ onSubmit, onDelete, data }) {
   const [imageUrl, setImageUrl] = useState(data ? data.imageLink : "");
@@ -33,27 +32,34 @@ export default function RecipeForm({ onSubmit, onDelete, data }) {
           },
         ]
   );
+  const [isNutritionButton, setIsNutritionButton] = useState([
+    false,
+    false,
+    false,
+  ]);
+
   const router = useRouter();
+
+  function toggleNutrition(index) {
+    const updatedState = [...isNutritionButton];
+    updatedState[index] = !updatedState[index];
+    setIsNutritionButton(updatedState);
+  }
 
   const uploadImage = async (event) => {
     const files = event.target.files;
     const data = new FormData();
     data.append("file", files[0]);
     data.append("upload_preset", "meal_wheel");
-    try {
-      const uploadResponse = await fetch(
-        "https://api.cloudinary.com/v1_1/mealwheel/image/upload",
-        {
-          method: "POST",
-          body: data,
-        }
-      );
-      const file = await uploadResponse.json();
-      setImageUrl(file.secure_url);
-      notifySuccess("Bild hinzugefügt");
-    } catch (error) {
-      notifyError("Bild konnte nicht hinzugefügt werden");
-    }
+    const uploadResponse = await fetch(
+      "https://api.cloudinary.com/v1_1/mealwheel/image/upload",
+      {
+        method: "POST",
+        body: data,
+      }
+    );
+    const file = await uploadResponse.json();
+    setImageUrl(file.secure_url);
   };
 
   function handleInputChange(event, index, field) {
@@ -185,6 +191,45 @@ export default function RecipeForm({ onSubmit, onDelete, data }) {
               <Plus width={20} height={20} />
             </AddButton>
           </StyledList>
+          <StyledH2>Ernährungsformen</StyledH2>
+          <StyledCategoriesDiv>
+            <StyledCategoryButton
+              onClick={() => toggleNutrition(0)}
+              isActive={isNutritionButton[0]}
+            >
+              vegan
+            </StyledCategoryButton>
+            <StyledCategoryButton
+              onClick={() => toggleNutrition(1)}
+              isActive={isNutritionButton[1]}
+            >
+              vegetarisch
+            </StyledCategoryButton>
+            <StyledCategoryButton
+              onClick={() => toggleNutrition(2)}
+              isActive={isNutritionButton[2]}
+            >
+              Fleisch
+            </StyledCategoryButton>
+            <StyledCategoryButton
+              onClick={() => toggleNutrition(3)}
+              isActive={isNutritionButton[3]}
+            >
+              pescetarisch
+            </StyledCategoryButton>
+            <StyledCategoryButton
+              onClick={() => toggleNutrition(4)}
+              isActive={isNutritionButton[4]}
+            >
+              Keto
+            </StyledCategoryButton>
+            <StyledCategoryButton
+              onClick={() => toggleNutrition(5)}
+              isActive={isNutritionButton[5]}
+            >
+              low carb
+            </StyledCategoryButton>
+          </StyledCategoriesDiv>
           <StyledH2>Anleitung</StyledH2>
           <StyledBigInput
             type="text"
@@ -199,6 +244,13 @@ export default function RecipeForm({ onSubmit, onDelete, data }) {
             name="youtubeLink"
             defaultValue={data?.youtubeLink}
           />
+          <StyledCheckboxContainer>
+            <label htmlFor="public">
+              öffentlich sichtbar
+              <StyledHiddenCheckbox type="checkbox" id="public" name="public" />
+              <StyledSliderCheckbox htmlFor="public" />
+            </label>
+          </StyledCheckboxContainer>
           <Button type="submit">speichern</Button>
           {onDelete && <Button onClick={onDelete}>Rezept löschen</Button>}
         </StyledArticle>
@@ -249,4 +301,72 @@ const StyledBigInput = styled.input`
 const Spacer = styled.div`
   margin-top: 2rem;
   position: relative;
+`;
+
+const StyledCategoriesDiv = styled.div`
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  max-width: calc(100% - (2 * var(--gap-out)));
+  margin: auto;
+  margin-top: 0.25rem;
+`;
+
+const StyledCategoryButton = styled.button`
+  background-color: ${(props) =>
+    props.isActive ? "var(--color-darkgrey)" : "var(--color-component)"};
+  color: ${(props) =>
+    props.isActive ? "var(--color-component)" : "var(--color-darkgrey)"};
+  border: solid var(--color-darkgrey) 1px;
+  border-radius: var(--border-radius-small);
+  width: 6rem;
+  height: 1.75rem;
+  margin-bottom: 0.5rem;
+  padding: 0.25rem;
+`;
+
+const StyledCheckboxContainer = styled.div`
+  label {
+    color: var(--color-text);
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    margin-top: 1rem;
+  }
+`;
+
+const StyledHiddenCheckbox = styled.input`
+  display: none;
+`;
+const StyledSliderCheckbox = styled.span`
+  position: relative;
+  margin-left: 1rem;
+  margin-top: 0rem;
+  height: 2rem;
+  width: 3.5rem;
+  background-color: var(--color-background);
+  border-radius: 1rem;
+  cursor: pointer;
+  box-shadow: inset 0 0 5px rgba(77, 74, 74, 0.1);
+
+  &:before {
+    content: "";
+    position: absolute;
+    top: 0.25rem;
+    left: 0.25rem;
+    width: 1.5rem;
+    height: 1.5rem;
+    background-color: var(--color-component);
+    border-radius: 50%;
+    transition: transform 0.3s ease-in-out;
+  }
+
+  input:checked + & {
+    background-color: var(--color-darkgrey);
+  }
+
+  input:checked + &:before {
+    transform: translateX(1.5rem);
+  }
 `;
