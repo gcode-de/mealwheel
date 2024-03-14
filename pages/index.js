@@ -7,7 +7,7 @@ import ScrollToTop from "@/components/ScrollToTopButton";
 import Button from "@/components/Styled/StyledButton";
 import StyledH2 from "@/components/Styled/StyledH2";
 import { filterTags } from "@/helpers/filterTags";
-
+import Filter from "@/public/icons/sliders-v_10435878.svg";
 import { useRouter } from "next/router";
 import useSWR from "swr";
 import styled from "styled-components";
@@ -147,16 +147,7 @@ export default function HomePage({
     <>
       <Header text={"Meal Wheel 🥗"} />
       <StyledFilterButton onClick={toggleFilter}>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          id="Layer_1"
-          data-name="Layer 1"
-          viewBox="0 0 24 24"
-          width="20"
-          height="20"
-        >
-          <path d="m4,4.036V.5c0-.276-.224-.5-.5-.5s-.5.224-.5.5v3.536c-1.694.243-3,1.704-3,3.464s1.306,3.221,3,3.464v12.536c0,.276.224.5.5.5s.5-.224.5-.5v-12.536c1.694-.243,3-1.704,3-3.464s-1.306-3.221-3-3.464Zm-.5,5.964c-1.379,0-2.5-1.121-2.5-2.5s1.121-2.5,2.5-2.5,2.5,1.121,2.5,2.5-1.121,2.5-2.5,2.5Zm9,3.036V.5c0-.276-.224-.5-.5-.5s-.5.224-.5.5v12.536c-1.694.243-3,1.704-3,3.464s1.306,3.221,3,3.464v3.536c0,.276.224.5.5.5s.5-.224.5-.5v-3.536c1.694-.243,3-1.704,3-3.464s-1.306-3.221-3-3.464Zm-.5,5.964c-1.379,0-2.5-1.121-2.5-2.5s1.121-2.5,2.5-2.5,2.5,1.121,2.5,2.5-1.121,2.5-2.5,2.5Zm12-11.5c0-1.76-1.306-3.221-3-3.464V.5c0-.276-.224-.5-.5-.5s-.5.224-.5.5v3.536c-1.694.243-3,1.704-3,3.464s1.306,3.221,3,3.464v12.536c0,.276.224.5.5.5s.5-.224.5-.5v-12.536c1.694-.243,3-1.704,3-3.464Zm-3.5,2.5c-1.379,0-2.5-1.121-2.5-2.5s1.121-2.5,2.5-2.5,2.5,1.121,2.5,2.5-1.121,2.5-2.5,2.5Z" />
-        </svg>
+        <Filter width="20" height="20" />
       </StyledFilterButton>
       {isFilterButton && (
         <StyledFiltersContainer>
