@@ -31,6 +31,8 @@ export default async function handler(request, response) {
       }
     });
 
+    console.log(queryObj.$and);
+
     // Verwende das dynamisch erstellte Abfrageobjekt
     const recipes = await Recipe.find(queryObj);
 
