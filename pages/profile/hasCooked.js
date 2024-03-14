@@ -1,6 +1,5 @@
 import styled from "styled-components";
 
-import CardSkeleton from "@/components/Styled/CardSkeleton";
 import MealCard from "@/components/Styled/MealCard";
 import Header from "@/components/Styled/Header";
 import IconButton from "@/components/Styled/IconButton";

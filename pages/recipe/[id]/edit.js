@@ -9,9 +9,6 @@ export default function EditRecipe({ user }) {
   const { data: recipe, isLoading } = useSWR(`/api/recipes/${id}`);
 
   async function handleDelete() {
-    if (confirm("Dieses Rezept löschen?") !== true) {
-      return;
-    }
     const response = await fetch(`/api/recipes/${id}`, {
       method: "DELETE",
       headers: {
@@ -22,8 +19,10 @@ export default function EditRecipe({ user }) {
 
     if (response.ok) {
       router.back();
+      notifySuccess("Rezept gelöscht");
     } else {
       console.log("Löschen fehlgeschlagen", response.body);
+      notifyError("Rezept konnte nicht gelöscht werden");
     }
   }
 
@@ -38,9 +37,10 @@ export default function EditRecipe({ user }) {
 
     if (response.ok) {
       router.back();
-      return true;
+      notifySuccess("Rezept geändert");
+    } else {
+      notifyError("Rezept konnte nicht geändert werden");
     }
-    return false;
   }
 
   if (isLoading) {
@@ -48,18 +48,6 @@ export default function EditRecipe({ user }) {
   }
 
   return (
-    <RecipeForm
-      onSubmit={() =>
-        handleEdit()
-          ? notifySuccess("Rezept geändert")
-          : notifyError("Rezept konnte nicht geändert werden")
-      }
-      data={recipe}
-      onDelete={() =>
-        handleDelete()
-          ? notifySuccess("Rezept gelöscht")
-          : notifyError("Rezept konnte nicht gelöscht werden")
-      }
-    />
+    <RecipeForm onSubmit={handleEdit} data={recipe} onDelete={handleDelete} />
   );
 }

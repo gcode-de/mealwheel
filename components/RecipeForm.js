@@ -36,23 +36,30 @@ export default function RecipeForm({ onSubmit, onDelete, data }) {
   const router = useRouter();
 
   const uploadImage = async (event) => {
-    const files = event.target.files;
-    const data = new FormData();
-    data.append("file", files[0]);
-    data.append("upload_preset", "meal_wheel");
-    try {
-      const uploadResponse = await fetch(
-        "https://api.cloudinary.com/v1_1/mealwheel/image/upload",
-        {
-          method: "POST",
-          body: data,
-        }
-      );
-      const file = await uploadResponse.json();
-      setImageUrl(file.secure_url);
-      notifySuccess("Bild hinzugefügt");
-    } catch (error) {
-      notifyError("Bild konnte nicht hinzugefügt werden");
+    if (data.imageLink) {
+      const splitUrl = "/recipes/" + data.imageLink.split("/recipes/")[1];
+      cloudinary.v2.uploader
+        .destroy(splitUrl)
+        .then((result) => console.log(result));
+    } else {
+      const files = event.target.files;
+      const data = new FormData();
+      data.append("file", files[0]);
+      data.append("upload_preset", "meal_wheel");
+      try {
+        const uploadResponse = await fetch(
+          "https://api.cloudinary.com/v1_1/mealwheel/image/upload",
+          {
+            method: "POST",
+            body: data,
+          }
+        );
+        const file = await uploadResponse.json();
+        setImageUrl(file.secure_url);
+        notifySuccess("Bild hinzugefügt");
+      } catch (error) {
+        notifyError("Bild konnte nicht hinzugefügt werden");
+      }
     }
   };
 
@@ -199,8 +206,10 @@ export default function RecipeForm({ onSubmit, onDelete, data }) {
             name="youtubeLink"
             defaultValue={data?.youtubeLink}
           />
-          <Button type="submit">speichern</Button>
-          {onDelete && <Button onClick={onDelete}>Rezept löschen</Button>}
+          <ButtonContainer>
+            <Button type="submit">speichern</Button>
+            {onDelete && <Button onClick={onDelete}>Rezept löschen</Button>}
+          </ButtonContainer>
         </StyledArticle>
       </form>
     </>
@@ -249,4 +258,9 @@ const StyledBigInput = styled.input`
 const Spacer = styled.div`
   margin-top: 2rem;
   position: relative;
+`;
+const ButtonContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  width: calc(100% - (2 * var(--gap-out)));
 `;
