@@ -62,21 +62,6 @@ export default function HomePage({
   }, [query]);
 
   function handleFilterChange(type, value) {
-    // setFilters((prevFilters) => {
-    //   const isAlreadySelected = prevFilters[type].includes(value);
-
-    //   if (isAlreadySelected) {
-    //     return {
-    //       ...prevFilters,
-    //       [type]: prevFilters[type].filter((item) => item !== value),
-    //     };
-    //   } else {
-    //     return {
-    //       ...prevFilters,
-    //       [type]: [...prevFilters[type], value],
-    //     };
-    //   }
-    // });
     let newFilters = {};
     const isAlreadySelected = filters[type].includes(value);
 
@@ -108,9 +93,6 @@ export default function HomePage({
 
   function applyFilter(filters) {
     const url = createUrlWithFilters("/", filters);
-    console.log(url);
-    // window.history.replaceState("nextState", "nextTitle", url);
-    // setIsFilterButton(false);
     router.push(url);
   }
 
