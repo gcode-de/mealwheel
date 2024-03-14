@@ -7,6 +7,7 @@ import IconButton from "@/components/Styled/IconButton";
 import { useRouter } from "next/router";
 import StyledH2 from "@/components/Styled/StyledH2";
 import Spacer from "@/components/Styled/Spacer";
+import Link from "next/link";
 
 export default function MyRecipes({
   user,
@@ -49,6 +50,10 @@ export default function MyRecipes({
         onClick={() => router.back()}
       />
       <Spacer />
+      <StyledH2>
+        <Link href="/profile/collections">Kochbücher</Link>
+      </StyledH2>
+      <StyledArticle></StyledArticle>
       <StyledH2>Von mir erstellte Rezepte</StyledH2>
       <StyledArticle>
         <StyledUl>
