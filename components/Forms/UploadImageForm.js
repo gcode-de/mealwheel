@@ -7,22 +7,20 @@ export default function UploadImage({ recipe }) {
   const [imageUrl, setImageUrl] = useState(recipe ? recipe.imageLink : "");
   async function uploadImage(event) {
     // if (data.imageLink) {
-    //   const splitUrl = "/recipes/" + data.imageLink.split("/recipes/")[1]
+    //   const publicId = "/recipes/" + data.imageLink.split("/recipes/")[1]
     // } else {
     event.preventDefault();
-    const files = event.target.files;
+    const file = event.target.files;
     const data = new FormData();
-    data.append("file", files[0]);
-    // data.append("upload_preset", "meal_wheel");
+    data.append("image", file[0]);
 
-    console.log("test");
-    console.log(data);
+    console.log(data, file);
     try {
       const response = await fetch("/api/upload", {
         method: "POST",
-        body: data,
+        body: file,
       });
-      // const file = await uploadResponse.json();
+      // const file = await response.json();
       // setImageUrl(file.secure_url);
       if (response.ok) {
         notifySuccess("Bild hinzugefügt");
@@ -33,9 +31,10 @@ export default function UploadImage({ recipe }) {
   }
   return (
     <StyledImageUploadContainer htmlFor="upload">
-      <form onSubmit={uploadImage}>
+      <form method="post" encType="multipart/form-data" onSubmit={uploadImage}>
         <Plus width={40} height={40} />
         <StyledImageUpload type="file" name="file" id="upload" />
+        <button type="submit">submit</button>
       </form>
     </StyledImageUploadContainer>
   );
