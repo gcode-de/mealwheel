@@ -50,8 +50,8 @@ During the time working on the app we faced some really tricky challenges:
 
 ## Acknowledgments
 
-A big thank you to all the great coaches, teaching us as well as our fellow students from the "canoe" cohort of frontend web dev.
-And of course kudos to the users of MealWheel.
+A big thank you to all the great coaches teaching us, as well as our fellow students from the "canoe" cohort of frontend web dev.
+And of course kudos to the users of MealWheel!
 Your support and feedback have been invaluable in making this project a success.
 
 ## Feedback
