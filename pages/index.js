@@ -4,12 +4,13 @@ import MealCard from "@/components/Styled/MealCard";
 import StyledUl from "@/components/StyledUl";
 import IconButtonLarge from "@/components/Styled/IconButtonLarge";
 import ScrollToTop from "@/components/ScrollToTopButton";
+import Button from "@/components/Styled/StyledButton";
 import { filterTags } from "@/helpers/filterTags";
 
 import { useRouter } from "next/router";
 import useSWR from "swr";
 import styled from "styled-components";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function HomePage({
   error,
@@ -36,6 +37,29 @@ export default function HomePage({
       return acc;
     }, {});
   });
+
+  const { query } = useRouter();
+
+  useEffect(() => {
+    if (!query) return;
+
+    function parseUrlParams() {
+      const newFilters = Object.keys(filters).reduce((acc, filterType) => {
+        if (query[filterType]) {
+          acc[filterType] = query[filterType]
+            .split(",")
+            .map(decodeURIComponent);
+        } else {
+          acc[filterType] = [];
+        }
+        return acc;
+      }, {});
+
+      setFilters(newFilters);
+    }
+
+    parseUrlParams();
+  }, [query]);
 
   function handleFilterChange(type, value) {
     setFilters((prevFilters) => {
@@ -64,6 +88,27 @@ export default function HomePage({
 
       return resetFilters;
     });
+  }
+
+  function applyFilter() {
+    const url = createShareableUrl();
+    setIsFilterButton(false);
+    router.push(url);
+  }
+
+  function createShareableUrl() {
+    const baseUrl = "/";
+    const queryParams = [];
+
+    Object.entries(filters).forEach(([type, values]) => {
+      if (values.length > 0) {
+        queryParams.push(`${type}=${values.map(encodeURIComponent).join(",")}`);
+      }
+    });
+
+    const shareableUrl = `${baseUrl}?${queryParams.join("&")}`;
+    console.log(shareableUrl);
+    return shareableUrl;
   }
 
   if (recipesError || error) {
@@ -125,6 +170,9 @@ export default function HomePage({
               </StyledCategoriesDiv>
             </div>
           ))}
+          <Button type="button" onClick={applyFilter}>
+            Filter anwenden
+          </Button>
         </>
       )}
 
