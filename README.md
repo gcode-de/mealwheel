@@ -20,7 +20,7 @@ Organize your recipes in collections, share filtered views with your friends and
 
 ## The Team
 
-Meet the team behing MealWheel!
+Meet the team behind MealWheel!
 
 -  [Anna von Oesen](https://github.com/avoesen)
 -  [Björn Jentschke](https://github.com/Bjoern-Jentschke)
