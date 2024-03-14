@@ -29,6 +29,7 @@ const shoppingItem = new Schema({
 });
 
 const userSchema = new Schema({
+  loginId: String,
   firstName: String,
   lastName: String,
   userName: String,

@@ -90,31 +90,31 @@ export default function App({ Component, pageProps }) {
     await updateUserinDb(user, mutateUser);
   }
 
-  if (error) {
-    return (
-      <>
-        <Layout>
-          <GlobalStyle />
-          <SWRConfig value={{ fetcher }}>
-            <Component {...pageProps} error={error} />
-          </SWRConfig>
-        </Layout>
-      </>
-    );
-  }
+  // if (error) {
+  //   return (
+  //     <>
+  //       <Layout>
+  //         <GlobalStyle />
+  //         <SWRConfig value={{ fetcher }}>
+  //           <Component {...pageProps} error={error} />
+  //         </SWRConfig>
+  //       </Layout>
+  //     </>
+  //   );
+  // }
 
-  if (isLoading || !user) {
-    return (
-      <>
-        <Layout>
-          <GlobalStyle />
-          <SWRConfig value={{ fetcher }}>
-            <Component {...pageProps} isLoading />
-          </SWRConfig>
-        </Layout>
-      </>
-    );
-  }
+  // if (isLoading || !user) {
+  //   return (
+  //     <>
+  //       <Layout>
+  //         <GlobalStyle />
+  //         <SWRConfig value={{ fetcher }}>
+  //           <Component {...pageProps} isLoading />
+  //         </SWRConfig>
+  //       </Layout>
+  //     </>
+  //   );
+  // }
 
   return (
     <>
@@ -126,11 +126,11 @@ export default function App({ Component, pageProps }) {
               <Component
                 {...pageProps}
                 userId={userId}
-                user={user}
+                // user={user}
                 getRecipeProperty={getRecipeProperty}
                 toggleIsFavorite={toggleIsFavorite}
                 toggleHasCooked={toggleHasCooked}
-                mutateUser={mutate}
+                // mutateUser={mutate}
                 recipes={recipes}
                 recipesError={recipesError}
                 recipesIsLoading={recipesIsLoading}

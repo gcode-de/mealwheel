@@ -1,12 +1,25 @@
 import RecipeForm from "@/components/RecipeForm";
 import { useRouter } from "next/router";
 import useSWR from "swr";
+import { useKindeAuth } from "@kinde-oss/kinde-auth-nextjs";
 import React from "react";
 import { notifySuccess, notifyError } from "/helpers/toast";
 
-export default function AddRecipe({ user }) {
+export default function AddRecipe() {
   const { mutate } = useSWR("/api/recipes");
   const router = useRouter();
+  const {
+    isAuthenticated,
+    isLoading: kindeIsLoading,
+    user: kindeUser,
+  } = useKindeAuth();
+
+  let {
+    data: user,
+    isLoading: userIsLoading,
+    error: userError,
+    mutate: mutateUser,
+  } = useSWR(`/api/users/${kindeUser?.id}`);
 
   async function addRecipe(recipe) {
     const newRecipe = { ...recipe, author: user._id };

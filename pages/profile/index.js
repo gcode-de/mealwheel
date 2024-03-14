@@ -1,28 +1,37 @@
 import IconButton from "@/components/Styled/IconButton";
 import StyledList from "@/components/Styled/StyledList";
+import Heart from "@/public/icons/heart-svgrepo-com.svg";
+import Pot from "@/public/icons/cooking-pot-fill-svgrepo-com.svg";
+import StyledP from "@/components/Styled/StyledP";
+import BookUser from "@/public/icons/svg/book-user_9856365.svg";
+import Plus from "@/public/icons/Plus.svg";
 
 import Link from "next/link";
 import Image from "next/image";
 import styled from "styled-components";
-import Heart from "@/public/icons/heart-svgrepo-com.svg";
-import Pot from "@/public/icons/cooking-pot-fill-svgrepo-com.svg";
-import StyledP from "@/components/Styled/StyledP";
-
 import { useKindeAuth } from "@kinde-oss/kinde-auth-nextjs";
-import { useEffect } from "react";
 import { useRouter } from "next/router";
+import useSWR from "swr";
 import { LogoutLink } from "@kinde-oss/kinde-auth-nextjs/components";
-import BookUser from "@/public/icons/svg/book-user_9856365.svg";
-import Plus from "@/public/icons/Plus.svg";
-
 import { useState } from "react";
+
 import updateUserinDb from "@/helpers/updateUserInDb";
 
-export default function ProfilePage({ user, mutateUser }) {
+export default function ProfilePage({}) {
   const router = useRouter();
-  const { isAuthenticated, isLoading, user: kindeUser } = useKindeAuth();
+  const {
+    isAuthenticated,
+    isLoading: kindeIsLoading,
+    user: kindeUser,
+  } = useKindeAuth();
 
-  console.log(kindeUser?.id);
+  let {
+    data: user,
+    isLoading: userIsLoading,
+    error: userError,
+    mutate: mutateUser,
+  } = useSWR(`/api/users/${kindeUser?.id}`);
+
   const [editUser, setEditUser] = useState(false);
 
   const uploadImage = async (event) => {
