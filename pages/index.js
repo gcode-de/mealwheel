@@ -11,6 +11,7 @@ import { useRouter } from "next/router";
 import useSWR from "swr";
 import styled from "styled-components";
 import { useState, useEffect } from "react";
+import IconButton from "@/components/Styled/IconButton";
 
 export default function HomePage({
   error,
@@ -18,13 +19,9 @@ export default function HomePage({
   getRecipeProperty,
   toggleIsFavorite,
 }) {
-  const {
-    data: recipes,
-    error: recipesError,
-    isLoading: recipesIsLoading,
-  } = useSWR(`/api/recipes`);
   const router = useRouter();
 
+  const [apiQuery, setApiQuery] = useState(`/api/recipes`);
   const [isFilterButton, setIsFilterButton] = useState(false);
 
   function toggleFilter() {
@@ -56,6 +53,8 @@ export default function HomePage({
       }, {});
 
       setFilters(newFilters);
+      const apiUrl = createUrlWithFilters("/api/recipes", newFilters);
+      setApiQuery(apiUrl);
     }
 
     parseUrlParams();
@@ -91,13 +90,12 @@ export default function HomePage({
   }
 
   function applyFilter() {
-    const url = createShareableUrl();
+    const url = createUrlWithFilters("/", filters);
     setIsFilterButton(false);
     router.push(url);
   }
 
-  function createShareableUrl() {
-    const baseUrl = "/";
+  function createUrlWithFilters(baseUrl, filters) {
     const queryParams = [];
 
     Object.entries(filters).forEach(([type, values]) => {
@@ -106,16 +104,29 @@ export default function HomePage({
       }
     });
 
-    const shareableUrl = `${baseUrl}?${queryParams.join("&")}`;
-    console.log(shareableUrl);
-    return shareableUrl;
+    const urlWithFilterParams = `${baseUrl}?${queryParams.join("&")}`;
+    return urlWithFilterParams;
   }
+
+  const {
+    data: recipes,
+    error: recipesError,
+    isLoading: recipesIsLoading,
+  } = useSWR(apiQuery);
 
   if (recipesError || error) {
     return (
       <div>
         <Header text={"Meal Wheel 🥗"} />
-        Error...
+        <StyledUl>Keine passenden Rezepte gefunden...</StyledUl>
+        <IconButton
+          onClick={() => {
+            router.back();
+          }}
+          style={"ArrowLeft"}
+          left="2rem"
+          top="5rem"
+        />
       </div>
     );
   }
