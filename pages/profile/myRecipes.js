@@ -3,8 +3,8 @@ import MealCard from "@/components/Styled/MealCard";
 import Header from "@/components/Styled/Header";
 import IconButton from "@/components/Styled/IconButton";
 import { useRouter } from "next/router";
-import StyledH2 from "@/components/Styled/StyledH2";
 import Spacer from "@/components/Styled/Spacer";
+import StyledUl from "@/components/StyledUl";
 
 import useSWR from "swr";
 import styled from "styled-components";
@@ -28,7 +28,7 @@ export default function MyRecipes({
 
   if (error || recipesError || !myRecipes) {
     return (
-      <div>
+      <>
         <Header text={"Meine Rezepte 🥗"} />
         <StyledUl>Keine eigenen Rezepte vorhanden...</StyledUl>
         <IconButton
@@ -39,7 +39,7 @@ export default function MyRecipes({
           left="2rem"
           top="6rem"
         />
-      </div>
+      </>
     );
   }
 
@@ -86,9 +86,3 @@ export default function MyRecipes({
 }
 
 const StyledArticle = styled.article``;
-
-const StyledUl = styled.ul`
-  padding: 10px;
-  max-width: 350px;
-  margin: 0 auto;
-`;

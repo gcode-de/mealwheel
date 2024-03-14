@@ -62,21 +62,37 @@ export default function HomePage({
   }, [query]);
 
   function handleFilterChange(type, value) {
-    setFilters((prevFilters) => {
-      const isAlreadySelected = prevFilters[type].includes(value);
+    // setFilters((prevFilters) => {
+    //   const isAlreadySelected = prevFilters[type].includes(value);
 
-      if (isAlreadySelected) {
-        return {
-          ...prevFilters,
-          [type]: prevFilters[type].filter((item) => item !== value),
-        };
-      } else {
-        return {
-          ...prevFilters,
-          [type]: [...prevFilters[type], value],
-        };
-      }
-    });
+    //   if (isAlreadySelected) {
+    //     return {
+    //       ...prevFilters,
+    //       [type]: prevFilters[type].filter((item) => item !== value),
+    //     };
+    //   } else {
+    //     return {
+    //       ...prevFilters,
+    //       [type]: [...prevFilters[type], value],
+    //     };
+    //   }
+    // });
+    let newFilters = {};
+    const isAlreadySelected = filters[type].includes(value);
+
+    if (isAlreadySelected) {
+      newFilters = {
+        ...filters,
+        [type]: filters[type].filter((item) => item !== value),
+      };
+    } else {
+      newFilters = {
+        ...filters,
+        [type]: [...filters[type], value],
+      };
+    }
+
+    applyFilter(newFilters);
   }
 
   function resetCategories() {
@@ -90,9 +106,9 @@ export default function HomePage({
     });
   }
 
-  function applyFilter() {
+  function applyFilter(filters) {
     const url = createUrlWithFilters("/", filters);
-    setIsFilterButton(false);
+    // setIsFilterButton(false);
     router.push(url);
   }
 
@@ -113,22 +129,23 @@ export default function HomePage({
     data: recipes,
     error: recipesError,
     isLoading: recipesIsLoading,
+    mutate,
   } = useSWR(apiQuery);
 
-  if (recipesError || error) {
+  if (error) {
     return (
-      <div>
+      <>
         <Header text={"Meal Wheel 🥗"} />
-        <StyledUl>Keine passenden Rezepte gefunden...</StyledUl>
+        <StyledUl>User nicht gefunden...</StyledUl>
         <IconButton
           onClick={() => {
             router.back();
           }}
           style={"ArrowLeft"}
           left="2rem"
-          top="5rem"
+          top="6rem"
         />
-      </div>
+      </>
     );
   }
 
@@ -177,30 +194,38 @@ export default function HomePage({
               </StyledCategoriesDiv>
             </div>
           ))}
-          <Button type="button" onClick={applyFilter}>
-            Filter anwenden
-          </Button>
+          <StyledButtonContainer>
+            <Button type="button" onClick={applyFilter}>
+              Filter anwenden
+            </Button>
+          </StyledButtonContainer>
         </>
       )}
 
-      <StyledUl>
-        {recipes?.map((recipe) => {
-          return (
-            <MealCard
-              key={recipe._id}
-              recipe={recipe}
-              isFavorite={getRecipeProperty(recipe._id, "isFavorite")}
-              onToggleIsFavorite={toggleIsFavorite}
-            />
-          );
-        })}
-      </StyledUl>
-      <ScrollToTop />
-      <IconButtonLarge
-        style={"plus"}
-        bottom="6rem"
-        onClick={() => router.push("/addRecipe")}
-      />
+      {!recipesError ? (
+        <>
+          <StyledUl>
+            {recipes?.map((recipe) => {
+              return (
+                <MealCard
+                  key={recipe._id}
+                  recipe={recipe}
+                  isFavorite={getRecipeProperty(recipe._id, "isFavorite")}
+                  onToggleIsFavorite={toggleIsFavorite}
+                />
+              );
+            })}
+          </StyledUl>
+          <ScrollToTop />
+          <IconButtonLarge
+            style={"plus"}
+            bottom="6rem"
+            onClick={() => router.push("/addRecipe")}
+          />
+        </>
+      ) : (
+        <StyledUl>Keine passenden Rezepte gefunden...</StyledUl>
+      )}
     </>
   );
 }
@@ -259,4 +284,10 @@ const StyledCategoryButton = styled.button`
   margin-bottom: 0.5rem;
   padding: 0.25rem;
   cursor: pointer;
+`;
+
+const StyledButtonContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-bottom: 3rem;
 `;
