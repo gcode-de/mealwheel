@@ -82,14 +82,12 @@ export default function HomePage({
   }
 
   function resetCategories() {
-    setFilters((prevFilters) => {
-      const resetFilters = Object.keys(prevFilters).reduce((acc, key) => {
-        acc[key] = [];
-        return acc;
-      }, {});
-
-      return resetFilters;
+    const currentUrlParams = new URLSearchParams(window.location.search);
+    filterTags.forEach(({ type }) => {
+      currentUrlParams.delete(type);
     });
+    const newUrl = `${window.location.pathname}?${currentUrlParams.toString()}`;
+    router.push(newUrl);
   }
 
   function applyFilter(filters) {
