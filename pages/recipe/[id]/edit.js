@@ -1,4 +1,4 @@
-import RecipeForm from "@/components/RecipeForm";
+import RecipeForm from "@/components/Forms/RecipeForm";
 import { useRouter } from "next/router";
 import useSWR from "swr";
 import { notifySuccess, notifyError } from "/helpers/toast";

@@ -1,24 +1,23 @@
-import StyledListItem from "./Styled/StyledListItem";
+import StyledListItem from "../Styled/StyledListItem";
 import { useState } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
 
 import styled from "styled-components";
-import StyledArticle from "./Styled/StyledArticle";
-import IconButton from "./Styled/IconButton";
-import StyledList from "./Styled/StyledList";
-import StyledH2 from "./Styled/StyledH2";
-import Button from "./Styled/StyledButton";
-import StyledP from "./Styled/StyledP";
-import AddButton from "./Styled/AddButton";
+import StyledArticle from "../Styled/StyledArticle";
+import IconButton from "../Styled/IconButton";
+import StyledList from "../Styled/StyledList";
+import StyledH2 from "../Styled/StyledH2";
+import Button from "../Styled/StyledButton";
+import StyledP from "../Styled/StyledP";
+import AddButton from "../Styled/AddButton";
 import Plus from "@/public/icons/Plus.svg";
-import StyledIngredients from "./Styled/StyledIngredients";
-import StyledInput from "./Styled/StyledInput";
-import StyledDropDown from "./Styled/StyledDropDown";
-import { notifySuccess, notifyError } from "/helpers/toast";
+import StyledIngredients from "../Styled/StyledIngredients";
+import StyledInput from "../Styled/StyledInput";
+import StyledDropDown from "../Styled/StyledDropDown";
+import UploadImage from "./UploadImageForm";
 
 export default function RecipeForm({ onSubmit, onDelete, data }) {
-  const [imageUrl, setImageUrl] = useState(data ? data.imageLink : "");
   const [difficulty, setDifficulty] = useState(
     data && data.difficulty ? data.difficulty : "easy"
   );
@@ -34,34 +33,6 @@ export default function RecipeForm({ onSubmit, onDelete, data }) {
         ]
   );
   const router = useRouter();
-
-  const uploadImage = async (event) => {
-    if (data.imageLink) {
-      const splitUrl = "/recipes/" + data.imageLink.split("/recipes/")[1];
-      cloudinary.v2.uploader
-        .destroy(splitUrl)
-        .then((result) => console.log(result));
-    } else {
-      const files = event.target.files;
-      const data = new FormData();
-      data.append("file", files[0]);
-      data.append("upload_preset", "meal_wheel");
-      try {
-        const uploadResponse = await fetch(
-          "https://api.cloudinary.com/v1_1/mealwheel/image/upload",
-          {
-            method: "POST",
-            body: data,
-          }
-        );
-        const file = await uploadResponse.json();
-        setImageUrl(file.secure_url);
-        notifySuccess("Bild hinzugefügt");
-      } catch (error) {
-        notifyError("Bild konnte nicht hinzugefügt werden");
-      }
-    }
-  };
 
   function handleInputChange(event, index, field) {
     const newIngredients = [...ingredients];
@@ -88,7 +59,7 @@ export default function RecipeForm({ onSubmit, onDelete, data }) {
   }
   return (
     <>
-      <StyledTop $height={imageUrl}>
+      <StyledTop $height={data?.imageLink}>
         <IconButton
           right="1rem"
           top="1rem"
@@ -97,18 +68,15 @@ export default function RecipeForm({ onSubmit, onDelete, data }) {
             router.back();
           }}
         ></IconButton>
-        {imageUrl && (
+        {data?.imageLink && (
           <StyledImageCloudinary
-            src={imageUrl}
+            src={data.imageLink}
             alt="Uploaded Image"
             width={100}
             height={300}
           />
         )}
-        <StyledImageUploadContainer>
-          <Plus width={40} height={40} />
-          <StyledImageUpload type="file" onChange={uploadImage} />
-        </StyledImageUploadContainer>
+        <UploadImage recipe={data} />
       </StyledTop>
       <form onSubmit={handleSubmit}>
         <StyledArticle>
@@ -216,27 +184,9 @@ export default function RecipeForm({ onSubmit, onDelete, data }) {
   );
 }
 
-const StyledImageUpload = styled.input`
-  display: none;
-`;
-
 const StyledImageCloudinary = styled(Image)`
   width: 100%;
   height: auto;
-`;
-
-const StyledImageUploadContainer = styled.label`
-  display: inline-block;
-  background-color: white;
-  width: 60px;
-  height: 60px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 100%;
-  box-shadow: 4px 8px 16px 0 rgb(0 0 0 / 8%);
-  cursor: pointer;
-  position: absolute;
 `;
 
 const StyledTop = styled.div`
