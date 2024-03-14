@@ -24,8 +24,6 @@ export default function MyRecipes({
     isLoading: recipesIsLoading,
   } = useSWR(`/api/recipes?author=${user?._id}`);
 
-  console.log(myRecipes);
-
   if (error || recipesError || !myRecipes) {
     return (
       <>

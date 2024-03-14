@@ -5,6 +5,7 @@ import StyledUl from "@/components/StyledUl";
 import IconButtonLarge from "@/components/Styled/IconButtonLarge";
 import ScrollToTop from "@/components/ScrollToTopButton";
 import Button from "@/components/Styled/StyledButton";
+import StyledH2 from "@/components/Styled/StyledH2";
 import { filterTags } from "@/helpers/filterTags";
 
 import { useRouter } from "next/router";
@@ -227,19 +228,6 @@ const StyledResetButton = styled.button`
   font-size: smaller;
   cursor: pointer;
   z-index: 2;
-`;
-
-const StyledH2 = styled.h2`
-  font-size: small;
-  text-align: left;
-  width: max-content;
-  max-width: calc(100% - (2 * var(--gap-out)));
-  margin-right: var(--gap-out);
-  margin-left: var(--gap-out);
-  margin-top: var(--gap-between);
-  margin-bottom: var(--gap-between);
-  box-sizing: border-box;
-  position: relative;
 `;
 
 const StyledCategoriesDiv = styled.div`
