@@ -1,7 +1,7 @@
 import useSWR from "swr";
 import Header from "@/components/Styled/Header";
 
-import MealCard from "@/components/Styled/MealCard";
+import MealCard from "@/components/MealCard";
 import IconButtonLarge from "@/components/Styled/IconButtonLarge";
 import { useRouter } from "next/router";
 import StyledUl from "@/components/StyledUl";

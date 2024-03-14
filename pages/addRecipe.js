@@ -24,5 +24,5 @@ export default function AddRecipe({ user }) {
     notifySuccess("Rezept hinzugefügt");
   }
 
-  return <RecipeForm onSubmit={addRecipe} formName={"add-recipe"} />;
+  return <RecipeForm onSubmit={addRecipe} formName="addRecipe" />;
 }

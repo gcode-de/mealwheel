@@ -48,6 +48,11 @@ export default function EditRecipe({ user }) {
   }
 
   return (
-    <RecipeForm onSubmit={handleEdit} data={recipe} onDelete={handleDelete} />
+    <RecipeForm
+      onSubmit={handleEdit}
+      data={recipe}
+      formName="editRecipe"
+      onDelete={handleDelete}
+    />
   );
 }

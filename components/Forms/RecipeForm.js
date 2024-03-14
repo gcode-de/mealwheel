@@ -15,9 +15,9 @@ import Plus from "@/public/icons/Plus.svg";
 import StyledIngredients from "../Styled/StyledIngredients";
 import StyledInput from "../Styled/StyledInput";
 import StyledDropDown from "../Styled/StyledDropDown";
-import UploadImage from "./UploadImageForm";
+import { notifySuccess, notifyError } from "/helpers/toast";
 
-export default function RecipeForm({ onSubmit, onDelete, data }) {
+export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
   const [difficulty, setDifficulty] = useState(
     data && data.difficulty ? data.difficulty : "easy"
   );
@@ -32,6 +32,8 @@ export default function RecipeForm({ onSubmit, onDelete, data }) {
           },
         ]
   );
+  const [preview, setPreview] = useState(data ? data.imageLink : null);
+  const [imageUrl, setImageUrl] = useState(data ? data.imageLink : "");
   const router = useRouter();
 
   function handleInputChange(event, index, field) {
@@ -54,8 +56,37 @@ export default function RecipeForm({ onSubmit, onDelete, data }) {
 
     const formData = new FormData(event.target);
     const data = Object.fromEntries(formData);
-    const newData = { ...data, ingredients, imageLink: imageUrl };
+    const newData = { ...data, ingredients, imageLink: imageUrl.imageUrl };
+
     onSubmit(newData);
+  }
+
+  // if (data.imageLink) {
+  //   const publicId = "/recipes/" + data.imageLink.split("/recipes/")[1]
+  // } else {
+  async function uploadImage(event) {
+    event.preventDefault();
+    const data = new FormData(event.target);
+    try {
+      const response = await fetch("/api/upload", {
+        method: "POST",
+        body: data,
+      });
+      if (response.ok) {
+        const file = await response.json();
+        // file in Datenbank speichern
+        setImageUrl(file);
+        notifySuccess("Bild hinzugefügt");
+      } else {
+        console.error("was zur hölle");
+      }
+    } catch (error) {
+      notifyError("Bild konnte nicht hinzugefügt werden");
+    }
+  }
+  function handleImage(event) {
+    const file = event.target.files[0];
+    setPreview({ imageUrl: URL.createObjectURL(file) });
   }
   return (
     <>
@@ -68,7 +99,15 @@ export default function RecipeForm({ onSubmit, onDelete, data }) {
             router.back();
           }}
         ></IconButton>
-        {data?.imageLink && (
+        {/* {preview && (
+          <StyledImageCloudinary
+            src={preview.imageUrl}
+            alt="Uploaded Image"
+            width={100}
+            height={300}
+          />
+        )} */}
+        {data && (
           <StyledImageCloudinary
             src={data.imageLink}
             alt="Uploaded Image"
@@ -76,7 +115,19 @@ export default function RecipeForm({ onSubmit, onDelete, data }) {
             height={300}
           />
         )}
-        <UploadImage recipe={data} />
+
+        <StyledImageUploadContainer htmlFor="upload">
+          <form onSubmit={uploadImage}>
+            <Plus width={40} height={40} />
+            <StyledImageInput
+              type="file"
+              name="file"
+              id="upload"
+              onChange={handleImage}
+            />
+            <button type="submit">hinzufügen</button>
+          </form>
+        </StyledImageUploadContainer>
       </StyledTop>
       <form onSubmit={handleSubmit}>
         <StyledArticle>
@@ -204,7 +255,9 @@ const StyledBigInput = styled.input`
   width: calc(100% - (2 * var(--gap-out)));
   padding: 0.7rem;
 `;
-
+const StyledImageInput = styled.input`
+  display: none;
+`;
 const Spacer = styled.div`
   margin-top: 2rem;
   position: relative;
@@ -213,4 +266,17 @@ const ButtonContainer = styled.div`
   display: flex;
   justify-content: space-between;
   width: calc(100% - (2 * var(--gap-out)));
+`;
+const StyledImageUploadContainer = styled.label`
+  display: inline-block;
+  background-color: white;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 100%;
+  box-shadow: 4px 8px 16px 0 rgb(0 0 0 / 8%);
+  cursor: pointer;
+  position: absolute;
 `;

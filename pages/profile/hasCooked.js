@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-import MealCard from "@/components/Styled/MealCard";
+import MealCard from "@/components/MealCard";
 import Header from "@/components/Styled/Header";
 import IconButton from "@/components/Styled/IconButton";
 import { useRouter } from "next/router";
