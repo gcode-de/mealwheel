@@ -108,6 +108,8 @@ export default function HomePage({
 
   function applyFilter(filters) {
     const url = createUrlWithFilters("/", filters);
+    console.log(url);
+    // window.history.replaceState("nextState", "nextTitle", url);
     // setIsFilterButton(false);
     router.push(url);
   }
@@ -174,7 +176,7 @@ export default function HomePage({
         </svg>
       </StyledFilterButton>
       {isFilterButton && (
-        <>
+        <StyledFiltersContainer>
           <StyledResetButton type="button" onClick={resetCategories}>
             alles zurücksetzen
           </StyledResetButton>
@@ -194,12 +196,7 @@ export default function HomePage({
               </StyledCategoriesDiv>
             </div>
           ))}
-          <StyledButtonContainer>
-            <Button type="button" onClick={applyFilter}>
-              Filter anwenden
-            </Button>
-          </StyledButtonContainer>
-        </>
+        </StyledFiltersContainer>
       )}
 
       {!recipesError ? (
@@ -286,8 +283,6 @@ const StyledCategoryButton = styled.button`
   cursor: pointer;
 `;
 
-const StyledButtonContainer = styled.div`
-  display: flex;
-  justify-content: center;
+const StyledFiltersContainer = styled.div`
   margin-bottom: 3rem;
 `;
