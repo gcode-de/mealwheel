@@ -1,5 +1,5 @@
 import Header from "@/components/Styled/Header";
-import CardSkeleton from "@/components/Styled/CardSkeleton";
+
 import MealCard from "@/components/Styled/MealCard";
 import StyledUl from "@/components/StyledUl";
 import IconButtonLarge from "@/components/Styled/IconButtonLarge";
@@ -12,6 +12,7 @@ import useSWR from "swr";
 import styled from "styled-components";
 import { useState, useEffect } from "react";
 import IconButton from "@/components/Styled/IconButton";
+import LoadingComponent from "@/components/Loading";
 
 export default function HomePage({
   error,
@@ -135,12 +136,7 @@ export default function HomePage({
     return (
       <>
         <Header text={"Meal Wheel 🥗"} />
-        <article>
-          <StyledUl>
-            <h2>Lade Rezepte...</h2>
-            <CardSkeleton amount={5} $isLoading />
-          </StyledUl>
-        </article>
+        <LoadingComponent amount />
       </>
     );
   }

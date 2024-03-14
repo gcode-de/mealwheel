@@ -21,12 +21,19 @@ const calendarEntrySchema = new Schema({
   numberOfPeople: Number,
   isDisabled: Boolean,
 });
+const shoppingItem = new Schema({
+  name: { type: String, required: true },
+  quantity: { type: Number },
+  unit: { type: String },
+  isChecked: Boolean,
+});
 
 const userSchema = new Schema({
   firstName: String,
   lastName: String,
   userName: String,
   email: String,
+  profilePictureLink: { type: String },
   settings: {
     weekdaysEnabled: {},
     mealsPerDay: Number,
@@ -36,6 +43,7 @@ const userSchema = new Schema({
   },
   recipeInteractions: [recipeInteractionSchema],
   calendar: [calendarEntrySchema],
+  shoppingList: [shoppingItem],
 });
 
 const User = mongoose.models.User || mongoose.model("User", userSchema);

@@ -8,7 +8,6 @@ export default function RandomnessSlider({
   onChange,
   $isActive,
 }) {
-  console.log($isActive);
   return (
     <SliderContainer $isActive={$isActive}>
       <StyledSlider

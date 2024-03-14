@@ -1,29 +1,24 @@
 import styled from "styled-components";
-
 import CardSkeleton from "@/components/Styled/CardSkeleton";
 import MealCard from "@/components/Styled/MealCard";
 import Header from "@/components/Styled/Header";
-import IconButton from "@/components/Styled/IconButton";
-import { useRouter } from "next/router";
-import StyledH2 from "@/components/Styled/StyledH2";
-import Spacer from "@/components/Styled/Spacer";
+import StyledUl from "@/components/StyledUl";
 import LoadingComponent from "@/components/Loading";
 
-export default function HasCooked({
+export default function Favorites({
   user,
   error,
   isLoading,
   getRecipeProperty,
   toggleIsFavorite,
 }) {
-  const router = useRouter();
   const favoriteRecipes = user?.recipeInteractions
-    .filter((recipe) => recipe.hasCooked)
+    .filter((recipe) => recipe.isFavorite)
     .map((recipe) => recipe.recipe);
 
   if (error) {
     <div>
-      <Header text={"schon gekocht 🥗"} />
+      <Header text={"Favoriten 🥗"} />
       Error...
     </div>;
   }
@@ -31,7 +26,7 @@ export default function HasCooked({
   if (isLoading) {
     return (
       <>
-        <Header text="schon gekocht 🥗" />
+        <Header text="Favoriten 🥗" />
         <LoadingComponent amount />
       </>
     );
@@ -39,14 +34,7 @@ export default function HasCooked({
 
   return (
     <>
-      <IconButton
-        style="ArrowLeft"
-        top="var(--gap-out)"
-        left="var(--gap-out)"
-        onClick={() => router.back()}
-      />
-      <Spacer />
-      <StyledH2>schon gekocht</StyledH2>
+      <Header text="Favoriten 🥗" />
       <StyledArticle>
         <StyledUl>
           {favoriteRecipes?.map((recipe) => {
@@ -56,7 +44,7 @@ export default function HasCooked({
                 recipe={recipe}
                 isFavorite={getRecipeProperty(recipe._id, "isFavorite")}
                 onToggleIsFavorite={toggleIsFavorite}
-              ></MealCard>
+              />
             );
           })}
         </StyledUl>
@@ -66,9 +54,3 @@ export default function HasCooked({
 }
 
 const StyledArticle = styled.article``;
-
-const StyledUl = styled.ul`
-  padding: 10px;
-  max-width: 350px;
-  margin: 0 auto;
-`;

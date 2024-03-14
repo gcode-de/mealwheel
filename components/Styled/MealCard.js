@@ -2,6 +2,7 @@ import styled from "styled-components";
 import Image from "next/image";
 import Link from "next/link";
 import IconButton from "./IconButton";
+import SetNumberOfPeople from "./SetNumberOfPeople";
 
 export default function MealCard({
   recipe,
@@ -12,6 +13,7 @@ export default function MealCard({
   reassignRecipe,
   removeRecipe,
   day,
+  user,
 }) {
   return (
     <StyledLi>
@@ -50,19 +52,17 @@ export default function MealCard({
       )}
       <CardContainer>
         {
-          <StyledLink href={`/recipe/${recipe._id}?servings=${numberOfPeople}`}>
-            <ImageContainer>
-              <StyledImage
-                src={
-                  recipe.imageLink ||
-                  "/img/jason-briscoe-7MAjXGUmaPw-unsplash.jpg"
-                }
-                alt={`recipe Image ${recipe.title}`}
-                sizes="200px"
-                fill
-              />
-            </ImageContainer>
-          </StyledLink>
+          <ImageContainer>
+            <StyledImage
+              src={
+                recipe.imageLink ||
+                "/img/jason-briscoe-7MAjXGUmaPw-unsplash.jpg"
+              }
+              alt={`recipe Image ${recipe.title}`}
+              sizes="200px"
+              fill
+            />
+          </ImageContainer>
         }
         <StyledDiv>
           <StyledLink href={`/recipe/${recipe._id}?servings=${numberOfPeople}`}>
@@ -72,24 +72,10 @@ export default function MealCard({
             {recipe.duration} MIN | {recipe.difficulty.toUpperCase()}
           </StyledPDuration>
           {numberOfPeople !== undefined && (
-            <NumberOfPeopleContainer>
-              <button
-                onClick={() => {
-                  changeNumberOfPeople(day, -1);
-                }}
-              >
-                ➖
-              </button>
-              <span>{numberOfPeople}</span>
-              <button
-                onClick={() => {
-                  changeNumberOfPeople(day, +1);
-                }}
-              >
-                ➕
-              </button>
-              👥
-            </NumberOfPeopleContainer>
+            <SetNumberOfPeople
+              numberOfPeople={numberOfPeople}
+              handleChange={(change) => changeNumberOfPeople(change)}
+            />
           )}
         </StyledDiv>
       </CardContainer>
@@ -159,25 +145,4 @@ const StyledLi = styled.li`
   list-style-type: none;
   position: relative;
   padding: 0;
-`;
-
-const NumberOfPeopleContainer = styled.div`
-  display: flex;
-  gap: 10px;
-  width: min-content;
-  justify-content: start;
-  margin: 0.75rem 0 0 1.5rem;
-  font-size: 1.25rem;
-  z-index: 3;
-  button {
-    border: none;
-    /* border: 1px solid var(--color-font);
-    border-radius: 50%; */
-    background: none;
-    font-weight: 900;
-    font-size: 1.25rem;
-    height: 1.5rem;
-    width: 1.5rem;
-    cursor: pointer;
-  }
 `;
