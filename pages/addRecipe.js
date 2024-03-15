@@ -9,6 +9,7 @@ export default function AddRecipe({ user }) {
   const router = useRouter();
 
   async function addRecipe(recipe) {
+    console.log("recipe:", recipe);
     const newRecipe = { ...recipe, author: user._id };
     const response = await fetch("/api/recipes", {
       method: "POST",
@@ -24,14 +25,5 @@ export default function AddRecipe({ user }) {
     return true;
   }
 
-  return (
-    <RecipeForm
-      onSubmit={() =>
-        addRecipe()
-          ? notifySuccess("Rezept hinzugefügt")
-          : notifyError("Rezept konnte nicht hinzugefügt werden")
-      }
-      formName={"add-recipe"}
-    />
-  );
+  return <RecipeForm onSubmit={addRecipe} formName={"add-recipe"} />;
 }
