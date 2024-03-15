@@ -111,7 +111,6 @@ export default function HomePage({
   }
 
   function resetFilters() {
-    // setIsFilterButton(false);
     router.push("/");
   }
 
@@ -380,6 +379,7 @@ const StyledSearchContainer = styled.div`
     border-radius: var(--border-radius-small);
     padding: 0.25rem 0.5rem;
     height: 2rem;
+    color: var(--color-darkgrey);
   }
   button {
     position: absolute;
@@ -387,11 +387,7 @@ const StyledSearchContainer = styled.div`
     right: 0;
     border: none;
     background-color: transparent;
-    /* color: var(--color-background); */
-    font-size: 0%.75rem;
-    font-weight: 600;
     cursor: pointer;
-    border-radius: 10px;
     width: 2rem;
     height: 2rem;
   }
