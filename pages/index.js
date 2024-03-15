@@ -111,7 +111,7 @@ export default function HomePage({
   }
 
   function resetFilters() {
-    setIsFilterButton(false);
+    // setIsFilterButton(false);
     router.push("/");
   }
 
@@ -283,8 +283,8 @@ export default function HomePage({
         <>
           <StyledH2>
             {recipes.length === 1
-              ? `1 passendes Rezept:`
-              : `${recipes.length} passende Rezepte:`}
+              ? `Ein Rezept gefunden:`
+              : `${recipes.length} Rezepte gefunden:`}
           </StyledH2>
           <StyledUl>
             {recipes?.map((recipe) => {
