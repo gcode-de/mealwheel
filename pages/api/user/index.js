@@ -9,11 +9,16 @@ export default async function handler(request, response) {
 
   const data = getKindeServerSession(request, response);
   const kindeUser = await data.getUser();
+  const isAuthenticated = await data.isAuthenticated();
+
+  if (!isAuthenticated) {
+    return response.status(401).json({ status: "unathorized" });
+  }
 
   if (request.method === "GET") {
     let user = await User.findOne({
       loginId: kindeUser?.id,
-      //  || "kp_0047cc6bee3348c6a80f0c2901f23943"
+      //  || "kp_0047cc6bee3348c6a80f0c2901f23943",
     })
       .populate("recipeInteractions.recipe")
       .populate("calendar.recipe");
