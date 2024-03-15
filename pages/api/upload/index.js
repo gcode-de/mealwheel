@@ -16,7 +16,7 @@ export const config = {
 export default async function handler(request, response) {
   if (request.method === "POST") {
     const form = formidable({ multiples: true });
-    const [fields, files] = await form.parse(request);
+    const [fields, files] = await form.parse(request); //fields nicht löschen, wird für irgendwas gebraucht
 
     if (!files) {
       return response.status(400).json({ error: "No file uploaded" });
@@ -40,6 +40,20 @@ export default async function handler(request, response) {
     } catch (error) {
       console.error("Error uploading to Cloudinary: ", error);
       response.status(500).json({ error: "Error uploading to Cloudinary" });
+    }
+  }
+  if (request.method === "PUT") {
+    const { from_public_id, to_public_id } = request.query;
+    console.log();
+    try {
+      cloudinary.uploader.rename(from_public_id, to_public_id);
+      //überprüfe response
+      response
+        .status(200)
+        .json({ imageUrl: result.secure_url, publicId: result.public_id });
+    } catch (error) {
+      console.error("Error editing from Cloudinary: ", error);
+      response.status(500).json({ error: "Error editing from Cloudinary" });
     }
   }
   if (request.method === "DELETE") {

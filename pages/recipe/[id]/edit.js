@@ -2,6 +2,7 @@ import RecipeForm from "@/components/Forms/RecipeForm";
 import { useRouter } from "next/router";
 import useSWR from "swr";
 import { notifySuccess, notifyError } from "/helpers/toast";
+import LoadingComponent from "@/components/Loading";
 
 export default function EditRecipe({ user }) {
   const router = useRouter();
@@ -44,7 +45,7 @@ export default function EditRecipe({ user }) {
   }
 
   if (isLoading) {
-    return <div>is Loading...</div>;
+    return <LoadingComponent />;
   }
 
   return (

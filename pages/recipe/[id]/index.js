@@ -98,7 +98,7 @@ export default function DetailPage({
         top="0.5rem"
       />
       <ImageContainer
-        src={imageLink || "/img/jason-briscoe-7MAjXGUmaPw-unsplash.jpg"}
+        src={imageLink}
         alt={`recipe Image ${title}`}
         width={400}
         height={400}

@@ -32,10 +32,9 @@ export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
           },
         ]
   );
-  const [preview, setPreview] = useState(data ? data.imageLink : null);
+  const [preview, setPreview] = useState(data ? data.imageLink : "");
   const [imageUrl, setImageUrl] = useState(data ? data.imageLink : "");
   const router = useRouter();
-
   function handleInputChange(event, index, field) {
     const newIngredients = [...ingredients];
     newIngredients[index][field] = event.target.value;
@@ -56,32 +55,60 @@ export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
 
     const formData = new FormData(event.target);
     const data = Object.fromEntries(formData);
-    const newData = { ...data, ingredients, imageLink: imageUrl.imageUrl };
+    const newData = {
+      ...data,
+      ingredients,
+      imageLink: imageUrl.imageUrl,
+      publicId: imageUrl.publicId,
+    };
 
     onSubmit(newData);
   }
 
-  // if (data.imageLink) {
-  //   const publicId = "/recipes/" + data.imageLink.split("/recipes/")[1]
-  // } else {
   async function uploadImage(event) {
     event.preventDefault();
-    const data = new FormData(event.target);
-    try {
+    const formData = new FormData(event.target);
+    if (formName === "addRecipe" || !data.imageLink) {
       const response = await fetch("/api/upload", {
         method: "POST",
-        body: data,
+        body: formData,
       });
       if (response.ok) {
         const file = await response.json();
-        // file in Datenbank speichern
+
         setImageUrl(file);
         notifySuccess("Bild hinzugefügt");
       } else {
-        console.error("was zur hölle");
+        console.error("image not added");
+        notifyError("Bild konnte nicht hinzugefügt werden");
       }
-    } catch (error) {
-      notifyError("Bild konnte nicht hinzugefügt werden");
+    }
+    if (formName === "editRecipe" && data.imageLink) {
+      const deleteImage = data.publicId;
+      if (data.publicId) {
+        const responseDelete = await fetch("/api/upload", {
+          method: "DELETE",
+          body: deleteImage,
+        });
+        if (responseDelete.ok) {
+          const file = await responseDelete.json();
+          setImageUrl(file);
+        } else {
+          console.error("delete failed");
+        }
+      }
+      const responseUpload = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
+      if (responseUpload.ok) {
+        const file = await responseUpload.json();
+        setImageUrl(file);
+        notifySuccess("Bild geupdatet");
+      } else {
+        console.error("no image update");
+        notifyError("Bild konnte nicht hinzugefügt werden");
+      }
     }
   }
   function handleImage(event) {
@@ -99,17 +126,11 @@ export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
             router.back();
           }}
         ></IconButton>
-        {/* {preview && (
+        {preview && (
           <StyledImageCloudinary
-            src={preview.imageUrl}
-            alt="Uploaded Image"
-            width={100}
-            height={300}
-          />
-        )} */}
-        {data && (
-          <StyledImageCloudinary
-            src={data.imageLink}
+            src={
+              preview.imageUrl || "/img/jason-briscoe-7MAjXGUmaPw-unsplash.jpg"
+            }
             alt="Uploaded Image"
             width={100}
             height={300}
