@@ -1,19 +1,16 @@
-import Header from "@/components/Styled/Header";
-
-import MealCard from "@/components/MealCard";
-import IconButtonLarge from "@/components/Styled/IconButtonLarge";
-import { useRouter } from "next/router";
-import StyledUl from "@/components/StyledUl";
-import IconButtonLarge from "@/components/Styled/IconButtonLarge";
-import ScrollToTop from "@/components/ScrollToTopButton";
-import Button from "@/components/Styled/StyledButton";
-import StyledH2 from "@/components/Styled/StyledH2";
-import { filterTags } from "@/helpers/filterTags";
-import Filter from "@/public/icons/sliders-v_10435878.svg";
 import { useRouter } from "next/router";
 import useSWR from "swr";
 import styled from "styled-components";
 import { useState, useEffect } from "react";
+import { filterTags } from "@/helpers/filterTags";
+
+import Header from "@/components/Styled/Header";
+import MealCard from "@/components/MealCard";
+import IconButtonLarge from "@/components/Styled/IconButtonLarge";
+import StyledUl from "@/components/StyledUl";
+import ScrollToTop from "@/components/ScrollToTopButton";
+import StyledH2 from "@/components/Styled/StyledH2";
+import Filter from "@/public/icons/sliders-v_10435878.svg";
 import IconButton from "@/components/Styled/IconButton";
 import LoadingComponent from "@/components/Loading";
 
