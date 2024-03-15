@@ -31,9 +31,23 @@ export default function Login({ user, error, isLoading }) {
     <>
       <Header text="Login 🥗" />
       <StyledArticle>
-        <LoginLink postLoginRedirectURL="/profile">Einloggen</LoginLink>
+        <LoginLink
+          postLoginRedirectURL={
+            process.env.NEXT_PUBLIC_VERCEL_URL
+              ? `${process.env.NEXT_PUBLIC_VERCEL_URL}/profile`
+              : "/profile"
+          }
+        >
+          Einloggen
+        </LoginLink>
 
-        <RegisterLink postLoginRedirectURL="/profile">
+        <RegisterLink
+          postLoginRedirectURL={
+            process.env.NEXT_PUBLIC_VERCEL_URL
+              ? `${process.env.NEXT_PUBLIC_VERCEL_URL}/profile`
+              : "/profile"
+          }
+        >
           Registrieren
         </RegisterLink>
       </StyledArticle>
