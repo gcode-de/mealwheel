@@ -190,9 +190,7 @@ export default function DetailPage({
         {filterTags
           .filter(({ type }) => type === "diet")
           .map(({ label, type }) => (
-            <div key={type}>
-              <StyledH2>{label}</StyledH2>
-            </div>
+            <StyledH2 key={type}>{label}</StyledH2>
           ))}
         <StyledCategoriesDiv>
           {tags.map((tag) => (
@@ -308,16 +306,17 @@ const StyledTitle = styled.h1`
 
 const StyledCategoriesDiv = styled.div`
   display: flex;
-  justify-content: space-between;
+  justify-content: left;
+  gap: 0.5rem;
   flex-wrap: wrap;
-  max-width: calc(100% - (2 * var(--gap-out)));
-  margin: auto;
+  width: calc(100% - (2 * var(--gap-out)));
+  margin: 0;
   margin-top: 0.25rem;
 `;
 
 const StyledCategoryButtonDiv = styled.button`
-  background-color: var(--color-darkgrey);
-  color: var(--color-component);
+  background-color: var(--color-component);
+  color: var(--color-darkgrey);
   border: solid var(--color-darkgrey) 1px;
   border-radius: var(--border-radius-small);
   width: 6rem;

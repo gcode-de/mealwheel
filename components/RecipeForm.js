@@ -34,7 +34,7 @@ export default function RecipeForm({ onSubmit, onDelete, data }) {
   );
 
   const router = useRouter();
-  const [selectedTags, setSelectedTags] = useState([]);
+  const [selectedTags, setSelectedTags] = useState(data ? data.tags : []);
 
   function handleFilterChange(value) {
     const isAlreadySelected = selectedTags.includes(value);
@@ -43,7 +43,7 @@ export default function RecipeForm({ onSubmit, onDelete, data }) {
       newTags = selectedTags.filter((item) => item !== value);
       setSelectedTags(newTags);
     } else {
-      newTags = [...selectedTags, value];
+      newTags = [value];
       setSelectedTags(newTags);
     }
   }
@@ -236,7 +236,12 @@ export default function RecipeForm({ onSubmit, onDelete, data }) {
           <StyledCheckboxContainer>
             <label htmlFor="public">
               öffentlich sichtbar
-              <StyledHiddenCheckbox type="checkbox" id="public" name="public" />
+              <StyledHiddenCheckbox
+                type="checkbox"
+                id="public"
+                name="public"
+                defaultChecked={data ? data.public : true}
+              />
               <StyledSliderCheckbox htmlFor="public" />
             </label>
           </StyledCheckboxContainer>

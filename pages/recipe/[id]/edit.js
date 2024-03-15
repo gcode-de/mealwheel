@@ -48,18 +48,6 @@ export default function EditRecipe({ user }) {
   }
 
   return (
-    <RecipeForm
-      onSubmit={() =>
-        handleEdit()
-          ? notifySuccess("Rezept geändert")
-          : notifyError("Rezept konnte nicht geändert werden")
-      }
-      data={recipe}
-      onDelete={() =>
-        handleDelete()
-          ? notifySuccess("Rezept gelöscht")
-          : notifyError("Rezept konnte nicht gelöscht werden")
-      }
-    />
+    <RecipeForm onSubmit={handleEdit} data={recipe} onDelete={handleDelete} />
   );
 }
