@@ -84,8 +84,15 @@ export default function RecipeForm({ onSubmit, onDelete, data }) {
 
     const formData = new FormData(event.target);
     const data = Object.fromEntries(formData);
-    const newData = { ...data, ingredients, imageLink: imageUrl };
+    const newData = {
+      ...data,
+      ingredients,
+      imageLink: imageUrl,
+      tags: selectedTags,
+      public: event.target.public.checked,
+    };
     onSubmit(newData);
+    console.log(newData);
   }
   return (
     <>
