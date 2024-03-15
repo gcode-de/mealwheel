@@ -9,7 +9,7 @@ export default function EditRecipe({ user }) {
   const router = useRouter();
   const { id } = router.query;
   const { data: recipe, isLoading, mutate } = useSWR(`/api/recipes/${id}`);
-  console.log(recipe);
+
   async function handleDelete() {
     handleDeleteImage(recipe.publicId);
     const response = await fetch(`/api/recipes/${id}`, {
@@ -21,7 +21,8 @@ export default function EditRecipe({ user }) {
     });
 
     if (response.ok) {
-      router.back();
+      mutate();
+      router.push("/");
       notifySuccess("Rezept gelöscht");
     } else {
       console.log("Löschen fehlgeschlagen", response.body);

@@ -17,6 +17,7 @@ import StyledInput from "../Styled/StyledInput";
 import StyledDropDown from "../Styled/StyledDropDown";
 import { notifySuccess, notifyError } from "/helpers/toast";
 import handleDeleteImage from "@/helpers/Cloudinary/handleDeleteImage";
+import IconButtonLarge from "../Styled/IconButtonLarge";
 
 export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
   const [difficulty, setDifficulty] = useState(
@@ -56,7 +57,6 @@ export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
 
     const formData = new FormData(event.target);
     const data = Object.fromEntries(formData);
-    console.log(imageUrl);
     const newData = {
       ...data,
       ingredients,
@@ -132,13 +132,15 @@ export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
 
         <StyledImageUploadContainer htmlFor="upload">
           <form onSubmit={uploadImage}>
-            <Plus width={40} height={40} />
-            <StyledImageInput
+            {/* <IconButtonLarge style="plus" /> */}
+            {/* <Plus width={40} height={40} /> */}
+            <input
               type="file"
               name="file"
               id="upload"
               onChange={handleImage}
-            />
+            ></input>
+
             <button type="submit">hinzufügen</button>
           </form>
         </StyledImageUploadContainer>
@@ -241,7 +243,11 @@ export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
           />
           <ButtonContainer>
             <Button type="submit">speichern</Button>
-            {onDelete && <Button onClick={onDelete}>Rezept löschen</Button>}
+            {onDelete && (
+              <Button type="button" onClick={onDelete}>
+                Rezept löschen
+              </Button>
+            )}
           </ButtonContainer>
         </StyledArticle>
       </form>
@@ -282,15 +288,10 @@ const ButtonContainer = styled.div`
   width: calc(100% - (2 * var(--gap-out)));
 `;
 const StyledImageUploadContainer = styled.label`
-  display: inline-block;
-  background-color: white;
-  width: 60px;
-  height: 60px;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  border-radius: 100%;
-  box-shadow: 4px 8px 16px 0 rgb(0 0 0 / 8%);
   cursor: pointer;
   position: absolute;
 `;
