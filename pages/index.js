@@ -4,7 +4,6 @@ import MealCard from "@/components/Styled/MealCard";
 import StyledUl from "@/components/StyledUl";
 import IconButtonLarge from "@/components/Styled/IconButtonLarge";
 import ScrollToTop from "@/components/ScrollToTopButton";
-import Button from "@/components/Styled/StyledButton";
 import StyledH2 from "@/components/Styled/StyledH2";
 import { filterTags } from "@/helpers/filterTags";
 import Filter from "@/public/icons/sliders-v_10435878.svg";

@@ -28,7 +28,6 @@ export default async function handler(request, response) {
   if (request.method === "POST") {
     try {
       const recipes = new Recipe(request.body);
-      console.log("requestBody:", request.body);
       await recipes.save();
       return response.status(201).json({ status: "Recipe created." });
     } catch (error) {

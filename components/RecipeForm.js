@@ -92,7 +92,6 @@ export default function RecipeForm({ onSubmit, onDelete, data }) {
       public: event.target.public.checked,
     };
     onSubmit(newData);
-    console.log(newData);
   }
   return (
     <>
