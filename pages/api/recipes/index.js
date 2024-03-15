@@ -5,41 +5,49 @@ export default async function handler(request, response) {
   await dbConnect();
 
   if (request.method === "GET") {
-    let queryObj = {};
-    console.log("query", request.query);
-    const { sort = "title", order = "asc", search } = request.query;
+    const { sort = "_id", order = "desc", search } = request.query;
     const sortOrder = order === "desc" ? -1 : 1;
 
-    if (search) {
-      queryObj["$text"] = { $search: search };
-    }
-    console.log("search:", search);
+    let pipeline = [];
 
+    // Textsuche als erster Schritt, falls vorhanden
+    if (search) {
+      pipeline.push({ $match: { $text: { $search: search } } });
+    }
+
+    let queryObj = {};
     Object.keys(request.query).forEach((key) => {
       if (!["sort", "order", "duration", "search"].includes(key)) {
         queryObj[key] = { $in: request.query[key].split(",") };
       }
     });
 
-    let pipeline = [
-      { $match: queryObj },
-      {
-        $addFields: {
-          lowerCaseTitle: { $toLower: "$title" },
-        },
-      },
-      {
-        $sort:
-          sort === "title"
-            ? { lowerCaseTitle: sortOrder }
-            : { [sort]: sortOrder },
-      },
-    ];
+    // Hinzufügen eines kombinierten $match-Schritts für alle anderen Filter
+    if (Object.keys(queryObj).length > 0) {
+      pipeline.push({ $match: queryObj });
+    }
 
+    // Dauer-Filter integrieren, wenn vorhanden
     if (request.query.duration) {
       const durationFilter = handleDurationFilter(request.query.duration);
-      pipeline = [{ $match: durationFilter }, ...pipeline];
+      if (durationFilter.$or.length > 0) {
+        pipeline.push({ $match: durationFilter });
+      }
     }
+
+    // Hinzufügen der $addFields und $sort Schritte
+    pipeline.push({
+      $addFields: {
+        lowerCaseTitle: { $toLower: "$title" },
+      },
+    });
+
+    pipeline.push({
+      $sort:
+        sort === "title"
+          ? { lowerCaseTitle: sortOrder }
+          : { [sort]: sortOrder },
+    });
 
     const recipes = await Recipe.aggregate(pipeline);
 

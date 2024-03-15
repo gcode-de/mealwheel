@@ -2,16 +2,16 @@ export const sortingMethods = [
   {
     label: "neuste",
     type: "_id",
-    order: -1,
+    order: "desc",
   },
   {
     label: "a-z",
     type: "title",
-    order: 1,
+    order: "asc",
   },
   {
     label: "schnellste",
     type: "duration",
-    order: 1,
+    order: "asc",
   },
 ];
