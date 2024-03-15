@@ -26,7 +26,7 @@ export const filterTags = [
       { label: "Fleisch", value: "meat" },
       { label: "pescetarisch", value: "pescetarian" },
       { label: "ketogen", value: "keto" },
-      { label: "low carb", value: "lowcarb" },
+      { label: "low carb", value: "low carb" },
     ],
   },
 ];
