@@ -16,6 +16,7 @@ import StyledIngredients from "../Styled/StyledIngredients";
 import StyledInput from "../Styled/StyledInput";
 import StyledDropDown from "../Styled/StyledDropDown";
 import { notifySuccess, notifyError } from "/helpers/toast";
+import handleDeleteImage from "@/helpers/Cloudinary/handleDeleteImage";
 
 export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
   const [difficulty, setDifficulty] = useState(
@@ -55,6 +56,7 @@ export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
 
     const formData = new FormData(event.target);
     const data = Object.fromEntries(formData);
+    console.log(imageUrl);
     const newData = {
       ...data,
       ingredients,
@@ -86,16 +88,7 @@ export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
     if (formName === "editRecipe" && data.imageLink) {
       const deleteImage = data.publicId;
       if (data.publicId) {
-        const responseDelete = await fetch("/api/upload", {
-          method: "DELETE",
-          body: deleteImage,
-        });
-        if (responseDelete.ok) {
-          const file = await responseDelete.json();
-          setImageUrl(file);
-        } else {
-          console.error("delete failed");
-        }
+        handleDeleteImage(deleteImage);
       }
       const responseUpload = await fetch("/api/upload", {
         method: "POST",

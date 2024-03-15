@@ -3,13 +3,15 @@ import { useRouter } from "next/router";
 import useSWR from "swr";
 import { notifySuccess, notifyError } from "/helpers/toast";
 import LoadingComponent from "@/components/Loading";
+import handleDeleteImage from "@/helpers/Cloudinary/handleDeleteImage";
 
 export default function EditRecipe({ user }) {
   const router = useRouter();
   const { id } = router.query;
-  const { data: recipe, isLoading } = useSWR(`/api/recipes/${id}`);
-
+  const { data: recipe, isLoading, mutate } = useSWR(`/api/recipes/${id}`);
+  console.log(recipe);
   async function handleDelete() {
+    handleDeleteImage(recipe.publicId);
     const response = await fetch(`/api/recipes/${id}`, {
       method: "DELETE",
       headers: {
@@ -39,6 +41,7 @@ export default function EditRecipe({ user }) {
     if (response.ok) {
       router.back();
       notifySuccess("Rezept geändert");
+      mutate();
     } else {
       notifyError("Rezept konnte nicht geändert werden");
     }
