@@ -1,7 +1,4 @@
 import styled from "styled-components";
-import { useRouter } from "next/router";
-import useSWR from "swr";
-import { useKindeAuth } from "@kinde-oss/kinde-auth-nextjs";
 
 import StyledList from "@/components/Styled/StyledList";
 import AddButton from "@/components/Styled/AddButton";
@@ -15,21 +12,7 @@ import IconButtonLarge from "@/components/Styled/IconButtonLarge";
 
 import updateUserinDb from "@/helpers/updateUserInDb";
 
-export default function ShoppingList() {
-  const router = useRouter();
-  const {
-    isAuthenticated,
-    isLoading: kindeIsLoading,
-    user: kindeUser,
-  } = useKindeAuth();
-
-  let {
-    data: user,
-    isLoading: userIsLoading,
-    error: userError,
-    mutate: mutateUser,
-  } = useSWR(`/api/users/${kindeUser?.id}`);
-
+export default function ShoppingList({ user, mutateUser }) {
   if (!user) {
     return;
   }

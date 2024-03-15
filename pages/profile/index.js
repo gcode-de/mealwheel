@@ -17,20 +17,8 @@ import { useState } from "react";
 
 import updateUserinDb from "@/helpers/updateUserInDb";
 
-export default function ProfilePage({}) {
+export default function ProfilePage({ user, mutateUser }) {
   const router = useRouter();
-  const {
-    isAuthenticated,
-    isLoading: kindeIsLoading,
-    user: kindeUser,
-  } = useKindeAuth();
-
-  let {
-    data: user,
-    isLoading: userIsLoading,
-    error: userError,
-    mutate: mutateUser,
-  } = useSWR(`/api/users/${kindeUser?.id}`);
 
   const [editUser, setEditUser] = useState(false);
 

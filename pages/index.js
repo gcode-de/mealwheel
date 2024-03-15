@@ -10,6 +10,8 @@ import ScrollToTop from "@/components/ScrollToTopButton";
 import LoadingComponent from "@/components/Loading";
 
 export default function HomePage({
+  user,
+  mutateUser,
   error,
   isLoading,
   getRecipeProperty,
@@ -19,18 +21,6 @@ export default function HomePage({
   recipesIsLoading,
 }) {
   const router = useRouter();
-  const {
-    isAuthenticated,
-    isLoading: kindeIsLoading,
-    user: kindeUser,
-  } = useKindeAuth();
-
-  let {
-    data: user,
-    isLoading: userIsLoading,
-    error: userError,
-    mutate: mutateUser,
-  } = useSWR(`/api/users/${kindeUser?.id}`);
 
   if (recipesError || error) {
     return (

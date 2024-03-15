@@ -1,24 +1,28 @@
 import dbConnect from "../../../db/connect";
 import User from "../../../db/models/User";
 import Recipe from "../../../db/models/Recipe";
+import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 
 export default async function handler(request, response) {
   await dbConnect();
   const { id } = request.query;
 
+  const data = getKindeServerSession(request, response);
+  const kindeUser = await data.getUser();
+
   if (request.method === "GET") {
-    let user = await User.findOne({ loginId: id })
+    let user = await User.findOne({
+      loginId: kindeUser?.id || "kp_0047cc6bee3348c6a80f0c2901f23943",
+    })
       .populate("recipeInteractions.recipe")
       .populate("calendar.recipe");
-    console.log(user);
-
-    // if (!user) {
-    //   return response.status(404).json({ status: "Not Found" });
-    // }
 
     if (!user) {
       user = await User.create({
-        _id: id,
+        loginId: kindeUser.id,
+        firstName: kindeUser.given_name,
+        lastName: kindeUser.family_name,
+        email: kindeUser.email,
         calendar: [],
         recipeInteractions: [],
         settings: {},
@@ -36,8 +40,24 @@ export default async function handler(request, response) {
 
   if (request.method === "PUT") {
     try {
-      await User.findByIdAndUpdate(id, request.body);
-      return response.status(200).json("User updated");
+      if (!kindeUser || !kindeUser.id) {
+        return response.status(404).json({ error: "Kinde User not found" });
+      }
+
+      const updatedUser = await User.findOneAndUpdate(
+        { loginId: kindeUser.id },
+        request.body,
+        {
+          new: true,
+          runValidators: true,
+        }
+      );
+
+      if (!updatedUser) {
+        return response.status(404).json({ error: "User not found" });
+      }
+
+      return response.status(200).json(updatedUser);
     } catch (error) {
       console.log(error);
       response.status(400).json({ error: error.message });

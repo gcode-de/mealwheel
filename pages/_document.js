@@ -1,5 +1,7 @@
 import Document, { Html, Head, Main, NextScript } from "next/document";
 import { ServerStyleSheet } from "styled-components";
+import { KindeProvider } from "@kinde-oss/kinde-auth-nextjs";
+import Auth from "@/pages/auth";
 
 export default class MyDocument extends Document {
   static async getInitialProps(ctx) {
@@ -28,8 +30,12 @@ export default class MyDocument extends Document {
       <Html lang="en">
         <Head />
         <body>
+          {/* <KindeProvider>
+            <Auth> */}
           <Main />
           <NextScript />
+          {/* </Auth>
+          </KindeProvider> */}
         </body>
       </Html>
     );

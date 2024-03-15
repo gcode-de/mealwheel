@@ -1,26 +1,12 @@
 import RecipeForm from "@/components/RecipeForm";
 import { useRouter } from "next/router";
 import useSWR from "swr";
-import { useKindeAuth } from "@kinde-oss/kinde-auth-nextjs";
 import { notifySuccess, notifyError } from "/helpers/toast";
 
-export default function EditRecipe() {
+export default function EditRecipe({ user }) {
   const router = useRouter();
   const { id } = router.query;
   const { data: recipe, isLoading } = useSWR(`/api/recipes/${id}`);
-
-  const {
-    isAuthenticated,
-    isLoading: kindeIsLoading,
-    user: kindeUser,
-  } = useKindeAuth();
-
-  let {
-    data: user,
-    isLoading: userIsLoading,
-    error: userError,
-    mutate: mutateUser,
-  } = useSWR(`/api/users/${kindeUser?.id}`);
 
   async function handleDelete() {
     if (confirm("Dieses Rezept löschen?") !== true) {

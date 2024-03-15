@@ -1,8 +1,6 @@
 import GlobalStyle from "../styles";
 import Layout from "@/components/Layout";
 import useSWR, { SWRConfig } from "swr";
-import { KindeProvider } from "@kinde-oss/kinde-auth-nextjs";
-import Auth from "@/pages/auth";
 
 import { useRouter } from "next/router";
 import updateUserinDb from "@/helpers/updateUserInDb";
@@ -26,13 +24,13 @@ const fetcher = async (url) => {
 export default function App({ Component, pageProps }) {
   const router = useRouter();
 
-  const userId = "65e0925792f086ae06d2eadb";
+  // const userId = "65e0925792f086ae06d2eadb";
   const {
     data: user,
     isLoading,
     error,
-    mutate,
-  } = useSWR(`/api/users/${userId}`, fetcher);
+    mutate: mutateUser,
+  } = useSWR(`/api/user`, fetcher);
   const {
     data: recipes,
     error: recipesError,
@@ -47,7 +45,7 @@ export default function App({ Component, pageProps }) {
   }
 
   async function toggleIsFavorite(_id) {
-    if (!kindeIsAuthenticated) {
+    if (!user) {
       router.push("/api/auth/login");
       return;
     }
@@ -69,7 +67,7 @@ export default function App({ Component, pageProps }) {
   }
 
   async function toggleHasCooked(_id) {
-    if (!kindeIsAuthenticated) {
+    if (!user) {
       router.push("/api/auth/login");
       return;
     }
@@ -90,55 +88,51 @@ export default function App({ Component, pageProps }) {
     await updateUserinDb(user, mutateUser);
   }
 
-  // if (error) {
-  //   return (
-  //     <>
-  //       <Layout>
-  //         <GlobalStyle />
-  //         <SWRConfig value={{ fetcher }}>
-  //           <Component {...pageProps} error={error} />
-  //         </SWRConfig>
-  //       </Layout>
-  //     </>
-  //   );
-  // }
+  if (error) {
+    return (
+      <>
+        <Layout>
+          <GlobalStyle />
+          <SWRConfig value={{ fetcher }}>
+            <Component {...pageProps} error={error} />
+          </SWRConfig>
+        </Layout>
+      </>
+    );
+  }
 
-  // if (isLoading || !user) {
-  //   return (
-  //     <>
-  //       <Layout>
-  //         <GlobalStyle />
-  //         <SWRConfig value={{ fetcher }}>
-  //           <Component {...pageProps} isLoading />
-  //         </SWRConfig>
-  //       </Layout>
-  //     </>
-  //   );
-  // }
+  if (isLoading || !user) {
+    return (
+      <>
+        <Layout>
+          <GlobalStyle />
+          <SWRConfig value={{ fetcher }}>
+            <Component {...pageProps} isLoading />
+          </SWRConfig>
+        </Layout>
+      </>
+    );
+  }
 
   return (
     <>
-      <KindeProvider>
-        <Auth>
-          <Layout>
-            <GlobalStyle />
-            <SWRConfig value={{ fetcher }}>
-              <Component
-                {...pageProps}
-                userId={userId}
-                // user={user}
-                getRecipeProperty={getRecipeProperty}
-                toggleIsFavorite={toggleIsFavorite}
-                toggleHasCooked={toggleHasCooked}
-                // mutateUser={mutate}
-                recipes={recipes}
-                recipesError={recipesError}
-                recipesIsLoading={recipesIsLoading}
-              />
-            </SWRConfig>
-          </Layout>
-        </Auth>
-      </KindeProvider>
+      <Layout>
+        <GlobalStyle />
+        <SWRConfig value={{ fetcher }}>
+          <Component
+            {...pageProps}
+            // userId={userId}
+            user={user}
+            getRecipeProperty={getRecipeProperty}
+            toggleIsFavorite={toggleIsFavorite}
+            toggleHasCooked={toggleHasCooked}
+            mutateUser={mutateUser}
+            recipes={recipes}
+            recipesError={recipesError}
+            recipesIsLoading={recipesIsLoading}
+          />
+        </SWRConfig>
+      </Layout>
     </>
   );
 }
