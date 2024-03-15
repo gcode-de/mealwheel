@@ -11,7 +11,9 @@ export default function EditRecipe({ user }) {
   const { data: recipe, isLoading, mutate } = useSWR(`/api/recipes/${id}`);
 
   async function handleDelete() {
-    handleDeleteImage(recipe.publicId);
+    if (recipe.publicId) {
+      handleDeleteImage(recipe.publicId);
+    }
     const response = await fetch(`/api/recipes/${id}`, {
       method: "DELETE",
       headers: {
