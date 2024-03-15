@@ -46,6 +46,7 @@ export default function HomePage({
     if (!query) return;
 
     function parseUrlParams() {
+      // Extrahiere Filterparameter
       const newFilters = Object.keys(filters).reduce((acc, filterType) => {
         if (query[filterType]) {
           acc[filterType] = query[filterType]
@@ -57,8 +58,24 @@ export default function HomePage({
         return acc;
       }, {});
 
+      // Extrahiere Sortierparameter
+      let newSort = null;
+      if (query.sort && query.order) {
+        newSort = {
+          label:
+            sortingMethods.find((method) => method.type === query.sort)
+              ?.label || query.sort,
+          type: query.sort,
+          order: query.order,
+        };
+      }
+
+      // Aktualisiere Zustände basierend auf URL-Parametern
       setFilters(newFilters);
-      const apiUrl = createUrlWithFilters("/api/recipes", newFilters);
+      if (newSort) setCurrentSort(newSort);
+
+      // Erstelle API-URL mit den extrahierten Filtern und Sortierungen
+      const apiUrl = createUrlWithParams("/api/recipes", newFilters, newSort);
       setApiQuery(apiUrl);
     }
 
@@ -81,10 +98,10 @@ export default function HomePage({
       };
     }
 
-    applyFilter(newFilters, currentSort);
+    applyFilter({ filter: newFilters });
   }
 
-  function resetCategories() {
+  function resetFilters() {
     setFilters((prevFilters) => {
       const resetFilters = Object.keys(prevFilters).reduce((acc, key) => {
         acc[key] = [];
@@ -96,64 +113,49 @@ export default function HomePage({
   }
 
   function handleSortChange({ label, type, order }) {
-    // let newFilters = {};
-    // const isAlreadySelected = filters[type].includes(value);
-
-    // if (isAlreadySelected) {
-    //   newFilters = {
-    //     ...filters,
-    //     [type]: filters[type].filter((item) => item !== value),
-    //   };
-    // } else {
-    //   newFilters = {
-    //     ...filters,
-    //     [type]: [...filters[type], value],
-    //   };
-    // }
-
     setCurrentSort({
       label,
       type,
       order,
     });
-
-    applyFilter(newFilters, currentSort);
+    applyFilter({ sort: { type, order } });
   }
 
-  // function applyFilter(filters) {
-  //   const baseUrl = "/";
-  //   const filterUrl = createUrlWithFilters(baseUrl, filters);
-  //   const sortParam = currentSort
-  //     ? `&sort=${currentSort.type}&order=${currentSort.order}`
-  //     : "";
-  //   const urlWithSort = `${filterUrl}${sortParam}`;
-  //   router.push(urlWithSort);
-  // }
+  function applyFilter({ filter, sort }) {
+    const newFilters = filter || filters;
+    const newSort = sort || currentSort;
 
-  function applyFilter(filters, currentSort) {
-    const baseUrl = "/api/recipes";
-    let urlWithFilters = createUrlWithFilters(baseUrl, filters);
-
-    if (currentSort) {
-      const sortParam = `&sort=${currentSort.type}&order=${currentSort.order}`;
-      urlWithFilters += sortParam;
-    }
-
-    setApiQuery(urlWithFilters);
-    router.push(urlWithFilters);
+    const browserUrlWithFilters = createUrlWithParams("/", newFilters, newSort);
+    router.push(browserUrlWithFilters);
   }
 
-  function createUrlWithFilters(baseUrl, filters) {
+  function createUrlWithParams(baseUrl, filters = null, sort = null) {
+    let apiUrlWithFilters = baseUrl;
     const queryParams = [];
 
-    Object.entries(filters).forEach(([type, values]) => {
-      if (values.length > 0) {
-        queryParams.push(`${type}=${values.map(encodeURIComponent).join(",")}`);
-      }
-    });
+    if (filters) {
+      Object.entries(filters).forEach(([type, values]) => {
+        if (values.length > 0) {
+          queryParams.push(
+            `${type}=${values.map(encodeURIComponent).join(",")}`
+          );
+        }
+      });
+    }
 
-    const urlWithFilterParams = `${baseUrl}?${queryParams.join("&")}`;
-    return urlWithFilterParams;
+    if (sort && sort.type && sort.order) {
+      queryParams.push(
+        `sort=${encodeURIComponent(sort.type)}&order=${encodeURIComponent(
+          sort.order
+        )}`
+      );
+    }
+
+    if (queryParams.length > 0) {
+      apiUrlWithFilters += `?${queryParams.join("&")}`;
+    }
+
+    return apiUrlWithFilters;
   }
 
   const {
@@ -197,7 +199,7 @@ export default function HomePage({
       </StyledFilterButton>
       {isFilterButton && (
         <StyledFiltersContainer>
-          <StyledResetButton type="button" onClick={resetCategories}>
+          <StyledResetButton type="button" onClick={resetFilters}>
             alles zurücksetzen
           </StyledResetButton>
           {filterTags.map(({ label, type, options }) => (

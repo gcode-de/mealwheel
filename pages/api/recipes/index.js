@@ -7,35 +7,50 @@ export default async function handler(request, response) {
   if (request.method === "GET") {
     let queryObj = {};
 
-    let sortObj = {};
-    const { sort, order } = request.query;
+    const { sort = "title", order = "asc" } = request.query; // Standardwerte setzen
 
-    if (sort && order) {
-      sortObj[sort] = order;
-    }
+    const sortOrder = order === "desc" ? -1 : 1;
 
+    // Ausschluss von Sortierparametern aus der Filterlogik
     Object.keys(request.query).forEach((key) => {
-      const value = request.query[key];
-      if (key === "duration") {
-        queryObj = { ...queryObj, ...handleDurationFilter(value) };
-      } else {
-        queryObj[key] = { $in: value.split(",") };
+      if (key !== "sort" && key !== "order" && key !== "duration") {
+        queryObj[key] = { $in: request.query[key].split(",") };
       }
     });
 
-    const recipes = await Recipe.find(queryObj).sort({ title: 1 });
+    // Aufbau der Aggregations-Pipeline
+    let pipeline = [
+      { $match: queryObj },
+      {
+        $addFields: {
+          lowerCaseTitle: { $toLower: "$title" }, // Feld in Kleinbuchstaben umwandeln
+        },
+      },
+      {
+        $sort:
+          sort === "title"
+            ? { lowerCaseTitle: sortOrder }
+            : { [sort]: sortOrder },
+      },
+    ];
+
+    // Filter für die Dauer hinzufügen, falls vorhanden
+    if (request.query.duration) {
+      const durationFilter = handleDurationFilter(request.query.duration);
+      pipeline = [{ $match: durationFilter }, ...pipeline];
+    }
+
+    const recipes = await Recipe.aggregate(pipeline);
 
     if (!recipes.length) {
       return response.status(404).json({ status: "Not Found" });
     }
 
     response.status(200).json(recipes);
-  }
-
-  if (request.method === "POST") {
+  } else if (request.method === "POST") {
     try {
-      const recipes = new Recipe(request.body);
-      await recipes.save();
+      const recipe = new Recipe(request.body);
+      await recipe.save();
       return response.status(201).json({ status: "Recipe created." });
     } catch (error) {
       console.error(error);
