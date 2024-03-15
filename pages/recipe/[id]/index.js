@@ -15,6 +15,7 @@ import StyledH2 from "@/components/Styled/StyledH2";
 import StyledP from "@/components/Styled/StyledP";
 import StyledListItem from "@/components/Styled/StyledListItem";
 import LoadingComponent from "@/components/Loading";
+import { filterTags } from "@/helpers/filterTags";
 
 export default function DetailPage({
   user,
@@ -186,6 +187,18 @@ export default function DetailPage({
             </StyledListItem>
           ))}
         </StyledList>
+        {filterTags
+          .filter(({ type }) => type === "diet")
+          .map(({ label, type }) => (
+            <div key={type}>
+              <StyledH2>{label}</StyledH2>
+            </div>
+          ))}
+        <StyledCategoriesDiv>
+          {tags.map((tag) => (
+            <StyledCategoryButtonDiv key={tag}>{tag}</StyledCategoryButtonDiv>
+          ))}
+        </StyledCategoriesDiv>
         <StyledHyper>
           <StyledLink onClick={() => setContent("instructions")}>
             Zubereitung
@@ -291,4 +304,24 @@ const StyledTitle = styled.h1`
   margin-bottom: 1rem;
   width: calc(100% - (2 * var(--gap-out)));
   text-align: center;
+`;
+
+const StyledCategoriesDiv = styled.div`
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  max-width: calc(100% - (2 * var(--gap-out)));
+  margin: auto;
+  margin-top: 0.25rem;
+`;
+
+const StyledCategoryButtonDiv = styled.button`
+  background-color: var(--color-darkgrey);
+  color: var(--color-component);
+  border: solid var(--color-darkgrey) 1px;
+  border-radius: var(--border-radius-small);
+  width: 6rem;
+  height: 1.75rem;
+  margin-bottom: 0.5rem;
+  padding: 0.25rem;
 `;
