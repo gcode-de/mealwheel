@@ -40,13 +40,16 @@ export default function HomePage({
 
   const [currentSort, setCurrentSort] = useState();
 
+  const [searchTerm, setSearchTerm] = useState("");
+
   const { query } = useRouter();
 
   useEffect(() => {
     if (!query) return;
 
     function parseUrlParams() {
-      // Extrahiere Filterparameter
+      const searchFromQuery = query.search || "";
+      setSearchTerm(searchFromQuery);
       const newFilters = Object.keys(filters).reduce((acc, filterType) => {
         if (query[filterType]) {
           acc[filterType] = query[filterType]
@@ -58,7 +61,6 @@ export default function HomePage({
         return acc;
       }, {});
 
-      // Extrahiere Sortierparameter
       let newSort = null;
       if (query.sort && query.order) {
         newSort = {
@@ -70,12 +72,17 @@ export default function HomePage({
         };
       }
 
-      // Aktualisiere Zustände basierend auf URL-Parametern
+      const search = query.search || "";
+
       setFilters(newFilters);
       if (newSort) setCurrentSort(newSort);
 
-      // Erstelle API-URL mit den extrahierten Filtern und Sortierungen
-      const apiUrl = createUrlWithParams("/api/recipes", newFilters, newSort);
+      const apiUrl = createUrlWithParams(
+        "/api/recipes",
+        newFilters,
+        newSort,
+        search
+      );
       setApiQuery(apiUrl);
     }
 
@@ -102,14 +109,8 @@ export default function HomePage({
   }
 
   function resetFilters() {
-    setFilters((prevFilters) => {
-      const resetFilters = Object.keys(prevFilters).reduce((acc, key) => {
-        acc[key] = [];
-        return acc;
-      }, {});
-
-      return resetFilters;
-    });
+    setIsFilterButton(false);
+    router.push("/");
   }
 
   function handleSortChange({ label, type, order }) {
@@ -121,15 +122,34 @@ export default function HomePage({
     applyFilter({ sort: { type, order } });
   }
 
+  const handleInputChange = (e) => {
+    setSearchTerm(e.target.value);
+  };
+
+  const handleSearch = () => {
+    applyFilter({});
+  };
+
   function applyFilter({ filter, sort }) {
     const newFilters = filter || filters;
     const newSort = sort || currentSort;
+    const currentSearch = searchTerm;
 
-    const browserUrlWithFilters = createUrlWithParams("/", newFilters, newSort);
+    const browserUrlWithFilters = createUrlWithParams(
+      "/",
+      newFilters,
+      newSort,
+      currentSearch
+    );
     router.push(browserUrlWithFilters);
   }
 
-  function createUrlWithParams(baseUrl, filters = null, sort = null) {
+  function createUrlWithParams(
+    baseUrl,
+    filters = null,
+    sort = null,
+    search = ""
+  ) {
     let apiUrlWithFilters = baseUrl;
     const queryParams = [];
 
@@ -149,6 +169,10 @@ export default function HomePage({
           sort.order
         )}`
       );
+    }
+
+    if (search) {
+      queryParams.push(`search=${encodeURIComponent(search)}`);
     }
 
     if (queryParams.length > 0) {
@@ -199,6 +223,15 @@ export default function HomePage({
       </StyledFilterButton>
       {isFilterButton && (
         <StyledFiltersContainer>
+          <StyledSearchContainer>
+            <input
+              type="text"
+              placeholder="Suche..."
+              value={searchTerm}
+              onChange={handleInputChange}
+            />
+            <button onClick={handleSearch}>O</button>
+          </StyledSearchContainer>
           <StyledResetButton type="button" onClick={resetFilters}>
             alles zurücksetzen
           </StyledResetButton>
@@ -280,7 +313,7 @@ const StyledResetButton = styled.button`
   background-color: transparent;
   border: none;
   position: absolute;
-  top: 3.75rem;
+  top: 2%.75;
   right: 1.5rem;
   font-size: smaller;
   cursor: pointer;
@@ -312,4 +345,37 @@ const StyledCategoryButton = styled.button`
 
 const StyledFiltersContainer = styled.div`
   margin-bottom: 3rem;
+  position: relative;
+`;
+
+const StyledSearchContainer = styled.div`
+  max-width: calc(100% - (2 * var(--gap-out)));
+  margin: 0.5rem auto 0.5rem auto;
+  position: relative;
+  display: flex;
+  gap: 0.5rem;
+
+  input {
+    border: none;
+    margin: 1;
+    flex: 1;
+    border: solid var(--color-darkgrey) 1px;
+    border-radius: var(--border-radius-small);
+    padding: 0.25rem 0.5rem;
+    height: 2rem;
+  }
+  button {
+    position: absolute;
+    top: 0;
+    right: 0;
+    border: none;
+    background-color: transparent;
+    /* color: var(--color-background); */
+    font-size: 0%.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 10px;
+    width: 2rem;
+    height: 2rem;
+  }
 `;

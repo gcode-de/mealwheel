@@ -6,24 +6,26 @@ export default async function handler(request, response) {
 
   if (request.method === "GET") {
     let queryObj = {};
-
-    const { sort = "title", order = "asc" } = request.query; // Standardwerte setzen
-
+    console.log("query", request.query);
+    const { sort = "title", order = "asc", search } = request.query;
     const sortOrder = order === "desc" ? -1 : 1;
 
-    // Ausschluss von Sortierparametern aus der Filterlogik
+    if (search) {
+      queryObj["$text"] = { $search: search };
+    }
+    console.log("search:", search);
+
     Object.keys(request.query).forEach((key) => {
-      if (key !== "sort" && key !== "order" && key !== "duration") {
+      if (!["sort", "order", "duration", "search"].includes(key)) {
         queryObj[key] = { $in: request.query[key].split(",") };
       }
     });
 
-    // Aufbau der Aggregations-Pipeline
     let pipeline = [
       { $match: queryObj },
       {
         $addFields: {
-          lowerCaseTitle: { $toLower: "$title" }, // Feld in Kleinbuchstaben umwandeln
+          lowerCaseTitle: { $toLower: "$title" },
         },
       },
       {
@@ -34,7 +36,6 @@ export default async function handler(request, response) {
       },
     ];
 
-    // Filter für die Dauer hinzufügen, falls vorhanden
     if (request.query.duration) {
       const durationFilter = handleDurationFilter(request.query.duration);
       pipeline = [{ $match: durationFilter }, ...pipeline];
