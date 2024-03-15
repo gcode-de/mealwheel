@@ -82,12 +82,7 @@ export default function HomePage({
   }
 
   function resetCategories() {
-    const currentUrlParams = new URLSearchParams(window.location.search);
-    filterTags.forEach(({ type }) => {
-      currentUrlParams.delete(type);
-    });
-    const newUrl = `${window.location.pathname}?${currentUrlParams.toString()}`;
-    router.push(newUrl);
+    router.push("/");
   }
 
   function applyFilter(filters) {
