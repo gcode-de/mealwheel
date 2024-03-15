@@ -194,7 +194,7 @@ export default function DetailPage({
           ))}
         <StyledCategoriesDiv>
           {tags.map((tag) => (
-            <StyledCategoryButtonDiv key={tag}>{tag}</StyledCategoryButtonDiv>
+            <StyledCategoryButton key={tag}>{tag}</StyledCategoryButton>
           ))}
         </StyledCategoriesDiv>
         <StyledHyper>
@@ -314,7 +314,7 @@ const StyledCategoriesDiv = styled.div`
   margin-top: 0.25rem;
 `;
 
-const StyledCategoryButtonDiv = styled.button`
+const StyledCategoryButton = styled.button`
   background-color: var(--color-component);
   color: var(--color-darkgrey);
   border: solid var(--color-darkgrey) 1px;

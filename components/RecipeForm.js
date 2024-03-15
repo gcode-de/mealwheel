@@ -36,14 +36,14 @@ export default function RecipeForm({ onSubmit, onDelete, data }) {
   const router = useRouter();
   const [selectedTags, setSelectedTags] = useState(data ? data.tags : []);
 
-  function handleFilterChange(value) {
-    const isAlreadySelected = selectedTags.includes(value);
-    let newTags = value;
+  function handleTagChange(label) {
+    const isAlreadySelected = selectedTags.includes(label);
+    let newTags = label;
     if (isAlreadySelected) {
-      newTags = selectedTags.filter((item) => item !== value);
+      newTags = selectedTags.filter((item) => item !== label);
       setSelectedTags(newTags);
     } else {
-      newTags = [value];
+      newTags = [label];
       setSelectedTags(newTags);
     }
   }
@@ -210,8 +210,8 @@ export default function RecipeForm({ onSubmit, onDelete, data }) {
                     <StyledCategoryButton
                       key={option.value}
                       type="button"
-                      $isActive={selectedTags.includes(option.value)}
-                      onClick={() => handleFilterChange(option.value)}
+                      $isActive={selectedTags.includes(option.label)}
+                      onClick={() => handleTagChange(option.label)}
                     >
                       {option.label}
                     </StyledCategoryButton>
