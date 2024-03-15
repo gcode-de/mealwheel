@@ -7,6 +7,13 @@ export default async function handler(request, response) {
   if (request.method === "GET") {
     let queryObj = {};
 
+    let sortObj = {};
+    const { sort, order } = request.query;
+
+    if (sort && order) {
+      sortObj[sort] = order;
+    }
+
     Object.keys(request.query).forEach((key) => {
       const value = request.query[key];
       if (key === "duration") {
@@ -16,7 +23,7 @@ export default async function handler(request, response) {
       }
     });
 
-    const recipes = await Recipe.find(queryObj);
+    const recipes = await Recipe.find(queryObj).sort({ title: 1 });
 
     if (!recipes.length) {
       return response.status(404).json({ status: "Not Found" });

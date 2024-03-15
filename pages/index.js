@@ -1,19 +1,20 @@
 import Header from "@/components/Styled/Header";
-
 import MealCard from "@/components/Styled/MealCard";
 import StyledUl from "@/components/StyledUl";
 import IconButtonLarge from "@/components/Styled/IconButtonLarge";
 import ScrollToTop from "@/components/ScrollToTopButton";
-import Button from "@/components/Styled/StyledButton";
 import StyledH2 from "@/components/Styled/StyledH2";
-import { filterTags } from "@/helpers/filterTags";
 import Filter from "@/public/icons/sliders-v_10435878.svg";
+import IconButton from "@/components/Styled/IconButton";
+import LoadingComponent from "@/components/Loading";
+
+import { sortingMethods } from "@/helpers/sortingMethods";
+import { filterTags } from "@/helpers/filterTags";
+
 import { useRouter } from "next/router";
 import useSWR from "swr";
 import styled from "styled-components";
 import { useState, useEffect } from "react";
-import IconButton from "@/components/Styled/IconButton";
-import LoadingComponent from "@/components/Loading";
 
 export default function HomePage({
   error,
@@ -36,6 +37,8 @@ export default function HomePage({
       return acc;
     }, {});
   });
+
+  const [currentSort, setCurrentSort] = useState();
 
   const { query } = useRouter();
 
@@ -78,7 +81,7 @@ export default function HomePage({
       };
     }
 
-    applyFilter(newFilters);
+    applyFilter(newFilters, currentSort);
   }
 
   function resetCategories() {
@@ -92,9 +95,52 @@ export default function HomePage({
     });
   }
 
-  function applyFilter(filters) {
-    const url = createUrlWithFilters("/", filters);
-    router.push(url);
+  function handleSortChange({ label, type, order }) {
+    // let newFilters = {};
+    // const isAlreadySelected = filters[type].includes(value);
+
+    // if (isAlreadySelected) {
+    //   newFilters = {
+    //     ...filters,
+    //     [type]: filters[type].filter((item) => item !== value),
+    //   };
+    // } else {
+    //   newFilters = {
+    //     ...filters,
+    //     [type]: [...filters[type], value],
+    //   };
+    // }
+
+    setCurrentSort({
+      label,
+      type,
+      order,
+    });
+
+    applyFilter(newFilters, currentSort);
+  }
+
+  // function applyFilter(filters) {
+  //   const baseUrl = "/";
+  //   const filterUrl = createUrlWithFilters(baseUrl, filters);
+  //   const sortParam = currentSort
+  //     ? `&sort=${currentSort.type}&order=${currentSort.order}`
+  //     : "";
+  //   const urlWithSort = `${filterUrl}${sortParam}`;
+  //   router.push(urlWithSort);
+  // }
+
+  function applyFilter(filters, currentSort) {
+    const baseUrl = "/api/recipes";
+    let urlWithFilters = createUrlWithFilters(baseUrl, filters);
+
+    if (currentSort) {
+      const sortParam = `&sort=${currentSort.type}&order=${currentSort.order}`;
+      urlWithFilters += sortParam;
+    }
+
+    setApiQuery(urlWithFilters);
+    router.push(urlWithFilters);
   }
 
   function createUrlWithFilters(baseUrl, filters) {
@@ -170,6 +216,24 @@ export default function HomePage({
               </StyledCategoriesDiv>
             </div>
           ))}
+          <StyledH2>Sortierung</StyledH2>
+          <StyledCategoriesDiv>
+            {sortingMethods.map((option) => (
+              <StyledCategoryButton
+                key={option.label}
+                $isActive={currentSort?.label === option.label}
+                onClick={() =>
+                  handleSortChange({
+                    label: option.label,
+                    type: option.type,
+                    order: option.order,
+                  })
+                }
+              >
+                {option.label}
+              </StyledCategoryButton>
+            ))}
+          </StyledCategoriesDiv>
         </StyledFiltersContainer>
       )}
 
