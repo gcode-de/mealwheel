@@ -13,7 +13,7 @@ export const filterTags = [
     type: "duration",
     options: [
       { label: "<10 min", value: "&&10" },
-      { label: "10-20 mon", value: "10&&20" },
+      { label: "10-20 min", value: "10&&20" },
       { label: ">20 min", value: "20&&" },
     ],
   },

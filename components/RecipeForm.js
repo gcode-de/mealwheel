@@ -2,7 +2,7 @@ import StyledListItem from "./Styled/StyledListItem";
 import { useState } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
-
+import { filterTags } from "@/helpers/filterTags";
 import styled from "styled-components";
 import StyledArticle from "./Styled/StyledArticle";
 import IconButton from "./Styled/IconButton";
@@ -32,18 +32,20 @@ export default function RecipeForm({ onSubmit, onDelete, data }) {
           },
         ]
   );
-  const [isNutritionButton, setIsNutritionButton] = useState([
-    false,
-    false,
-    false,
-  ]);
 
   const router = useRouter();
+  const [selectedTags, setSelectedTags] = useState([]);
 
-  function toggleNutrition(index) {
-    const updatedState = [...isNutritionButton];
-    updatedState[index] = !updatedState[index];
-    setIsNutritionButton(updatedState);
+  function handleFilterChange(value) {
+    const isAlreadySelected = selectedTags.includes(value);
+    let newTags = value;
+    if (isAlreadySelected) {
+      newTags = selectedTags.filter((item) => item !== value);
+      setSelectedTags(newTags);
+    } else {
+      newTags = [...selectedTags, value];
+      setSelectedTags(newTags);
+    }
   }
 
   const uploadImage = async (event) => {
@@ -191,45 +193,25 @@ export default function RecipeForm({ onSubmit, onDelete, data }) {
               <Plus width={20} height={20} />
             </AddButton>
           </StyledList>
-          <StyledH2>Ernährungsformen</StyledH2>
-          <StyledCategoriesDiv>
-            <StyledCategoryButton
-              onClick={() => toggleNutrition(0)}
-              isActive={isNutritionButton[0]}
-            >
-              vegan
-            </StyledCategoryButton>
-            <StyledCategoryButton
-              onClick={() => toggleNutrition(1)}
-              isActive={isNutritionButton[1]}
-            >
-              vegetarisch
-            </StyledCategoryButton>
-            <StyledCategoryButton
-              onClick={() => toggleNutrition(2)}
-              isActive={isNutritionButton[2]}
-            >
-              Fleisch
-            </StyledCategoryButton>
-            <StyledCategoryButton
-              onClick={() => toggleNutrition(3)}
-              isActive={isNutritionButton[3]}
-            >
-              pescetarisch
-            </StyledCategoryButton>
-            <StyledCategoryButton
-              onClick={() => toggleNutrition(4)}
-              isActive={isNutritionButton[4]}
-            >
-              Keto
-            </StyledCategoryButton>
-            <StyledCategoryButton
-              onClick={() => toggleNutrition(5)}
-              isActive={isNutritionButton[5]}
-            >
-              low carb
-            </StyledCategoryButton>
-          </StyledCategoriesDiv>
+          {filterTags
+            .filter(({ type }) => type === "diet")
+            .map(({ label, type, options }) => (
+              <div key={type}>
+                <StyledH2>{label}</StyledH2>
+                <StyledCategoriesDiv>
+                  {options.map((option) => (
+                    <StyledCategoryButton
+                      key={option.value}
+                      type="button"
+                      $isActive={selectedTags.includes(option.value)}
+                      onClick={() => handleFilterChange(option.value)}
+                    >
+                      {option.label}
+                    </StyledCategoryButton>
+                  ))}
+                </StyledCategoriesDiv>
+              </div>
+            ))}
           <StyledH2>Anleitung</StyledH2>
           <StyledBigInput
             type="text"
@@ -314,9 +296,9 @@ const StyledCategoriesDiv = styled.div`
 
 const StyledCategoryButton = styled.button`
   background-color: ${(props) =>
-    props.isActive ? "var(--color-darkgrey)" : "var(--color-component)"};
+    props.$isActive ? "var(--color-darkgrey)" : "var(--color-component)"};
   color: ${(props) =>
-    props.isActive ? "var(--color-component)" : "var(--color-darkgrey)"};
+    props.$isActive ? "var(--color-component)" : "var(--color-darkgrey)"};
   border: solid var(--color-darkgrey) 1px;
   border-radius: var(--border-radius-small);
   width: 6rem;
