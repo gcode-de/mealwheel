@@ -10,9 +10,10 @@ export default async function handler(request, response) {
 
     let pipeline = [];
 
-    // Textsuche als erster Schritt, falls vorhanden
+    // Verwende eine Regex-Suche, wenn der Suchparameter vorhanden ist
     if (search) {
-      pipeline.push({ $match: { $text: { $search: search } } });
+      // Erstelle eine case-insensitive Regex-Suche
+      pipeline.push({ $match: { title: { $regex: search, $options: "i" } } });
     }
 
     let queryObj = {};
@@ -36,18 +37,19 @@ export default async function handler(request, response) {
     }
 
     // Hinzufügen der $addFields und $sort Schritte
-    pipeline.push({
-      $addFields: {
-        lowerCaseTitle: { $toLower: "$title" },
-      },
-    });
+    if (sort === "title") {
+      pipeline.push({
+        $addFields: {
+          lowerCaseTitle: { $toLower: "$title" },
+        },
+      });
 
-    pipeline.push({
-      $sort:
-        sort === "title"
-          ? { lowerCaseTitle: sortOrder }
-          : { [sort]: sortOrder },
-    });
+      pipeline.push({
+        $sort: { lowerCaseTitle: sortOrder },
+      });
+    } else {
+      pipeline.push({ $sort: { [sort]: sortOrder } });
+    }
 
     const recipes = await Recipe.aggregate(pipeline);
 

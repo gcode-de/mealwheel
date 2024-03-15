@@ -15,6 +15,7 @@ import { filterTags } from "@/helpers/filterTags";
 import { useRouter } from "next/router";
 import useSWR from "swr";
 import styled from "styled-components";
+import Link from "next/link";
 import { useState, useEffect } from "react";
 
 export default function HomePage({
@@ -280,6 +281,11 @@ export default function HomePage({
 
       {!recipesError ? (
         <>
+          <StyledH2>
+            {recipes.length === 1
+              ? `1 passendes Rezept:`
+              : `${recipes.length} passende Rezepte:`}
+          </StyledH2>
           <StyledUl>
             {recipes?.map((recipe) => {
               return (
@@ -300,7 +306,12 @@ export default function HomePage({
           />
         </>
       ) : (
-        <StyledUl>Keine passenden Rezepte gefunden...</StyledUl>
+        <StyledUl>
+          <StyledH2>Keine passenden Rezepte gefunden...</StyledH2>
+          <StyledH2>
+            <Link href="/">Filter zurück setzen</Link>
+          </StyledH2>
+        </StyledUl>
       )}
     </>
   );
