@@ -12,7 +12,8 @@ export default async function handler(request, response) {
 
   if (request.method === "GET") {
     let user = await User.findOne({
-      loginId: kindeUser?.id || "kp_0047cc6bee3348c6a80f0c2901f23943",
+      loginId: kindeUser?.id,
+      //  || "kp_0047cc6bee3348c6a80f0c2901f23943"
     })
       .populate("recipeInteractions.recipe")
       .populate("calendar.recipe");
