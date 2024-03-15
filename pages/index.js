@@ -5,6 +5,7 @@ import IconButtonLarge from "@/components/Styled/IconButtonLarge";
 import ScrollToTop from "@/components/ScrollToTopButton";
 import StyledH2 from "@/components/Styled/StyledH2";
 import Filter from "@/public/icons/sliders-v_10435878.svg";
+import Search from "@/public/icons/svg/pan_7409478.svg";
 import IconButton from "@/components/Styled/IconButton";
 import LoadingComponent from "@/components/Loading";
 
@@ -229,8 +230,13 @@ export default function HomePage({
               placeholder="Suche..."
               value={searchTerm}
               onChange={handleInputChange}
+              onKeyDown={(event) => {
+                if (event.key === "Enter") handleSearch();
+              }}
             />
-            <button onClick={handleSearch}>O</button>
+            <button onClick={handleSearch}>
+              <Search width="1.25rem" height="1.25rem" />
+            </button>
           </StyledSearchContainer>
           <StyledResetButton type="button" onClick={resetFilters}>
             alles zurücksetzen
