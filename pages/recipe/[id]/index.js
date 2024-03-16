@@ -15,6 +15,8 @@ import StyledH2 from "@/components/Styled/StyledH2";
 import StyledP from "@/components/Styled/StyledP";
 import StyledListItem from "@/components/Styled/StyledListItem";
 import LoadingComponent from "@/components/Loading";
+import StyledDropDown from "@/components/Styled/StyledDropDown";
+import updateUserinDb from "@/helpers/updateUserInDb";
 
 export default function DetailPage({
   user,
@@ -26,20 +28,29 @@ export default function DetailPage({
   toggleHasCooked,
 }) {
   const [content, setContent] = useState("instructions");
+  const [selectedDate, setSelectedDate] = useState("");
+  const [calendarFormIsVisible, setCalendarFormIsVisible] = useState(false);
+  const [collectionFormIsVisible, setCollectionFormIsVisible] = useState(false);
+  const [selectedCollection, setselectedCollection] = useState("");
+
   const router = useRouter();
   const { id } = router.query;
-  const servings = Number(router.query.servings) || 1;
 
+  const servings = Number(router.query.servings) || 1;
   const {
     data: recipe,
     isLoading: dataIsLoading,
     error: dataError,
   } = useSWR(id ? `/api/recipes/${id}` : null);
-
   const userIsAuthor = user?._id === recipe?.author;
 
-  const [selectedDate, setSelectedDate] = useState("");
-  const [calendarFormIsVisible, setCalendarFormIsVisible] = useState(false);
+  if (error || dataError) {
+    return <h1>Fehler...</h1>;
+  }
+
+  if (isLoading || dataIsLoading || !recipe) {
+    return <LoadingComponent />;
+  }
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -65,12 +76,18 @@ export default function DetailPage({
     }
   };
 
-  if (error || dataError) {
-    return <h1>Fehler...</h1>;
-  }
-
-  if (isLoading || dataIsLoading || !recipe) {
-    return <LoadingComponent />;
+  async function handleCollection(event) {
+    event.preventDefault();
+    //vermeiden dass die gleiche id zwei mal gespiechert wird
+    const updateCollection = user.collection.map((col) =>
+      col.collectionName === selectedCollection
+        ? { ...col, recipes: [...col.recipes, id] }
+        : col
+    );
+    user.collection = updateCollection;
+    updateUserinDb(user, mutateUser);
+    setCollectionFormIsVisible(false);
+    console.log(user);
   }
 
   const {
@@ -84,9 +101,6 @@ export default function DetailPage({
     duration,
     difficulty,
   } = recipe;
-
-  difficulty.toUpperCase();
-
   return (
     <Wrapper>
       <IconButton
@@ -109,12 +123,26 @@ export default function DetailPage({
           <Link href={`/recipe/${id}/edit`}>
             <IconButton
               style="Edit"
-              right="11.25rem"
+              right="14.25rem"
               top="-1.25rem"
               fill={"var(--color-lightgrey)"}
             />
           </Link>
         )}
+        <IconButton
+          style="Book"
+          right="11.25rem"
+          top="-1.25rem"
+          fill={
+            collectionFormIsVisible
+              ? "var(--color-highlight)"
+              : "var(--color-lightgrey)"
+          }
+          onClick={() => {
+            setCollectionFormIsVisible((prevState) => !prevState);
+            setCalendarFormIsVisible(false);
+          }}
+        />
         <IconButton
           style="Calendar"
           right="8.25rem"
@@ -126,6 +154,7 @@ export default function DetailPage({
           }
           onClick={() => {
             setCalendarFormIsVisible((prevState) => !prevState);
+            setCollectionFormIsVisible(false);
           }}
         />
         <IconButton
@@ -166,6 +195,25 @@ export default function DetailPage({
               setSelectedDate(event.target.value);
             }}
           />
+          <button type="submit">speichern</button>
+        </StyledForm>
+        <StyledForm
+          onSubmit={handleCollection}
+          $isVisible={collectionFormIsVisible}
+        >
+          <h3>Dieses Rezept speichern:</h3>
+          <StyledDropDown
+            onChange={(event) => setselectedCollection(event.target.value)}
+            name="collectionName"
+            required
+          >
+            {user.collection.map((collection, index) => (
+              <option key={index} value={collection.collectionName}>
+                {collection.collectionName}
+              </option>
+            ))}
+          </StyledDropDown>
+
           <button type="submit">speichern</button>
         </StyledForm>
         <StyledTitle>{title}</StyledTitle>

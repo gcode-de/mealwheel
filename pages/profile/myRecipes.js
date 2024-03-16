@@ -58,8 +58,8 @@ export default function MyRecipes({
         <StyledLink href="/profile/collections">zeig mir alle</StyledLink>
       </StyledH2>
       <Wrapper>
-        {user.collection.map((kb) => (
-          <CollectionCard collection={kb} />
+        {user.collection.map((kb, index) => (
+          <CollectionCard key={index} collection={kb} />
         ))}
       </Wrapper>
       <StyledH2>meine Rezepte</StyledH2>

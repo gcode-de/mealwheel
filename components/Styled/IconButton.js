@@ -11,6 +11,7 @@ import Pot from "@/public/icons/cooking-pot-fill-svgrepo-com.svg";
 import Calendar from "@/public/icons/calendar-1-svgrepo-com.svg";
 import Edit from "@/public/icons/edit-3-svgrepo-com (2).svg";
 import Settings from "@/public/icons/settings-svgrepo-com.svg";
+import Book from "@/public/icons/svg/book-user_9856365.svg";
 
 export default function IconButton({ onClick, style, left, right, top, fill }) {
   const buttonStyles = {
@@ -26,6 +27,7 @@ export default function IconButton({ onClick, style, left, right, top, fill }) {
     Calendar: <Calendar width={30} height={30} />,
     Edit: <Edit width={30} height={30} />,
     Settings: <Settings width={30} height={30} />,
+    Book: <Book width={25} height={25} />,
   };
   return (
     <StyledBox $left={left} $right={right} $top={top}>
