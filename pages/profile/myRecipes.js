@@ -8,6 +8,8 @@ import { useRouter } from "next/router";
 import StyledH2 from "@/components/Styled/StyledH2";
 import Spacer from "@/components/Styled/Spacer";
 import Link from "next/link";
+import StyledCollection from "@/components/Styled/StyledCollection";
+import CollectionCard from "@/components/CollectionCard";
 
 export default function MyRecipes({
   user,
@@ -50,11 +52,17 @@ export default function MyRecipes({
         onClick={() => router.back()}
       />
       <Spacer />
+
       <StyledH2>
-        <Link href="/profile/collections">Kochbücher</Link>
+        <div>Kochbücher</div>
+        <StyledLink href="/profile/collections">zeig mir alle</StyledLink>
       </StyledH2>
-      <StyledArticle></StyledArticle>
-      <StyledH2>Von mir erstellte Rezepte</StyledH2>
+      <Wrapper>
+        {user.collection.map((kb) => (
+          <CollectionCard collection={kb} />
+        ))}
+      </Wrapper>
+      <StyledH2>meine Rezepte</StyledH2>
       <StyledArticle>
         <StyledUl>
           {myRecipes?.map((recipe) => {
@@ -79,4 +87,16 @@ const StyledUl = styled.ul`
   padding: 10px;
   max-width: 350px;
   margin: 0 auto;
+`;
+
+const StyledLink = styled(Link)`
+  color: var(--color-darkgrey);
+  text-decoration: none;
+  font-size: medium;
+`;
+const Wrapper = styled.div`
+  display: flex;
+  gap: calc(2 * var(--gap-between));
+  width: calc(100% - (2 * var(--gap-out)));
+  margin: auto;
 `;

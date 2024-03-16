@@ -10,5 +10,7 @@ const StyledH2 = styled.h2`
   margin-bottom: var(--gap-between);
   box-sizing: border-box;
   position: relative;
+  display: flex;
+  justify-content: space-between;
 `;
 export default StyledH2;
