@@ -11,9 +11,11 @@ import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useState } from "react";
+import { useSession, signIn, signOut } from "next-auth/react";
 import updateUserinDb from "@/helpers/updateUserInDb";
 
 export default function ProfilePage({ user, mutateUser }) {
+  const { data: session } = useSession();
   const router = useRouter();
   const [editUser, setEditUser] = useState(false);
 
@@ -45,6 +47,14 @@ export default function ProfilePage({ user, mutateUser }) {
 
   return (
     <>
+      {session && (
+        <>
+          Signed in as {session.user.email} <br />
+          <button type="button" onClick={() => signOut()}>
+            Sign out
+          </button>
+        </>
+      )}
       <IconButton
         style="Settings"
         top="var(--gap-out)"

@@ -1,8 +1,9 @@
 import GlobalStyle from "../styles";
 import Layout from "@/components/Layout";
+
+import { SessionProvider } from "next-auth/react";
 import useSWR, { SWRConfig } from "swr";
 import { ToastContainer } from "react-toastify";
-
 import "react-toastify/dist/ReactToastify.css";
 
 const fetcher = async (url) => {
@@ -18,7 +19,10 @@ const fetcher = async (url) => {
   return res.json();
 };
 
-export default function App({ Component, pageProps }) {
+export default function App({
+  Component,
+  pageProps: { session, ...pageProps },
+}) {
   const userId = "65e0925792f086ae06d2eadb";
   const {
     data: user,
@@ -121,24 +125,26 @@ export default function App({ Component, pageProps }) {
 
   return (
     <>
-      <Layout>
-        <GlobalStyle />
-        <ToastContainer />
+      <GlobalStyle />
+      <SessionProvider session={session}>
         <SWRConfig value={{ fetcher }}>
-          <Component
-            {...pageProps}
-            userId={userId}
-            user={user}
-            getRecipeProperty={getRecipeProperty}
-            toggleIsFavorite={toggleIsFavorite}
-            toggleHasCooked={toggleHasCooked}
-            mutateUser={mutate}
-            recipes={recipes}
-            recipesError={recipesError}
-            recipesIsLoading={recipesIsLoading}
-          />
+          <Layout>
+            <ToastContainer />
+            <Component
+              {...pageProps}
+              userId={userId}
+              user={user}
+              getRecipeProperty={getRecipeProperty}
+              toggleIsFavorite={toggleIsFavorite}
+              toggleHasCooked={toggleHasCooked}
+              mutateUser={mutate}
+              recipes={recipes}
+              recipesError={recipesError}
+              recipesIsLoading={recipesIsLoading}
+            />
+          </Layout>
         </SWRConfig>
-      </Layout>
+      </SessionProvider>
     </>
   );
 }
