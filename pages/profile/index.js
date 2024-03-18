@@ -55,16 +55,17 @@ export default function ProfilePage({ user, mutateUser }) {
     event.preventDefault();
     const formData = new FormData(event.target);
     const data = Object.fromEntries(formData);
-    console.log(data);
     const response = await fetch("/api/feedback", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
     });
-    setFeedbackVisible(false);
-    notifySuccess(
-      "danke, für deine Zeit! Wir sind bemüht alle Anmerkungen einzuarbeiten!"
-    );
+    if (response.ok) {
+      setFeedbackVisible(false);
+      notifySuccess(
+        "danke, für deine Zeit! Wir sind bemüht alle Anmerkungen einzuarbeiten!"
+      );
+    }
   }
 
   return (
