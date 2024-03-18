@@ -61,8 +61,8 @@ export default function Collections({ user, mutateUser }) {
       )}
       {!user.collections && <h2>noch keine Kochbücher</h2>}
       <CollectionWrapper>
-        {user.collections.map((col) => (
-          <CollectionCard collection={col} />
+        {user.collections.map((col, index) => (
+          <CollectionCard key={index} collection={col} />
         ))}
       </CollectionWrapper>
     </>

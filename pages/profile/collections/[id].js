@@ -5,11 +5,11 @@ import { useRouter } from "next/router";
 import StyledUl from "@/components/StyledUl";
 
 export default function DetailCollection({ recipes, user }) {
+  const router = useRouter();
+  const { id } = router.query;
   if (!user) {
     return;
   }
-  const router = useRouter();
-  const { id } = router.query;
 
   const foundCollection = user.collections.find((col) => col._id === id);
 
