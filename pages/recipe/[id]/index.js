@@ -79,7 +79,7 @@ export default function DetailPage({
     title,
     instructions,
     imageLink,
-    tags,
+    diet,
     youtubeLink,
     ingredients,
     duration,
@@ -188,14 +188,14 @@ export default function DetailPage({
           ))}
         </StyledList>
         {filterTags
-          .filter(({ type }) => type === "tags")
+          .filter(({ type }) => type === "diet")
           .map(({ label, type }) => (
             <StyledH2 key={type}>{label}</StyledH2>
           ))}
         <StyledCategoriesDiv>
-          {tags.map((tag) => {
+          {diet?.map((tag) => {
             const filterTag = filterTags.find(
-              (filter) => filter.type === "tags"
+              (filter) => filter.type === "diet"
             );
             const matchingOption = filterTag.options.find(
               (option) => option.value === tag
