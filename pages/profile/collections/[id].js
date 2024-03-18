@@ -18,8 +18,6 @@ export default function DetailCollection({ recipes, user }) {
     foundCollection.recipes.includes(recipe._id)
   );
 
-  //such das passende rezept mir den ids aus user.collection.recipes, erstelle ein neues array mit den passenden rezepten
-
   return (
     <>
       <Spacer />
