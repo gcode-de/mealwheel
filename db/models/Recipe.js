@@ -47,6 +47,7 @@ const recipeSchema = new mongoose.Schema({
     required: true,
   },
   public: { type: Boolean, default: true },
+  publicId: { type: String },
 });
 
 const Recipe = mongoose.models.Recipe || mongoose.model("Recipe", recipeSchema);

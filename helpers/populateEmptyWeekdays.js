@@ -14,7 +14,7 @@ export default async function populateEmptyWeekdays(
   }
 
   const hasCookedRecipes = user?.recipeInteractions
-    .filter((recipe) => recipe.hasCooked)
+    .filter((recipe) => recipe.hasCooked && recipe.isFavorite)
     .map((recipe) => recipe.recipe);
 
   //find all recipes that all already planned fr the week to avoid them
@@ -40,45 +40,33 @@ export default async function populateEmptyWeekdays(
   //If there are not enough userRecipes, use mor random recipes.
   //When adding each recipe to the array, check if the recipe is already contained in "recipesInWeek". If that's the case, chose the next rcipe from the array you are currently picking from, to avoid having the same recipe more then once in one week.
   // Mischung aus zufälligen Rezepten und Rezepten, die vom Benutzer gekocht wurden
+
+  let indexRandom = 0;
+  let indexCooked = 0;
   let combinedRecipes = [];
-  let indexRandom = 0,
-    indexCooked = 0;
+  const maxDaysForCookedRecipes = assignableDays.length - numberOfRandomRecipes;
 
-  while (combinedRecipes.length < assignableDays.length) {
-    // Füge zufällige Rezepte hinzu, bis das Limit erreicht ist oder keine weiteren benötigt werden
-    while (
-      indexRandom < randomRecipes.length &&
-      combinedRecipes.length < numberOfRandomRecipes
-    ) {
-      if (!recipesInWeek.includes(randomRecipes[indexRandom]._id)) {
-        combinedRecipes.push(randomRecipes[indexRandom]);
-      }
-      indexRandom++;
+  // Füge zuerst Rezepte hinzu, die der Benutzer gekocht hat, bis das Limit erreicht ist
+  // oder keine weiteren benötigt werden
+  while (
+    indexCooked < hasCookedRecipes.length &&
+    combinedRecipes.length < maxDaysForCookedRecipes
+  ) {
+    if (!recipesInWeek.includes(hasCookedRecipes[indexCooked]._id)) {
+      combinedRecipes.push(hasCookedRecipes[indexCooked]);
     }
+    indexCooked++;
+  }
 
-    // Füge Rezepte hinzu, die der Benutzer gekocht hat
-    while (
-      indexCooked < hasCookedRecipes.length &&
-      combinedRecipes.length < assignableDays.length
-    ) {
-      if (!recipesInWeek.includes(hasCookedRecipes[indexCooked]._id)) {
-        combinedRecipes.push(hasCookedRecipes[indexCooked]);
-      }
-      indexCooked++;
+  // Füge dann zufällige Rezepte hinzu, bis das Gesamtlimit erreicht ist
+  while (
+    indexRandom < randomRecipes.length &&
+    combinedRecipes.length < assignableDays.length
+  ) {
+    if (!recipesInWeek.includes(randomRecipes[indexRandom]._id)) {
+      combinedRecipes.push(randomRecipes[indexRandom]);
     }
-
-    // Wenn nicht genügend Benutzerrezepte vorhanden sind, fülle den Rest mit zufälligen Rezepten
-    if (
-      combinedRecipes.length < assignableDays.length &&
-      indexRandom < randomRecipes.length
-    ) {
-      if (!recipesInWeek.includes(randomRecipes[indexRandom]._id)) {
-        combinedRecipes.push(randomRecipes[indexRandom]);
-      }
-      indexRandom++;
-    } else {
-      break;
-    }
+    indexRandom++;
   }
 
   shuffleArray(combinedRecipes);

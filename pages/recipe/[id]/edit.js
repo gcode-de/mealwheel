@@ -1,15 +1,18 @@
-import RecipeForm from "@/components/RecipeForm";
+import RecipeForm from "@/components/Forms/RecipeForm";
 import { useRouter } from "next/router";
 import useSWR from "swr";
+import { notifySuccess, notifyError } from "/helpers/toast";
+import LoadingComponent from "@/components/Loading";
+import handleDeleteImage from "@/helpers/Cloudinary/handleDeleteImage";
 
 export default function EditRecipe({ user }) {
   const router = useRouter();
   const { id } = router.query;
-  const { data: recipe, isLoading } = useSWR(`/api/recipes/${id}`);
+  const { data: recipe, isLoading, mutate } = useSWR(`/api/recipes/${id}`);
 
   async function handleDelete() {
-    if (confirm("Dieses Rezept löschen?") !== true) {
-      return;
+    if (recipe.publicId) {
+      handleDeleteImage(recipe.publicId);
     }
     const response = await fetch(`/api/recipes/${id}`, {
       method: "DELETE",
@@ -21,8 +24,10 @@ export default function EditRecipe({ user }) {
 
     if (response.ok) {
       router.back();
+      notifySuccess("Rezept gelöscht");
     } else {
       console.log("Löschen fehlgeschlagen", response.body);
+      notifyError("Rezept konnte nicht gelöscht werden");
     }
   }
 
@@ -37,16 +42,23 @@ export default function EditRecipe({ user }) {
 
     if (response.ok) {
       router.back();
-      return true;
+      notifySuccess("Rezept geändert");
+      mutate();
+    } else {
+      notifyError("Rezept konnte nicht geändert werden");
     }
-    return false;
   }
 
   if (isLoading) {
-    return <div>is Loading...</div>;
+    return <LoadingComponent />;
   }
 
   return (
-    <RecipeForm onSubmit={handleEdit} data={recipe} onDelete={handleDelete} />
+    <RecipeForm
+      onSubmit={handleEdit}
+      data={recipe}
+      formName="editRecipe"
+      onDelete={handleDelete}
+    />
   );
 }
