@@ -29,7 +29,7 @@ export default async function handler(request, response) {
       await User.findByIdAndUpdate(id, request.body);
       return response.status(200).json("User updated");
     } catch (error) {
-      console.log(error);
+      console.error(error);
       response.status(400).json({ error: error.message });
     }
   }

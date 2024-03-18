@@ -79,15 +79,15 @@ export default function DetailPage({
   async function handleCollection(event) {
     event.preventDefault();
     //vermeiden dass die gleiche id zwei mal gespiechert wird
-    const updateCollection = user.collection.map((col) =>
+    const updateCollection = user.collections.map((col) =>
       col.collectionName === selectedCollection
         ? { ...col, recipes: [...col.recipes, id] }
         : col
     );
-    user.collection = updateCollection;
+    user.collections = updateCollection;
+
     updateUserinDb(user, mutateUser);
     setCollectionFormIsVisible(false);
-    console.log(user);
   }
 
   const {
@@ -207,9 +207,9 @@ export default function DetailPage({
             name="collectionName"
             required
           >
-            {user.collection.map((collection, index) => (
-              <option key={index} value={collection.collectionName}>
-                {collection.collectionName}
+            {user.collections.map((col, index) => (
+              <option key={index} value={col.collectionName}>
+                {col.collectionName}
               </option>
             ))}
           </StyledDropDown>

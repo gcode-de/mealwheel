@@ -11,13 +11,10 @@ const StyledCollection = styled(Link)`
   color: var(--color-lightgrey);
   justify-content: center;
   cursor: pointer;
-  margin-top: var(--gap-between);
-  margin-bottom: var(--gap-between);
-  border: 1px solid var(--color-lightgrey);
-  border-radius: var(--border-radius-medium);
-  background-color: var(--color-component);
-  height: 6rem;
-  width: 6rem;
+  margin-top: 0;
+  margin-bottom: 0;
+  height: 8rem;
+  max-width: 6rem;
   &:hover {
     fill: var(--color-highlight);
     color: var(--color-highlight);

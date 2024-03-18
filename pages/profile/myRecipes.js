@@ -8,7 +8,6 @@ import { useRouter } from "next/router";
 import StyledH2 from "@/components/Styled/StyledH2";
 import Spacer from "@/components/Styled/Spacer";
 import Link from "next/link";
-import StyledCollection from "@/components/Styled/StyledCollection";
 import CollectionCard from "@/components/CollectionCard";
 
 export default function MyRecipes({
@@ -58,8 +57,8 @@ export default function MyRecipes({
         <StyledLink href="/profile/collections">zeig mir alle</StyledLink>
       </StyledH2>
       <Wrapper>
-        {user.collection.map((kb, index) => (
-          <CollectionCard key={index} collection={kb} />
+        {user.collections.map((col, index) => (
+          <CollectionCard key={index} collection={col} />
         ))}
       </Wrapper>
       <StyledH2>meine Rezepte</StyledH2>
@@ -96,7 +95,9 @@ const StyledLink = styled(Link)`
 `;
 const Wrapper = styled.div`
   display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
   gap: calc(2 * var(--gap-between));
-  width: calc(100% - (2 * var(--gap-out)));
   margin: auto;
+  width: calc(100% - (2 * var(--gap-out)));
 `;

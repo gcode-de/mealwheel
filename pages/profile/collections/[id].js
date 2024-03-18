@@ -2,6 +2,7 @@ import Header from "@/components/Styled/Header";
 import IconButton from "@/components/Styled/IconButton";
 import MealCard from "@/components/Styled/MealCard";
 import { useRouter } from "next/router";
+import StyledUl from "@/components/StyledUl";
 
 export default function DetailCollection({ recipes, user }) {
   if (!user) {
@@ -10,11 +11,10 @@ export default function DetailCollection({ recipes, user }) {
   const router = useRouter();
   const { id } = router.query;
 
-  const foundCollection = user.collection.find((col) => col._id === id);
-  console.log(foundCollection.recipes);
+  const foundCollection = user.collections.find((col) => col._id === id);
 
   const foundRecipes = recipes.filter((recipe) =>
-    foundCollection.includes(recipe._id)
+    foundCollection.recipes.includes(recipe._id)
   );
 
   //such das passende rezept mir den ids aus user.collection.recipes, erstelle ein neues array mit den passenden rezepten
@@ -27,9 +27,11 @@ export default function DetailCollection({ recipes, user }) {
         left="var(--gap-out)"
         style="ArrowLeft"
       />
-      {/* {recipes.map((recipe) => (
-        <MealCard key={recipe} recipe={recipe} />
-      ))} */}
+      <StyledUl>
+        {foundRecipes.map((recipe) => (
+          <MealCard key={recipe} recipe={recipe} />
+        ))}
+      </StyledUl>
     </>
   );
 }

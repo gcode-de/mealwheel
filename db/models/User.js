@@ -44,7 +44,9 @@ const userSchema = new Schema({
   recipeInteractions: [recipeInteractionSchema],
   calendar: [calendarEntrySchema],
   shoppingList: [shoppingItem],
-  collection: [{ collectionName: { type: String }, recipes: [{ id: String }] }],
+  collections: [
+    { collectionName: { type: String }, recipes: [{ id: String }] },
+  ],
 });
 
 const User = mongoose.models.User || mongoose.model("User", userSchema);
