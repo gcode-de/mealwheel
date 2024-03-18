@@ -11,8 +11,29 @@ import StyledListItem from "@/components/Styled/StyledListItem";
 import IconButtonLarge from "@/components/Styled/IconButtonLarge";
 
 import updateUserinDb from "@/helpers/updateUserInDb";
+import { useState } from "react";
 
 export default function ShoppingList({ user, mutateUser }) {
+  const [editingIndex, setEditingIndex] = useState(null);
+
+  function handleItemClick(index) {
+    setEditingIndex(index);
+  }
+
+  function handleItemEdit(event, index) {
+    event.preventDefault();
+    const formData = new FormData(event.target);
+    const data = Object.fromEntries(formData);
+    data.quantity = Number(data.quantity);
+
+    const updatedList = [...user.shoppingList];
+    updatedList[index] = { ...data, isChecked: updatedList[index].isChecked };
+
+    user.shoppingList = updatedList;
+    updateUserinDb(user, mutateUser);
+    setEditingIndex(null);
+  }
+
   if (!user) {
     return;
   }
@@ -80,20 +101,43 @@ export default function ShoppingList({ user, mutateUser }) {
           </StyledListItem>
         ) : (
           user.shoppingList.map((item, index) => (
-            <StyledListItem key={index}>
-              <StyledCheck>
-                <StyledNumberUnit>
-                  <StyledCheckItem $text={item.isChecked} $flex={0.1}>
-                    {item.quantity}
+            <StyledListItem key={index} onClick={() => handleItemClick(index)}>
+              {editingIndex === index ? (
+                <form onSubmit={(event) => handleItemEdit(event, index)}>
+                  <StyledInput
+                    type="number"
+                    defaultValue={item.quantity}
+                    min="0"
+                    aria-label="edit ingredient quantity for the recipe"
+                    name="quantity"
+                  />
+                  <StyledDropDown name="unit" defaultValue={item.unit}>
+                    {/* Dropdown-Optionen */}
+                  </StyledDropDown>
+                  <StyledInput
+                    type="text"
+                    defaultValue={item.name}
+                    aria-label="edit ingredient name for the recipe"
+                    name="name"
+                    required
+                  />
+                  <button type="submit">Speichern</button>
+                </form>
+              ) : (
+                <StyledCheck>
+                  <StyledNumberUnit>
+                    <StyledCheckItem $text={item.isChecked} $flex={0.1}>
+                      {item.quantity}
+                    </StyledCheckItem>
+                    <StyledCheckItem $text={item.isChecked} $flex={1}>
+                      {item.unit}
+                    </StyledCheckItem>
+                  </StyledNumberUnit>
+                  <StyledCheckItem $text={item.isChecked} $flex={2}>
+                    {item.name}
                   </StyledCheckItem>
-                  <StyledCheckItem $text={item.isChecked} $flex={1}>
-                    {item.unit}
-                  </StyledCheckItem>
-                </StyledNumberUnit>
-                <StyledCheckItem $text={item.isChecked} $flex={2}>
-                  {item.name}
-                </StyledCheckItem>
-              </StyledCheck>
+                </StyledCheck>
+              )}
 
               <StyledCheckbox
                 type="checkbox"
