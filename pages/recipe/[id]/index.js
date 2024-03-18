@@ -85,9 +85,13 @@ export default function DetailPage({
         : col
     );
     user.collections = updateCollection;
-
-    updateUserinDb(user, mutateUser);
-    setCollectionFormIsVisible(false);
+    try {
+      updateUserinDb(user, mutateUser);
+      setCollectionFormIsVisible(false);
+      notifySuccess(`Das Rezept wurde gespeichert.`);
+    } catch (error) {
+      notifyError("Das Rezept konnte nicht gespeichert werden.");
+    }
   }
 
   const {

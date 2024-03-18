@@ -45,7 +45,7 @@ const userSchema = new Schema({
   calendar: [calendarEntrySchema],
   shoppingList: [shoppingItem],
   collections: [
-    { collectionName: { type: String }, recipes: [{ id: String }] },
+    { collectionName: { type: String }, recipes: [{ type: String }] },
   ],
 });
 
