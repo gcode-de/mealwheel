@@ -27,7 +27,7 @@ export default function Collections({ user, mutateUser }) {
     const newCollection = { collectionName: collectionName, recipes: [] };
 
     if (!user.collections) {
-      user.collections = [{ collectionName: "", recipes: [] }];
+      user.collections = [];
     }
     user = {
       ...user,
