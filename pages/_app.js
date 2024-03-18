@@ -1,6 +1,7 @@
 import GlobalStyle from "../styles";
 import Layout from "@/components/Layout";
 
+import { useSession, signIn, signOut } from "next-auth/react";
 import { SessionProvider } from "next-auth/react";
 import useSWR, { SWRConfig } from "swr";
 import { ToastContainer } from "react-toastify";
@@ -23,6 +24,8 @@ export default function App({
   Component,
   pageProps: { session, ...pageProps },
 }) {
+  // const { data: session } = useSession();
+  console.log(session);
   const userId = "65e0925792f086ae06d2eadb";
   const {
     data: user,
@@ -44,6 +47,10 @@ export default function App({
   }
 
   async function toggleIsFavorite(_id) {
+    if (!session) {
+      signIn();
+      return;
+    }
     if (
       user.recipeInteractions.find(
         (interaction) => interaction.recipe._id === _id
@@ -130,8 +137,8 @@ export default function App({
   return (
     <>
       <GlobalStyle />
-      <SessionProvider session={session}>
-        <SWRConfig value={{ fetcher }}>
+      <SWRConfig value={{ fetcher }}>
+        <SessionProvider session={session}>
           <Layout>
             <ToastContainer />
             <Component
@@ -147,8 +154,8 @@ export default function App({
               recipesIsLoading={recipesIsLoading}
             />
           </Layout>
-        </SWRConfig>
-      </SessionProvider>
+        </SessionProvider>
+      </SWRConfig>
     </>
   );
 }

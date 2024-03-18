@@ -7,8 +7,7 @@ import NextAuth from "next-auth/next";
 import AppleProvider from "next-auth/providers/apple";
 import GoogleProvider from "next-auth/providers/google";
 
-export default NextAuth({
-  // Configure one or more authetication providers
+export const authOptions = {
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID,
@@ -36,4 +35,6 @@ export default NextAuth({
       return { ...session, user: { ...session.user, id: user.id } };
     },
   },
-});
+};
+
+export default NextAuth(authOptions);

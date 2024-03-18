@@ -1,19 +1,20 @@
 import Header from "@/components/Styled/Header";
-
 import MealCard from "@/components/Styled/MealCard";
 import StyledUl from "@/components/StyledUl";
 import IconButtonLarge from "@/components/Styled/IconButtonLarge";
 import ScrollToTop from "@/components/ScrollToTopButton";
 import Button from "@/components/Styled/StyledButton";
 import StyledH2 from "@/components/Styled/StyledH2";
-import { filterTags } from "@/helpers/filterTags";
 import Filter from "@/public/icons/sliders-v_10435878.svg";
-import { useRouter } from "next/router";
-import useSWR from "swr";
 import styled from "styled-components";
-import { useState, useEffect } from "react";
 import IconButton from "@/components/Styled/IconButton";
 import LoadingComponent from "@/components/Loading";
+import { filterTags } from "@/helpers/filterTags";
+
+import { useState, useEffect } from "react";
+import { useRouter } from "next/router";
+import useSWR from "swr";
+import { useSession } from "next-auth/react";
 
 export default function HomePage({
   error,
@@ -21,6 +22,8 @@ export default function HomePage({
   getRecipeProperty,
   toggleIsFavorite,
 }) {
+  // const session = useSession();
+  // console.log(session);
   const router = useRouter();
 
   const [apiQuery, setApiQuery] = useState(`/api/recipes`);
