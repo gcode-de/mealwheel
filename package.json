@@ -1,7 +1,7 @@
 {
-  "name": "dont-forget-to-change-the-project-name",
-  "version": "0.0.0-unreleased",
-  "private": true,
+  "name": "mealwheel",
+  "version": "2.5",
+  "private": false,
   "scripts": {
     "dev": "next dev",
     "build": "next build",

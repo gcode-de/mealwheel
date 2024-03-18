@@ -16,6 +16,7 @@ import updateUserinDb from "@/helpers/updateUserInDb";
 
 export default function ProfilePage({ user, mutateUser }) {
   const { data: session } = useSession();
+  console.log(session);
   const router = useRouter();
   const [editUser, setEditUser] = useState(false);
 
@@ -47,14 +48,6 @@ export default function ProfilePage({ user, mutateUser }) {
 
   return (
     <>
-      {session && (
-        <>
-          Signed in as {session.user.email} <br />
-          <button type="button" onClick={() => signOut()}>
-            Sign out
-          </button>
-        </>
-      )}
       <IconButton
         style="Settings"
         top="var(--gap-out)"
@@ -65,9 +58,9 @@ export default function ProfilePage({ user, mutateUser }) {
       <WrapperCenter>
         <StyledProfile>
           {!editUser ? (
-            (user?.profilePictureLink && (
+            ((user?.profilePictureLink || session?.user?.image) && (
               <StyledProfilePicture
-                src={user?.profilePictureLink}
+                src={user?.profilePictureLink || session?.user?.image}
                 alt="Profile Picture"
                 width={106}
                 height={106}
@@ -85,7 +78,12 @@ export default function ProfilePage({ user, mutateUser }) {
         {!editUser ? (
           <p>
             Hallo,{" "}
-            {user?.userName || user?.firstName || user?.email || "Gastnutzer"}!
+            {user?.userName ||
+              user?.firstName ||
+              session?.user?.name ||
+              user?.email ||
+              "Gastnutzer"}
+            !
           </p>
         ) : (
           <StyledUsernameForm onSubmit={updateUsername}>
@@ -118,6 +116,18 @@ export default function ProfilePage({ user, mutateUser }) {
           <StyledP>eigene</StyledP>
         </StyledLink>
       </Wrapper>
+      {session ? (
+        <>
+          Signed in as {session.user.email} <br />
+          <button type="button" onClick={() => signOut()}>
+            Sign out
+          </button>
+        </>
+      ) : (
+        <button type="button" onClick={() => signIn()}>
+          Sign in
+        </button>
+      )}
     </>
   );
 }

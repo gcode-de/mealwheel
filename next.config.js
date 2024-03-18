@@ -5,7 +5,12 @@ const nextConfig = {
   },
   reactStrictMode: true,
   images: {
-    domains: ["www.themealdb.com", "images.unsplash.com", "res.cloudinary.com"],
+    domains: [
+      "www.themealdb.com",
+      "images.unsplash.com",
+      "res.cloudinary.com",
+      "*.googleusercontent.com",
+    ],
   },
   webpack(config) {
     config.module.rules.push({

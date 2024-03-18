@@ -30,8 +30,8 @@ export const authOptions = {
       } else {
         const newUser = await User.create({
           email,
-          name: user.name,
-          image: user.image,
+          userName: user.name,
+          profilePictureLink: user.image,
           recipeInteractions: [],
           calendar: [],
           collections: [],
