@@ -86,7 +86,7 @@ export default function DetailPage({
     );
     user.collections = updateCollection;
 
-    updateUserinDb(user, mutateUser);
+    await updateUserinDb(user, mutateUser);
     setCollectionFormIsVisible(false);
   }
 
