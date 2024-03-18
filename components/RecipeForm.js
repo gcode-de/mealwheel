@@ -37,15 +37,11 @@ export default function RecipeForm({ onSubmit, onDelete, data }) {
   const [selectedTags, setSelectedTags] = useState(data ? data.tags : []);
 
   function handleTagChange(label) {
-    const isAlreadySelected = selectedTags.includes(label);
-    let newTags = label;
-    if (isAlreadySelected) {
-      newTags = selectedTags.filter((item) => item !== label);
-      setSelectedTags(newTags);
-    } else {
-      newTags = [label];
-      setSelectedTags(newTags);
-    }
+    setSelectedTags(
+      selectedTags.includes(label)
+        ? selectedTags.filter((item) => item !== label)
+        : [label]
+    );
   }
 
   const uploadImage = async (event) => {
