@@ -1,24 +1,25 @@
-import StyledListItem from "./Styled/StyledListItem";
+import StyledListItem from "../Styled/StyledListItem";
 import { useState } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
 
 import styled from "styled-components";
-import StyledArticle from "./Styled/StyledArticle";
-import IconButton from "./Styled/IconButton";
-import StyledList from "./Styled/StyledList";
-import StyledH2 from "./Styled/StyledH2";
-import Button from "./Styled/StyledButton";
-import StyledP from "./Styled/StyledP";
-import AddButton from "./Styled/AddButton";
+import StyledArticle from "../Styled/StyledArticle";
+import IconButton from "../Styled/IconButton";
+import StyledList from "../Styled/StyledList";
+import StyledH2 from "../Styled/StyledH2";
+import Button from "../Styled/StyledButton";
+import StyledP from "../Styled/StyledP";
+import AddButton from "../Styled/AddButton";
 import Plus from "@/public/icons/Plus.svg";
-import StyledIngredients from "./Styled/StyledIngredients";
-import StyledInput from "./Styled/StyledInput";
-import StyledDropDown from "./Styled/StyledDropDown";
+import StyledIngredients from "../Styled/StyledIngredients";
+import StyledInput from "../Styled/StyledInput";
+import StyledDropDown from "../Styled/StyledDropDown";
 import { notifySuccess, notifyError } from "/helpers/toast";
+import handleDeleteImage from "@/helpers/Cloudinary/handleDeleteImage";
+import IconButtonLarge from "../Styled/IconButtonLarge";
 
-export default function RecipeForm({ onSubmit, onDelete, data }) {
-  const [imageUrl, setImageUrl] = useState(data ? data.imageLink : "");
+export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
   const [difficulty, setDifficulty] = useState(
     data && data.difficulty ? data.difficulty : "easy"
   );
@@ -33,29 +34,9 @@ export default function RecipeForm({ onSubmit, onDelete, data }) {
           },
         ]
   );
+  const [preview, setPreview] = useState(data ? data.imageLink : "");
+  const [imageUrl, setImageUrl] = useState(data ? data.imageLink : "");
   const router = useRouter();
-
-  const uploadImage = async (event) => {
-    const files = event.target.files;
-    const data = new FormData();
-    data.append("file", files[0]);
-    data.append("upload_preset", "meal_wheel");
-    try {
-      const uploadResponse = await fetch(
-        "https://api.cloudinary.com/v1_1/mealwheel/image/upload",
-        {
-          method: "POST",
-          body: data,
-        }
-      );
-      const file = await uploadResponse.json();
-      setImageUrl(file.secure_url);
-      notifySuccess("Bild hinzugefügt");
-    } catch (error) {
-      notifyError("Bild konnte nicht hinzugefügt werden");
-    }
-  };
-
   function handleInputChange(event, index, field) {
     const newIngredients = [...ingredients];
     newIngredients[index][field] = event.target.value;
@@ -76,12 +57,60 @@ export default function RecipeForm({ onSubmit, onDelete, data }) {
 
     const formData = new FormData(event.target);
     const data = Object.fromEntries(formData);
-    const newData = { ...data, ingredients, imageLink: imageUrl };
+    const newData = {
+      ...data,
+      ingredients,
+      imageLink: imageUrl.imageUrl,
+      publicId: imageUrl.publicId,
+    };
+
     onSubmit(newData);
+  }
+
+  async function uploadImage(event) {
+    event.preventDefault();
+    const formData = new FormData(event.target);
+    if (formName === "addRecipe" || !data.imageLink) {
+      const response = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
+      if (response.ok) {
+        const file = await response.json();
+
+        setImageUrl(file);
+        notifySuccess("Bild hinzugefügt");
+      } else {
+        console.error("image not added");
+        notifyError("Bild konnte nicht hinzugefügt werden");
+      }
+    }
+    if (formName === "editRecipe" && data.imageLink) {
+      const deleteImage = data.publicId;
+      if (data.publicId) {
+        handleDeleteImage(deleteImage);
+      }
+      const responseUpload = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
+      if (responseUpload.ok) {
+        const file = await responseUpload.json();
+        setImageUrl(file);
+        notifySuccess("Bild geupdatet");
+      } else {
+        console.error("no image update");
+        notifyError("Bild konnte nicht hinzugefügt werden");
+      }
+    }
+  }
+  function handleImage(event) {
+    const file = event.target.files[0];
+    setPreview({ imageUrl: URL.createObjectURL(file) });
   }
   return (
     <>
-      <StyledTop $height={imageUrl}>
+      <StyledTop $height={data?.imageLink}>
         <IconButton
           right="1rem"
           top="1rem"
@@ -90,17 +119,23 @@ export default function RecipeForm({ onSubmit, onDelete, data }) {
             router.back();
           }}
         ></IconButton>
-        {imageUrl && (
+        {preview && (
           <StyledImageCloudinary
-            src={imageUrl}
+            src={
+              preview.imageUrl || "/img/jason-briscoe-7MAjXGUmaPw-unsplash.jpg"
+            }
             alt="Uploaded Image"
             width={100}
             height={300}
           />
         )}
-        <StyledImageUploadContainer>
-          <Plus width={40} height={40} />
-          <StyledImageUpload type="file" onChange={uploadImage} />
+
+        <StyledImageUploadContainer htmlFor="upload">
+          <form onSubmit={uploadImage}>
+            <input type="file" name="file" id="upload" onChange={handleImage} />
+
+            <button type="submit">hinzufügen</button>
+          </form>
         </StyledImageUploadContainer>
       </StyledTop>
       <form onSubmit={handleSubmit}>
@@ -199,35 +234,23 @@ export default function RecipeForm({ onSubmit, onDelete, data }) {
             name="youtubeLink"
             defaultValue={data?.youtubeLink}
           />
-          <Button type="submit">speichern</Button>
-          {onDelete && <Button onClick={onDelete}>Rezept löschen</Button>}
+          <ButtonContainer>
+            <Button type="submit">speichern</Button>
+            {onDelete && (
+              <Button type="button" onClick={onDelete}>
+                Rezept löschen
+              </Button>
+            )}
+          </ButtonContainer>
         </StyledArticle>
       </form>
     </>
   );
 }
 
-const StyledImageUpload = styled.input`
-  display: none;
-`;
-
 const StyledImageCloudinary = styled(Image)`
   width: 100%;
   height: auto;
-`;
-
-const StyledImageUploadContainer = styled.label`
-  display: inline-block;
-  background-color: white;
-  width: 60px;
-  height: 60px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 100%;
-  box-shadow: 4px 8px 16px 0 rgb(0 0 0 / 8%);
-  cursor: pointer;
-  position: absolute;
 `;
 
 const StyledTop = styled.div`
@@ -245,8 +268,23 @@ const StyledBigInput = styled.input`
   width: calc(100% - (2 * var(--gap-out)));
   padding: 0.7rem;
 `;
-
+const StyledImageInput = styled.input`
+  display: none;
+`;
 const Spacer = styled.div`
   margin-top: 2rem;
   position: relative;
+`;
+const ButtonContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  width: calc(100% - (2 * var(--gap-out)));
+`;
+const StyledImageUploadContainer = styled.label`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  position: absolute;
 `;
