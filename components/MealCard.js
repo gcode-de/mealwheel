@@ -1,8 +1,8 @@
 import styled from "styled-components";
 import Image from "next/image";
 import Link from "next/link";
-import IconButton from "./IconButton";
-import SetNumberOfPeople from "./SetNumberOfPeople";
+import IconButton from "./Styled/IconButton";
+import SetNumberOfPeople from "./Styled/SetNumberOfPeople";
 
 export default function MealCard({
   recipe,

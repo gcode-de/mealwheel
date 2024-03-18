@@ -1,14 +1,17 @@
-import styled from "styled-components";
-
 import CardSkeleton from "@/components/Styled/CardSkeleton";
-import MealCard from "@/components/Styled/MealCard";
+import MealCard from "@/components/MealCard";
 import Header from "@/components/Styled/Header";
 import IconButton from "@/components/Styled/IconButton";
 import { useRouter } from "next/router";
-import StyledH2 from "@/components/Styled/StyledH2";
 import Spacer from "@/components/Styled/Spacer";
+
 import Link from "next/link";
 import CollectionCard from "@/components/CollectionCard";
+
+import StyledUl from "@/components/StyledUl";
+
+import useSWR from "swr";
+import styled from "styled-components";
 
 export default function MyRecipes({
   user,
@@ -16,22 +19,36 @@ export default function MyRecipes({
   isLoading,
   getRecipeProperty,
   toggleIsFavorite,
-  recipes,
 }) {
   const router = useRouter();
-  const myRecipes = recipes?.filter((recipe) => recipe?.author === user?._id);
 
-  if (error) {
-    <div>
-      <Header text={"schon gekocht 🥗"} />
-      Error...
-    </div>;
-  }
+  const {
+    data: myRecipes,
+    error: recipesError,
+    isLoading: recipesIsLoading,
+  } = useSWR(`/api/recipes?author=${user?._id}`);
 
-  if (isLoading) {
+  if (error || recipesError || !myRecipes) {
     return (
       <>
-        <Header text="schon gekocht 🥗" />
+        <Header text={"Meine Rezepte 🥗"} />
+        <StyledUl>Keine eigenen Rezepte vorhanden...</StyledUl>
+        <IconButton
+          onClick={() => {
+            router.back();
+          }}
+          style={"ArrowLeft"}
+          left="2rem"
+          top="6rem"
+        />
+      </>
+    );
+  }
+
+  if (isLoading || recipesIsLoading) {
+    return (
+      <>
+        <Header text="Meine Rezepte 🥗" />
         <StyledArticle>
           <StyledUl>
             <h2>Lade Rezepte...</h2>
