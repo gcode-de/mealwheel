@@ -1,4 +1,4 @@
-import RecipeForm from "@/components/RecipeForm";
+import RecipeForm from "@/components/Forms/RecipeForm";
 import { useRouter } from "next/router";
 import useSWR from "swr";
 import React from "react";
@@ -17,21 +17,12 @@ export default function AddRecipe({ user }) {
     });
     if (!response.ok) {
       console.error(response.status);
-      return false;
+      notifyError("Rezept konnte nicht hinzugefügt werden");
     }
     await mutate();
     router.back();
-    return true;
+    notifySuccess("Rezept hinzugefügt");
   }
 
-  return (
-    <RecipeForm
-      onSubmit={() =>
-        addRecipe()
-          ? notifySuccess("Rezept hinzugefügt")
-          : notifyError("Rezept konnte nicht hinzugefügt werden")
-      }
-      formName={"add-recipe"}
-    />
-  );
+  return <RecipeForm onSubmit={addRecipe} formName="addRecipe" />;
 }

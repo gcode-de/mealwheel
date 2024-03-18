@@ -24,6 +24,8 @@ const recipeSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
   },
+  public: { type: Boolean, default: true },
+  publicId: { type: String },
 });
 
 recipeSchema.index({ title: "text", instructions: "text" });

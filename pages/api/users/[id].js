@@ -19,7 +19,7 @@ export default async function handler(request, response) {
     user.recipeInteractions = user.recipeInteractions.filter(
       (interaction) => interaction.recipe
     );
-    user.calendar = user.calendar.filter((event) => event.recipe);
+    // user.calendar = user.calendar.filter((event) => event.recipe);  //entfernt weil sonst Kalendertage ohne Rezept nciht im Wochenplan deaktiviert werden können.
 
     response.status(200).json(user);
   }
