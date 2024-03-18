@@ -78,7 +78,14 @@ export default function DetailPage({
 
   async function handleCollection(event) {
     event.preventDefault();
-    //vermeiden dass die gleiche id zwei mal gespiechert wird
+    const isDuplicate = user.collections.some((col) =>
+      col.recipes.map((recipe) => recipe.id === id)
+    );
+    if (isDuplicate) {
+      notifyError("Dieses Rezept ist bereits gespeichert.");
+      return;
+    }
+
     const updateCollection = user.collections.map((col) =>
       col.collectionName === selectedCollection
         ? { ...col, recipes: [...col.recipes, id] }

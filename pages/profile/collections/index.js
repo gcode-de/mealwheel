@@ -8,6 +8,7 @@ import StyledInput from "@/components/Styled/StyledInput";
 import Plus from "/public/icons/svg/plus.svg";
 import AddButton from "@/components/Styled/AddButton";
 import CollectionCard from "@/components/CollectionCard";
+import StyledH2 from "@/components/Styled/StyledH2";
 
 export default function Collections({ user, mutateUser }) {
   const [addCollection, setAddCollection] = useState(false);
@@ -37,17 +38,17 @@ export default function Collections({ user, mutateUser }) {
   }
   return (
     <>
-      <Header text="Kochbücher" />
       <Spacer />
+      <StyledH2>Kochbücher</StyledH2>
       <IconButton
         style="ArrowLeft"
-        top="calc(2*var(--gap-out))"
+        top="var(--gap-out)"
         left="var(--gap-out)"
         onClick={() => router.back()}
       />
       <IconButton
         style="plus"
-        top="calc(2*var(--gap-out))"
+        top="var(--gap-out)"
         right="var(--gap-out)"
         onClick={toggleAddCollection}
       />
