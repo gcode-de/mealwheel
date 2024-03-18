@@ -14,9 +14,9 @@ export default function DetailCollection({ recipes, user }) {
 
   const foundCollection = user.collections.find((col) => col._id === id);
 
-  const foundRecipes = recipes.filter((recipe) =>
-    foundCollection.recipes.includes(recipe._id)
-  );
+  // const foundRecipes = recipes.filter((recipe) =>
+  //   foundCollection.recipes.includes(recipe._id)
+  // );
 
   return (
     <>
@@ -29,8 +29,8 @@ export default function DetailCollection({ recipes, user }) {
         style="ArrowLeft"
       />
       <StyledUl>
-        {foundRecipes.map((recipe) => (
-          <MealCard key={recipe} recipe={recipe} />
+        {foundCollection.recipes.map((recipe) => (
+          <MealCard key={recipe._id} recipe={recipe} />
         ))}
       </StyledUl>
     </>

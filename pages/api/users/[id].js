@@ -9,7 +9,8 @@ export default async function handler(request, response) {
   if (request.method === "GET") {
     const user = await User.findById(id)
       .populate("recipeInteractions.recipe")
-      .populate("calendar.recipe");
+      .populate("calendar.recipe")
+      .populate("collections.recipes");
 
     if (!user) {
       return response.status(404).json({ status: "Not Found" });

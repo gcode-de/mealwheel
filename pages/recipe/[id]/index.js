@@ -78,9 +78,9 @@ export default function DetailPage({
 
   async function handleCollection(event) {
     event.preventDefault();
-    const isDuplicate = user.collections.some((col) =>
-      col.recipes.map((recipe) => recipe.id === id)
-    );
+    const isDuplicate = user.collections
+      .find((col) => col.collectionName === selectedCollection)
+      .recipes.some((recipe) => recipe._id === id);
     if (isDuplicate) {
       notifyError("Dieses Rezept ist bereits gespeichert.");
       return;
