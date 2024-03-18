@@ -19,7 +19,7 @@ export const filterTags = [
   },
   {
     label: "Ernährung",
-    type: "tags",
+    type: "diet",
     options: [
       { label: "vegan", value: "vegan" },
       { label: "vegetarisch", value: "vegetarian" },

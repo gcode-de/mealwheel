@@ -11,7 +11,7 @@ const recipeSchema = new mongoose.Schema({
   title: { type: String, required: true },
   instructions: { type: String, required: true },
   imageLink: { type: String },
-  tags: [{ type: String }], // Ein Array von Strings
+  diet: [{ type: String }], // Ein Array von Strings
   youtubeLink: { type: String },
   ingredients: [ingredientSchema], // Verwendet das obige Ingredient-Schema
   difficulty: {
