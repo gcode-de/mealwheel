@@ -62,9 +62,7 @@ export default function ProfilePage({ user, mutateUser }) {
     });
     if (response.ok) {
       setFeedbackVisible(false);
-      notifySuccess(
-        "danke, für deine Zeit! Wir sind bemüht alle Anmerkungen einzuarbeiten!"
-      );
+      notifySuccess("danke, für deine Zeit!");
     }
   }
 
