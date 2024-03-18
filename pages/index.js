@@ -14,7 +14,6 @@ import { filterTags } from "@/helpers/filterTags";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import useSWR from "swr";
-import { useSession } from "next-auth/react";
 
 export default function HomePage({
   error,
@@ -22,8 +21,6 @@ export default function HomePage({
   getRecipeProperty,
   toggleIsFavorite,
 }) {
-  // const session = useSession();
-  // console.log(session);
   const router = useRouter();
 
   const [apiQuery, setApiQuery] = useState(`/api/recipes`);

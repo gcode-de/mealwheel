@@ -31,6 +31,7 @@ export default function App({
     error,
     mutate,
   } = useSWR(`/api/users`, fetcher);
+
   const {
     data: recipes,
     error: recipesError,
