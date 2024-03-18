@@ -14,9 +14,7 @@ import { useState } from "react";
 import { useSession, signIn, signOut } from "next-auth/react";
 import updateUserinDb from "@/helpers/updateUserInDb";
 
-export default function ProfilePage({ user, mutateUser }) {
-  const { data: session } = useSession();
-  console.log(session);
+export default function ProfilePage({ user, mutateUser, session }) {
   const router = useRouter();
   const [editUser, setEditUser] = useState(false);
 

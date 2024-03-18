@@ -36,7 +36,7 @@ export default function DetailPage({
     error: dataError,
   } = useSWR(id ? `/api/recipes/${id}` : null);
 
-  const userIsAuthor = user?._id === recipe?.author;
+  const userIsAuthor = user && user?._id === recipe?.author;
 
   const [selectedDate, setSelectedDate] = useState("");
   const [calendarFormIsVisible, setCalendarFormIsVisible] = useState(false);

@@ -24,13 +24,13 @@ export default function App({
   Component,
   pageProps: { session, ...pageProps },
 }) {
-  const userId = "65e0925792f086ae06d2eadb";
+  // const userId = "65e0925792f086ae06d2eadb";
   const {
     data: user,
     isLoading,
     error,
     mutate,
-  } = useSWR(`/api/users/${userId}`, fetcher);
+  } = useSWR(`/api/users`, fetcher);
   const {
     data: recipes,
     error: recipesError,
@@ -106,22 +106,22 @@ export default function App({
     }
   }
 
-  if (error) {
-    return (
-      <>
-        <GlobalStyle />
-        <SessionProvider session={session}>
-          <Layout>
-            <SWRConfig value={{ fetcher }}>
-              <Component {...pageProps} error={error} />
-            </SWRConfig>
-          </Layout>
-        </SessionProvider>
-      </>
-    );
-  }
+  // if (error) {
+  //   return (
+  //     <>
+  //       <GlobalStyle />
+  //       <SessionProvider session={session}>
+  //         <Layout>
+  //           <SWRConfig value={{ fetcher }}>
+  //             <Component {...pageProps} error={error} />
+  //           </SWRConfig>
+  //         </Layout>
+  //       </SessionProvider>
+  //     </>
+  //   );
+  // }
 
-  if (isLoading || !user) {
+  if (isLoading) {
     return (
       <>
         <GlobalStyle />
@@ -145,8 +145,9 @@ export default function App({
             <ToastContainer />
             <Component
               {...pageProps}
-              userId={userId}
+              // userId={userId}
               user={user}
+              session={session}
               getRecipeProperty={getRecipeProperty}
               toggleIsFavorite={toggleIsFavorite}
               toggleHasCooked={toggleHasCooked}

@@ -9,7 +9,8 @@ const nextConfig = {
       "www.themealdb.com",
       "images.unsplash.com",
       "res.cloudinary.com",
-      "*.googleusercontent.com",
+      "googleusercontent.com",
+      "lh3.googleusercontent.com",
     ],
   },
   webpack(config) {

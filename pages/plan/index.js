@@ -82,7 +82,7 @@ export default function Plan({
           isDayActive = !isDayManuallyDisabled;
         } else {
           // fallback to default setting
-          isDayActive = user.settings.weekdaysEnabled[dayOfWeek];
+          isDayActive = user?.settings?.weekdaysEnabled?.[dayOfWeek];
         }
 
         if (isDayActive && !calendarDay?.recipe) {

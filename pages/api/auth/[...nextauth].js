@@ -36,6 +36,20 @@ export const authOptions = {
           calendar: [],
           collections: [],
           shoppingList: [],
+          settings: {
+            weekdaysEnabled: {
+              0: true,
+              1: true,
+              2: true,
+              3: true,
+              4: true,
+              5: true,
+              6: true,
+            },
+            defaultDiet: [],
+            mealsPerDay: 1,
+            defaultNumberOfPeople: 1,
+          },
         });
         if (newUser) {
           return true;
