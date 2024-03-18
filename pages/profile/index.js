@@ -5,13 +5,12 @@ import StyledP from "@/components/Styled/StyledP";
 import Heart from "@/public/icons/heart-svgrepo-com.svg";
 import Pot from "@/public/icons/cooking-pot-fill-svgrepo-com.svg";
 import Plus from "@/public/icons/Plus.svg";
-
+import Link from "next/link";
 import styled from "styled-components";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import updateUserinDb from "@/helpers/updateUserInDb";
-import StyledCollection from "@/components/Styled/StyledCollection";
 
 export default function ProfilePage({ user, mutateUser }) {
   const router = useRouter();
@@ -175,4 +174,26 @@ const StyledImageUpload = styled.input`
 const StyledProfilePicture = styled(Image)`
   border-radius: 50%;
   object-fit: cover;
+`;
+const StyledCollection = styled(Link)`
+  text-decoration: none;
+  color: var(--color-font);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  fill: var(--color-lightgrey);
+  color: var(--color-lightgrey);
+  border: 1px solid var(--color-lightgrey);
+  border-radius: var(--border-radius-medium);
+  background-color: var(--color-component);
+  justify-content: center;
+  cursor: pointer;
+  margin-top: 0;
+  margin-bottom: 0;
+  height: 6rem;
+  width: 6rem;
+  &:hover {
+    fill: var(--color-highlight);
+    color: var(--color-highlight);
+  }
 `;
