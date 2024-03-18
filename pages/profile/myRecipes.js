@@ -7,8 +7,7 @@ import Spacer from "@/components/Styled/Spacer";
 
 import Link from "next/link";
 import CollectionCard from "@/components/CollectionCard";
-
-import StyledUl from "@/components/StyledUl";
+import StyledH2 from "@/components/Styled/StyledH2";
 
 import useSWR from "swr";
 import styled from "styled-components";
