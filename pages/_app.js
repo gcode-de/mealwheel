@@ -100,12 +100,14 @@ export default function App({
   if (error) {
     return (
       <>
-        <Layout>
-          <GlobalStyle />
-          <SWRConfig value={{ fetcher }}>
-            <Component {...pageProps} error={error} />
-          </SWRConfig>
-        </Layout>
+        <GlobalStyle />
+        <SessionProvider session={session}>
+          <Layout>
+            <SWRConfig value={{ fetcher }}>
+              <Component {...pageProps} error={error} />
+            </SWRConfig>
+          </Layout>
+        </SessionProvider>
       </>
     );
   }
@@ -113,12 +115,14 @@ export default function App({
   if (isLoading || !user) {
     return (
       <>
-        <Layout>
-          <GlobalStyle />
-          <SWRConfig value={{ fetcher }}>
-            <Component {...pageProps} isLoading />
-          </SWRConfig>
-        </Layout>
+        <GlobalStyle />
+        <SessionProvider session={session}>
+          <Layout>
+            <SWRConfig value={{ fetcher }}>
+              <Component {...pageProps} isLoading />
+            </SWRConfig>
+          </Layout>
+        </SessionProvider>
       </>
     );
   }
