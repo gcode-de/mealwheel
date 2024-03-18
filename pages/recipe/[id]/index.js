@@ -16,6 +16,9 @@ import StyledP from "@/components/Styled/StyledP";
 import StyledListItem from "@/components/Styled/StyledListItem";
 import LoadingComponent from "@/components/Loading";
 import { filterTags } from "@/helpers/filterTags";
+import StyledInput from "@/components/Styled/StyledInput";
+import Button from "@/components/Styled/StyledButton";
+import updateUserinDb from "@/helpers/updateUserInDb";
 
 export default function DetailPage({
   user,
@@ -87,6 +90,31 @@ export default function DetailPage({
   } = recipe;
 
   difficulty.toUpperCase();
+
+  function handleAddNote(event) {
+    event.preventDefault();
+    const formData = new FormData(event.target);
+    const data = Object.fromEntries(formData);
+
+    data.date = new Date();
+
+    if (
+      user.recipeInteractions.find(
+        (interaction) => interaction.recipe._id === _id
+      )
+    ) {
+      user.recipeInteractions = user.recipeInteractions.map((interaction) =>
+        interaction.recipe._id === _id
+          ? { ...interaction, notes: { ...notes, data } }
+          : interaction
+      );
+    } else {
+      user.recipeInteractions.push({ notes: data, _id: _id });
+    }
+    console.log(user.recipeInteractions);
+
+    // updateUserinDb(user, mutateUser)
+  }
 
   return (
     <Wrapper>
@@ -211,10 +239,20 @@ export default function DetailPage({
           <StyledLink onClick={() => setContent("instructions")}>
             Zubereitung
           </StyledLink>
+          <StyledLink onClick={() => setContent("notes")}>Notizen</StyledLink>
           <StyledLink onClick={() => setContent("video")}>Video</StyledLink>
         </StyledHyper>
         {content === "instructions" && (
           <StyledIngredients>{instructions}</StyledIngredients>
+        )}
+        {content === "notes" && (
+          <>
+            <StyledList></StyledList>
+            <form onSubmit={handleAddNote}>
+              <StyledInput name="note" placeholder="ergänze deine Notizen.." />
+              <Button type="submit">Notiz hinzufügen</Button>
+            </form>
+          </>
         )}
         {content === "video" && (
           <Link href={youtubeLink}>auf youtube anschauen</Link>
