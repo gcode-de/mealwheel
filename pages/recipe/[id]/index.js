@@ -193,9 +193,19 @@ export default function DetailPage({
             <StyledH2 key={type}>{label}</StyledH2>
           ))}
         <StyledCategoriesDiv>
-          {tags.map((tag) => (
-            <StyledCategoryButton key={tag}>{tag}</StyledCategoryButton>
-          ))}
+          {tags.map((tag) => {
+            const filterTag = filterTags.find(
+              (filter) => filter.type === "diet"
+            );
+            const matchingOption = filterTag.options.find(
+              (option) => option.value === tag
+            );
+            return (
+              <StyledCategoryButton key={tag}>
+                {matchingOption ? matchingOption.label : tag}
+              </StyledCategoryButton>
+            );
+          })}
         </StyledCategoriesDiv>
         <StyledHyper>
           <StyledLink onClick={() => setContent("instructions")}>

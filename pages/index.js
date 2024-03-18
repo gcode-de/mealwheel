@@ -1,5 +1,5 @@
 import Header from "@/components/Styled/Header";
-import MealCard from "@/components/Styled/MealCard";
+import MealCard from "@/components/MealCard";
 import StyledUl from "@/components/StyledUl";
 import IconButtonLarge from "@/components/Styled/IconButtonLarge";
 import ScrollToTop from "@/components/ScrollToTopButton";
