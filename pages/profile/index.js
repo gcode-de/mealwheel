@@ -12,10 +12,12 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import updateUserinDb from "@/helpers/updateUserInDb";
+import StyledH2 from "@/components/Styled/StyledH2";
 
 export default function ProfilePage({ user, mutateUser }) {
   const router = useRouter();
   const [editUser, setEditUser] = useState(false);
+  const [feedbackVisible, setFeedbackVisible] = useState(false);
 
   const uploadImage = async (event) => {
     const files = event.target.files;
@@ -42,6 +44,10 @@ export default function ProfilePage({ user, mutateUser }) {
     updateUserinDb(user, mutateUser);
     setEditUser(false);
   };
+
+  function toggleFeedbackForm() {
+    setFeedbackVisible(!feedbackVisible);
+  }
 
   return (
     <>
@@ -108,6 +114,20 @@ export default function ProfilePage({ user, mutateUser }) {
           <StyledP>eigene</StyledP>
         </StyledLink>
       </Wrapper>
+      <button onClick={toggleFeedbackForm}>
+        <StyledH2>gib uns feedback 🎉</StyledH2>
+      </button>
+      {feedbackVisible && (
+        <form>
+          <label>sag uns, was dir nicht gefällt:</label>
+          <input></input>
+          <label>was gefällt dir besonders gut:</label>
+          <input></input>
+          <label>welche Funktion fehlt dir noch?</label>
+          <input></input>
+          <button>schick's ab 🚀</button>
+        </form>
+      )}
     </>
   );
 }
