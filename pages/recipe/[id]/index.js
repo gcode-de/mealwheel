@@ -188,14 +188,14 @@ export default function DetailPage({
           ))}
         </StyledList>
         {filterTags
-          .filter(({ type }) => type === "diet")
+          .filter(({ type }) => type === "tags")
           .map(({ label, type }) => (
             <StyledH2 key={type}>{label}</StyledH2>
           ))}
         <StyledCategoriesDiv>
           {tags.map((tag) => {
             const filterTag = filterTags.find(
-              (filter) => filter.type === "diet"
+              (filter) => filter.type === "tags"
             );
             const matchingOption = filterTag.options.find(
               (option) => option.value === tag
