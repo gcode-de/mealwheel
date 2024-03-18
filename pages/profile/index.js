@@ -151,7 +151,7 @@ export default function ProfilePage({ user, mutateUser }) {
               name="newFeatures"
               placeholder="Welche Funktion wünschst du dir?"
             />
-            <Button type="submit">schick's ab 🚀</Button>
+            <Button type="submit">schick&apos;s ab 🚀</Button>
           </StyledForm>
         )}
       </StyledArticle>
