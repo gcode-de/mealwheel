@@ -6,7 +6,7 @@ import { authOptions } from "../../auth/[...nextauth]";
 export default async function handler(request, response) {
   await dbConnect();
   const session = await getServerSession(request, response, authOptions);
-  const userId = session.user.id;
+  const userId = session?.user.id;
 
   const sampleSize = Number(request.query.sampleSize) || 10;
 
