@@ -9,12 +9,21 @@ import StyledInput from "@/components/Styled/StyledInput";
 import StyledDropDown from "@/components/Styled/StyledDropDown";
 import StyledListItem from "@/components/Styled/StyledListItem";
 import IconButtonLarge from "@/components/Styled/IconButtonLarge";
+import Link from "next/link";
 
 import updateUserinDb from "@/helpers/updateUserInDb";
 
 export default function ShoppingList({ user, mutateUser }) {
   if (!user) {
-    return;
+    return (
+      <>
+        <Header text="Einkaufsliste" />
+        <StyledList>
+          Bitte <Link href="/api/auth/signin">einloggen</Link>, um die
+          Einkaufsliste zu verwenden.
+        </StyledList>
+      </>
+    );
   }
   user.shoppingList = Array.from(
     user.shoppingList

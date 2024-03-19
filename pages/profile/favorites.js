@@ -6,6 +6,7 @@ import StyledUl from "@/components/StyledUl";
 import LoadingComponent from "@/components/Loading";
 
 import { useSession, signIn, signOut } from "next-auth/react";
+import Link from "next/link";
 
 export default function Favorites({
   user,
@@ -15,8 +16,18 @@ export default function Favorites({
   toggleIsFavorite,
 }) {
   const { data: session, status } = useSession();
-  if (status === "unauthenticated") {
-    signIn();
+  if (!user) {
+    return (
+      <>
+        <Header text="Favoriten 🥗" />
+        <StyledArticle>
+          <StyledUl>
+            Bitte <Link href="/api/auth/signin">einloggen</Link>, um Favoriten
+            zu speichern.
+          </StyledUl>
+        </StyledArticle>
+      </>
+    );
   }
 
   const favoriteRecipes = user?.recipeInteractions
@@ -35,6 +46,17 @@ export default function Favorites({
       <>
         <Header text="Favoriten 🥗" />
         <LoadingComponent amount />
+      </>
+    );
+  }
+
+  if (!favoriteRecipes.length) {
+    return (
+      <>
+        <Header text="Favoriten 🥗" />
+        <StyledArticle>
+          <StyledUl>Du hast noch keine Favoriten gespeichert.</StyledUl>
+        </StyledArticle>
       </>
     );
   }

@@ -25,7 +25,6 @@ export default function App({
   Component,
   pageProps: { session, ...pageProps },
 }) {
-  // const userId = "65e0925792f086ae06d2eadb";
   const {
     data: user,
     isLoading,
@@ -127,9 +126,7 @@ export default function App({
             <ToastContainer />
             <Component
               {...pageProps}
-              // userId={userId}
               user={user}
-              session={session}
               getRecipeProperty={getRecipeProperty}
               toggleIsFavorite={toggleIsFavorite}
               toggleHasCooked={toggleHasCooked}

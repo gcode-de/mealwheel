@@ -16,8 +16,12 @@ import StyledH2 from "@/components/Styled/StyledH2";
 import Button from "@/components/Styled/StyledButton";
 import { notifySuccess, notifyError } from "/helpers/toast";
 
-export default function ProfilePage({ user, mutateUser, session }) {
+export default function ProfilePage({ user, mutateUser }) {
   const router = useRouter();
+  const { data: session, status } = useSession();
+  if (status === "unauthenticated") {
+    signIn();
+  }
   const [editUser, setEditUser] = useState(false);
   const [feedbackVisible, setFeedbackVisible] = useState(false);
 
@@ -80,7 +84,7 @@ export default function ProfilePage({ user, mutateUser, session }) {
         top="var(--gap-out)"
         right="var(--gap-out)"
         onClick={() => {
-          session ? signOut() : signIn();
+          session ? signOut({ callbackUrl: "/", redirect: true }) : signIn();
         }}
         fill="var(--color-lightgrey)"
       />

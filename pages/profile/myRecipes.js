@@ -73,23 +73,27 @@ export default function MyRecipes({
         <StyledLink href="/profile/collections">zeig mir alle</StyledLink>
       </StyledH2>
       <Wrapper>
-        {user.collections.map((col, index) => (
-          <CollectionCard key={index} collection={col} />
-        ))}
+        {user.collections.length
+          ? user.collections.map((col, index) => (
+              <CollectionCard key={index} collection={col} />
+            ))
+          : `Du hast noch keine Kochbücher angelegt.`}
       </Wrapper>
       <StyledH2>meine Rezepte</StyledH2>
       <StyledArticle>
         <StyledUl>
-          {myRecipes?.map((recipe) => {
-            return (
-              <MealCard
-                key={recipe._id}
-                recipe={recipe}
-                isFavorite={getRecipeProperty(recipe._id, "isFavorite")}
-                onToggleIsFavorite={toggleIsFavorite}
-              ></MealCard>
-            );
-          })}
+          {myRecipes.length
+            ? myRecipes?.map((recipe) => {
+                return (
+                  <MealCard
+                    key={recipe._id}
+                    recipe={recipe}
+                    isFavorite={getRecipeProperty(recipe._id, "isFavorite")}
+                    onToggleIsFavorite={toggleIsFavorite}
+                  ></MealCard>
+                );
+              })
+            : "Du hast noch keine eigenen Rezepte erstellt."}
         </StyledUl>
       </StyledArticle>
     </>
@@ -115,5 +119,6 @@ const Wrapper = styled.div`
   flex-wrap: wrap;
   gap: calc(2 * var(--gap-between));
   margin: auto;
+  margin-bottom: 2rem;
   width: calc(100% - (2 * var(--gap-out)));
 `;

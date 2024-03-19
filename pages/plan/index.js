@@ -283,6 +283,19 @@ export default function Plan({
     );
   }
 
+  if (!user) {
+    return (
+      <StyledHeader>
+        <Header text={"Wochenplan 🥗"} />
+        <CalendarContainer>
+          Bitte <Link href="/api/auth/signin">einloggen</Link>, um den
+          Wochenplaner zu nutzen.
+          <CardSkeleton amount={3} />
+        </CalendarContainer>
+      </StyledHeader>
+    );
+  }
+
   function saveToShopping() {
     const recipesId = weekdays.map(
       (day) => getCalendarDayFromDb(day.date)?.recipe?._id
