@@ -9,7 +9,7 @@ const recipeInteractionSchema = new Schema({
   isFavorite: Boolean,
   hasCooked: Boolean,
   rating: Number,
-  notes: String,
+  notes: [{ comment: String, date: Date }],
 });
 
 const calendarEntrySchema = new Schema({

@@ -94,27 +94,27 @@ export default function DetailPage({
   function handleAddNote(event) {
     event.preventDefault();
     const formData = new FormData(event.target);
-    const data = Object.fromEntries(formData);
+    const note = {
+      comment: formData.get("comment"),
+      date: new Date(),
+    };
 
-    data.date = new Date();
+    const interactionIndex = user.recipeInteractions.findIndex(
+      (interaction) => interaction.recipe._id === _id
+    );
 
-    if (
-      user.recipeInteractions.find(
-        (interaction) => interaction.recipe._id === _id
-      )
-    ) {
-      user.recipeInteractions = user.recipeInteractions.map((interaction) =>
-        interaction.recipe._id === _id
-          ? { ...interaction, notes: { ...notes, data } }
-          : interaction
-      );
+    if (interactionIndex !== -1) {
+      user.recipeInteractions[interactionIndex].notes.push(note);
     } else {
-      user.recipeInteractions.push({ notes: data, _id: _id });
+      user.recipeInteractions.push({ _id: _id, notes: [note] });
     }
-    console.log(user.recipeInteractions);
 
-    // updateUserinDb(user, mutateUser)
+    updateUserinDb(user, mutateUser);
+    event.target.reset();
   }
+  const foundInteractions = user.recipeInteractions.find(
+    (interaction) => interaction.recipe._id === _id
+  );
 
   return (
     <Wrapper>
@@ -247,9 +247,19 @@ export default function DetailPage({
         )}
         {content === "notes" && (
           <>
-            <StyledList></StyledList>
+            <StyledList>
+              {foundInteractions.notes.map((note, i) => (
+                <li key={i}>
+                  {note.comment}
+                  {new Date(note.date).toLocaleDateString()}
+                </li>
+              ))}
+            </StyledList>
             <form onSubmit={handleAddNote}>
-              <StyledInput name="note" placeholder="ergänze deine Notizen.." />
+              <StyledInput
+                name="comment"
+                placeholder="ergänze deine Notizen.."
+              />
               <Button type="submit">Notiz hinzufügen</Button>
             </form>
           </>

@@ -16,7 +16,7 @@ export default function HasCooked({
   toggleIsFavorite,
 }) {
   const router = useRouter();
-  const favoriteRecipes = user?.recipeInteractions
+  const hasCookedRecipes = user?.recipeInteractions
     .filter((recipe) => recipe.hasCooked)
     .map((recipe) => recipe.recipe);
 
@@ -48,12 +48,12 @@ export default function HasCooked({
       <StyledH2>schon gekocht</StyledH2>
       <StyledArticle>
         <StyledUl>
-          {favoriteRecipes?.map((recipe) => {
+          {hasCookedRecipes?.map((recipe) => {
             return (
               <MealCard
                 key={recipe._id}
                 recipe={recipe}
-                isFavorite={getRecipeProperty(recipe._id, "isFavorite")}
+                isFavorite={getRecipeProperty(recipe._id, "hasCooked")}
                 onToggleIsFavorite={toggleIsFavorite}
               ></MealCard>
             );
