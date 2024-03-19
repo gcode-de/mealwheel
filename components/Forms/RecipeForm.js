@@ -82,7 +82,13 @@ export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
 
   async function uploadImage(event) {
     event.preventDefault();
-    const formData = new FormData(event.target);
+
+    const file = event.target.files[0];
+    setPreview({ imageUrl: URL.createObjectURL(file) });
+
+    const formData = new FormData();
+    formData.append("file", file);
+
     if (formName === "addRecipe" || !data.imageLink) {
       const response = await fetch("/api/cloudinary", {
         method: "POST",
@@ -117,10 +123,6 @@ export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
       }
     }
   }
-  function handleImage(event) {
-    const file = event.target.files[0];
-    setPreview({ imageUrl: URL.createObjectURL(file) });
-  }
   return (
     <>
       <StyledTop $height={data?.imageLink}>
@@ -144,10 +146,10 @@ export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
         )}
 
         <StyledImageUploadContainer htmlFor="upload">
-          <form onSubmit={uploadImage}>
-            <input type="file" name="file" id="upload" onChange={handleImage} />
+          <form>
+            <input type="file" name="file" id="upload" onChange={uploadImage} />
 
-            <button type="submit">hinzufügen</button>
+            {/* <button type="submit">hinzufügen</button> */}
           </form>
         </StyledImageUploadContainer>
       </StyledTop>

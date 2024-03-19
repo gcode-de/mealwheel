@@ -1,5 +1,5 @@
 export default async function handleDeleteImage(publicId) {
-  const responseDelete = await fetch("/api/cloudinary", {
+  const responseDelete = await fetch("/api/cloudinary/delete", {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
@@ -8,8 +8,7 @@ export default async function handleDeleteImage(publicId) {
   });
 
   if (responseDelete.ok) {
-    const file = await responseDelete.json();
-    console.log(responseDelete);
+    // const file = await responseDelete.json();
   } else {
     console.error("delete failed");
   }
