@@ -15,9 +15,14 @@ import StyledH2 from "@/components/Styled/StyledH2";
 import StyledP from "@/components/Styled/StyledP";
 import StyledListItem from "@/components/Styled/StyledListItem";
 import LoadingComponent from "@/components/Loading";
+
+import StyledDropDown from "@/components/Styled/StyledDropDown";
+import updateUserinDb from "@/helpers/updateUserInDb";
+
 import { filterTags } from "@/helpers/filterTags";
 import Button from "@/components/Styled/StyledButton";
 import updateUserinDb from "@/helpers/updateUserInDb";
+
 
 export default function DetailPage({
   user,
@@ -30,21 +35,31 @@ export default function DetailPage({
 }) {
   const [content, setContent] = useState("instructions");
 
+  const [selectedDate, setSelectedDate] = useState("");
+  const [calendarFormIsVisible, setCalendarFormIsVisible] = useState(false);
+  const [collectionFormIsVisible, setCollectionFormIsVisible] = useState(false);
+  const [selectedCollection, setselectedCollection] = useState("");
+
+
   const router = useRouter();
   const { id } = router.query;
-  const servings = Number(router.query.servings) || 1;
 
+  const servings = Number(router.query.servings) || 1;
   const {
     data: recipe,
     isLoading: dataIsLoading,
     error: dataError,
     mutate,
   } = useSWR(id ? `/api/recipes/${id}` : null);
-
   const userIsAuthor = user?._id === recipe?.author;
 
-  const [selectedDate, setSelectedDate] = useState("");
-  const [calendarFormIsVisible, setCalendarFormIsVisible] = useState(false);
+  if (error || dataError) {
+    return <h1>Fehler...</h1>;
+  }
+
+  if (isLoading || dataIsLoading || !recipe) {
+    return <LoadingComponent />;
+  }
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -70,12 +85,29 @@ export default function DetailPage({
     }
   };
 
-  if (error || dataError) {
-    return <h1>Fehler...</h1>;
-  }
+  async function handleCollection(event) {
+    event.preventDefault();
+    const isDuplicate = user.collections
+      .find((col) => col.collectionName === selectedCollection)
+      .recipes.some((recipe) => recipe._id === id);
+    if (isDuplicate) {
+      notifyError("Dieses Rezept ist bereits gespeichert.");
+      return;
+    }
 
-  if (isLoading || dataIsLoading || !recipe) {
-    return <LoadingComponent />;
+    const updateCollection = user.collections.map((col) =>
+      col.collectionName === selectedCollection
+        ? { ...col, recipes: [...col.recipes, id] }
+        : col
+    );
+    user.collections = updateCollection;
+    try {
+      updateUserinDb(user, mutateUser);
+      setCollectionFormIsVisible(false);
+      notifySuccess(`Das Rezept wurde gespeichert.`);
+    } catch (error) {
+      notifyError("Das Rezept konnte nicht gespeichert werden.");
+    }
   }
 
   const {
@@ -89,6 +121,7 @@ export default function DetailPage({
     duration,
     difficulty,
   } = recipe;
+
 
   difficulty.toUpperCase();
 
@@ -119,6 +152,7 @@ export default function DetailPage({
     (interaction) => interaction.recipe._id === _id
   );
 
+
   return (
     <Wrapper>
       <IconButton
@@ -141,12 +175,26 @@ export default function DetailPage({
           <Link href={`/recipe/${id}/edit`}>
             <IconButton
               style="Edit"
-              right="11.25rem"
+              right="14.25rem"
               top="-1.25rem"
               fill={"var(--color-lightgrey)"}
             />
           </Link>
         )}
+        <IconButton
+          style="Book"
+          right="11.25rem"
+          top="-1.25rem"
+          fill={
+            collectionFormIsVisible
+              ? "var(--color-highlight)"
+              : "var(--color-lightgrey)"
+          }
+          onClick={() => {
+            setCollectionFormIsVisible((prevState) => !prevState);
+            setCalendarFormIsVisible(false);
+          }}
+        />
         <IconButton
           style="Calendar"
           right="8.25rem"
@@ -158,6 +206,7 @@ export default function DetailPage({
           }
           onClick={() => {
             setCalendarFormIsVisible((prevState) => !prevState);
+            setCollectionFormIsVisible(false);
           }}
         />
         <IconButton
@@ -198,6 +247,25 @@ export default function DetailPage({
               setSelectedDate(event.target.value);
             }}
           />
+          <button type="submit">speichern</button>
+        </StyledForm>
+        <StyledForm
+          onSubmit={handleCollection}
+          $isVisible={collectionFormIsVisible}
+        >
+          <h3>Dieses Rezept speichern:</h3>
+          <StyledDropDown
+            onChange={(event) => setselectedCollection(event.target.value)}
+            name="collectionName"
+            required
+          >
+            {user.collections.map((col, index) => (
+              <option key={index} value={col.collectionName}>
+                {col.collectionName}
+              </option>
+            ))}
+          </StyledDropDown>
+
           <button type="submit">speichern</button>
         </StyledForm>
         <StyledTitle>{title}</StyledTitle>
