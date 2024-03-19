@@ -4,7 +4,10 @@ import Header from "@/components/Styled/Header";
 import IconButton from "@/components/Styled/IconButton";
 import { useRouter } from "next/router";
 import Spacer from "@/components/Styled/Spacer";
-import StyledUl from "@/components/StyledUl";
+
+import Link from "next/link";
+import CollectionCard from "@/components/CollectionCard";
+import StyledH2 from "@/components/Styled/StyledH2";
 
 import useSWR from "swr";
 import styled from "styled-components";
@@ -64,7 +67,17 @@ export default function MyRecipes({
         onClick={() => router.back()}
       />
       <Spacer />
-      <Header text={"Meine Rezepte 🥗"} />
+
+      <StyledH2>
+        <div>Kochbücher</div>
+        <StyledLink href="/profile/collections">zeig mir alle</StyledLink>
+      </StyledH2>
+      <Wrapper>
+        {user.collections.map((col, index) => (
+          <CollectionCard key={index} collection={col} />
+        ))}
+      </Wrapper>
+      <StyledH2>meine Rezepte</StyledH2>
       <StyledArticle>
         <StyledUl>
           {myRecipes?.map((recipe) => {
@@ -84,3 +97,23 @@ export default function MyRecipes({
 }
 
 const StyledArticle = styled.article``;
+
+const StyledUl = styled.ul`
+  padding: 10px;
+  max-width: 350px;
+  margin: 0 auto;
+`;
+
+const StyledLink = styled(Link)`
+  color: var(--color-darkgrey);
+  text-decoration: none;
+  font-size: medium;
+`;
+const Wrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: calc(2 * var(--gap-between));
+  margin: auto;
+  width: calc(100% - (2 * var(--gap-out)));
+`;
