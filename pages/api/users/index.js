@@ -9,7 +9,7 @@ export default async function handler(request, response) {
   await dbConnect();
   const session = await getServerSession(request, response, authOptions);
 
-  if (!session) return response.status(403).json({ error: "forbidden" });
+  if (!session) return response.status(403).json({ error: "unauthenticated" });
 
   if (request.method === "GET") {
     const user = await User.findById(session.user.id)

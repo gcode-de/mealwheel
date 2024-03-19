@@ -75,6 +75,26 @@ export default function ProfilePage({ user, mutateUser, session }) {
         onClick={() => router.push("/profile/settings")}
         fill="var(--color-lightgrey)"
       />
+      <IconButton
+        style={session ? "Leave" : "Reload"}
+        top="var(--gap-out)"
+        right="var(--gap-out)"
+        onClick={() => {
+          session ? signOut() : signIn();
+        }}
+        fill="var(--color-lightgrey)"
+      />
+      {/* <StyledLogin>
+        {session ? (
+          <button type="button" onClick={() => signOut()}>
+            abmelden
+          </button>
+        ) : (
+          <button type="button" onClick={() => signIn()}>
+            anmelden
+          </button>
+        )}
+      </StyledLogin> */}
       <WrapperCenter>
         <StyledProfile>
           {!editUser ? (
@@ -136,18 +156,7 @@ export default function ProfilePage({ user, mutateUser, session }) {
           <StyledP>Rezepte</StyledP>
         </StyledCollection>
       </Wrapper>
-      {session ? (
-        <>
-          Signed in as {session.user.email} <br />
-          <button type="button" onClick={() => signOut()}>
-            Sign out
-          </button>
-        </>
-      ) : (
-        <button type="button" onClick={() => signIn()}>
-          Sign in
-        </button>
-      )}
+
       <StyledArticle>
         {!feedbackVisible && (
           <UnstyledButton onClick={toggleFeedbackForm}>
@@ -297,4 +306,15 @@ const StyledCollection = styled(Link)`
     fill: var(--color-highlight);
     color: var(--color-highlight);
   }
+`;
+
+const StyledLogin = styled.div`
+  button {
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+  }
+  position: fixed;
+  top: 0;
+  right: 0;
 `;
