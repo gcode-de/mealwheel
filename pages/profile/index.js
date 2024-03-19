@@ -256,6 +256,7 @@ const StyledInput = styled.input`
   width: 100%;
   flex-grow: ${(props) => props.$flexGrow};
   padding: 0.7rem;
+`;
 
 const StyledCollection = styled(Link)`
   text-decoration: none;
@@ -278,5 +279,4 @@ const StyledCollection = styled(Link)`
     fill: var(--color-highlight);
     color: var(--color-highlight);
   }
-
 `;

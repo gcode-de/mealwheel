@@ -20,6 +20,7 @@ import StyledDropDown from "@/components/Styled/StyledDropDown";
 import updateUserinDb from "@/helpers/updateUserInDb";
 
 import { filterTags } from "@/helpers/filterTags";
+import Button from "@/components/Styled/StyledButton";
 
 
 export default function DetailPage({
@@ -32,10 +33,12 @@ export default function DetailPage({
   toggleHasCooked,
 }) {
   const [content, setContent] = useState("instructions");
+
   const [selectedDate, setSelectedDate] = useState("");
   const [calendarFormIsVisible, setCalendarFormIsVisible] = useState(false);
   const [collectionFormIsVisible, setCollectionFormIsVisible] = useState(false);
   const [selectedCollection, setselectedCollection] = useState("");
+
 
   const router = useRouter();
   const { id } = router.query;
@@ -45,6 +48,7 @@ export default function DetailPage({
     data: recipe,
     isLoading: dataIsLoading,
     error: dataError,
+    mutate,
   } = useSWR(id ? `/api/recipes/${id}` : null);
   const userIsAuthor = user?._id === recipe?.author;
 
@@ -116,6 +120,38 @@ export default function DetailPage({
     duration,
     difficulty,
   } = recipe;
+
+
+  difficulty.toUpperCase();
+
+  function handleAddNote(event) {
+    event.preventDefault();
+    const formData = new FormData(event.target);
+    const note = {
+      comment: formData.get("comment"),
+      date: new Date(),
+    };
+    getRecipeProperty(_id, "notes");
+
+    const interactionIndex = user.recipeInteractions.findIndex(
+      (interaction) => interaction.recipe._id === _id
+    );
+
+    if (interactionIndex !== -1) {
+      user.recipeInteractions[interactionIndex].notes.push(note);
+    } else {
+      user.recipeInteractions.push({ _id: _id, notes: [note] });
+    }
+    console.log(user);
+    updateUserinDb(user, mutateUser);
+    event.target.reset();
+    mutate();
+  }
+  const foundInteractions = user.recipeInteractions.find(
+    (interaction) => interaction.recipe._id === _id
+  );
+
+
   return (
     <Wrapper>
       <IconButton
@@ -273,10 +309,35 @@ export default function DetailPage({
           <StyledLink onClick={() => setContent("instructions")}>
             Zubereitung
           </StyledLink>
+          <StyledLink onClick={() => setContent("notes")}>Notizen</StyledLink>
           <StyledLink onClick={() => setContent("video")}>Video</StyledLink>
         </StyledHyper>
         {content === "instructions" && (
           <StyledIngredients>{instructions}</StyledIngredients>
+        )}
+        {content === "notes" && (
+          <>
+            {foundInteractions?.notes.map((note, i) => (
+              <>
+                <StyledComment key={i}>
+                  {note.comment}
+
+                  <StyledDate>
+                    {new Date(note.date).toLocaleDateString()}
+                  </StyledDate>
+                </StyledComment>
+              </>
+            ))}
+            <StyledCommentWrapper>
+              <form onSubmit={handleAddNote}>
+                <StyledInput
+                  name="comment"
+                  placeholder="ergänze deine Notizen.."
+                />
+                <Button type="submit">Notiz hinzufügen</Button>
+              </form>
+            </StyledCommentWrapper>
+          </>
         )}
         {content === "video" && (
           <Link href={youtubeLink}>auf youtube anschauen</Link>
@@ -395,4 +456,54 @@ const StyledCategoryButton = styled.button`
   height: 1.75rem;
   margin-bottom: 0.5rem;
   padding: 0.25rem;
+`;
+const StyledComment = styled.article`
+  padding-top: var(--gap-between);
+  padding-bottom: var(--gap-between);
+  padding-right: calc(2 * var(--gap-between));
+  padding-left: calc(2 * var(--gap-between));
+  width: calc(100% - (2 * var(--gap-out)));
+  border: 1px solid var(--color-lightgrey);
+  border-radius: var(--border-radius-small);
+  background-color: var(--color-component);
+  margin-right: var(--gap-out);
+  margin-left: var(--gap-out);
+  margin-top: var(--gap-between);
+  margin-bottom: var(--gap-between);
+  position: relative;
+`;
+
+const StyledDate = styled.p`
+  font-style: italic;
+  margin: 0;
+  text-align: right;
+  color: var(--color-lightgrey);
+`;
+const StyledCommentWrapper = styled.article`
+  padding-top: calc(2 * var(--gap-between));
+  padding-bottom: calc(2 * var(--gap-between));
+  padding-right: calc(2 * var(--gap-between));
+  padding-left: calc(2 * var(--gap-between));
+  width: calc(100% - (2 * var(--gap-out)));
+  border: 1px solid var(--color-lightgrey);
+  border-radius: var(--border-radius-small);
+  background-color: var(--color-component);
+  margin-right: var(--gap-out);
+  margin-left: var(--gap-out);
+  margin-top: var(--gap-between);
+  margin-bottom: var(--gap-between);
+  position: relative;
+`;
+const StyledInput = styled.input`
+  background-color: var(--color-background);
+  border: none;
+  border-radius: 10px;
+  height: 3rem;
+  width: 100%;
+  flex-grow: ${(props) => props.$flexGrow};
+  padding: 0.7rem;
+`;
+const UnstyledButton = styled.button`
+  border: none;
+  background-color: transparent;
 `;
