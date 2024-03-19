@@ -25,7 +25,7 @@ import {
 
 import CardSkeleton from "@/components/Styled/CardSkeleton";
 import Header from "@/components/Styled/Header";
-import MealCard from "@/components/Styled/MealCard";
+import MealCard from "@/components/MealCard";
 import IconButton from "@/components/Styled/IconButton";
 import RandomnessSlider from "@/components/Styled/RandomnessSlider";
 import PowerIcon from "@/public/icons/power-material-svgrepo-com.svg";

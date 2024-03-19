@@ -1,7 +1,6 @@
 import styled from "styled-components";
 
-import CardSkeleton from "@/components/Styled/CardSkeleton";
-import MealCard from "@/components/Styled/MealCard";
+import MealCard from "@/components/MealCard";
 import Header from "@/components/Styled/Header";
 import IconButton from "@/components/Styled/IconButton";
 import { useRouter } from "next/router";
@@ -17,7 +16,7 @@ export default function HasCooked({
   toggleIsFavorite,
 }) {
   const router = useRouter();
-  const favoriteRecipes = user?.recipeInteractions
+  const hasCookedRecipes = user?.recipeInteractions
     .filter((recipe) => recipe.hasCooked)
     .map((recipe) => recipe.recipe);
 
@@ -49,12 +48,12 @@ export default function HasCooked({
       <StyledH2>schon gekocht</StyledH2>
       <StyledArticle>
         <StyledUl>
-          {favoriteRecipes?.map((recipe) => {
+          {hasCookedRecipes?.map((recipe) => {
             return (
               <MealCard
                 key={recipe._id}
                 recipe={recipe}
-                isFavorite={getRecipeProperty(recipe._id, "isFavorite")}
+                isFavorite="null"
                 onToggleIsFavorite={toggleIsFavorite}
               ></MealCard>
             );

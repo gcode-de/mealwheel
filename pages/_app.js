@@ -6,6 +6,7 @@ import { SessionProvider } from "next-auth/react";
 import useSWR, { SWRConfig } from "swr";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import updateUserinDb from "@/helpers/updateUserInDb";
 
 const fetcher = async (url) => {
   const res = await fetch(url);
@@ -63,17 +64,7 @@ export default function App({
     } else {
       user.recipeInteractions.push({ isFavorite: true, recipe: _id });
     }
-
-    const response = await fetch(`/api/users/${user._id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(user),
-    });
-    if (response.ok) {
-      mutate();
-    }
+    updateUserinDb(user, mutate);
   }
 
   async function toggleHasCooked(_id) {
@@ -94,17 +85,7 @@ export default function App({
     } else {
       user.recipeInteractions.push({ hasCooked: true, recipe: _id });
     }
-
-    const response = await fetch(`/api/users/${user._id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(user),
-    });
-    if (response.ok) {
-      mutate();
-    }
+    updateUserinDb(user, mutate);
   }
 
   // if (error) {
