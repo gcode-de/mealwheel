@@ -1,10 +1,12 @@
 import dbConnect from "../../../db/connect";
 import Recipe from "../../../db/models/Recipe";
+import mongoose from "mongoose";
 
 export default async function handler(request, response) {
   await dbConnect();
 
   if (request.method === "GET") {
+    // console.log(request.query);
     const { sort = "_id", order = "desc", search } = request.query;
     const sortOrder = order === "desc" ? -1 : 1;
 
@@ -19,7 +21,11 @@ export default async function handler(request, response) {
     let queryObj = {};
     Object.keys(request.query).forEach((key) => {
       if (!["sort", "order", "duration", "search"].includes(key)) {
-        queryObj[key] = { $in: request.query[key].split(",") };
+        if (key === "author") {
+          queryObj[key] = new mongoose.Types.ObjectId(request.query[key]);
+        } else {
+          queryObj[key] = { $in: request.query[key].split(",") };
+        }
       }
     });
 
@@ -52,6 +58,7 @@ export default async function handler(request, response) {
     }
 
     const recipes = await Recipe.aggregate(pipeline);
+    console.log(JSON.stringify(pipeline, null, 2));
 
     if (!recipes.length) {
       return response.status(200).json([]);

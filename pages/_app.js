@@ -1,7 +1,6 @@
 import GlobalStyle from "../styles";
 import Layout from "../components/Layout";
 
-import { useSession, signIn, signOut } from "next-auth/react";
 import { SessionProvider } from "next-auth/react";
 import useSWR, { SWRConfig } from "swr";
 import { ToastContainer } from "react-toastify";

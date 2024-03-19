@@ -79,7 +79,7 @@ export default function MyRecipes({
             ))
           : `Du hast noch keine Kochbücher angelegt.`}
       </Wrapper>
-      <StyledH2>meine Rezepte</StyledH2>
+      <StyledH2>Meine Rezepte</StyledH2>
       <StyledArticle>
         <StyledUl>
           {myRecipes.length

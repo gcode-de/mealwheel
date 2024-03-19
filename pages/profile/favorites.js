@@ -1,11 +1,9 @@
 import styled from "styled-components";
-import CardSkeleton from "@/components/Styled/CardSkeleton";
 import MealCard from "@/components/MealCard";
 import Header from "@/components/Styled/Header";
 import StyledUl from "@/components/StyledUl";
 import LoadingComponent from "@/components/Loading";
 
-import { useSession, signIn, signOut } from "next-auth/react";
 import Link from "next/link";
 
 export default function Favorites({
@@ -15,7 +13,6 @@ export default function Favorites({
   getRecipeProperty,
   toggleIsFavorite,
 }) {
-  const { data: session, status } = useSession();
   if (!user) {
     return (
       <>
@@ -41,7 +38,7 @@ export default function Favorites({
     </div>;
   }
 
-  if (isLoading || status === "loading") {
+  if (isLoading) {
     return (
       <>
         <Header text="Favoriten 🥗" />
