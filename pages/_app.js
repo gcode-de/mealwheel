@@ -47,7 +47,7 @@ export default function App({
   }
 
   async function toggleIsFavorite(_id) {
-    if (!session) {
+    if (!user) {
       notifyError("Bitte zuerst einloggen.");
       return;
     }
@@ -68,7 +68,7 @@ export default function App({
   }
 
   async function toggleHasCooked(_id) {
-    if (!session) {
+    if (!user) {
       notifyError("Bitte zuerst einloggen.");
       return;
     }
@@ -123,7 +123,7 @@ export default function App({
       <GlobalStyle />
       <SWRConfig value={{ fetcher }}>
         <SessionProvider session={session}>
-          <Layout>
+          <Layout user={user}>
             <ToastContainer />
             <Component
               {...pageProps}

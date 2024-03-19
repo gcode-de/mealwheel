@@ -32,7 +32,6 @@ export default function DetailPage({
   toggleHasCooked,
 }) {
   const [content, setContent] = useState("instructions");
-
   const [selectedDate, setSelectedDate] = useState("");
   const [calendarFormIsVisible, setCalendarFormIsVisible] = useState(false);
   const [collectionFormIsVisible, setCollectionFormIsVisible] = useState(false);
@@ -191,6 +190,7 @@ export default function DetailPage({
               : "var(--color-lightgrey)"
           }
           onClick={() => {
+            console.log(user);
             if (!user) {
               notifyError("Bitte zuerst einloggen.");
               return;
@@ -227,6 +227,10 @@ export default function DetailPage({
               : "var(--color-lightgrey)"
           }
           onClick={() => {
+            if (!user) {
+              notifyError("Bitte zuerst einloggen.");
+              return;
+            }
             toggleHasCooked(_id);
           }}
         />
@@ -240,6 +244,10 @@ export default function DetailPage({
               : "var(--color-lightgrey)"
           }
           onClick={() => {
+            if (!user) {
+              notifyError("Bitte zuerst einloggen.");
+              return;
+            }
             toggleIsFavorite(_id);
           }}
         />
