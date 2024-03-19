@@ -134,7 +134,7 @@ export default function ProfilePage({ user, mutateUser }) {
       <StyledArticle>
         {!feedbackVisible && (
           <UnstyledButton onClick={toggleFeedbackForm}>
-            <StyledH2>gib uns feedback 🎉</StyledH2>
+            <StyledH2>Gib uns Feedback 🎉</StyledH2>
           </UnstyledButton>
         )}
         {feedbackVisible && (
