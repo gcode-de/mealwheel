@@ -11,12 +11,37 @@ import StyledListItem from "@/components/Styled/StyledListItem";
 import IconButtonLarge from "@/components/Styled/IconButtonLarge";
 
 import updateUserinDb from "@/helpers/updateUserInDb";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useRef } from "react";
 
 export default function ShoppingList({ user, mutateUser }) {
   const [editingIndex, setEditingIndex] = useState(null);
+  const [originalItem, setOriginalItem] = useState(null);
+  const editFormRef = useRef(null);
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (editFormRef.current && !editFormRef.current.contains(event.target)) {
+        if (originalItem) {
+          // Speichern des aktuellen Werts des Elements
+          const updatedList = [...user.shoppingList];
+          updatedList[editingIndex] = originalItem;
+          user.shoppingList = updatedList;
+          updateUserinDb(user, mutateUser);
+          setOriginalItem(null);
+        }
+        setEditingIndex(null);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [originalItem, editingIndex, user, mutateUser]);
+
+  const shoppingList = user?.shoppingList || [];
 
   function handleItemClick(index) {
+    setOriginalItem(user.shoppingList[index]);
     setEditingIndex(index);
   }
 
@@ -103,7 +128,10 @@ export default function ShoppingList({ user, mutateUser }) {
           user.shoppingList.map((item, index) => (
             <StyledListItem key={index} onClick={() => handleItemClick(index)}>
               {editingIndex === index ? (
-                <form onSubmit={(event) => handleItemEdit(event, index)}>
+                <form
+                  ref={editFormRef}
+                  onSubmit={(event) => handleItemEdit(event, index)}
+                >
                   <StyledInput
                     type="number"
                     defaultValue={item.quantity}
@@ -112,7 +140,13 @@ export default function ShoppingList({ user, mutateUser }) {
                     name="quantity"
                   />
                   <StyledDropDown name="unit" defaultValue={item.unit}>
-                    {/* Dropdown-Optionen */}
+                    <option value="">-</option>
+                    <option value="ml">ml</option>
+                    <option value="piece">Stück</option>
+                    <option value="gramm">g</option>
+                    <option value="EL">EL</option>
+                    <option value="TL">TL</option>
+                    <option value="Prise">Prise</option>
                   </StyledDropDown>
                   <StyledInput
                     type="text"
