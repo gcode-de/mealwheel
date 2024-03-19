@@ -53,7 +53,7 @@ export default function HasCooked({
               <MealCard
                 key={recipe._id}
                 recipe={recipe}
-                isFavorite={getRecipeProperty(recipe._id, "hasCooked")}
+                isFavorite="null"
                 onToggleIsFavorite={toggleIsFavorite}
               ></MealCard>
             );
