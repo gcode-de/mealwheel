@@ -9,7 +9,8 @@ export default async function handler(request, response) {
   if (request.method === "GET") {
     const user = await User.findById(id)
       .populate("recipeInteractions.recipe")
-      .populate("calendar.recipe");
+      .populate("calendar.recipe")
+      .populate("collections.recipes");
 
     if (!user) {
       return response.status(404).json({ status: "Not Found" });
@@ -29,7 +30,7 @@ export default async function handler(request, response) {
       await User.findByIdAndUpdate(id, request.body);
       return response.status(200).json("User updated");
     } catch (error) {
-      console.log(error);
+      console.error(error);
       response.status(400).json({ error: error.message });
     }
   }

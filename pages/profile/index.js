@@ -5,9 +5,8 @@ import StyledP from "@/components/Styled/StyledP";
 import Heart from "@/public/icons/heart-svgrepo-com.svg";
 import Pot from "@/public/icons/cooking-pot-fill-svgrepo-com.svg";
 import Plus from "@/public/icons/Plus.svg";
-
-import styled from "styled-components";
 import Link from "next/link";
+import styled from "styled-components";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useState } from "react";
@@ -118,18 +117,18 @@ export default function ProfilePage({ user, mutateUser }) {
         />
       </StyledList>
       <Wrapper>
-        <StyledLink href="/profile/favorites">
+        <StyledCollection href="/profile/favorites">
           <Heart width={40} height={40} />
           <StyledP>Favoriten</StyledP>
-        </StyledLink>
-        <StyledLink href="/profile/hasCooked">
+        </StyledCollection>
+        <StyledCollection href="/profile/hasCooked">
           <Pot width={40} height={40} />
           <StyledP>gekocht</StyledP>
-        </StyledLink>
-        <StyledLink href="/profile/myRecipes">
+        </StyledCollection>
+        <StyledCollection href="/profile/myRecipes">
           <BookUser width={40} height={40} />
-          <StyledP>eigene</StyledP>
-        </StyledLink>
+          <StyledP>Rezepte</StyledP>
+        </StyledCollection>
       </Wrapper>
       <StyledArticle>
         {!feedbackVisible && (
@@ -182,28 +181,6 @@ const StyledProfile = styled.div`
   position: relative;
   z-index: 2;
 `;
-const StyledLink = styled(Link)`
-  text-decoration: none;
-  color: var(--color-font);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  fill: var(--color-lightgrey);
-  color: var(--color-lightgrey);
-  justify-content: center;
-  cursor: pointer;
-  margin-top: var(--gap-between);
-  margin-bottom: var(--gap-between);
-  border: 1px solid var(--color-lightgrey);
-  border-radius: var(--border-radius-medium);
-  background-color: var(--color-component);
-  height: 6rem;
-  width: 6rem;
-  &:hover {
-    fill: var(--color-highlight);
-    color: var(--color-highlight);
-  }
-`;
 
 const StyledUsernameForm = styled.form`
   display: flex;
@@ -245,6 +222,7 @@ const StyledProfilePicture = styled(Image)`
   border-radius: 50%;
   object-fit: cover;
 `;
+
 const StyledForm = styled.form`
   display: flex;
   flex-direction: column;
@@ -278,4 +256,27 @@ const StyledInput = styled.input`
   width: 100%;
   flex-grow: ${(props) => props.$flexGrow};
   padding: 0.7rem;
+
+const StyledCollection = styled(Link)`
+  text-decoration: none;
+  color: var(--color-font);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  fill: var(--color-lightgrey);
+  color: var(--color-lightgrey);
+  border: 1px solid var(--color-lightgrey);
+  border-radius: var(--border-radius-medium);
+  background-color: var(--color-component);
+  justify-content: center;
+  cursor: pointer;
+  margin-top: 0;
+  margin-bottom: 0;
+  height: 6rem;
+  width: 6rem;
+  &:hover {
+    fill: var(--color-highlight);
+    color: var(--color-highlight);
+  }
+
 `;

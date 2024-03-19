@@ -2,7 +2,7 @@ import StyledListItem from "../Styled/StyledListItem";
 import { useState } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
-
+import { filterTags } from "@/helpers/filterTags";
 import styled from "styled-components";
 import StyledArticle from "../Styled/StyledArticle";
 import IconButton from "../Styled/IconButton";
@@ -17,7 +17,6 @@ import StyledInput from "../Styled/StyledInput";
 import StyledDropDown from "../Styled/StyledDropDown";
 import { notifySuccess, notifyError } from "/helpers/toast";
 import handleDeleteImage from "@/helpers/Cloudinary/handleDeleteImage";
-import IconButtonLarge from "../Styled/IconButtonLarge";
 
 export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
   const [difficulty, setDifficulty] = useState(
@@ -34,9 +33,20 @@ export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
           },
         ]
   );
+
+  const router = useRouter();
+  const [selectedTags, setSelectedTags] = useState(data ? data.diet : []);
   const [preview, setPreview] = useState(data ? data.imageLink : "");
   const [imageUrl, setImageUrl] = useState(data ? data.imageLink : "");
-  const router = useRouter();
+
+  function handleTagChange(value) {
+    setSelectedTags(
+      selectedTags.includes(value)
+        ? selectedTags.filter((item) => item !== value)
+        : [value]
+    );
+  }
+
   function handleInputChange(event, index, field) {
     const newIngredients = [...ingredients];
     newIngredients[index][field] = event.target.value;
@@ -60,8 +70,11 @@ export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
     const newData = {
       ...data,
       ingredients,
-      imageLink: imageUrl.imageUrl,
-      publicId: imageUrl.publicId,
+
+      imageLink: imageUrl?.imageUrl,
+      diet: selectedTags,
+      public: event.target.public.checked,
+      publicId: imageUrl?.publicId,
     };
 
     onSubmit(newData);
@@ -220,6 +233,25 @@ export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
               <Plus width={20} height={20} />
             </AddButton>
           </StyledList>
+          {filterTags
+            .filter(({ type }) => type === "diet")
+            .map(({ label, type, options }) => (
+              <div key={type}>
+                <StyledH2>{label}</StyledH2>
+                <StyledCategoriesDiv>
+                  {options.map((option) => (
+                    <StyledCategoryButton
+                      key={option.value}
+                      type="button"
+                      $isActive={selectedTags.includes(option.value)}
+                      onClick={() => handleTagChange(option.value)}
+                    >
+                      {option.label}
+                    </StyledCategoryButton>
+                  ))}
+                </StyledCategoriesDiv>
+              </div>
+            ))}
           <StyledH2>Anleitung</StyledH2>
           <StyledBigInput
             type="text"
@@ -234,6 +266,18 @@ export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
             name="youtubeLink"
             defaultValue={data?.youtubeLink}
           />
+          <StyledCheckboxContainer>
+            <label htmlFor="public">
+              öffentlich sichtbar
+              <StyledHiddenCheckbox
+                type="checkbox"
+                id="public"
+                name="public"
+                defaultChecked={data ? data.public : true}
+              />
+              <StyledSliderCheckbox htmlFor="public" />
+            </label>
+          </StyledCheckboxContainer>
           <ButtonContainer>
             <Button type="submit">speichern</Button>
             {onDelete && (
@@ -275,6 +319,75 @@ const Spacer = styled.div`
   margin-top: 2rem;
   position: relative;
 `;
+
+const StyledCategoriesDiv = styled.div`
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  max-width: calc(100% - (2 * var(--gap-out)));
+  margin: auto;
+  margin-top: 0.25rem;
+`;
+
+const StyledCategoryButton = styled.button`
+  background-color: ${(props) =>
+    props.$isActive ? "var(--color-darkgrey)" : "var(--color-component)"};
+  color: ${(props) =>
+    props.$isActive ? "var(--color-component)" : "var(--color-darkgrey)"};
+  border: solid var(--color-darkgrey) 1px;
+  border-radius: var(--border-radius-small);
+  width: 6rem;
+  height: 1.75rem;
+  margin-bottom: 0.5rem;
+  padding: 0.25rem;
+`;
+
+const StyledCheckboxContainer = styled.div`
+  label {
+    color: var(--color-text);
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    margin-top: 1rem;
+  }
+`;
+
+const StyledHiddenCheckbox = styled.input`
+  display: none;
+`;
+const StyledSliderCheckbox = styled.span`
+  position: relative;
+  margin-left: 1rem;
+  margin-top: 0rem;
+  height: 2rem;
+  width: 3.5rem;
+  background-color: var(--color-background);
+  border-radius: 1rem;
+  cursor: pointer;
+  box-shadow: inset 0 0 5px rgba(77, 74, 74, 0.1);
+
+  &:before {
+    content: "";
+    position: absolute;
+    top: 0.25rem;
+    left: 0.25rem;
+    width: 1.5rem;
+    height: 1.5rem;
+    background-color: var(--color-component);
+    border-radius: 50%;
+    transition: transform 0.3s ease-in-out;
+  }
+
+  input:checked + & {
+    background-color: var(--color-darkgrey);
+  }
+
+  input:checked + &:before {
+    transform: translateX(1.5rem);
+  }
+`;
+
 const ButtonContainer = styled.div`
   display: flex;
   justify-content: space-between;

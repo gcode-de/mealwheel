@@ -1,27 +1,6 @@
 import mongoose from "mongoose";
 const { Schema } = mongoose;
 
-async function cleanupRecipeReferences(recipeId) {
-  try {
-    await mongoose
-      .model("User")
-      .updateMany(
-        { "recipeInteractions.recipe": recipeId },
-        { $pull: { recipeInteractions: { recipe: recipeId } } }
-      );
-
-    await mongoose
-      .model("User")
-      .updateMany(
-        { "calendar.recipe": recipeId },
-        { $pull: { calendar: { recipe: recipeId } } }
-      );
-  } catch (error) {
-    console.error("Fehler beim Bereinigen der Rezeptreferenzen: ", error);
-    throw error;
-  }
-}
-
 const ingredientSchema = new Schema({
   name: { type: String, required: true },
   quantity: { type: Number, required: true },
@@ -32,7 +11,7 @@ const recipeSchema = new mongoose.Schema({
   title: { type: String, required: true },
   instructions: { type: String, required: true },
   imageLink: { type: String },
-  tags: [{ type: String }], // Ein Array von Strings
+  diet: [{ type: String }], // Ein Array von Strings
   youtubeLink: { type: String },
   ingredients: [ingredientSchema], // Verwendet das obige Ingredient-Schema
   difficulty: {
@@ -44,12 +23,13 @@ const recipeSchema = new mongoose.Schema({
   author: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
-    required: true,
   },
+  public: { type: Boolean, default: true },
   publicId: { type: String },
 });
+
+recipeSchema.index({ title: "text", instructions: "text" });
 
 const Recipe = mongoose.models.Recipe || mongoose.model("Recipe", recipeSchema);
 
 export default Recipe;
-export { cleanupRecipeReferences };

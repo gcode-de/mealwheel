@@ -16,6 +16,12 @@ import StyledP from "@/components/Styled/StyledP";
 import StyledListItem from "@/components/Styled/StyledListItem";
 import LoadingComponent from "@/components/Loading";
 
+import StyledDropDown from "@/components/Styled/StyledDropDown";
+import updateUserinDb from "@/helpers/updateUserInDb";
+
+import { filterTags } from "@/helpers/filterTags";
+
+
 export default function DetailPage({
   user,
   mutateUser,
@@ -26,20 +32,29 @@ export default function DetailPage({
   toggleHasCooked,
 }) {
   const [content, setContent] = useState("instructions");
+  const [selectedDate, setSelectedDate] = useState("");
+  const [calendarFormIsVisible, setCalendarFormIsVisible] = useState(false);
+  const [collectionFormIsVisible, setCollectionFormIsVisible] = useState(false);
+  const [selectedCollection, setselectedCollection] = useState("");
+
   const router = useRouter();
   const { id } = router.query;
-  const servings = Number(router.query.servings) || 1;
 
+  const servings = Number(router.query.servings) || 1;
   const {
     data: recipe,
     isLoading: dataIsLoading,
     error: dataError,
   } = useSWR(id ? `/api/recipes/${id}` : null);
-
   const userIsAuthor = user?._id === recipe?.author;
 
-  const [selectedDate, setSelectedDate] = useState("");
-  const [calendarFormIsVisible, setCalendarFormIsVisible] = useState(false);
+  if (error || dataError) {
+    return <h1>Fehler...</h1>;
+  }
+
+  if (isLoading || dataIsLoading || !recipe) {
+    return <LoadingComponent />;
+  }
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -65,12 +80,29 @@ export default function DetailPage({
     }
   };
 
-  if (error || dataError) {
-    return <h1>Fehler...</h1>;
-  }
+  async function handleCollection(event) {
+    event.preventDefault();
+    const isDuplicate = user.collections
+      .find((col) => col.collectionName === selectedCollection)
+      .recipes.some((recipe) => recipe._id === id);
+    if (isDuplicate) {
+      notifyError("Dieses Rezept ist bereits gespeichert.");
+      return;
+    }
 
-  if (isLoading || dataIsLoading || !recipe) {
-    return <LoadingComponent />;
+    const updateCollection = user.collections.map((col) =>
+      col.collectionName === selectedCollection
+        ? { ...col, recipes: [...col.recipes, id] }
+        : col
+    );
+    user.collections = updateCollection;
+    try {
+      updateUserinDb(user, mutateUser);
+      setCollectionFormIsVisible(false);
+      notifySuccess(`Das Rezept wurde gespeichert.`);
+    } catch (error) {
+      notifyError("Das Rezept konnte nicht gespeichert werden.");
+    }
   }
 
   const {
@@ -78,15 +110,12 @@ export default function DetailPage({
     title,
     instructions,
     imageLink,
-    tags,
+    diet,
     youtubeLink,
     ingredients,
     duration,
     difficulty,
   } = recipe;
-
-  difficulty.toUpperCase();
-
   return (
     <Wrapper>
       <IconButton
@@ -109,12 +138,26 @@ export default function DetailPage({
           <Link href={`/recipe/${id}/edit`}>
             <IconButton
               style="Edit"
-              right="11.25rem"
+              right="14.25rem"
               top="-1.25rem"
               fill={"var(--color-lightgrey)"}
             />
           </Link>
         )}
+        <IconButton
+          style="Book"
+          right="11.25rem"
+          top="-1.25rem"
+          fill={
+            collectionFormIsVisible
+              ? "var(--color-highlight)"
+              : "var(--color-lightgrey)"
+          }
+          onClick={() => {
+            setCollectionFormIsVisible((prevState) => !prevState);
+            setCalendarFormIsVisible(false);
+          }}
+        />
         <IconButton
           style="Calendar"
           right="8.25rem"
@@ -126,6 +169,7 @@ export default function DetailPage({
           }
           onClick={() => {
             setCalendarFormIsVisible((prevState) => !prevState);
+            setCollectionFormIsVisible(false);
           }}
         />
         <IconButton
@@ -168,6 +212,25 @@ export default function DetailPage({
           />
           <button type="submit">speichern</button>
         </StyledForm>
+        <StyledForm
+          onSubmit={handleCollection}
+          $isVisible={collectionFormIsVisible}
+        >
+          <h3>Dieses Rezept speichern:</h3>
+          <StyledDropDown
+            onChange={(event) => setselectedCollection(event.target.value)}
+            name="collectionName"
+            required
+          >
+            {user.collections.map((col, index) => (
+              <option key={index} value={col.collectionName}>
+                {col.collectionName}
+              </option>
+            ))}
+          </StyledDropDown>
+
+          <button type="submit">speichern</button>
+        </StyledForm>
         <StyledTitle>{title}</StyledTitle>
         <StyledP>
           {duration} MIN | {difficulty}
@@ -186,6 +249,26 @@ export default function DetailPage({
             </StyledListItem>
           ))}
         </StyledList>
+        {filterTags
+          .filter(({ type }) => type === "diet")
+          .map(({ label, type }) => (
+            <StyledH2 key={type}>{label}</StyledH2>
+          ))}
+        <StyledCategoriesDiv>
+          {diet?.map((tag) => {
+            const filterTag = filterTags.find(
+              (filter) => filter.type === "diet"
+            );
+            const matchingOption = filterTag.options.find(
+              (option) => option.value === tag
+            );
+            return (
+              <StyledCategoryButton key={tag}>
+                {matchingOption ? matchingOption.label : tag}
+              </StyledCategoryButton>
+            );
+          })}
+        </StyledCategoriesDiv>
         <StyledHyper>
           <StyledLink onClick={() => setContent("instructions")}>
             Zubereitung
@@ -291,4 +374,25 @@ const StyledTitle = styled.h1`
   margin-bottom: 1rem;
   width: calc(100% - (2 * var(--gap-out)));
   text-align: center;
+`;
+
+const StyledCategoriesDiv = styled.div`
+  display: flex;
+  justify-content: left;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  width: calc(100% - (2 * var(--gap-out)));
+  margin: 0;
+  margin-top: 0.25rem;
+`;
+
+const StyledCategoryButton = styled.button`
+  background-color: var(--color-component);
+  color: var(--color-darkgrey);
+  border: solid var(--color-darkgrey) 1px;
+  border-radius: var(--border-radius-small);
+  width: 6rem;
+  height: 1.75rem;
+  margin-bottom: 0.5rem;
+  padding: 0.25rem;
 `;
