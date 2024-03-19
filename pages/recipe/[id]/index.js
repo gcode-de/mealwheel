@@ -82,7 +82,7 @@ export default function DetailPage({
     title,
     instructions,
     imageLink,
-    tags,
+    diet,
     youtubeLink,
     ingredients,
     duration,
@@ -221,7 +221,7 @@ export default function DetailPage({
             <StyledH2 key={type}>{label}</StyledH2>
           ))}
         <StyledCategoriesDiv>
-          {tags.map((tag) => {
+          {diet?.map((tag) => {
             const filterTag = filterTags.find(
               (filter) => filter.type === "diet"
             );

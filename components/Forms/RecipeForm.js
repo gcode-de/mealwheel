@@ -35,7 +35,7 @@ export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
   );
 
   const router = useRouter();
-  const [selectedTags, setSelectedTags] = useState(data ? data.tags : []);
+  const [selectedTags, setSelectedTags] = useState(data ? data.diet : []);
   const [preview, setPreview] = useState(data ? data.imageLink : "");
   const [imageUrl, setImageUrl] = useState(data ? data.imageLink : "");
 
@@ -71,10 +71,10 @@ export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
       ...data,
       ingredients,
 
-      imageLink: imageUrl.imageUrl,
-      tags: selectedTags,
+      imageLink: imageUrl?.imageUrl,
+      diet: selectedTags,
       public: event.target.public.checked,
-      publicId: imageUrl.publicId,
+      publicId: imageUrl?.publicId,
     };
 
     onSubmit(newData);
