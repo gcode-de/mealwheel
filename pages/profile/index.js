@@ -11,10 +11,14 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import updateUserinDb from "@/helpers/updateUserInDb";
+import StyledH2 from "@/components/Styled/StyledH2";
+import Button from "@/components/Styled/StyledButton";
+import { notifySuccess, notifyError } from "/helpers/toast";
 
 export default function ProfilePage({ user, mutateUser }) {
   const router = useRouter();
   const [editUser, setEditUser] = useState(false);
+  const [feedbackVisible, setFeedbackVisible] = useState(false);
 
   const uploadImage = async (event) => {
     const files = event.target.files;
@@ -41,6 +45,25 @@ export default function ProfilePage({ user, mutateUser }) {
     updateUserinDb(user, mutateUser);
     setEditUser(false);
   };
+
+  function toggleFeedbackForm() {
+    setFeedbackVisible(!feedbackVisible);
+  }
+
+  async function handleFeedback(event) {
+    event.preventDefault();
+    const formData = new FormData(event.target);
+    const data = Object.fromEntries(formData);
+    const response = await fetch("/api/feedback", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+    if (response.ok) {
+      setFeedbackVisible(false);
+      notifySuccess("danke, für deine Zeit!");
+    }
+  }
 
   return (
     <>
@@ -107,6 +130,30 @@ export default function ProfilePage({ user, mutateUser }) {
           <StyledP>Rezepte</StyledP>
         </StyledCollection>
       </Wrapper>
+      <StyledArticle>
+        {!feedbackVisible && (
+          <UnstyledButton onClick={toggleFeedbackForm}>
+            <StyledH2>Gib uns Feedback 🎉</StyledH2>
+          </UnstyledButton>
+        )}
+        {feedbackVisible && (
+          <StyledForm onSubmit={handleFeedback}>
+            <StyledInput
+              name="negativeFeedback"
+              placeholder="Sag uns, was dir noch nicht gefällt?"
+            />
+            <StyledInput
+              name="positiveFeedback"
+              placeholder="Was gefällt dir besonders gut?"
+            />
+            <StyledInput
+              name="newFeatures"
+              placeholder="Welche Funktion wünschst du dir?"
+            />
+            <Button type="submit">schick&apos;s ab 🚀</Button>
+          </StyledForm>
+        )}
+      </StyledArticle>
     </>
   );
 }
@@ -175,6 +222,41 @@ const StyledProfilePicture = styled(Image)`
   border-radius: 50%;
   object-fit: cover;
 `;
+
+const StyledForm = styled.form`
+  display: flex;
+  flex-direction: column;
+  gap: calc(2 * var(--gap-between));
+`;
+const UnstyledButton = styled.button`
+  border: none;
+  background-color: transparent;
+`;
+const StyledArticle = styled.article`
+  padding-top: calc(2 * var(--gap-between));
+  padding-bottom: calc(2 * var(--gap-between));
+  padding-right: calc(2 * var(--gap-between));
+  padding-left: calc(2 * var(--gap-between));
+  width: calc(100% - (2 * var(--gap-out)));
+  border: 1px solid var(--color-lightgrey);
+  border-radius: var(--border-radius-medium);
+  background-color: var(--color-component);
+  margin-right: var(--gap-out);
+  margin-left: var(--gap-out);
+  margin-top: var(--gap-between);
+  margin-bottom: var(--gap-between);
+  position: relative;
+  text-align: center;
+`;
+const StyledInput = styled.input`
+  background-color: var(--color-background);
+  border: none;
+  border-radius: 10px;
+  height: 3rem;
+  width: 100%;
+  flex-grow: ${(props) => props.$flexGrow};
+  padding: 0.7rem;
+
 const StyledCollection = styled(Link)`
   text-decoration: none;
   color: var(--color-font);
@@ -196,4 +278,5 @@ const StyledCollection = styled(Link)`
     fill: var(--color-highlight);
     color: var(--color-highlight);
   }
+
 `;
