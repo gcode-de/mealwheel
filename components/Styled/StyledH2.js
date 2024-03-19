@@ -12,5 +12,10 @@ const StyledH2 = styled.h2`
   position: relative;
   display: flex;
   justify-content: space-between;
+  a {
+    color: var(--color-font);
+    cursor: pointer;
+  }
+
 `;
 export default StyledH2;

@@ -3,9 +3,9 @@ export const filterTags = [
     label: "Schwierigkeit",
     type: "difficulty",
     options: [
-      { label: "einfach", value: "easy" },
-      { label: "mittel", value: "medium" },
-      { label: "hart", value: "hard" },
+      { label: "Anfänger", value: "easy" },
+      { label: "Fortgeschritten", value: "medium" },
+      { label: "Profi", value: "hard" },
     ],
   },
   {
@@ -13,7 +13,7 @@ export const filterTags = [
     type: "duration",
     options: [
       { label: "<10 min", value: "&&10" },
-      { label: "10-20 mon", value: "10&&20" },
+      { label: "10-20 min", value: "10&&20" },
       { label: ">20 min", value: "20&&" },
     ],
   },
@@ -26,7 +26,7 @@ export const filterTags = [
       { label: "Fleisch", value: "meat" },
       { label: "pescetarisch", value: "pescetarian" },
       { label: "ketogen", value: "keto" },
-      { label: "low carb", value: "lowcarb" },
+      { label: "low carb", value: "low carb" },
     ],
   },
 ];
