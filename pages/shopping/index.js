@@ -1,47 +1,33 @@
 import styled from "styled-components";
-
 import StyledList from "@/components/Styled/StyledList";
 import AddButton from "@/components/Styled/AddButton";
 import Header from "@/components/Styled/Header";
 import Plus from "@/public/icons/Plus.svg";
+import Check from "@/public/icons/svg/check-circle_10470513.svg";
 import StyledIngredients from "@/components/Styled/StyledIngredients";
 import StyledInput from "@/components/Styled/StyledInput";
 import StyledDropDown from "@/components/Styled/StyledDropDown";
 import StyledListItem from "@/components/Styled/StyledListItem";
 import IconButtonLarge from "@/components/Styled/IconButtonLarge";
-
 import updateUserinDb from "@/helpers/updateUserInDb";
-import { useEffect, useState } from "react";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function ShoppingList({ user, mutateUser }) {
   const [editingIndex, setEditingIndex] = useState(null);
-  const [originalItem, setOriginalItem] = useState(null);
   const editFormRef = useRef(null);
 
   useEffect(() => {
     function handleClickOutside(event) {
       if (editFormRef.current && !editFormRef.current.contains(event.target)) {
-        if (originalItem) {
-          // Speichern des aktuellen Werts des Elements
-          const updatedList = [...user.shoppingList];
-          updatedList[editingIndex] = originalItem;
-          user.shoppingList = updatedList;
-          updateUserinDb(user, mutateUser);
-          setOriginalItem(null);
-        }
         setEditingIndex(null);
       }
     }
 
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [originalItem, editingIndex, user, mutateUser]);
-
-  const shoppingList = user?.shoppingList || [];
+  }, []);
 
   function handleItemClick(index) {
-    setOriginalItem(user.shoppingList[index]);
     setEditingIndex(index);
   }
 
@@ -128,7 +114,7 @@ export default function ShoppingList({ user, mutateUser }) {
           user.shoppingList.map((item, index) => (
             <StyledListItem key={index} onClick={() => handleItemClick(index)}>
               {editingIndex === index ? (
-                <form
+                <StyledEditForm
                   ref={editFormRef}
                   onSubmit={(event) => handleItemEdit(event, index)}
                 >
@@ -155,29 +141,32 @@ export default function ShoppingList({ user, mutateUser }) {
                     name="name"
                     required
                   />
-                  <button type="submit">Speichern</button>
-                </form>
+                  <AddButton type="submit" $color="var(--color-background)">
+                    <Check width={20} height={20} />
+                  </AddButton>
+                </StyledEditForm>
               ) : (
-                <StyledCheck>
-                  <StyledNumberUnit>
-                    <StyledCheckItem $text={item.isChecked} $flex={0.1}>
-                      {item.quantity}
+                <>
+                  <StyledCheck>
+                    <StyledNumberUnit>
+                      <StyledCheckItem $text={item.isChecked} $flex={0.1}>
+                        {item.quantity}
+                      </StyledCheckItem>
+                      <StyledCheckItem $text={item.isChecked} $flex={1}>
+                        {item.unit}
+                      </StyledCheckItem>
+                    </StyledNumberUnit>
+                    <StyledCheckItem $text={item.isChecked} $flex={2}>
+                      {item.name}
                     </StyledCheckItem>
-                    <StyledCheckItem $text={item.isChecked} $flex={1}>
-                      {item.unit}
-                    </StyledCheckItem>
-                  </StyledNumberUnit>
-                  <StyledCheckItem $text={item.isChecked} $flex={2}>
-                    {item.name}
-                  </StyledCheckItem>
-                </StyledCheck>
+                  </StyledCheck>
+                  <StyledCheckbox
+                    type="checkbox"
+                    checked={item.isChecked}
+                    onChange={() => handleCheckboxChange(index)}
+                  ></StyledCheckbox>
+                </>
               )}
-
-              <StyledCheckbox
-                type="checkbox"
-                checked={item.isChecked}
-                onChange={() => handleCheckboxChange(index)}
-              ></StyledCheckbox>
             </StyledListItem>
           ))
         )}
@@ -246,4 +235,10 @@ const StyledNumberUnit = styled.div`
 const Spacer = styled.div`
   height: 6rem;
   position: relative;
+`;
+
+const StyledEditForm = styled.form`
+  display: flex;
+  width: 100%;
+  gap: 0.25rem;
 `;
