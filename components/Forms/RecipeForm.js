@@ -17,6 +17,7 @@ import StyledDropDown from "../Styled/StyledDropDown";
 import { notifySuccess, notifyError } from "/helpers/toast";
 import handleDeleteImage from "@/helpers/Cloudinary/handleDeleteImage";
 import Plus from "/public/icons/svg/plus.svg";
+import handlePostImage from "@/helpers/Cloudinary/handlePostImage";
 
 export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
   const [difficulty, setDifficulty] = useState(
@@ -89,37 +90,14 @@ export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
     formData.append("file", file);
 
     if (formName === "addRecipe" || !data.imageLink) {
-      const response = await fetch("/api/cloudinary", {
-        method: "POST",
-        body: formData,
-      });
-      if (response.ok) {
-        const file = await response.json();
-
-        setImageUrl(file);
-        notifySuccess("Bild hinzugefügt");
-      } else {
-        console.error("image not added");
-        notifyError("Bild konnte nicht hinzugefügt werden");
-      }
+      handlePostImage(formData, setImageUrl);
     }
     if (formName === "editRecipe" && data.imageLink) {
       const deleteImage = data.publicId;
       if (data.publicId) {
         handleDeleteImage(deleteImage);
       }
-      const responseUpload = await fetch("/api/cloudinary", {
-        method: "POST",
-        body: formData,
-      });
-      if (responseUpload.ok) {
-        const file = await responseUpload.json();
-        setImageUrl(file);
-        notifySuccess("Bild geupdatet");
-      } else {
-        console.error("no image update");
-        notifyError("Bild konnte nicht hinzugefügt werden");
-      }
+      handlePostImage(formData, setImageUrl);
     }
   }
   return (
