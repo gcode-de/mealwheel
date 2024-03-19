@@ -16,7 +16,6 @@ import StyledP from "@/components/Styled/StyledP";
 import StyledListItem from "@/components/Styled/StyledListItem";
 import LoadingComponent from "@/components/Loading";
 import { filterTags } from "@/helpers/filterTags";
-import StyledInput from "@/components/Styled/StyledInput";
 import Button from "@/components/Styled/StyledButton";
 import updateUserinDb from "@/helpers/updateUserInDb";
 
@@ -30,6 +29,7 @@ export default function DetailPage({
   toggleHasCooked,
 }) {
   const [content, setContent] = useState("instructions");
+
   const router = useRouter();
   const { id } = router.query;
   const servings = Number(router.query.servings) || 1;
@@ -38,6 +38,7 @@ export default function DetailPage({
     data: recipe,
     isLoading: dataIsLoading,
     error: dataError,
+    mutate,
   } = useSWR(id ? `/api/recipes/${id}` : null);
 
   const userIsAuthor = user?._id === recipe?.author;
@@ -98,6 +99,7 @@ export default function DetailPage({
       comment: formData.get("comment"),
       date: new Date(),
     };
+    getRecipeProperty(_id, "notes");
 
     const interactionIndex = user.recipeInteractions.findIndex(
       (interaction) => interaction.recipe._id === _id
@@ -108,9 +110,10 @@ export default function DetailPage({
     } else {
       user.recipeInteractions.push({ _id: _id, notes: [note] });
     }
-
+    console.log(user);
     updateUserinDb(user, mutateUser);
     event.target.reset();
+    mutate();
   }
   const foundInteractions = user.recipeInteractions.find(
     (interaction) => interaction.recipe._id === _id
@@ -247,21 +250,26 @@ export default function DetailPage({
         )}
         {content === "notes" && (
           <>
-            <StyledList>
-              {foundInteractions.notes.map((note, i) => (
-                <li key={i}>
+            {foundInteractions?.notes.map((note, i) => (
+              <>
+                <StyledComment key={i}>
                   {note.comment}
-                  {new Date(note.date).toLocaleDateString()}
-                </li>
-              ))}
-            </StyledList>
-            <form onSubmit={handleAddNote}>
-              <StyledInput
-                name="comment"
-                placeholder="ergänze deine Notizen.."
-              />
-              <Button type="submit">Notiz hinzufügen</Button>
-            </form>
+
+                  <StyledDate>
+                    {new Date(note.date).toLocaleDateString()}
+                  </StyledDate>
+                </StyledComment>
+              </>
+            ))}
+            <StyledCommentWrapper>
+              <form onSubmit={handleAddNote}>
+                <StyledInput
+                  name="comment"
+                  placeholder="ergänze deine Notizen.."
+                />
+                <Button type="submit">Notiz hinzufügen</Button>
+              </form>
+            </StyledCommentWrapper>
           </>
         )}
         {content === "video" && (
@@ -381,4 +389,54 @@ const StyledCategoryButton = styled.button`
   height: 1.75rem;
   margin-bottom: 0.5rem;
   padding: 0.25rem;
+`;
+const StyledComment = styled.article`
+  padding-top: var(--gap-between);
+  padding-bottom: var(--gap-between);
+  padding-right: calc(2 * var(--gap-between));
+  padding-left: calc(2 * var(--gap-between));
+  width: calc(100% - (2 * var(--gap-out)));
+  border: 1px solid var(--color-lightgrey);
+  border-radius: var(--border-radius-small);
+  background-color: var(--color-component);
+  margin-right: var(--gap-out);
+  margin-left: var(--gap-out);
+  margin-top: var(--gap-between);
+  margin-bottom: var(--gap-between);
+  position: relative;
+`;
+
+const StyledDate = styled.p`
+  font-style: italic;
+  margin: 0;
+  text-align: right;
+  color: var(--color-lightgrey);
+`;
+const StyledCommentWrapper = styled.article`
+  padding-top: calc(2 * var(--gap-between));
+  padding-bottom: calc(2 * var(--gap-between));
+  padding-right: calc(2 * var(--gap-between));
+  padding-left: calc(2 * var(--gap-between));
+  width: calc(100% - (2 * var(--gap-out)));
+  border: 1px solid var(--color-lightgrey);
+  border-radius: var(--border-radius-small);
+  background-color: var(--color-component);
+  margin-right: var(--gap-out);
+  margin-left: var(--gap-out);
+  margin-top: var(--gap-between);
+  margin-bottom: var(--gap-between);
+  position: relative;
+`;
+const StyledInput = styled.input`
+  background-color: var(--color-background);
+  border: none;
+  border-radius: 10px;
+  height: 3rem;
+  width: 100%;
+  flex-grow: ${(props) => props.$flexGrow};
+  padding: 0.7rem;
+`;
+const UnstyledButton = styled.button`
+  border: none;
+  background-color: transparent;
 `;

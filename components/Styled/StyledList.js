@@ -8,7 +8,7 @@ const StyledList = styled.ul`
   padding-left: calc(2 * var(--gap-between));
   width: calc(100% - (2 * var(--gap-out)));
   border: 1px solid var(--color-lightgrey);
-  border-radius: var(--border-radius-medium);
+  border-radius: var(--border-radius-small);
   background-color: var(--color-component);
   margin-right: var(--gap-out);
   margin-left: var(--gap-out);
