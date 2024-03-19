@@ -88,17 +88,6 @@ export default function ProfilePage({ user, mutateUser }) {
         }}
         fill="var(--color-lightgrey)"
       />
-      {/* <StyledLogin>
-        {session ? (
-          <button type="button" onClick={() => signOut()}>
-            abmelden
-          </button>
-        ) : (
-          <button type="button" onClick={() => signIn()}>
-            anmelden
-          </button>
-        )}
-      </StyledLogin> */}
       <WrapperCenter>
         <StyledProfile>
           {!editUser ? (
@@ -310,15 +299,4 @@ const StyledCollection = styled(Link)`
     fill: var(--color-highlight);
     color: var(--color-highlight);
   }
-`;
-
-const StyledLogin = styled.div`
-  button {
-    border: none;
-    background-color: transparent;
-    cursor: pointer;
-  }
-  position: fixed;
-  top: 0;
-  right: 0;
 `;

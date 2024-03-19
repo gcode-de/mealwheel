@@ -87,21 +87,6 @@ export default function App({
     updateUserinDb(user, mutate);
   }
 
-  // if (error) {
-  //   return (
-  //     <>
-  //       <GlobalStyle />
-  //       <SessionProvider session={session}>
-  //         <Layout>
-  //           <SWRConfig value={{ fetcher }}>
-  //             <Component {...pageProps} error={error} />
-  //           </SWRConfig>
-  //         </Layout>
-  //       </SessionProvider>
-  //     </>
-  //   );
-  // }
-
   if (isLoading) {
     return (
       <>
