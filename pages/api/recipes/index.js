@@ -1,12 +1,15 @@
 import dbConnect from "../../../db/connect";
 import Recipe from "../../../db/models/Recipe";
 import mongoose from "mongoose";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "../auth/[...nextauth]";
 
 export default async function handler(request, response) {
   await dbConnect();
+  const session = await getServerSession(request, response, authOptions);
+  const userId = session.user.id;
 
   if (request.method === "GET") {
-    // console.log(request.query);
     const { sort = "_id", order = "desc", search } = request.query;
     const sortOrder = order === "desc" ? -1 : 1;
 
@@ -27,6 +30,16 @@ export default async function handler(request, response) {
           queryObj[key] = { $in: request.query[key].split(",") };
         }
       }
+    });
+
+    //Filtern der Rezepte, damit keine fremden, privaten Rezepte angezeigt werden:
+    pipeline.push({
+      $match: {
+        $or: [
+          { public: { $ne: false } }, // Das Rezept ist öffentlich oder hat keine public-Property
+          { public: false, author: userId }, // Das Rezept ist nicht öffentlich, aber der aktuelle Benutzer ist der Autor
+        ],
+      },
     });
 
     // Hinzufügen eines kombinierten $match-Schritts für alle anderen Filter
@@ -58,7 +71,6 @@ export default async function handler(request, response) {
     }
 
     const recipes = await Recipe.aggregate(pipeline);
-    console.log(JSON.stringify(pipeline, null, 2));
 
     if (!recipes.length) {
       return response.status(200).json([]);

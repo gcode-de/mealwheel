@@ -70,7 +70,7 @@ export default function MyRecipes({
 
       <StyledH2>
         <div>Kochbücher</div>
-        <StyledLink href="/profile/collections">zeig mir alle</StyledLink>
+        <StyledLink href="/profile/collections">alle anzeigen</StyledLink>
       </StyledH2>
       <Wrapper>
         {user.collections.length
