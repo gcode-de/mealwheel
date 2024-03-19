@@ -7,9 +7,7 @@ export default async function handleDeleteImage(publicId) {
     body: JSON.stringify({ public_id: publicId }),
   });
 
-  if (responseDelete.ok) {
-    // const file = await responseDelete.json();
-  } else {
+  if (!responseDelete.ok) {
     console.error("delete failed");
   }
 }

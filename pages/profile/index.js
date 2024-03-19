@@ -216,8 +216,6 @@ const StyledUsernameForm = styled.form`
     margin: 1;
     flex: 1;
   }
-  button {
-  }
 `;
 
 const StyledSaveButton = styled.button`
