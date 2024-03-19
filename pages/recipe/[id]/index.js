@@ -22,7 +22,6 @@ import updateUserinDb from "@/helpers/updateUserInDb";
 import { filterTags } from "@/helpers/filterTags";
 import Button from "@/components/Styled/StyledButton";
 
-
 export default function DetailPage({
   user,
   mutateUser,
@@ -38,7 +37,6 @@ export default function DetailPage({
   const [calendarFormIsVisible, setCalendarFormIsVisible] = useState(false);
   const [collectionFormIsVisible, setCollectionFormIsVisible] = useState(false);
   const [selectedCollection, setselectedCollection] = useState("");
-
 
   const router = useRouter();
   const { id } = router.query;
@@ -122,11 +120,14 @@ export default function DetailPage({
     difficulty,
   } = recipe;
 
-
   difficulty.toUpperCase();
 
   function handleAddNote(event) {
     event.preventDefault();
+    if (!user) {
+      notifyError("Bitte zuerst einloggen.");
+      return;
+    }
     const formData = new FormData(event.target);
     const note = {
       comment: formData.get("comment"),
@@ -143,15 +144,14 @@ export default function DetailPage({
     } else {
       user.recipeInteractions.push({ _id: _id, notes: [note] });
     }
-    console.log(user);
     updateUserinDb(user, mutateUser);
     event.target.reset();
     mutate();
   }
-  const foundInteractions = user.recipeInteractions.find(
+
+  const foundInteractions = user?.recipeInteractions.find(
     (interaction) => interaction.recipe._id === _id
   );
-
 
   return (
     <Wrapper>
@@ -191,6 +191,10 @@ export default function DetailPage({
               : "var(--color-lightgrey)"
           }
           onClick={() => {
+            if (!user) {
+              notifyError("Bitte zuerst einloggen.");
+              return;
+            }
             setCollectionFormIsVisible((prevState) => !prevState);
             setCalendarFormIsVisible(false);
           }}
@@ -205,6 +209,10 @@ export default function DetailPage({
               : "var(--color-lightgrey)"
           }
           onClick={() => {
+            if (!user) {
+              notifyError("Bitte zuerst einloggen.");
+              return;
+            }
             setCalendarFormIsVisible((prevState) => !prevState);
             setCollectionFormIsVisible(false);
           }}
@@ -259,7 +267,7 @@ export default function DetailPage({
             name="collectionName"
             required
           >
-            {user.collections.map((col, index) => (
+            {user?.collections.map((col, index) => (
               <option key={index} value={col.collectionName}>
                 {col.collectionName}
               </option>

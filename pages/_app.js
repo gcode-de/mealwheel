@@ -7,6 +7,7 @@ import useSWR, { SWRConfig } from "swr";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import updateUserinDb from "@/helpers/updateUserInDb";
+import { notifySuccess, notifyError } from "/helpers/toast";
 
 const fetcher = async (url) => {
   const res = await fetch(url);
@@ -47,7 +48,7 @@ export default function App({
 
   async function toggleIsFavorite(_id) {
     if (!session) {
-      signIn();
+      notifyError("Bitte zuerst einloggen.");
       return;
     }
     if (
@@ -68,7 +69,7 @@ export default function App({
 
   async function toggleHasCooked(_id) {
     if (!session) {
-      signIn();
+      notifyError("Bitte zuerst einloggen.");
       return;
     }
     if (
