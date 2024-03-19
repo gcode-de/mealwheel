@@ -21,7 +21,6 @@ import updateUserinDb from "@/helpers/updateUserInDb";
 
 import { filterTags } from "@/helpers/filterTags";
 import Button from "@/components/Styled/StyledButton";
-import updateUserinDb from "@/helpers/updateUserInDb";
 
 
 export default function DetailPage({
