@@ -80,11 +80,11 @@ export default function ProfilePage({ user, mutateUser }) {
         fill="var(--color-lightgrey)"
       />
       <IconButton
-        style={session ? "Leave" : "Reload"}
+        style={"Leave"}
         top="var(--gap-out)"
         right="var(--gap-out)"
         onClick={() => {
-          session ? signOut({ callbackUrl: "/", redirect: true }) : signIn();
+          signOut({ callbackUrl: "/", redirect: true });
         }}
         fill="var(--color-lightgrey)"
       />
