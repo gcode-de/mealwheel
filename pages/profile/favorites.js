@@ -2,7 +2,7 @@ import styled from "styled-components";
 import CardSkeleton from "@/components/Styled/CardSkeleton";
 import MealCard from "@/components/MealCard";
 import Header from "@/components/Styled/Header";
-import StyledUl from "@/components/StyledUl";
+import StyledUl from "@/components/Styled/StyledUl";
 import LoadingComponent from "@/components/Loading";
 
 export default function Favorites({

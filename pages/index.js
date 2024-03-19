@@ -2,7 +2,7 @@ import Header from "@/components/Styled/Header";
 
 import MealCard from "@/components/MealCard";
 
-import StyledUl from "@/components/StyledUl";
+import StyledUl from "@/components/Styled/StyledUl";
 import IconButtonLarge from "@/components/Styled/IconButtonLarge";
 import ScrollToTop from "@/components/ScrollToTopButton";
 import StyledH2 from "@/components/Styled/StyledH2";
@@ -123,7 +123,6 @@ export default function HomePage({
       order,
     });
     applyFilter({ sort: { type, order } });
-
   }
 
   const handleInputChange = (e) => {

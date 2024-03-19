@@ -11,12 +11,12 @@ import StyledH2 from "../Styled/StyledH2";
 import Button from "../Styled/StyledButton";
 import StyledP from "../Styled/StyledP";
 import AddButton from "../Styled/AddButton";
-import Plus from "@/public/icons/Plus.svg";
 import StyledIngredients from "../Styled/StyledIngredients";
 import StyledInput from "../Styled/StyledInput";
 import StyledDropDown from "../Styled/StyledDropDown";
 import { notifySuccess, notifyError } from "/helpers/toast";
 import handleDeleteImage from "@/helpers/Cloudinary/handleDeleteImage";
+import Plus from "/public/icons/svg/plus.svg";
 
 export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
   const [difficulty, setDifficulty] = useState(
@@ -36,7 +36,6 @@ export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
 
   const router = useRouter();
   const [selectedTags, setSelectedTags] = useState(data ? data.diet : []);
-  const [preview, setPreview] = useState(data ? data.imageLink : "");
   const [imageUrl, setImageUrl] = useState(data ? data.imageLink : "");
 
   function handleTagChange(value) {
@@ -71,10 +70,10 @@ export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
       ...data,
       ingredients,
 
-      imageLink: imageUrl?.imageUrl,
+      imageLink: imageUrl.imageUrl,
       diet: selectedTags,
       public: event.target.public.checked,
-      publicId: imageUrl?.publicId,
+      publicId: imageUrl.publicId,
     };
 
     onSubmit(newData);
@@ -84,7 +83,7 @@ export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
     event.preventDefault();
 
     const file = event.target.files[0];
-    setPreview({ imageUrl: URL.createObjectURL(file) });
+    setImageUrl({ imageUrl: URL.createObjectURL(file) });
 
     const formData = new FormData();
     formData.append("file", file);
@@ -134,10 +133,10 @@ export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
             router.back();
           }}
         ></IconButton>
-        {preview && (
+        {imageUrl && (
           <StyledImageCloudinary
             src={
-              preview.imageUrl || "/img/jason-briscoe-7MAjXGUmaPw-unsplash.jpg"
+              imageUrl.imageUrl || "/img/jason-briscoe-7MAjXGUmaPw-unsplash.jpg"
             }
             alt="Uploaded Image"
             width={100}
@@ -147,9 +146,13 @@ export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
 
         <StyledImageUploadContainer htmlFor="upload">
           <form>
-            <input type="file" name="file" id="upload" onChange={uploadImage} />
-
-            {/* <button type="submit">hinzufügen</button> */}
+            <Plus width={40} height={40} />
+            <HiddenInput
+              type="file"
+              name="file"
+              id="upload"
+              onChange={uploadImage}
+            />
           </form>
         </StyledImageUploadContainer>
       </StyledTop>
@@ -314,9 +317,6 @@ const StyledBigInput = styled.input`
   width: calc(100% - (2 * var(--gap-out)));
   padding: 0.7rem;
 `;
-const StyledImageInput = styled.input`
-  display: none;
-`;
 const Spacer = styled.div`
   margin-top: 2rem;
   position: relative;
@@ -396,10 +396,19 @@ const ButtonContainer = styled.div`
   width: calc(100% - (2 * var(--gap-out)));
 `;
 const StyledImageUploadContainer = styled.label`
+  display: inline-block;
+  background-color: white;
+  width: 60px;
+  height: 60px;
   display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
+  border-radius: 100%;
+  box-shadow: 4px 8px 16px 0 rgb(0 0 0 / 8%);
   cursor: pointer;
   position: absolute;
+`;
+
+const HiddenInput = styled.input`
+  display: none;
 `;

@@ -1,7 +1,7 @@
 import IconButton from "@/components/Styled/IconButton";
 import MealCard from "@/components/MealCard";
 import { useRouter } from "next/router";
-import StyledUl from "@/components/StyledUl";
+import StyledUl from "@/components/Styled/StyledUl";
 import Spacer from "@/components/Styled/Spacer";
 import StyledH2 from "@/components/Styled/StyledH2";
 
