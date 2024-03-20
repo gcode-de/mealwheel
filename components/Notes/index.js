@@ -182,6 +182,7 @@ const StyledMenu = styled(Menu)`
   border-radius: 100%;
   position: absolute;
   right: 16px;
+  top: 16px;
   transform: ${(props) => (props.$rotate ? "rotate(90deg)" : "0")};
   cursor: pointer;
 `;
