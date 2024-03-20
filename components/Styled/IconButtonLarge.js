@@ -27,7 +27,7 @@ export default function IconButtonLarge({ onClick, style, bottom }) {
 }
 
 const StyledBox = styled.div`
-  background-color: rgba(255, 255, 255, 0.9);
+  background-color: var(--color-component);
   position: fixed;
   z-index: 300;
   bottom: ${(props) => props.$bottom};
