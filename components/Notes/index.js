@@ -208,6 +208,7 @@ const UnstyledButton = styled.button`
   align-items: center;
   gap: var(--gap-between);
   height: 2rem;
+  color: var(--color-font);
   &:hover {
     background-color: var(--color-background);
   }
