@@ -1,4 +1,3 @@
-import styled from "styled-components";
 import StyledList from "@/components/Styled/StyledList";
 import AddButton from "@/components/Styled/AddButton";
 import Header from "@/components/Styled/Header";
@@ -13,6 +12,7 @@ import IconButtonLarge from "@/components/Styled/IconButtonLarge";
 import updateUserinDb from "@/helpers/updateUserInDb";
 import { ingredientUnits } from "@/helpers/ingredientUnits";
 
+import styled from "styled-components";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
