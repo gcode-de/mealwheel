@@ -25,6 +25,7 @@ export default function HomePage({
   isLoading,
   getRecipeProperty,
   toggleIsFavorite,
+  user,
 }) {
   const router = useRouter();
 
@@ -310,11 +311,13 @@ export default function HomePage({
             })}
           </StyledUl>
           <ScrollToTop />
-          <IconButtonLarge
-            style={"plus"}
-            bottom="6rem"
-            onClick={() => router.push("/addRecipe")}
-          />
+          {user && (
+            <IconButtonLarge
+              style={"plus"}
+              bottom="6rem"
+              onClick={() => router.push("/addRecipe")}
+            />
+          )}
         </>
       ) : (
         <StyledUl>

@@ -9,15 +9,16 @@ import StyledInput from "@/components/Styled/StyledInput";
 import StyledDropDown from "@/components/Styled/StyledDropDown";
 import StyledListItem from "@/components/Styled/StyledListItem";
 import IconButtonLarge from "@/components/Styled/IconButtonLarge";
-import Link from "next/link";
 
 import updateUserinDb from "@/helpers/updateUserInDb";
+import { ingredientUnits } from "@/helpers/ingredientUnits";
+
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
 export default function ShoppingList({ user, mutateUser }) {
   const [editingIndex, setEditingIndex] = useState(null);
   const editFormRef = useRef(null);
-  const unitOptions = ["ml", "piece", "gramm", "EL", "TL", "Prise"];
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -137,8 +138,7 @@ export default function ShoppingList({ user, mutateUser }) {
                     name="quantity"
                   />
                   <StyledDropDown name="unit" defaultValue={item.unit}>
-                    <option value="">-</option>
-                    {unitOptions.map((unit) => (
+                    {ingredientUnits.map((unit) => (
                       <option key={unit} value={unit}>
                         {unit}
                       </option>
@@ -160,7 +160,7 @@ export default function ShoppingList({ user, mutateUser }) {
                   <StyledCheck>
                     <StyledNumberUnit>
                       <StyledCheckItem $text={item.isChecked} $flex={0.1}>
-                        {item.quantity}
+                        {item.quantity || "1"}
                       </StyledCheckItem>
                       <StyledCheckItem $text={item.isChecked} $flex={1}>
                         {item.unit}
@@ -190,8 +190,7 @@ export default function ShoppingList({ user, mutateUser }) {
               name="quantity"
             />
             <StyledDropDown name="unit">
-              <option value="">-</option>
-              {unitOptions.map((unit) => (
+              {ingredientUnits.map((unit) => (
                 <option key={unit} value={unit}>
                   {unit}
                 </option>
