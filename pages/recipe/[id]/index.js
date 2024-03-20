@@ -190,7 +190,6 @@ export default function DetailPage({
               : "var(--color-lightgrey)"
           }
           onClick={() => {
-            console.log(user);
             if (!user) {
               notifyError("Bitte zuerst einloggen.");
               return;
