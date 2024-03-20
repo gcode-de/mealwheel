@@ -60,8 +60,8 @@ export default function Collections({ user, mutateUser }) {
           </AddButton>
         </StyledForm>
       )}
-      {!user.collections && <h2>noch keine Kochbücher</h2>}
       <CollectionWrapper>
+        {!user.collections.length && "Du hast noch keine Kochbücher angelegt."}
         {user.collections.map((col, index) => (
           <CollectionCard key={index} collection={col} />
         ))}

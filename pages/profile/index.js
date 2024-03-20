@@ -10,6 +10,7 @@ import styled from "styled-components";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useState } from "react";
+import { useSession, signIn, signOut } from "next-auth/react";
 import updateUserinDb from "@/helpers/updateUserInDb";
 import StyledH2 from "@/components/Styled/StyledH2";
 import Button from "@/components/Styled/StyledButton";
@@ -17,6 +18,10 @@ import { notifySuccess, notifyError } from "/helpers/toast";
 
 export default function ProfilePage({ user, mutateUser }) {
   const router = useRouter();
+  const { data: session, status } = useSession();
+  if (status === "unauthenticated") {
+    signIn();
+  }
   const [editUser, setEditUser] = useState(false);
   const [feedbackVisible, setFeedbackVisible] = useState(false);
 
@@ -74,12 +79,21 @@ export default function ProfilePage({ user, mutateUser }) {
         onClick={() => router.push("/profile/settings")}
         fill="var(--color-lightgrey)"
       />
+      <IconButton
+        style={"Leave"}
+        top="var(--gap-out)"
+        right="var(--gap-out)"
+        onClick={() => {
+          signOut({ callbackUrl: "/", redirect: true });
+        }}
+        fill="var(--color-lightgrey)"
+      />
       <WrapperCenter>
         <StyledProfile>
           {!editUser ? (
-            (user?.profilePictureLink && (
+            ((user?.profilePictureLink || session?.user?.image) && (
               <StyledProfilePicture
-                src={user?.profilePictureLink}
+                src={user?.profilePictureLink || session?.user?.image}
                 alt="Profile Picture"
                 width={106}
                 height={106}
@@ -97,7 +111,12 @@ export default function ProfilePage({ user, mutateUser }) {
         {!editUser ? (
           <p>
             Hallo,{" "}
-            {user?.userName || user?.firstName || user?.email || "Gastnutzer"}!
+            {user?.userName ||
+              user?.firstName ||
+              session?.user?.name ||
+              user?.email ||
+              "Gastnutzer"}
+            !
           </p>
         ) : (
           <StyledUsernameForm onSubmit={updateUsername}>
@@ -130,6 +149,7 @@ export default function ProfilePage({ user, mutateUser }) {
           <StyledP>Rezepte</StyledP>
         </StyledCollection>
       </Wrapper>
+
       <StyledArticle>
         {!feedbackVisible && (
           <UnstyledButton onClick={toggleFeedbackForm}>

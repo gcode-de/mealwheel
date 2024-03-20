@@ -82,7 +82,7 @@ export default function Plan({
           isDayActive = !isDayManuallyDisabled;
         } else {
           // fallback to default setting
-          isDayActive = user.settings.weekdaysEnabled[dayOfWeek];
+          isDayActive = user?.settings?.weekdaysEnabled?.[dayOfWeek];
         }
 
         if (isDayActive && !calendarDay?.recipe) {
@@ -280,6 +280,19 @@ export default function Plan({
         <Header text={"Wochenplan 🥗"} />
         <LoadingComponent amount />
       </>
+    );
+  }
+
+  if (!user) {
+    return (
+      <StyledHeader>
+        <Header text={"Wochenplan 🥗"} />
+        <CalendarContainer>
+          Bitte <Link href="/api/auth/signin">einloggen</Link>, um den
+          Wochenplaner zu nutzen.
+          <CardSkeleton amount={3} />
+        </CalendarContainer>
+      </StyledHeader>
     );
   }
 

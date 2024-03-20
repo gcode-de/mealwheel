@@ -14,10 +14,6 @@ export default function DetailCollection({ recipes, user }) {
 
   const foundCollection = user.collections.find((col) => col._id === id);
 
-  // const foundRecipes = recipes.filter((recipe) =>
-  //   foundCollection.recipes.includes(recipe._id)
-  // );
-
   return (
     <>
       <Spacer />
