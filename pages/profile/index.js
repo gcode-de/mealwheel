@@ -19,11 +19,14 @@ import { notifySuccess, notifyError } from "/helpers/toast";
 export default function ProfilePage({ user, mutateUser }) {
   const router = useRouter();
   const { data: session, status } = useSession();
+
+  const [editUser, setEditUser] = useState(false);
+  const [feedbackVisible, setFeedbackVisible] = useState(false);
+
   if (status === "unauthenticated") {
     signIn();
   }
-  const [editUser, setEditUser] = useState(false);
-  const [feedbackVisible, setFeedbackVisible] = useState(false);
+  if (!user) return null;
 
   const uploadImage = async (event) => {
     const files = event.target.files;
