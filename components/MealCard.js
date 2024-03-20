@@ -15,7 +15,6 @@ export default function MealCard({
   day,
   user,
 }) {
-  console.log("recipe in Mealcard", recipe);
   return (
     <StyledLi>
       {isFavorite !== null && (
