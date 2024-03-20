@@ -1,38 +1,59 @@
 import dbConnect from "../../../db/connect";
 import Recipe from "../../../db/models/Recipe";
+import mongoose from "mongoose";
 import { cleanupRecipeReferences } from "../../../db/models/Recipe";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "../auth/[...nextauth]";
 
 export default async function handler(request, response) {
   await dbConnect();
+  const session = await getServerSession(request, response, authOptions);
+  const userId = session?.user?.id
+    ? new mongoose.Types.ObjectId(session.user.id)
+    : null;
   const { id } = request.query;
 
   if (request.method === "GET") {
     const recipe = await Recipe.findById(id);
 
-    if (!recipe) {
-      return response.status(404).json({ status: "Not Found" });
+    if (!recipe || (!recipe.author.equals(userId) && recipe.public === false)) {
+      return response
+        .status(404)
+        .json({ status: "Recipe not found or unauthorized" });
     }
 
     response.status(200).json(recipe);
-  }
+  } else if (request.method === "PUT") {
+    try {
+      const recipe = await Recipe.findById(id);
 
-  if (request.method === "PUT") {
-    const recipe = request.body;
-    await Recipe.findByIdAndUpdate(id, recipe);
-    return response.status(200).json({ status: `Recipe ${id} updated!` });
-  }
+      if (!recipe || !recipe.author.equals(userId)) {
+        return response
+          .status(404)
+          .json({ status: "Recipe not found or unauthorized" });
+      }
 
-  if (request.method === "DELETE") {
-    const { user, author } = request.body;
-    if (user === author) {
-      // Zuerst die Bereinigung der Referenzen durchführen
-      await cleanupRecipeReferences(id);
+      await Recipe.findByIdAndUpdate(id, request.body);
+      return response.status(200).json({ status: `Recipe ${id} updated!` });
+    } catch (error) {
+      console.error(error);
+      return response.status(400).json({ error: error.message });
+    }
+  } else if (request.method === "DELETE") {
+    try {
+      const recipe = await Recipe.findById(id);
 
-      // Rezept löschen
+      if (!recipe || !recipe.author.equals(userId)) {
+        return response
+          .status(404)
+          .json({ status: "Recipe not found or unauthorized" });
+      }
+
       await Recipe.findByIdAndDelete(id);
       return response.status(200).json({ status: `Recipe ${id} deleted!` });
-    } else {
-      return response.status(401).json({ status: "unauthorized" });
+    } catch (error) {
+      console.error(error);
+      return response.status(400).json({ error: error.message });
     }
   }
 }

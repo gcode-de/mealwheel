@@ -1,8 +1,8 @@
-import RecipeForm from "@/components/Forms/RecipeForm";
+import RecipeForm from "../components/Forms/RecipeForm";
 import { useRouter } from "next/router";
 import useSWR from "swr";
 import React from "react";
-import { notifySuccess, notifyError } from "/helpers/toast";
+import { notifySuccess, notifyError } from "../helpers/toast";
 
 export default function AddRecipe({ user }) {
   const { mutate } = useSWR("/api/recipes");

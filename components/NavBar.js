@@ -9,7 +9,7 @@ import Gear from "../public/icons/settings-svgrepo-com.svg";
 import Profile from "../public/icons/svg/profile.svg";
 import Shopping from "../public/icons/svg/square-u_10457596.svg";
 
-export default function NavBar() {
+export default function NavBar({ user }) {
   const router = useRouter();
   function isActive(path) {
     return router.pathname === path;
@@ -19,7 +19,7 @@ export default function NavBar() {
     { href: "/plan", label: "Plan", Icon: Calendar },
     { href: "/profile/favorites", label: "Favoriten", Icon: Heart },
     { href: "/shopping", label: "Einkauf", Icon: Shopping },
-    { href: "/profile", label: "Profil", Icon: Profile },
+    { href: "/profile", label: user ? "Profil" : "Login", Icon: Profile },
   ];
 
   return (

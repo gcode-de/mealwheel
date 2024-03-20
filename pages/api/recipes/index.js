@@ -1,8 +1,15 @@
 import dbConnect from "../../../db/connect";
 import Recipe from "../../../db/models/Recipe";
+import mongoose from "mongoose";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "../auth/[...nextauth]";
 
 export default async function handler(request, response) {
   await dbConnect();
+  const session = await getServerSession(request, response, authOptions);
+  const userId = session?.user?.id
+    ? new mongoose.Types.ObjectId(session.user.id)
+    : null;
 
   if (request.method === "GET") {
     const { sort = "_id", order = "desc", search } = request.query;
@@ -19,8 +26,22 @@ export default async function handler(request, response) {
     let queryObj = {};
     Object.keys(request.query).forEach((key) => {
       if (!["sort", "order", "duration", "search"].includes(key)) {
-        queryObj[key] = { $in: request.query[key].split(",") };
+        if (key === "author") {
+          queryObj[key] = new mongoose.Types.ObjectId(request.query[key]);
+        } else {
+          queryObj[key] = { $in: request.query[key].split(",") };
+        }
       }
+    });
+
+    //Filtern der Rezepte, damit keine fremden, privaten Rezepte angezeigt werden:
+    pipeline.push({
+      $match: {
+        $or: [
+          { public: { $ne: false } }, // Das Rezept ist öffentlich oder hat keine public-Property
+          { author: userId }, // Der aktuelle Benutzer ist der Autor
+        ],
+      },
     });
 
     // Hinzufügen eines kombinierten $match-Schritts für alle anderen Filter
@@ -56,7 +77,6 @@ export default async function handler(request, response) {
     if (!recipes.length) {
       return response.status(200).json([]);
     }
-
     response.status(200).json(recipes);
   } else if (request.method === "POST") {
     try {

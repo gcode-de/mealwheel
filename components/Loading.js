@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import PlateWheel from "/public/icons/svg/plate-wheel.svg";
-import StyledUl from "./StyledUl";
+import StyledUl from "./Styled/StyledUl";
 import CardSkeleton from "@/components/Styled/CardSkeleton";
 
 export default function LoadingComponent({ amount }) {

@@ -22,6 +22,7 @@ import updateUserinDb from "@/helpers/updateUserInDb";
 import { filterTags } from "@/helpers/filterTags";
 import Notes from "@/components/Notes";
 
+
 export default function DetailPage({
   user,
   mutateUser,
@@ -32,7 +33,6 @@ export default function DetailPage({
   toggleHasCooked,
 }) {
   const [content, setContent] = useState("instructions");
-
   const [selectedDate, setSelectedDate] = useState("");
   const [calendarFormIsVisible, setCalendarFormIsVisible] = useState(false);
   const [collectionFormIsVisible, setCollectionFormIsVisible] = useState(false);
@@ -48,7 +48,8 @@ export default function DetailPage({
     error: dataError,
     mutate,
   } = useSWR(id ? `/api/recipes/${id}` : null);
-  const userIsAuthor = user?._id === recipe?.author;
+
+  const userIsAuthor = user && user?._id === recipe?.author;
 
   if (error || dataError) {
     return <h1>Fehler...</h1>;
@@ -161,6 +162,10 @@ export default function DetailPage({
               : "var(--color-lightgrey)"
           }
           onClick={() => {
+            if (!user) {
+              notifyError("Bitte zuerst einloggen.");
+              return;
+            }
             setCollectionFormIsVisible((prevState) => !prevState);
             setCalendarFormIsVisible(false);
           }}
@@ -175,6 +180,10 @@ export default function DetailPage({
               : "var(--color-lightgrey)"
           }
           onClick={() => {
+            if (!user) {
+              notifyError("Bitte zuerst einloggen.");
+              return;
+            }
             setCalendarFormIsVisible((prevState) => !prevState);
             setCollectionFormIsVisible(false);
           }}
@@ -189,6 +198,10 @@ export default function DetailPage({
               : "var(--color-lightgrey)"
           }
           onClick={() => {
+            if (!user) {
+              notifyError("Bitte zuerst einloggen.");
+              return;
+            }
             toggleHasCooked(_id);
           }}
         />
@@ -202,6 +215,10 @@ export default function DetailPage({
               : "var(--color-lightgrey)"
           }
           onClick={() => {
+            if (!user) {
+              notifyError("Bitte zuerst einloggen.");
+              return;
+            }
             toggleIsFavorite(_id);
           }}
         />
@@ -229,7 +246,7 @@ export default function DetailPage({
             name="collectionName"
             required
           >
-            {user.collections.map((col, index) => (
+            {user?.collections.map((col, index) => (
               <option key={index} value={col.collectionName}>
                 {col.collectionName}
               </option>

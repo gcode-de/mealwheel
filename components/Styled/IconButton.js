@@ -1,4 +1,5 @@
 import styled from "styled-components";
+
 import ArrowLeft from "@/public/icons/svg/chevron-left-svgrepo-com.svg";
 import ChevronSmall from "@/public/icons/ChevronSmall.svg";
 import Plus from "@/public/icons/svg/plus.svg";
@@ -12,6 +13,7 @@ import Calendar from "@/public/icons/calendar-1-svgrepo-com.svg";
 import Edit from "@/public/icons/edit-3-svgrepo-com (2).svg";
 import Settings from "@/public/icons/settings-svgrepo-com.svg";
 import Book from "@/public/icons/svg/book-user_9856365.svg";
+import Leave from "@/public/icons/svg/arrow-left-from-line_9253329.svg";
 
 export default function IconButton({ onClick, style, left, right, top, fill }) {
   const buttonStyles = {
@@ -28,6 +30,7 @@ export default function IconButton({ onClick, style, left, right, top, fill }) {
     Edit: <Edit width={30} height={30} />,
     Settings: <Settings width={30} height={30} />,
     Book: <Book width={25} height={25} />,
+    Leave: <Leave width={20} height={20} />,
   };
   return (
     <StyledBox $left={left} $right={right} $top={top}>
