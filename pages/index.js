@@ -127,17 +127,27 @@ export default function HomePage({
   }
 
   const handleInputChange = (e) => {
-    setSearchTerm(e.target.value);
+    const newSearchTerm = e.target.value;
+    setSearchTerm(newSearchTerm);
+    // applyFilter({ search: newSearchTerm });
   };
 
   const handleSearch = () => {
     applyFilter({});
   };
 
-  function applyFilter({ filter, sort }) {
+  function applyFilter({ filter, sort, search }) {
     const newFilters = filter || filters;
     const newSort = sort || currentSort;
-    const currentSearch = searchTerm;
+    const currentSearch = search || searchTerm;
+
+    const apiUrlWithFilters = createUrlWithParams(
+      "/api/recipes",
+      newFilters,
+      newSort,
+      currentSearch
+    );
+    setApiQuery(apiUrlWithFilters);
 
     const browserUrlWithFilters = createUrlWithParams(
       "/",
@@ -145,7 +155,7 @@ export default function HomePage({
       newSort,
       currentSearch
     );
-    router.push(browserUrlWithFilters);
+    router.replace(browserUrlWithFilters);
   }
 
   function createUrlWithParams(
