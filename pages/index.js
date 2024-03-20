@@ -129,8 +129,15 @@ export default function HomePage({
   const handleInputChange = (e) => {
     const newSearchTerm = e.target.value;
     setSearchTerm(newSearchTerm);
-    // applyFilter({ search: newSearchTerm });
   };
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      applyFilter({ search: searchTerm });
+    }, 1000); // Verzögerung, um nicht bei jedem Tastendruck zu filtern
+
+    return () => clearTimeout(timeoutId);
+  }, [searchTerm]);
 
   const handleSearch = () => {
     applyFilter({});
