@@ -25,6 +25,7 @@
     "nextjs-progressbar": "^0.0.16",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-modal": "^3.16.1",
     "react-toastify": "^10.0.4",
     "styled-components": "^6.0.2",
     "swr": "^2.2.5"
