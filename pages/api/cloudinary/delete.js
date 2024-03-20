@@ -8,15 +8,18 @@ cloudinary.config({
 });
 export const config = {
   api: {
-    bodyParser: false,
+    bodyParser: {
+      sizeLimit: "1mb",
+    },
   },
 };
+
 export default async function handler(request, response) {
-  const { id } = request.query;
   if (request.method === "DELETE") {
-    const public_id = request.query.id;
+    const { public_id } = request.body;
+
     try {
-      await cloudinary.uploader.destroy(id);
+      await cloudinary.uploader.destroy(public_id);
       response.status(200).json({ message: "Image removed from Cloudinary" });
     } catch (error) {
       console.error("Error deleting from Cloudinary: ", error);

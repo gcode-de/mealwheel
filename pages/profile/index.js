@@ -10,38 +10,52 @@ import styled from "styled-components";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useState } from "react";
+import { useSession, signIn, signOut } from "next-auth/react";
 import updateUserinDb from "@/helpers/updateUserInDb";
 import StyledH2 from "@/components/Styled/StyledH2";
 import Button from "@/components/Styled/StyledButton";
 import { notifySuccess, notifyError } from "/helpers/toast";
+import handlePostImage from "@/helpers/Cloudinary/handlePostImage";
+import handleDeleteImage from "@/helpers/Cloudinary/handleDeleteImage";
 
 export default function ProfilePage({ user, mutateUser }) {
   const router = useRouter();
+  const { data: session, status } = useSession();
+
   const [editUser, setEditUser] = useState(false);
   const [feedbackVisible, setFeedbackVisible] = useState(false);
+  const [imageUrl, setImageUrl] = useState("" || user?.profilePictureLink);
+  const [upload, setUpload] = useState(false);
+
+  if (status === "unauthenticated") {
+    signIn();
+  }
+  if (!user) return null;
 
   const uploadImage = async (event) => {
+    setUpload(true);
     const files = event.target.files;
     const data = new FormData();
     data.append("file", files[0]);
-    data.append("upload_preset", "meal_wheel");
-    const uploadResponse = await fetch(
-      "https://api.cloudinary.com/v1_1/mealwheel/image/upload",
-      {
-        method: "POST",
-        body: data,
-      }
-    );
-    const file = await uploadResponse.json();
-    user = { ...user, profilePictureLink: file.secure_url };
-    updateUserinDb(user, mutateUser);
-    setEditUser(false);
+
+    if (user.publicId) {
+      await handleDeleteImage(user.publicId);
+      await handlePostImage(data, setImageUrl);
+    } else {
+      await handlePostImage(data, setImageUrl);
+    }
+    setUpload(false);
   };
 
   const updateUsername = async (event) => {
     event.preventDefault();
     const newName = event.target.elements.username.value;
     user.userName = newName;
+    user = {
+      ...user,
+      profilePictureLink: imageUrl.imageUrl,
+      publicId: imageUrl.publicId,
+    };
     updateUserinDb(user, mutateUser);
     setEditUser(false);
   };
@@ -74,48 +88,70 @@ export default function ProfilePage({ user, mutateUser }) {
         onClick={() => router.push("/profile/settings")}
         fill="var(--color-lightgrey)"
       />
-      <WrapperCenter>
-        <StyledProfile>
-          {!editUser ? (
-            (user?.profilePictureLink && (
-              <StyledProfilePicture
-                src={user?.profilePictureLink}
-                alt="Profile Picture"
-                width={106}
-                height={106}
+
+      {editUser && (
+        <>
+          <WrapperCenter>
+            <StyledProfile>
+              {upload && <StyledProgress />}
+              <StyledImageUploadContainer>
+                <Plus width={40} height={40} />
+                <StyledImageUpload type="file" onChange={uploadImage} />
+              </StyledImageUploadContainer>
+            </StyledProfile>
+          </WrapperCenter>
+          <StyledList>
+            <StyledUsernameForm onSubmit={updateUsername}>
+              <input
+                name="username"
+                defaultValue={user?.userName}
+                placeholder="Dein Benutzername"
               />
-            )) || <h1>🙋‍♀️</h1>
-          ) : (
-            <StyledImageUploadContainer>
-              <Plus width={40} height={40} />
-              <StyledImageUpload type="file" onChange={uploadImage} />
-            </StyledImageUploadContainer>
-          )}
-        </StyledProfile>
-      </WrapperCenter>
-      <StyledList>
-        {!editUser ? (
-          <p>
-            Hallo,{" "}
-            {user?.userName || user?.firstName || user?.email || "Gastnutzer"}!
-          </p>
-        ) : (
-          <StyledUsernameForm onSubmit={updateUsername}>
-            <input
-              name="username"
-              defaultValue={user?.userName}
-              placeholder="Dein Benutzername"
+              <StyledSaveButton type="submit" disabled={upload}>
+                Speichern
+              </StyledSaveButton>
+            </StyledUsernameForm>
+
+            <IconButton
+              style="x"
+              top={"-1.75rem"}
+              right={"2rem"}
+              onClick={() => setEditUser((previousValue) => !previousValue)}
+
             />
-            <button>Speichern</button>
-          </StyledUsernameForm>
-        )}
-        <IconButton
-          style={!editUser ? "Edit" : "x"}
-          top={"-1.75rem"}
-          right={"2rem"}
-          onClick={() => setEditUser((previousValue) => !previousValue)}
-        />
-      </StyledList>
+          </StyledList>
+        </>
+      )}
+      {!editUser && (
+        <>
+          <WrapperCenter>
+            <StyledProfile>
+              {(user?.profilePictureLink && (
+                <StyledProfilePicture
+                  src={user?.profilePictureLink}
+                  alt="Profile Picture"
+                  width={106}
+                  height={106}
+                />
+              )) || <h1>🙋‍♀️</h1>}
+            </StyledProfile>
+          </WrapperCenter>
+          <StyledList>
+            <p>
+              Hallo,{" "}
+              {user?.userName || user?.firstName || user?.email || "Gastnutzer"}
+              !
+            </p>
+            <IconButton
+              style="Edit"
+              top={"-1.75rem"}
+              right={"2rem"}
+              onClick={() => setEditUser((previousValue) => !previousValue)}
+            />
+          </StyledList>
+        </>
+      )}
+
       <Wrapper>
         <StyledCollection href="/profile/favorites">
           <Heart width={40} height={40} />
@@ -130,6 +166,7 @@ export default function ProfilePage({ user, mutateUser }) {
           <StyledP>Rezepte</StyledP>
         </StyledCollection>
       </Wrapper>
+
       <StyledArticle>
         {!feedbackVisible && (
           <UnstyledButton onClick={toggleFeedbackForm}>
@@ -190,17 +227,19 @@ const StyledUsernameForm = styled.form`
     margin: 1;
     flex: 1;
   }
-  button {
-    border: none;
-    background-color: var(--color-darkgrey);
-    color: var(--color-background);
-    font-size: 0%.75rem;
-    font-weight: 600;
-    cursor: pointer;
-    border-radius: 10px;
-    width: 7rem;
-    height: 2rem;
-  }
+`;
+
+const StyledSaveButton = styled.button`
+  border: none;
+  background-color: ${(props) =>
+    props.disabled ? "var(--color-lightgrey)" : "var(--color-darkgrey)"};
+  color: var(--color-background);
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: ${(props) => (props.disabled ? "not-allowed" : "pointer")};
+  border-radius: 10px;
+  width: 7rem;
+  height: 2rem;
 `;
 const StyledImageUploadContainer = styled.label`
   display: inline-block;
@@ -278,5 +317,20 @@ const StyledCollection = styled(Link)`
   &:hover {
     fill: var(--color-highlight);
     color: var(--color-highlight);
+  }
+`;
+const StyledProgress = styled.div`
+  position: absolute;
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-left-color: var(--color-highlight);
+  border-radius: 50%;
+  width: 100px;
+  height: 100px;
+  animation: spin 1s linear infinite;
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
   }
 `;

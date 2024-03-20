@@ -1,0 +1,20 @@
+{
+  "background_color": "#f5f5f5",
+  "dir": "ltr",
+  "display": "standalone",
+  "name": "mealwheel",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "short_name": "mealwheel",
+  "start_url": "/mealwheel.de",
+  "theme_color": "#df3f3f",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "type": "image/x-icon"
+    }
+  ],
+  "id": "mlwhl",
+  "description": "Organize your recipes, plan your weekly meals and generate shopping lists!",
+  "lang": "de"
+}

@@ -50,6 +50,7 @@ const userSchema = new Schema({
       recipes: [{ type: mongoose.Schema.Types.ObjectId, ref: "Recipe" }],
     },
   ],
+  publicId: { type: String },
 });
 
 const User = mongoose.models.User || mongoose.model("User", userSchema);

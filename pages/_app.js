@@ -1,9 +1,12 @@
 import GlobalStyle from "../styles";
-import Layout from "@/components/Layout";
+import Layout from "../components/Layout";
+
+import { SessionProvider } from "next-auth/react";
 import useSWR, { SWRConfig } from "swr";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import updateUserinDb from "@/helpers/updateUserInDb";
+import { notifySuccess, notifyError } from "/helpers/toast";
 
 const fetcher = async (url) => {
   const res = await fetch(url);
@@ -18,14 +21,17 @@ const fetcher = async (url) => {
   return res.json();
 };
 
-export default function App({ Component, pageProps }) {
-  const userId = "65e0925792f086ae06d2eadb";
+export default function App({
+  Component,
+  pageProps: { session, ...pageProps },
+}) {
   const {
     data: user,
     isLoading,
     error,
     mutate,
-  } = useSWR(`/api/users/${userId}`, fetcher);
+  } = useSWR(`/api/users`, fetcher);
+
   const {
     data: recipes,
     error: recipesError,
@@ -40,6 +46,10 @@ export default function App({ Component, pageProps }) {
   }
 
   async function toggleIsFavorite(_id) {
+    if (!user) {
+      notifyError("Bitte zuerst einloggen.");
+      return;
+    }
     if (
       user.recipeInteractions.find(
         (interaction) => interaction.recipe._id === _id
@@ -57,6 +67,10 @@ export default function App({ Component, pageProps }) {
   }
 
   async function toggleHasCooked(_id) {
+    if (!user) {
+      notifyError("Bitte zuerst einloggen.");
+      return;
+    }
     if (
       user.recipeInteractions.find(
         (interaction) => interaction.recipe._id === _id
@@ -73,52 +87,42 @@ export default function App({ Component, pageProps }) {
     updateUserinDb(user, mutate);
   }
 
-  if (error) {
+  if (isLoading) {
     return (
       <>
-        <Layout>
-          <GlobalStyle />
-          <SWRConfig value={{ fetcher }}>
-            <Component {...pageProps} error={error} />
-          </SWRConfig>
-        </Layout>
-      </>
-    );
-  }
-
-  if (isLoading || !user) {
-    return (
-      <>
-        <Layout>
-          <GlobalStyle />
-          <SWRConfig value={{ fetcher }}>
-            <Component {...pageProps} isLoading />
-          </SWRConfig>
-        </Layout>
+        <GlobalStyle />
+        <SessionProvider session={session}>
+          <Layout>
+            <SWRConfig value={{ fetcher }}>
+              <Component {...pageProps} isLoading />
+            </SWRConfig>
+          </Layout>
+        </SessionProvider>
       </>
     );
   }
 
   return (
     <>
-      <Layout>
-        <GlobalStyle />
-        <ToastContainer />
-        <SWRConfig value={{ fetcher }}>
-          <Component
-            {...pageProps}
-            userId={userId}
-            user={user}
-            getRecipeProperty={getRecipeProperty}
-            toggleIsFavorite={toggleIsFavorite}
-            toggleHasCooked={toggleHasCooked}
-            mutateUser={mutate}
-            recipes={recipes}
-            recipesError={recipesError}
-            recipesIsLoading={recipesIsLoading}
-          />
-        </SWRConfig>
-      </Layout>
+      <GlobalStyle />
+      <SWRConfig value={{ fetcher }}>
+        <SessionProvider session={session}>
+          <Layout user={user}>
+            <ToastContainer />
+            <Component
+              {...pageProps}
+              user={user}
+              getRecipeProperty={getRecipeProperty}
+              toggleIsFavorite={toggleIsFavorite}
+              toggleHasCooked={toggleHasCooked}
+              mutateUser={mutate}
+              recipes={recipes}
+              recipesError={recipesError}
+              recipesIsLoading={recipesIsLoading}
+            />
+          </Layout>
+        </SessionProvider>
+      </SWRConfig>
     </>
   );
 }

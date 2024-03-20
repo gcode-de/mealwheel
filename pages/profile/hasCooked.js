@@ -22,7 +22,7 @@ export default function HasCooked({
 
   if (error) {
     <div>
-      <Header text={"schon gekocht 🥗"} />
+      <Header text={"Schon gekocht"} />
       Error...
     </div>;
   }
@@ -30,8 +30,26 @@ export default function HasCooked({
   if (isLoading) {
     return (
       <>
-        <Header text="schon gekocht 🥗" />
+        <Header text="Schon gekocht" />
         <LoadingComponent amount />
+      </>
+    );
+  }
+
+  if (!hasCookedRecipes.length) {
+    return (
+      <>
+        <IconButton
+          style="ArrowLeft"
+          top="var(--gap-out)"
+          left="var(--gap-out)"
+          onClick={() => router.back()}
+        />
+        <Spacer />
+        <Header text="Schon gekocht" />
+        <StyledArticle>
+          <StyledUl>{`Du hast noch keine Rezepte als "gekocht" markiert.`}</StyledUl>
+        </StyledArticle>
       </>
     );
   }
@@ -45,7 +63,7 @@ export default function HasCooked({
         onClick={() => router.back()}
       />
       <Spacer />
-      <StyledH2>schon gekocht</StyledH2>
+      <StyledH2>Schon gekocht</StyledH2>
       <StyledArticle>
         <StyledUl>
           {hasCookedRecipes?.map((recipe) => {
