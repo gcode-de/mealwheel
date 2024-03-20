@@ -39,6 +39,13 @@ export default function HasCooked({
   if (!hasCookedRecipes.length) {
     return (
       <>
+        <IconButton
+          style="ArrowLeft"
+          top="var(--gap-out)"
+          left="var(--gap-out)"
+          onClick={() => router.back()}
+        />
+        <Spacer />
         <Header text="Schon gekocht" />
         <StyledArticle>
           <StyledUl>{`Du hast noch keine Rezepte als "gekocht" markiert.`}</StyledUl>

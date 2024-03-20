@@ -16,7 +16,7 @@ export default async function handler(request, response) {
   if (request.method === "GET") {
     const recipe = await Recipe.findById(id);
 
-    if (!recipe || !recipe.author.equals(userId)) {
+    if (!recipe || (!recipe.author.equals(userId) && recipe.public === false)) {
       return response
         .status(404)
         .json({ status: "Recipe not found or unauthorized" });
