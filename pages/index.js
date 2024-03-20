@@ -131,14 +131,6 @@ export default function HomePage({
     setSearchTerm(newSearchTerm);
   };
 
-  useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      applyFilter({ search: searchTerm });
-    }, 1000); // Verzögerung, um nicht bei jedem Tastendruck zu filtern
-
-    return () => clearTimeout(timeoutId);
-  }, [searchTerm]);
-
   const handleSearch = () => {
     applyFilter({});
   };
