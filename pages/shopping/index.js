@@ -15,6 +15,7 @@ import { useEffect, useRef, useState } from "react";
 export default function ShoppingList({ user, mutateUser }) {
   const [editingIndex, setEditingIndex] = useState(null);
   const editFormRef = useRef(null);
+  const unitOptions = ["ml", "piece", "gramm", "EL", "TL", "Prise"];
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -46,7 +47,7 @@ export default function ShoppingList({ user, mutateUser }) {
   }
 
   if (!user) {
-    return;
+    return null;
   }
   user.shoppingList = Array.from(
     user.shoppingList
@@ -127,12 +128,11 @@ export default function ShoppingList({ user, mutateUser }) {
                   />
                   <StyledDropDown name="unit" defaultValue={item.unit}>
                     <option value="">-</option>
-                    <option value="ml">ml</option>
-                    <option value="piece">Stück</option>
-                    <option value="gramm">g</option>
-                    <option value="EL">EL</option>
-                    <option value="TL">TL</option>
-                    <option value="Prise">Prise</option>
+                    {unitOptions.map((unit) => (
+                      <option key={unit} value={unit}>
+                        {unit}
+                      </option>
+                    ))}
                   </StyledDropDown>
                   <StyledInput
                     type="text"
@@ -181,12 +181,11 @@ export default function ShoppingList({ user, mutateUser }) {
             />
             <StyledDropDown name="unit">
               <option value="">-</option>
-              <option value="ml">ml</option>
-              <option value="piece">Stück</option>
-              <option value="gramm">g</option>
-              <option value="EL">EL</option>
-              <option value="TL">TL</option>
-              <option value="Prise">Prise</option>
+              {unitOptions.map((unit) => (
+                <option key={unit} value={unit}>
+                  {unit}
+                </option>
+              ))}
             </StyledDropDown>
             <StyledInput
               type="text"
