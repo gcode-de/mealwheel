@@ -15,6 +15,7 @@ export default function MealCard({
   day,
   user,
 }) {
+  console.log("recipe in Mealcard", recipe);
   return (
     <StyledLi>
       {isFavorite !== null && (
@@ -55,21 +56,26 @@ export default function MealCard({
           <ImageContainer>
             <StyledImage
               src={
-                recipe.imageLink ||
+                recipe?.imageLink ||
                 "/img/jason-briscoe-7MAjXGUmaPw-unsplash.jpg"
               }
-              alt={`recipe Image ${recipe.title}`}
+              alt={`recipe Image ${recipe?.title}`}
               sizes="200px"
               fill
             />
           </ImageContainer>
         }
         <StyledDiv>
-          <StyledLink href={`/recipe/${recipe._id}?servings=${numberOfPeople}`}>
-            <StyledPTitle>{recipe.title}</StyledPTitle>
+          <StyledLink
+            href={`/recipe/${recipe?._id}?servings=${numberOfPeople}`}
+          >
+            <StyledPTitle>
+              {recipe?.title ? `${recipe?.title}` : "Lade Rezept..."}
+            </StyledPTitle>
           </StyledLink>
           <StyledPDuration>
-            {recipe.duration} MIN | {recipe.difficulty.toUpperCase()}
+            {recipe?.duration && `${recipe?.duration} MIN | `}
+            {recipe?.difficulty?.toUpperCase()}
           </StyledPDuration>
           {numberOfPeople !== undefined && (
             <SetNumberOfPeople
