@@ -11,12 +11,15 @@ import StyledH2 from "../Styled/StyledH2";
 import Button from "../Styled/StyledButton";
 import StyledP from "../Styled/StyledP";
 import AddButton from "../Styled/AddButton";
-import Plus from "/public/icons/Plus.svg";
+
 import StyledIngredients from "../Styled/StyledIngredients";
 import StyledInput from "../Styled/StyledInput";
 import StyledDropDown from "../Styled/StyledDropDown";
 import { notifySuccess, notifyError } from "/helpers/toast";
-import handleDeleteImage from "/helpers/Cloudinary/handleDeleteImage";
+
+import handleDeleteImage from "@/helpers/Cloudinary/handleDeleteImage";
+import Plus from "/public/icons/svg/plus.svg";
+import handlePostImage from "@/helpers/Cloudinary/handlePostImage";
 
 export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
   const [difficulty, setDifficulty] = useState(
@@ -36,7 +39,6 @@ export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
 
   const router = useRouter();
   const [selectedTags, setSelectedTags] = useState(data ? data.diet : []);
-  const [preview, setPreview] = useState(data ? data.imageLink : "");
   const [imageUrl, setImageUrl] = useState(data ? data.imageLink : "");
 
   function handleTagChange(value) {
@@ -71,10 +73,10 @@ export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
       ...data,
       ingredients,
 
-      imageLink: imageUrl?.imageUrl,
+      imageLink: imageUrl.imageUrl,
       diet: selectedTags,
       public: event.target.public.checked,
-      publicId: imageUrl?.publicId,
+      publicId: imageUrl.publicId,
     };
 
     onSubmit(newData);
@@ -82,44 +84,23 @@ export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
 
   async function uploadImage(event) {
     event.preventDefault();
-    const formData = new FormData(event.target);
-    if (formName === "addRecipe" || !data.imageLink) {
-      const response = await fetch("/api/upload", {
-        method: "POST",
-        body: formData,
-      });
-      if (response.ok) {
-        const file = await response.json();
 
-        setImageUrl(file);
-        notifySuccess("Bild hinzugefügt");
-      } else {
-        console.error("image not added");
-        notifyError("Bild konnte nicht hinzugefügt werden");
-      }
+    const file = event.target.files[0];
+    setImageUrl({ imageUrl: URL.createObjectURL(file) });
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    if (formName === "addRecipe" || !data.imageLink) {
+      handlePostImage(formData, setImageUrl);
     }
     if (formName === "editRecipe" && data.imageLink) {
       const deleteImage = data.publicId;
       if (data.publicId) {
         handleDeleteImage(deleteImage);
       }
-      const responseUpload = await fetch("/api/upload", {
-        method: "POST",
-        body: formData,
-      });
-      if (responseUpload.ok) {
-        const file = await responseUpload.json();
-        setImageUrl(file);
-        notifySuccess("Bild geupdatet");
-      } else {
-        console.error("no image update");
-        notifyError("Bild konnte nicht hinzugefügt werden");
-      }
+      handlePostImage(formData, setImageUrl);
     }
-  }
-  function handleImage(event) {
-    const file = event.target.files[0];
-    setPreview({ imageUrl: URL.createObjectURL(file) });
   }
   return (
     <>
@@ -132,10 +113,10 @@ export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
             router.back();
           }}
         ></IconButton>
-        {preview && (
+        {imageUrl && (
           <StyledImageCloudinary
             src={
-              preview.imageUrl || "/img/jason-briscoe-7MAjXGUmaPw-unsplash.jpg"
+              imageUrl.imageUrl || "/img/jason-briscoe-7MAjXGUmaPw-unsplash.jpg"
             }
             alt="Uploaded Image"
             width={100}
@@ -144,10 +125,14 @@ export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
         )}
 
         <StyledImageUploadContainer htmlFor="upload">
-          <form onSubmit={uploadImage}>
-            <input type="file" name="file" id="upload" onChange={handleImage} />
-
-            <button type="submit">hinzufügen</button>
+          <form>
+            <Plus width={40} height={40} />
+            <HiddenInput
+              type="file"
+              name="file"
+              id="upload"
+              onChange={uploadImage}
+            />
           </form>
         </StyledImageUploadContainer>
       </StyledTop>
@@ -312,9 +297,6 @@ const StyledBigInput = styled.input`
   width: calc(100% - (2 * var(--gap-out)));
   padding: 0.7rem;
 `;
-const StyledImageInput = styled.input`
-  display: none;
-`;
 const Spacer = styled.div`
   margin-top: 2rem;
   position: relative;
@@ -394,10 +376,19 @@ const ButtonContainer = styled.div`
   width: calc(100% - (2 * var(--gap-out)));
 `;
 const StyledImageUploadContainer = styled.label`
+  display: inline-block;
+  background-color: white;
+  width: 60px;
+  height: 60px;
   display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
+  border-radius: 100%;
+  box-shadow: 4px 8px 16px 0 rgb(0 0 0 / 8%);
   cursor: pointer;
   position: absolute;
+`;
+
+const HiddenInput = styled.input`
+  display: none;
 `;
