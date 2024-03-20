@@ -119,7 +119,9 @@ export default function DetailPage({
     difficulty,
   } = recipe;
 
-  difficulty.toUpperCase();
+  const foundInteractions = user.recipeInteractions.find(
+    (interaction) => interaction.recipe._id === _id
+  );
 
   return (
     <Wrapper>
@@ -285,7 +287,12 @@ export default function DetailPage({
           <StyledIngredients>{instructions}</StyledIngredients>
         )}
         {content === "notes" && (
-          <Notes user={user} _id={id} mutateUser={mutateUser} />
+          <Notes
+            user={user}
+            _id={id}
+            mutateUser={mutateUser}
+            foundInteractions={foundInteractions}
+          />
         )}
         {content === "video" && (
           <Link href={youtubeLink}>auf youtube anschauen</Link>
