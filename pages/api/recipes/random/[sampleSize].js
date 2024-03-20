@@ -1,12 +1,15 @@
 import dbConnect from "../../../../db/connect";
 import Recipe from "../../../../db/models/Recipe";
+import mongoose from "mongoose";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../../auth/[...nextauth]";
 
 export default async function handler(request, response) {
   await dbConnect();
   const session = await getServerSession(request, response, authOptions);
-  const userId = session?.user.id;
+  const userId = session?.user?.id
+    ? new mongoose.Types.ObjectId(session.user.id)
+    : null;
 
   const sampleSize = Number(request.query.sampleSize) || 10;
 

@@ -23,7 +23,7 @@ export default function EditRecipe({ user }) {
     });
 
     if (response.ok) {
-      router.back();
+      router.push("/");
       notifySuccess("Rezept gelöscht");
     } else {
       console.log("Löschen fehlgeschlagen", response.body);

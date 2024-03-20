@@ -31,7 +31,7 @@ export default async function handler(request, response) {
 
   if (request.method === "PUT") {
     try {
-      await User.findByIdAndUpdate(id, request.body);
+      await User.findByIdAndUpdate(session.user.id, request.body);
       return response.status(200).json("User updated");
     } catch (error) {
       console.log(error);

@@ -7,7 +7,9 @@ import { authOptions } from "../auth/[...nextauth]";
 export default async function handler(request, response) {
   await dbConnect();
   const session = await getServerSession(request, response, authOptions);
-  const userId = session?.user.id;
+  const userId = session?.user?.id
+    ? new mongoose.Types.ObjectId(session.user.id)
+    : null;
 
   if (request.method === "GET") {
     const { sort = "_id", order = "desc", search } = request.query;
@@ -37,7 +39,7 @@ export default async function handler(request, response) {
       $match: {
         $or: [
           { public: { $ne: false } }, // Das Rezept ist öffentlich oder hat keine public-Property
-          { public: false, author: userId }, // Das Rezept ist nicht öffentlich, aber der aktuelle Benutzer ist der Autor
+          { author: userId }, // Der aktuelle Benutzer ist der Autor
         ],
       },
     });
@@ -75,7 +77,6 @@ export default async function handler(request, response) {
     if (!recipes.length) {
       return response.status(200).json([]);
     }
-
     response.status(200).json(recipes);
   } else if (request.method === "POST") {
     try {
