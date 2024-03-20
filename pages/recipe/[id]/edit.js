@@ -1,9 +1,9 @@
-import RecipeForm from "@/components/Forms/RecipeForm";
+import RecipeForm from "../../../components/Forms/RecipeForm";
 import { useRouter } from "next/router";
 import useSWR from "swr";
 import { notifySuccess, notifyError } from "/helpers/toast";
-import LoadingComponent from "@/components/Loading";
-import handleDeleteImage from "@/helpers/Cloudinary/handleDeleteImage";
+import LoadingComponent from "../../../components/Loading";
+import handleDeleteImage from "../../../helpers/Cloudinary/handleDeleteImage";
 
 export default function EditRecipe({ user }) {
   const router = useRouter();
@@ -23,7 +23,7 @@ export default function EditRecipe({ user }) {
     });
 
     if (response.ok) {
-      router.back();
+      router.push("/");
       notifySuccess("Rezept gelöscht");
     } else {
       console.log("Löschen fehlgeschlagen", response.body);

@@ -10,6 +10,7 @@ import styled from "styled-components";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useState } from "react";
+import { useSession, signIn, signOut } from "next-auth/react";
 import updateUserinDb from "@/helpers/updateUserInDb";
 import StyledH2 from "@/components/Styled/StyledH2";
 import Button from "@/components/Styled/StyledButton";
@@ -19,10 +20,17 @@ import handleDeleteImage from "@/helpers/Cloudinary/handleDeleteImage";
 
 export default function ProfilePage({ user, mutateUser }) {
   const router = useRouter();
+  const { data: session, status } = useSession();
+
   const [editUser, setEditUser] = useState(false);
   const [feedbackVisible, setFeedbackVisible] = useState(false);
   const [imageUrl, setImageUrl] = useState("" || user?.profilePictureLink);
   const [upload, setUpload] = useState(false);
+
+  if (status === "unauthenticated") {
+    signIn();
+  }
+  if (!user) return null;
 
   const uploadImage = async (event) => {
     setUpload(true);
@@ -80,6 +88,7 @@ export default function ProfilePage({ user, mutateUser }) {
         onClick={() => router.push("/profile/settings")}
         fill="var(--color-lightgrey)"
       />
+
       {editUser && (
         <>
           <WrapperCenter>
@@ -108,6 +117,7 @@ export default function ProfilePage({ user, mutateUser }) {
               top={"-1.75rem"}
               right={"2rem"}
               onClick={() => setEditUser((previousValue) => !previousValue)}
+
             />
           </StyledList>
         </>
@@ -156,6 +166,7 @@ export default function ProfilePage({ user, mutateUser }) {
           <StyledP>Rezepte</StyledP>
         </StyledCollection>
       </Wrapper>
+
       <StyledArticle>
         {!feedbackVisible && (
           <UnstyledButton onClick={toggleFeedbackForm}>

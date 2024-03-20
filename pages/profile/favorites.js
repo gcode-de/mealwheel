@@ -1,9 +1,10 @@
 import styled from "styled-components";
-import CardSkeleton from "@/components/Styled/CardSkeleton";
 import MealCard from "@/components/MealCard";
 import Header from "@/components/Styled/Header";
 import StyledUl from "@/components/Styled/StyledUl";
 import LoadingComponent from "@/components/Loading";
+
+import Link from "next/link";
 
 export default function Favorites({
   user,
@@ -12,6 +13,20 @@ export default function Favorites({
   getRecipeProperty,
   toggleIsFavorite,
 }) {
+  if (!user) {
+    return (
+      <>
+        <Header text="Favoriten 🥗" />
+        <StyledArticle>
+          <StyledUl>
+            Bitte <Link href="/api/auth/signin">einloggen</Link>, um Favoriten
+            zu speichern.
+          </StyledUl>
+        </StyledArticle>
+      </>
+    );
+  }
+
   const favoriteRecipes = user?.recipeInteractions
     .filter((recipe) => recipe.isFavorite)
     .map((recipe) => recipe.recipe);
@@ -28,6 +43,17 @@ export default function Favorites({
       <>
         <Header text="Favoriten 🥗" />
         <LoadingComponent amount />
+      </>
+    );
+  }
+
+  if (!favoriteRecipes.length) {
+    return (
+      <>
+        <Header text="Favoriten 🥗" />
+        <StyledArticle>
+          <StyledUl>Du hast noch keine Favoriten gespeichert.</StyledUl>
+        </StyledArticle>
       </>
     );
   }

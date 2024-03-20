@@ -1,9 +1,9 @@
 import NavBar from "./NavBar";
-export default function Layout({ children }) {
+export default function Layout({ children, user }) {
   return (
     <>
       {children}
-      <NavBar />
+      <NavBar user={user} />
     </>
   );
 }

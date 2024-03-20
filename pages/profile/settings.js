@@ -1,13 +1,13 @@
 import updateUserinDb from "@/helpers/updateUserInDb";
 
-import StyledH2 from "@/components/Styled/StyledH2";
+import StyledH2 from "../../components/Styled/StyledH2";
 import StyledList from "@/components/Styled/StyledList";
 import StyledP from "@/components/Styled/StyledP";
 import styled from "styled-components";
 import IconButton from "@/components/Styled/IconButton";
 import { useRouter } from "next/router";
 import Spacer from "@/components/Styled/Spacer";
-import SetNumberOfPeople from "@/components/Styled/SetNumberOfPeople";
+import SetNumberOfPeople from "../../components/Styled/SetNumberOfPeople";
 
 export default function Settings({ user, mutateUser }) {
   const router = useRouter();

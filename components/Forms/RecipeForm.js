@@ -2,7 +2,7 @@ import StyledListItem from "../Styled/StyledListItem";
 import { useState } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
-import { filterTags } from "@/helpers/filterTags";
+import { filterTags } from "/helpers/filterTags";
 import styled from "styled-components";
 import StyledArticle from "../Styled/StyledArticle";
 import IconButton from "../Styled/IconButton";
@@ -11,10 +11,12 @@ import StyledH2 from "../Styled/StyledH2";
 import Button from "../Styled/StyledButton";
 import StyledP from "../Styled/StyledP";
 import AddButton from "../Styled/AddButton";
+
 import StyledIngredients from "../Styled/StyledIngredients";
 import StyledInput from "../Styled/StyledInput";
 import StyledDropDown from "../Styled/StyledDropDown";
 import { notifySuccess, notifyError } from "/helpers/toast";
+
 import handleDeleteImage from "@/helpers/Cloudinary/handleDeleteImage";
 import Plus from "/public/icons/svg/plus.svg";
 import handlePostImage from "@/helpers/Cloudinary/handlePostImage";
