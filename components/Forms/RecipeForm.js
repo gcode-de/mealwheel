@@ -170,7 +170,7 @@ export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
               type="number"
               name="duration"
               placeholder="Dauer"
-              $width={"5rem"}
+              $width={"5.5rem"}
               required
               min="0"
               aria-label="add duration to cook for the recipe"

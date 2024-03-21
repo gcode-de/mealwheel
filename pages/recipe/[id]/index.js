@@ -314,6 +314,7 @@ export default function DetailPage({
           <SetNumberOfPeople
             numberOfPeople={servings}
             handleChange={handleSetNumberOfPeople}
+            $margin="-0.4rem 0 0 0"
           />
         </StyledH2>
         <StyledList>
