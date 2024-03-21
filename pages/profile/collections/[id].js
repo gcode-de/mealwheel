@@ -1,14 +1,16 @@
+import { useRouter } from "next/router";
+import { useState } from "react";
+import updateUserinDb from "@/helpers/updateUserInDb";
+
+import styled from "styled-components";
 import IconButton from "@/components/Styled/IconButton";
 import MealCard from "@/components/MealCard";
-import { useRouter } from "next/router";
 import StyledUl from "@/components/Styled/StyledUl";
 import Spacer from "@/components/Styled/Spacer";
 import StyledH2 from "@/components/Styled/StyledH2";
-import { useEffect, useState } from "react";
-import styled from "styled-components";
-import MenuContainer from "../../../components/Styled/MenuContainer";
 import Trash from "/public/icons/svg/trash-xmark_10741775.svg";
-import updateUserinDb from "@/helpers/updateUserInDb";
+import Pen from "/public/icons/svg/pen-square_10435869.svg";
+import XSmall from "@/public/icons/XSmall.svg";
 
 export default function DetailCollection({ recipes, user, mutateUser }) {
   const [isEditing, setIsEditing] = useState(false);
@@ -61,17 +63,27 @@ export default function DetailCollection({ recipes, user, mutateUser }) {
         right="var(--gap-out)"
         top="var(--gap-out)"
         style="Menu"
+        rotate={menuVisible}
       />
       {menuVisible && (
         <MenuContainer>
           <UnstyledButton onClick={toggleEdit}>
-            <Trash width={15} height={15} />
-            Rezepte aus Kochbuch löschen
+            <Pen width={15} height={15} />
+            Kochbuch bearbeiten
           </UnstyledButton>
         </MenuContainer>
       )}
       {isEditing && (
-        <button onClick={handleDeleteRecipes}>Rezepte entfernen</button>
+        <ButtonContainer>
+          <DeleteButton onClick={handleDeleteRecipes}>
+            <Trash width={15} height={15} />
+            Rezepte entfernen
+          </DeleteButton>
+          <DeleteButton onClick={toggleEdit}>
+            <XSmall width={15} height={15} />
+            abbrechen
+          </DeleteButton>
+        </ButtonContainer>
       )}
       <StyledUl>
         {foundCollection.recipes.map((recipe, index) => (
@@ -116,6 +128,41 @@ const UnstyledButton = styled.button`
   gap: var(--gap-between);
   height: 2rem;
   color: var(--color-font);
+  &:hover {
+    background-color: var(--color-background);
+  }
+`;
+const MenuContainer = styled.div`
+  position: absolute;
+  top: 5rem;
+  right: var(--gap-out);
+  z-index: 5;
+  background-color: white;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+  padding: var(--gap-between);
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-between);
+`;
+const ButtonContainer = styled.div`
+  width: calc(100% - (2 * var(--gap-out)));
+  margin: auto;
+  display: flex;
+  justify-content: space-between;
+`;
+const DeleteButton = styled.button`
+  background-color: var(--color-component);
+
+  border: none;
+  text-align: start;
+  border-radius: var(--border-radius-small);
+  display: flex;
+  align-items: center;
+  gap: var(--gap-between);
+  height: 2rem;
+  color: var(--color-font);
+  cursor: pointer;
   &:hover {
     background-color: var(--color-background);
   }
