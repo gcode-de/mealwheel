@@ -31,8 +31,8 @@ const Modal = styled.div`
   background: var(--color-component);
   padding: var(--gap-between);
   border-radius: var(--border-radius-small);
-  max-width: 600px;
-  min-width: 300px;
+  margin: auto;
+  width: calc(100% - (2 * var(--gap-out)));
 `;
 const Overlay = styled.div`
   width: 100vw;
@@ -44,6 +44,7 @@ const Overlay = styled.div`
   position: fixed;
   z-index: 3;
   background: rgba(49, 49, 49, 0.5);
+  margin: auto;
 `;
 const ButtonContainer = styled.div`
   display: flex;
