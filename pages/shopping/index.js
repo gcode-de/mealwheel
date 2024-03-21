@@ -14,6 +14,8 @@ import Link from "next/link";
 import updateUserinDb from "@/helpers/updateUserInDb";
 import { useEffect, useRef, useState } from "react";
 
+import fetchCategorizedIngredients from "@/helpers/OpenAI/CategorizeIngredients";
+
 export default function ShoppingList({ user, mutateUser }) {
   const [editingIndex, setEditingIndex] = useState(null);
   const editFormRef = useRef(null);
@@ -47,6 +49,12 @@ export default function ShoppingList({ user, mutateUser }) {
     updateUserinDb(user, mutateUser);
     setEditingIndex(null);
   }
+
+  const ingredients = ["Kartoffeln", "Zwiebeln", "Möhren", "Milch", "Eier"];
+
+  const categories = fetchCategorizedIngredients(ingredients);
+
+  console.log("shoppinglist", categories);
 
   if (!user) {
     return (

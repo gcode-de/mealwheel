@@ -1,25 +1,16 @@
-import OpenAI from "openai";
-
-export default async function categorizeIngredients(ingredients) {
-  const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
+export default async function fetchCategorizedIngredients(ingredients) {
+  const response = await fetch(`http://localhost:3000/api/ai/categorize`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ ingredients }),
   });
 
-  const response = await openai.createCompletion({
-    model: "text-davinci-003",
-    prompt: "Kategorisiere diese Zutaten:\n\n" + ingredients.join("\n"),
-    temperature: 0.7,
-    max_tokens: 100,
-  });
+  if (!response.ok) {
+    throw new Error("Fehler beim Abrufen der kategorisierten Zutaten");
+  }
 
-  const categories = response.choices[0].text
-    .split("\n")
-    .map((category) => category.trim());
-  return categories;
+  const data = await response.json();
+  console.log("in function", data);
+  return data;
+  // return response;
 }
-
-const ingredients = ["Kartoffeln", "Zwiebeln", "Möhren", "Milch", "Eier"];
-
-const categories = await categorizeIngredients(ingredients);
-
-console.log(categories);
