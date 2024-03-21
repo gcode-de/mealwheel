@@ -48,5 +48,6 @@ const Overlay = styled.div`
 `;
 const ButtonContainer = styled.div`
   display: flex;
+  justify-content: center;
   gap: var(--gap-between);
 `;
