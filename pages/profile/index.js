@@ -5,18 +5,22 @@ import StyledP from "@/components/Styled/StyledP";
 import Heart from "@/public/icons/heart-svgrepo-com.svg";
 import Pot from "@/public/icons/cooking-pot-fill-svgrepo-com.svg";
 import Plus from "@/public/icons/Plus.svg";
+import StyledH2 from "@/components/Styled/StyledH2";
+import Button from "@/components/Styled/StyledButton";
+import StyledProgress from "@/components/Styled/StyledProgress";
+
+import updateUserinDb from "@/helpers/updateUserInDb";
+
 import Link from "next/link";
 import styled from "styled-components";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { useSession, signIn, signOut } from "next-auth/react";
-import updateUserinDb from "@/helpers/updateUserInDb";
-import StyledH2 from "@/components/Styled/StyledH2";
-import Button from "@/components/Styled/StyledButton";
-import { notifySuccess, notifyError } from "/helpers/toast";
 import handlePostImage from "@/helpers/Cloudinary/handlePostImage";
 import handleDeleteImage from "@/helpers/Cloudinary/handleDeleteImage";
+
+import { notifySuccess, notifyError } from "/helpers/toast";
 
 export default function ProfilePage({ user, mutateUser }) {
   const router = useRouter();
@@ -24,7 +28,7 @@ export default function ProfilePage({ user, mutateUser }) {
 
   const [editUser, setEditUser] = useState(false);
   const [feedbackVisible, setFeedbackVisible] = useState(false);
-  const [imageUrl, setImageUrl] = useState("" || user?.profilePictureLink);
+  const [imageUrl, setImageUrl] = useState(user?.profilePictureLink || "");
   const [upload, setUpload] = useState(false);
 
   if (status === "unauthenticated") {
@@ -104,7 +108,7 @@ export default function ProfilePage({ user, mutateUser }) {
               {upload && <StyledProgress />}
               {imageUrl && (
                 <StyledImageCloudinary
-                  src={imageUrl}
+                  src={imageUrl.imageUrl || user.profilePictureLink || ""}
                   alt="Uploaded Image"
                   width={20}
                   height={20}
@@ -236,10 +240,11 @@ const StyledProfile = styled.div`
 
 const StyledImageCloudinary = styled(Image)`
   width: 100%;
-  height: auto;
+  height: 100%;
   border-radius: 50%;
   border: 7px solid white;
-  opacity: 0.25;
+  opacity: 0.3;
+  object-fit: cover;
 `;
 
 const StyledUsernameForm = styled.form`
@@ -340,20 +345,5 @@ const StyledCollection = styled(Link)`
   &:hover {
     fill: var(--color-highlight);
     color: var(--color-highlight);
-  }
-`;
-const StyledProgress = styled.div`
-  position: absolute;
-  border: 4px solid rgba(0, 0, 0, 0.1);
-  border-left-color: var(--color-highlight);
-  border-radius: 50%;
-  width: 100px;
-  height: 100px;
-  animation: spin 1s linear infinite;
-
-  @keyframes spin {
-    to {
-      transform: rotate(360deg);
-    }
   }
 `;
