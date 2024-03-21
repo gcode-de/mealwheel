@@ -79,10 +79,23 @@ export default function Notes({ user, mutateUser, _id, foundInteractions }) {
       (_, i) => i !== index
     );
     user.recipeInteractions[interactionIndex].notes = updatedNotes;
-    setMenuVisible((menuVisible[index] = false));
+    setMenuVisible((prevMenuVisible) => {
+      const updatedMenuVisible = [...prevMenuVisible];
+      updatedMenuVisible[index] = false;
+      return updatedMenuVisible;
+    });
+
     setMenuVisible(menuVisible.splice(index, 1));
     setModal(false);
     updateUserinDb(user, mutateUser);
+  }
+  function closeMenu(event, index) {
+    event.preventDefault();
+    setMenuVisible((prevMenuVisible) => {
+      const updatedMenuVisible = [...prevMenuVisible];
+      updatedMenuVisible[index] = false;
+      return updatedMenuVisible;
+    });
   }
 
   return (
@@ -106,6 +119,7 @@ export default function Notes({ user, mutateUser, _id, foundInteractions }) {
           />
           {isEditing[index] ? (
             <StyledSmallInput
+              autoFocus
               defaultValue={note.comment}
               onBlur={(event) => handleSave(event, index)}
               onKeyDown={(event) =>
@@ -119,7 +133,10 @@ export default function Notes({ user, mutateUser, _id, foundInteractions }) {
           )}
 
           {menuVisible[index] && (
-            <MenuContainer>
+            <MenuContainer
+              autoFocus
+              onBlur={(event) => closeMenu(event, index)}
+            >
               <UnstyledButton onClick={() => handleEditNote(index)}>
                 <Pen width={15} height={15} />
                 Notiz bearbeiten
