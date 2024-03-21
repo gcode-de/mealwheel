@@ -4,12 +4,13 @@ import { useRouter } from "next/router";
 import StyledUl from "@/components/Styled/StyledUl";
 import Spacer from "@/components/Styled/Spacer";
 import StyledH2 from "@/components/Styled/StyledH2";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import MenuContainer from "../../../components/Styled/MenuContainer";
 import Trash from "/public/icons/svg/trash-xmark_10741775.svg";
+import updateUserinDb from "@/helpers/updateUserInDb";
 
-export default function DetailCollection({ recipes, user }) {
+export default function DetailCollection({ recipes, user, mutateUser }) {
   const [isEditing, setIsEditing] = useState(false);
   const [checkedItems, setCheckedItems] = useState([]);
   const [menuVisible, setMenuVisible] = useState(false);
@@ -18,9 +19,10 @@ export default function DetailCollection({ recipes, user }) {
   if (!user || !recipes) {
     return;
   }
-  useE;
   const foundCollection = user.collections.find((col) => col._id === id);
-  setCheckedItems(new Array(foundCollection.recipes.length).fill(false));
+  const foundCollectionIndex = user.collections.findIndex(
+    (col) => col._id === id
+  );
 
   function toggleEdit() {
     setIsEditing(!isEditing);
@@ -30,14 +32,19 @@ export default function DetailCollection({ recipes, user }) {
     setMenuVisible(!menuVisible);
   }
   function handleDeleteRecipes() {
-    console.log("lösch mich");
+    const newRecipes = foundCollection.recipes.filter(
+      (recipe, index) => !checkedItems.includes(index)
+    );
+    user.collections[foundCollectionIndex].recipes = newRecipes;
+
+    updateUserinDb(user, mutateUser);
   }
-  function handleCheckboxChange(index) {
-    setCheckedItems((prevItems) => ({
-      ...prevItems,
-      [index]: !prevItems[index],
-    }));
-    console.log(checkedItems);
+  function handleCheckboxChange(index, checked) {
+    setCheckedItems((prevItems) =>
+      checked
+        ? [...prevItems, index]
+        : prevItems.filter((item) => item !== index)
+    );
   }
   return (
     <>
@@ -64,9 +71,7 @@ export default function DetailCollection({ recipes, user }) {
         </MenuContainer>
       )}
       {isEditing && (
-        <button onClick={handleDeleteRecipes}>
-          lösche ausgewählte Rezepte aus dem Kochbuch
-        </button>
+        <button onClick={handleDeleteRecipes}>Rezepte entfernen</button>
       )}
       <StyledUl>
         {foundCollection.recipes.map((recipe, index) => (
@@ -75,8 +80,9 @@ export default function DetailCollection({ recipes, user }) {
               <>
                 <StyledCheckbox
                   type="checkbox"
-                  checked={!!checkedItems[index]}
-                  onChange={() => handleCheckboxChange(index)}
+                  onChange={(event) =>
+                    handleCheckboxChange(index, event.target.checked)
+                  }
                 />
               </>
             )}
