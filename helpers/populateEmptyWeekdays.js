@@ -39,35 +39,12 @@ export default async function populateEmptyWeekdays(
   //It should contain "numberOfRandomRecipes" random recipes and the rest should be picked from "userRecipes".
   //If there are not enough userRecipes, use mor random recipes.
   //When adding each recipe to the array, check if the recipe is already contained in "recipesInWeek". If that's the case, chose the next rcipe from the array you are currently picking from, to avoid having the same recipe more then once in one week.
-  // Mischung aus zufälligen Rezepten und Rezepten, die vom Benutzer gekocht wurden
 
+  // Mischung aus zufälligen Rezepten und Rezepten, die vom Benutzer gekocht wurden
   let indexRandom = 0;
   let indexCooked = 0;
   let combinedRecipes = [];
   const maxDaysForCookedRecipes = assignableDays.length - numberOfRandomRecipes;
-
-  // Füge zuerst Rezepte hinzu, die der Benutzer gekocht hat, bis das Limit erreicht ist
-  // oder keine weiteren benötigt werden
-  // while (
-  //   indexCooked < hasCookedRecipes.length &&
-  //   combinedRecipes.length < maxDaysForCookedRecipes
-  // ) {
-  //   if (!recipesInWeek.includes(hasCookedRecipes[indexCooked]._id)) {
-  //     combinedRecipes.push(hasCookedRecipes[indexCooked]);
-  //   }
-  //   indexCooked++;
-  // }
-
-  // // Füge dann zufällige Rezepte hinzu, bis das Gesamtlimit erreicht ist
-  // while (
-  //   indexRandom < randomRecipes.length &&
-  //   combinedRecipes.length < assignableDays.length
-  // ) {
-  //   if (!recipesInWeek.includes(randomRecipes[indexRandom]._id)) {
-  //     combinedRecipes.push(randomRecipes[indexRandom]);
-  //   }
-  //   indexRandom++;
-  // }
 
   while (
     indexCooked < hasCookedRecipes.length &&
@@ -97,19 +74,10 @@ export default async function populateEmptyWeekdays(
 
   shuffleArray(combinedRecipes);
 
-  // const recipeAssignments = assignableDays.reduce((assignments, day, index) => {
-  //   if (index < combinedRecipes.length) {
-  //     assignments[day] = combinedRecipes[index]._id;
-  //   }
-  //   return assignments;
-  // }, {});
-
   // Bereite die neuen Assignments vor, wobei jedes Objekt 'date', 'recipe' und optional 'servings' enthält
   const recipeAssignments = combinedRecipes.map(({ recipe, date }) => ({
     date: date,
     recipe: recipe._id,
-    // Hier könnten Sie 'servings' hinzufügen, falls vorhanden. Beispiel:
-    // servings: recipe.defaultNumberOfServings
   }));
 
   assignRecipesToCalendarDays(recipeAssignments, user, mutateUser);

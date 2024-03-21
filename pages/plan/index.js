@@ -166,15 +166,6 @@ export default function Plan({
     assignRecipeToCalendarDay([{ date: day, recipe: null }], user, mutateUser);
   };
 
-  // const removeAllRecipes = (weekdays) => {
-  //   const recipeDatePairs = weekdays.reduce((obj, day) => {
-  //     obj[day.date] = null;
-  //     return obj;
-  //   }, {});
-
-  //   assignRecipeToCalendarDay(recipeDatePairs, user, mutateUser);
-  // };
-
   const removeAllRecipes = (weekdays) => {
     // Erstellen eines Arrays von Objekten für jede Zutat, die entfernt werden soll
     const assignments = weekdays.map((day) => ({
