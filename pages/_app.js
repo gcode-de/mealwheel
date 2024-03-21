@@ -25,6 +25,7 @@ export default function App({
   Component,
   pageProps: { session, ...pageProps },
 }) {
+  //fetcher
   const {
     data: user,
     isLoading,
@@ -38,6 +39,7 @@ export default function App({
     isLoading: recipesIsLoading,
   } = useSWR(`/api/recipes`, fetcher);
 
+  //recipe Interaction
   function getRecipeProperty(_id, property) {
     const recipeInteraction = user?.recipeInteractions.find(
       (interaction) => interaction.recipe._id === _id

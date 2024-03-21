@@ -1,9 +1,4 @@
 import StyledListItem from "../Styled/StyledListItem";
-import { useState } from "react";
-import { useRouter } from "next/router";
-import Image from "next/image";
-import { filterTags } from "/helpers/filterTags";
-import styled from "styled-components";
 import StyledArticle from "../Styled/StyledArticle";
 import IconButton from "../Styled/IconButton";
 import StyledList from "../Styled/StyledList";
@@ -12,14 +7,21 @@ import Button from "../Styled/StyledButton";
 import StyledP from "../Styled/StyledP";
 import AddButton from "../Styled/AddButton";
 import SetNumberOfPeople from "../Styled/SetNumberOfPeople";
+import Plus from "/public/icons/svg/plus.svg";
 import StyledIngredients from "../Styled/StyledIngredients";
 import StyledInput from "../Styled/StyledInput";
 import StyledDropDown from "../Styled/StyledDropDown";
-import { notifySuccess, notifyError } from "/helpers/toast";
 
+import { filterTags } from "/helpers/filterTags";
+import { ingredientUnits } from "@/helpers/ingredientUnits";
 import handleDeleteImage from "@/helpers/Cloudinary/handleDeleteImage";
-import Plus from "/public/icons/svg/plus.svg";
 import handlePostImage from "@/helpers/Cloudinary/handlePostImage";
+
+import styled from "styled-components";
+import { notifySuccess, notifyError } from "/helpers/toast";
+import { useState } from "react";
+import { useRouter } from "next/router";
+import Image from "next/image";
 
 export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
   const [difficulty, setDifficulty] = useState(
@@ -216,13 +218,11 @@ export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
                   onChange={(event) => handleInputChange(event, index, "unit")}
                   defaultValue={ingredient.unit}
                 >
-                  <option value="">-</option>
-                  <option value="ml">ml</option>
-                  <option value="piece">Stück</option>
-                  <option value="gramm">g</option>
-                  <option value="EL">EL</option>
-                  <option value="TL">TL</option>
-                  <option value="Prise">Prise</option>
+                  {ingredientUnits.map((unit) => (
+                    <option key={unit} value={unit}>
+                      {unit}
+                    </option>
+                  ))}
                 </StyledDropDown>
                 <StyledInput
                   value={ingredient.name}
