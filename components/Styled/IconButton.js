@@ -14,6 +14,7 @@ import Edit from "@/public/icons/edit-3-svgrepo-com (2).svg";
 import Settings from "@/public/icons/settings-svgrepo-com.svg";
 import Book from "@/public/icons/svg/book-user_9856365.svg";
 import Leave from "@/public/icons/svg/arrow-left-from-line_9253329.svg";
+import Menu from "/public/icons/svg/menu.svg";
 
 export default function IconButton({ onClick, style, left, right, top, fill }) {
   const buttonStyles = {
@@ -31,6 +32,7 @@ export default function IconButton({ onClick, style, left, right, top, fill }) {
     Settings: <Settings width={30} height={30} />,
     Book: <Book width={25} height={25} />,
     Leave: <Leave width={20} height={20} />,
+    Menu: <Menu width={30} height={30} />,
   };
   return (
     <StyledBox $left={left} $right={right} $top={top}>

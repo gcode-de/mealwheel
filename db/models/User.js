@@ -21,6 +21,15 @@ const calendarEntrySchema = new Schema({
   numberOfPeople: Number,
   isDisabled: Boolean,
 });
+const collectionSchema = new Schema({
+  recipes: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Recipe",
+    },
+  ],
+  collectionName: { type: String },
+});
 const shoppingItem = new Schema({
   name: { type: String, required: true },
   quantity: { type: Number },
@@ -44,12 +53,7 @@ const userSchema = new Schema({
   recipeInteractions: [recipeInteractionSchema],
   calendar: [calendarEntrySchema],
   shoppingList: [shoppingItem],
-  collections: [
-    {
-      collectionName: { type: String },
-      recipes: [{ type: mongoose.Schema.Types.ObjectId, ref: "Recipe" }],
-    },
-  ],
+  collections: [collectionSchema],
   publicId: { type: String },
 });
 

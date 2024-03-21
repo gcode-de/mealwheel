@@ -113,6 +113,7 @@ const CardContainer = styled.div`
 `;
 
 const StyledLink = styled(Link)`
+  position: relative;
   width: fit-content;
   text-decoration: none;
   color: var(--darkgrey);

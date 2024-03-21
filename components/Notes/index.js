@@ -7,6 +7,7 @@ import Menu from "/public/icons/svg/menu.svg";
 import Button from "../Styled/StyledButton";
 import Pen from "/public/icons/svg/pen-square_10435869.svg";
 import Trash from "/public/icons/svg/trash-xmark_10741775.svg";
+import MenuContainer from "../Styled/MenuContainer";
 
 export default function Notes({ user, mutateUser, _id, foundInteractions }) {
   const [menuVisible, setMenuVisible] = useState(
@@ -133,10 +134,7 @@ export default function Notes({ user, mutateUser, _id, foundInteractions }) {
           )}
 
           {menuVisible[index] && (
-            <MenuContainer
-              autoFocus
-              onBlur={(event) => closeMenu(event, index)}
-            >
+            <MenuContainer>
               <UnstyledButton onClick={() => handleEditNote(index)}>
                 <Pen width={15} height={15} />
                 Notiz bearbeiten
@@ -221,19 +219,7 @@ const StyledMenu = styled(Menu)`
   transform: ${(props) => (props.$rotate ? "rotate(90deg)" : "0")};
   cursor: pointer;
 `;
-const MenuContainer = styled.div`
-  position: absolute;
-  top: var(--gap-between);
-  right: calc(3 * var(--gap-between) + 20px);
-  z-index: 2;
-  background-color: white;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
-  border-radius: 4px;
-  padding: var(--gap-between);
-  display: flex;
-  flex-direction: column;
-  gap: var(--gap-between);
-`;
+
 const UnstyledButton = styled.button`
   background-color: transparent;
   border: none;
