@@ -88,7 +88,15 @@ export default function ProfilePage({ user, mutateUser }) {
         onClick={() => router.push("/profile/settings")}
         fill="var(--color-lightgrey)"
       />
-
+      <IconButton
+        style={"Leave"}
+        top="var(--gap-out)"
+        right="var(--gap-out)"
+        onClick={() => {
+          signOut({ callbackUrl: "/", redirect: true });
+        }}
+        fill="var(--color-lightgrey)"
+      />
       {editUser && (
         <>
           <WrapperCenter>
@@ -117,7 +125,6 @@ export default function ProfilePage({ user, mutateUser }) {
               top={"-1.75rem"}
               right={"2rem"}
               onClick={() => setEditUser((previousValue) => !previousValue)}
-
             />
           </StyledList>
         </>
