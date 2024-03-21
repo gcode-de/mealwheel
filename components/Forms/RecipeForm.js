@@ -117,7 +117,7 @@ export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
         {imageUrl && (
           <StyledImageCloudinary
             src={
-              imageUrl.imageUrl || "/img/jason-briscoe-7MAjXGUmaPw-unsplash.jpg"
+              data.imageLink || "/img/jason-briscoe-7MAjXGUmaPw-unsplash.jpg"
             }
             alt="Uploaded Image"
             width={100}
