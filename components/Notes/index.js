@@ -1,5 +1,6 @@
 import { useState } from "react";
 import updateUserinDb from "@/helpers/updateUserInDb";
+import Modal from "../Modal";
 
 import styled from "styled-components";
 import Menu from "/public/icons/svg/menu.svg";
@@ -18,6 +19,11 @@ export default function Notes({ user, mutateUser, _id, foundInteractions }) {
       ? new Array(foundInteractions.notes.length).fill(false)
       : []
   );
+  const [modal, setModal] = useState(false);
+
+  function toggleModal() {
+    setModal(!modal);
+  }
   const interactionIndex = user.recipeInteractions.findIndex(
     (interaction) => interaction.recipe._id === _id
   );
@@ -59,6 +65,7 @@ export default function Notes({ user, mutateUser, _id, foundInteractions }) {
     });
   }
   function handleSave(event, index) {
+    event.preventDefault();
     const newComment = event.target.value;
     user.recipeInteractions[interactionIndex].notes[index].comment = newComment;
     updateUserinDb(user, mutateUser);
@@ -74,12 +81,23 @@ export default function Notes({ user, mutateUser, _id, foundInteractions }) {
     user.recipeInteractions[interactionIndex].notes = updatedNotes;
     setMenuVisible((menuVisible[index] = false));
     setMenuVisible(menuVisible.splice(index, 1));
+    setModal(false);
     updateUserinDb(user, mutateUser);
   }
+
   return (
     <>
       {foundInteractions?.notes.map((note, index) => (
         <StyledComment key={index}>
+          {modal && (
+            <Modal
+              message="Möchtest du die Notiz wirklich löschen?"
+              btnCloseMessage="Abbrechen"
+              btnConfirmMessage="Löschen"
+              toggleModal={toggleModal}
+              onConfirm={() => handleDeleteNote(index)}
+            />
+          )}
           <StyledMenu
             width={20}
             height={20}
@@ -106,7 +124,7 @@ export default function Notes({ user, mutateUser, _id, foundInteractions }) {
                 <Pen width={15} height={15} />
                 Notiz bearbeiten
               </UnstyledButton>
-              <UnstyledButton onClick={() => handleDeleteNote(index)}>
+              <UnstyledButton onClick={toggleModal}>
                 <Trash width={15} height={15} />
                 Notiz löschen
               </UnstyledButton>

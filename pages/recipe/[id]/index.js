@@ -22,7 +22,6 @@ import updateUserinDb from "@/helpers/updateUserInDb";
 import { filterTags } from "@/helpers/filterTags";
 import Notes from "@/components/Notes";
 
-
 export default function DetailPage({
   user,
   mutateUser,
@@ -120,7 +119,7 @@ export default function DetailPage({
     difficulty,
   } = recipe;
 
-  const foundInteractions = user.recipeInteractions.find(
+  const foundInteractions = user.recipeInteractions?.find(
     (interaction) => interaction.recipe._id === _id
   );
 
