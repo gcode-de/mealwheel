@@ -4,7 +4,8 @@ export default function SetNumberOfPeople({ numberOfPeople, handleChange }) {
   return (
     <NumberOfPeopleContainer>
       <button
-        onClick={() => {
+        onClick={(event) => {
+          event.preventDefault();
           handleChange(-1);
         }}
       >
@@ -12,7 +13,8 @@ export default function SetNumberOfPeople({ numberOfPeople, handleChange }) {
       </button>
       <span>{numberOfPeople}</span>
       <button
-        onClick={() => {
+        onClick={(event) => {
+          event.preventDefault();
           handleChange(+1);
         }}
       >

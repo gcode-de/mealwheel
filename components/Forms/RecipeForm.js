@@ -11,7 +11,7 @@ import StyledH2 from "../Styled/StyledH2";
 import Button from "../Styled/StyledButton";
 import StyledP from "../Styled/StyledP";
 import AddButton from "../Styled/AddButton";
-
+import SetNumberOfPeople from "../Styled/SetNumberOfPeople";
 import StyledIngredients from "../Styled/StyledIngredients";
 import StyledInput from "../Styled/StyledInput";
 import StyledDropDown from "../Styled/StyledDropDown";
@@ -27,7 +27,12 @@ export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
   );
   const [ingredients, setIngredients] = useState(
     data
-      ? data.ingredients
+      ? data.ingredients.map((ingredient) => {
+          return {
+            ...ingredient,
+            quantity: ingredient.quantity * data?.defaultNumberOfServings,
+          };
+        })
       : [
           {
             quantity: "",
@@ -40,6 +45,13 @@ export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
   const router = useRouter();
   const [selectedTags, setSelectedTags] = useState(data ? data.diet : []);
   const [imageUrl, setImageUrl] = useState(data ? data.imageLink : "");
+  const [servings, setServings] = useState(
+    data ? data?.defaultNumberOfServings : 2
+  );
+
+  function handleSetNumberOfPeople(change) {
+    setServings((prevServings) => prevServings + change);
+  }
 
   function handleTagChange(value) {
     setSelectedTags(
@@ -71,12 +83,18 @@ export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
     const data = Object.fromEntries(formData);
     const newData = {
       ...data,
-      ingredients,
+      ingredients: ingredients.map((ingredient) => {
+        return {
+          ...ingredient,
+          quantity: ingredient.quantity / Number(servings),
+        };
+      }),
 
-      imageLink: imageUrl.imageUrl,
+      imageLink: imageUrl?.imageUrl,
       diet: selectedTags,
       public: event.target.public.checked,
-      publicId: imageUrl.publicId,
+      publicId: imageUrl?.publicId,
+      defaultNumberOfServings: servings,
     };
 
     onSubmit(newData);
@@ -171,7 +189,25 @@ export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
               <option value="hard">Profi</option>
             </StyledDropDown>
           </StyledListItem>
-          <StyledH2>Zutaten</StyledH2>
+          <StyledH2>
+            Zutaten
+            {/* - für
+            <StyledInput
+              type="number"
+              name="defaultNumberOfServings"
+              placeholder="Anz."
+              $width="2rem"
+              required
+              min="1"
+              aria-label="add number of servings for the chosen ingredients"
+              defaultValue={servings}
+            />
+            <StyledP>Pers.</StyledP> */}
+            <SetNumberOfPeople
+              numberOfPeople={servings}
+              handleChange={handleSetNumberOfPeople}
+            />
+          </StyledH2>
           <StyledList>
             {ingredients.map((ingredient, index) => (
               <StyledIngredients key={index}>

@@ -7,7 +7,10 @@ import { useRouter } from "next/router";
 import { notifySuccess, notifyError } from "/helpers/toast";
 
 import assignRecipeToCalendarDay from "@/helpers/assignRecipeToDay";
+import updateUserinDb from "@/helpers/updateUserInDb";
+import { filterTags } from "@/helpers/filterTags";
 
+import SetNumberOfPeople from "@/components/Styled/SetNumberOfPeople";
 import IconButton from "@/components/Styled/IconButton";
 import StyledArticle from "@/components/Styled/StyledArticle";
 import StyledList from "@/components/Styled/StyledList";
@@ -15,11 +18,7 @@ import StyledH2 from "@/components/Styled/StyledH2";
 import StyledP from "@/components/Styled/StyledP";
 import StyledListItem from "@/components/Styled/StyledListItem";
 import LoadingComponent from "@/components/Loading";
-
 import StyledDropDown from "@/components/Styled/StyledDropDown";
-import updateUserinDb from "@/helpers/updateUserInDb";
-
-import { filterTags } from "@/helpers/filterTags";
 import Button from "@/components/Styled/StyledButton";
 
 export default function DetailPage({
@@ -40,7 +39,6 @@ export default function DetailPage({
   const router = useRouter();
   const { id } = router.query;
 
-  const servings = Number(router.query.servings) || 1;
   const {
     data: recipe,
     isLoading: dataIsLoading,
@@ -48,17 +46,37 @@ export default function DetailPage({
     mutate,
   } = useSWR(id ? `/api/recipes/${id}` : null);
 
-  const userIsAuthor = user && user?._id === recipe?.author;
+  const defaultNumberOfServings = recipe?.defaultNumberOfServings;
+
+  const [servings, setServings] = useState(
+    Number(router?.query?.servings) || defaultNumberOfServings || 2
+  );
 
   if (error || dataError) {
-    return <h1>Fehler...</h1>;
+    return <h1>Fehler beim Laden des Rezepts...</h1>;
   }
 
   if (isLoading || dataIsLoading || !recipe) {
     return <LoadingComponent />;
   }
 
-  const handleSubmit = async (event) => {
+  const {
+    _id,
+    title,
+    instructions,
+    imageLink,
+    diet,
+    youtubeLink,
+    ingredients,
+    duration,
+    difficulty,
+    author,
+  } = recipe;
+
+  difficulty.toUpperCase();
+  const userIsAuthor = user && user?._id === author;
+
+  const handleAssignReipceToCalendar = async (event) => {
     event.preventDefault();
 
     //generate ISO-Date
@@ -107,19 +125,20 @@ export default function DetailPage({
     }
   }
 
-  const {
-    _id,
-    title,
-    instructions,
-    imageLink,
-    diet,
-    youtubeLink,
-    ingredients,
-    duration,
-    difficulty,
-  } = recipe;
+  function handleSetNumberOfPeople(change) {
+    const newServings = servings + change;
+    setServings(newServings);
 
-  difficulty.toUpperCase();
+    const newQuery = {
+      ...router.query,
+      servings: newServings,
+    };
+
+    const queryString = new URLSearchParams(newQuery).toString();
+    router.replace(`${router.pathname}?${queryString}`, undefined, {
+      shallow: true,
+    });
+  }
 
   function handleAddNote(event) {
     event.preventDefault();
@@ -250,7 +269,10 @@ export default function DetailPage({
             toggleIsFavorite(_id);
           }}
         />
-        <StyledForm onSubmit={handleSubmit} $isVisible={calendarFormIsVisible}>
+        <StyledForm
+          onSubmit={handleAssignReipceToCalendar}
+          $isVisible={calendarFormIsVisible}
+        >
           <h3>Dieses Rezept einplanen:</h3>
           <label htmlFor="date">Datum:</label>
           <input
@@ -289,14 +311,17 @@ export default function DetailPage({
         </StyledP>
         <StyledH2>
           Zutaten{" "}
-          {servings === 1 ? `(für 1 Person` : `(für ${servings} Personen`})
+          <SetNumberOfPeople
+            numberOfPeople={servings}
+            handleChange={handleSetNumberOfPeople}
+          />
         </StyledH2>
         <StyledList>
           {ingredients.map((ingredient) => (
             <StyledListItem key={ingredient._id}>
               <StyledP>{ingredient.name}</StyledP>
               <StyledP>
-                {ingredient.quantity} {ingredient.unit}
+                {ingredient.quantity * servings} {ingredient.unit}
               </StyledP>
             </StyledListItem>
           ))}
