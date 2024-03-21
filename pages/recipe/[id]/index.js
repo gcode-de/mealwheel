@@ -35,7 +35,9 @@ export default function DetailPage({
   const [selectedDate, setSelectedDate] = useState("");
   const [calendarFormIsVisible, setCalendarFormIsVisible] = useState(false);
   const [collectionFormIsVisible, setCollectionFormIsVisible] = useState(false);
-  const [selectedCollection, setselectedCollection] = useState("");
+  const [selectedCollection, setSelectedCollection] = useState(
+    user?.collections?.[0]?.collectionName || ""
+  );
 
   const router = useRouter();
   const { id } = router.query;
@@ -56,6 +58,9 @@ export default function DetailPage({
 
   if (isLoading || dataIsLoading || !recipe) {
     return <LoadingComponent />;
+  }
+  if (!user) {
+    return;
   }
 
   const handleSubmit = async (event) => {
@@ -85,7 +90,7 @@ export default function DetailPage({
   async function handleCollection(event) {
     event.preventDefault();
     const isDuplicate = user.collections
-      .find((col) => col.collectionName === selectedCollection)
+      ?.find((col) => col.collectionName === selectedCollection)
       .recipes.some((recipe) => recipe._id === id);
     if (isDuplicate) {
       notifyError("Dieses Rezept ist bereits gespeichert.");
@@ -241,7 +246,7 @@ export default function DetailPage({
         >
           <h3>Dieses Rezept speichern:</h3>
           <StyledDropDown
-            onChange={(event) => setselectedCollection(event.target.value)}
+            onChange={(event) => setSelectedCollection(event.target.value)}
             name="collectionName"
             required
           >
