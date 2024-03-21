@@ -90,7 +90,6 @@ export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
     setUpload(true);
 
     const file = event.target.files[0];
-    setImageUrl({ imageUrl: URL.createObjectURL(file) });
 
     const formData = new FormData();
     formData.append("file", file);
