@@ -191,18 +191,6 @@ export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
           </StyledListItem>
           <StyledH2>
             Zutaten
-            {/* - für
-            <StyledInput
-              type="number"
-              name="defaultNumberOfServings"
-              placeholder="Anz."
-              $width="2rem"
-              required
-              min="1"
-              aria-label="add number of servings for the chosen ingredients"
-              defaultValue={servings}
-            />
-            <StyledP>Pers.</StyledP> */}
             <SetNumberOfPeople
               numberOfPeople={servings}
               handleChange={handleSetNumberOfPeople}
