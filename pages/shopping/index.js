@@ -50,12 +50,6 @@ export default function ShoppingList({ user, mutateUser }) {
     setEditingIndex(null);
   }
 
-  const ingredients = ["Kartoffeln", "Zwiebeln", "Möhren", "Milch", "Eier"];
-
-  const categories = fetchCategorizedIngredients(ingredients);
-
-  console.log("shoppinglist", categories);
-
   if (!user) {
     return (
       <>
@@ -67,6 +61,13 @@ export default function ShoppingList({ user, mutateUser }) {
       </>
     );
   }
+
+  const ingredients = ["Kartoffeln", "Zwiebeln", "Möhren", "Milch", "Eier"];
+
+  const categories = fetchCategorizedIngredients(ingredients);
+
+  console.log("shoppinglist", categories);
+
   user.shoppingList = Array.from(
     user.shoppingList
       .reduce((map, obj) => {
