@@ -102,6 +102,14 @@ export default function ProfilePage({ user, mutateUser }) {
           <WrapperCenter>
             <StyledProfile>
               {upload && <StyledProgress />}
+              {imageUrl && (
+                <StyledImageCloudinary
+                  src={imageUrl}
+                  alt="Uploaded Image"
+                  width={20}
+                  height={20}
+                />
+              )}
               <StyledImageUploadContainer>
                 <Plus width={40} height={40} />
                 <StyledImageUpload type="file" onChange={uploadImage} />
@@ -224,6 +232,14 @@ const StyledProfile = styled.div`
   align-items: center;
   position: relative;
   z-index: 2;
+`;
+
+const StyledImageCloudinary = styled(Image)`
+  width: 100%;
+  height: auto;
+  border-radius: 50%;
+  border: 7px solid white;
+  opacity: 0.25;
 `;
 
 const StyledUsernameForm = styled.form`
