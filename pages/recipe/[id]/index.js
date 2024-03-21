@@ -6,7 +6,7 @@ import { useState } from "react";
 import { useRouter } from "next/router";
 import { notifySuccess, notifyError } from "/helpers/toast";
 
-import assignRecipeToCalendarDay from "@/helpers/assignRecipeToDay";
+import assignRecipesToCalendarDays from "@/helpers/assignRecipesToCalendarDays";
 import updateUserinDb from "@/helpers/updateUserInDb";
 import { filterTags } from "@/helpers/filterTags";
 
@@ -76,15 +76,23 @@ export default function DetailPage({
   difficulty.toUpperCase();
   const userIsAuthor = user && user?._id === author;
 
-  const handleAssignReipceToCalendar = async (event) => {
+  const handleAssignRecipeToCalendar = async (event) => {
     event.preventDefault();
 
-    //generate ISO-Date
+    // Generieren des ISO-Datums
     const isoDate = new Date(selectedDate);
     isoDate.setUTCHours(0, 0, 0, 0);
     const dbDate = isoDate.toISOString();
     try {
-      await assignRecipeToCalendarDay({ [dbDate]: id }, user, mutateUser);
+      const assignment = [
+        {
+          date: dbDate,
+          recipe: id,
+          servings: servings,
+        },
+      ];
+
+      await assignRecipesToCalendarDays(assignment, user, mutateUser);
 
       const localDate = new Date(dbDate).toLocaleDateString("de-DE", {
         weekday: "long",
@@ -270,7 +278,7 @@ export default function DetailPage({
           }}
         />
         <StyledForm
-          onSubmit={handleAssignReipceToCalendar}
+          onSubmit={handleAssignRecipeToCalendar}
           $isVisible={calendarFormIsVisible}
         >
           <h3>Dieses Rezept einplanen:</h3>

@@ -1,4 +1,4 @@
-import assignRecipeToCalendarDay from "./assignRecipeToDay";
+import assignRecipesToCalendarDays from "./assignRecipesToCalendarDays";
 
 export default async function populateEmptyWeekdays(
   weekdays,
@@ -17,7 +17,7 @@ export default async function populateEmptyWeekdays(
     .filter((recipe) => recipe.hasCooked && recipe.isFavorite)
     .map((recipe) => recipe.recipe);
 
-  //find all recipes that all already planned fr the week to avoid them
+  //find all recipes that all already planned for the week to avoid them
   let recipesInWeek = weekdays
     .filter((weekday) => {
       const calendarDay = user.calendar.find(
@@ -48,37 +48,71 @@ export default async function populateEmptyWeekdays(
 
   // Füge zuerst Rezepte hinzu, die der Benutzer gekocht hat, bis das Limit erreicht ist
   // oder keine weiteren benötigt werden
+  // while (
+  //   indexCooked < hasCookedRecipes.length &&
+  //   combinedRecipes.length < maxDaysForCookedRecipes
+  // ) {
+  //   if (!recipesInWeek.includes(hasCookedRecipes[indexCooked]._id)) {
+  //     combinedRecipes.push(hasCookedRecipes[indexCooked]);
+  //   }
+  //   indexCooked++;
+  // }
+
+  // // Füge dann zufällige Rezepte hinzu, bis das Gesamtlimit erreicht ist
+  // while (
+  //   indexRandom < randomRecipes.length &&
+  //   combinedRecipes.length < assignableDays.length
+  // ) {
+  //   if (!recipesInWeek.includes(randomRecipes[indexRandom]._id)) {
+  //     combinedRecipes.push(randomRecipes[indexRandom]);
+  //   }
+  //   indexRandom++;
+  // }
+
   while (
     indexCooked < hasCookedRecipes.length &&
     combinedRecipes.length < maxDaysForCookedRecipes
   ) {
     if (!recipesInWeek.includes(hasCookedRecipes[indexCooked]._id)) {
-      combinedRecipes.push(hasCookedRecipes[indexCooked]);
+      combinedRecipes.push({
+        recipe: hasCookedRecipes[indexCooked],
+        date: assignableDays[combinedRecipes.length],
+      });
     }
     indexCooked++;
   }
 
-  // Füge dann zufällige Rezepte hinzu, bis das Gesamtlimit erreicht ist
   while (
     indexRandom < randomRecipes.length &&
     combinedRecipes.length < assignableDays.length
   ) {
     if (!recipesInWeek.includes(randomRecipes[indexRandom]._id)) {
-      combinedRecipes.push(randomRecipes[indexRandom]);
+      combinedRecipes.push({
+        recipe: randomRecipes[indexRandom],
+        date: assignableDays[combinedRecipes.length],
+      });
     }
     indexRandom++;
   }
 
   shuffleArray(combinedRecipes);
 
-  const recipeAssignments = assignableDays.reduce((assignments, day, index) => {
-    if (index < combinedRecipes.length) {
-      assignments[day] = combinedRecipes[index]._id;
-    }
-    return assignments;
-  }, {});
+  // const recipeAssignments = assignableDays.reduce((assignments, day, index) => {
+  //   if (index < combinedRecipes.length) {
+  //     assignments[day] = combinedRecipes[index]._id;
+  //   }
+  //   return assignments;
+  // }, {});
 
-  assignRecipeToCalendarDay(recipeAssignments, user, mutateUser);
+  // Bereite die neuen Assignments vor, wobei jedes Objekt 'date', 'recipe' und optional 'servings' enthält
+  const recipeAssignments = combinedRecipes.map(({ recipe, date }) => ({
+    date: date,
+    recipe: recipe._id,
+    // Hier könnten Sie 'servings' hinzufügen, falls vorhanden. Beispiel:
+    // servings: recipe.defaultNumberOfServings
+  }));
+
+  assignRecipesToCalendarDays(recipeAssignments, user, mutateUser);
 }
 
 function shuffleArray(array) {

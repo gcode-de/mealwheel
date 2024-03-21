@@ -31,10 +31,10 @@ import RandomnessSlider from "@/components/Styled/RandomnessSlider";
 import PowerIcon from "@/public/icons/power-material-svgrepo-com.svg";
 
 import generateWeekdays from "@/helpers/generateWeekdays";
-import assignRecipeToCalendarDay from "@/helpers/assignRecipeToDay";
+import assignRecipeToCalendarDay from "@/helpers/assignRecipesToCalendarDays";
 import populateEmptyWeekdays from "@/helpers/populateEmptyWeekdays";
 import updateUserinDb from "@/helpers/updateUserInDb";
-import assignRecipesToCalendarDays from "@/helpers/assignRecipeToDay";
+import assignRecipesToCalendarDays from "@/helpers/assignRecipesToCalendarDays";
 import LoadingComponent from "@/components/Loading";
 import IconButtonLarge from "@/components/Styled/IconButtonLarge";
 import { notifySuccess, notifyError } from "/helpers/toast";
@@ -155,20 +155,34 @@ export default function Plan({
 
   const reassignRecipe = async (day) => {
     const randomRecipe = await getRandomRecipe();
-    assignRecipeToCalendarDay({ [day]: randomRecipe[0] }, user, mutateUser);
+    assignRecipeToCalendarDay(
+      [{ date: day, recipe: randomRecipe[0] }],
+      user,
+      mutateUser
+    );
   };
 
   const removeRecipe = (day) => {
-    assignRecipeToCalendarDay({ [day]: null }, user, mutateUser);
+    assignRecipeToCalendarDay([{ date: day, recipe: null }], user, mutateUser);
   };
 
-  const removeAllRecipes = (weekdays) => {
-    const recipeDatePairs = weekdays.reduce((obj, day) => {
-      obj[day.date] = null;
-      return obj;
-    }, {});
+  // const removeAllRecipes = (weekdays) => {
+  //   const recipeDatePairs = weekdays.reduce((obj, day) => {
+  //     obj[day.date] = null;
+  //     return obj;
+  //   }, {});
 
-    assignRecipeToCalendarDay(recipeDatePairs, user, mutateUser);
+  //   assignRecipeToCalendarDay(recipeDatePairs, user, mutateUser);
+  // };
+
+  const removeAllRecipes = (weekdays) => {
+    // Erstellen eines Arrays von Objekten für jede Zutat, die entfernt werden soll
+    const assignments = weekdays.map((day) => ({
+      date: day.date,
+      recipe: null,
+    }));
+
+    assignRecipesToCalendarDays(assignments, user, mutateUser);
   };
 
   const checkIfWeekdayIsDefaultEnabled = (date) => {
