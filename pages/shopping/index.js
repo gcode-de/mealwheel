@@ -14,7 +14,7 @@ import Link from "next/link";
 import updateUserinDb from "@/helpers/updateUserInDb";
 import { useEffect, useRef, useState } from "react";
 
-import fetchCategorizedIngredients from "@/helpers/OpenAI/CategorizeIngredients";
+import fetchCategorizedIngredients from "@/helpers/OpenAI/categorizeIngredients";
 
 export default function ShoppingList({ user, mutateUser }) {
   const [editingIndex, setEditingIndex] = useState(null);
@@ -62,11 +62,17 @@ export default function ShoppingList({ user, mutateUser }) {
     );
   }
 
-  const ingredients = ["Kartoffeln", "Zwiebeln", "Möhren", "Milch", "Eier"];
-
-  const categories = fetchCategorizedIngredients(ingredients);
-
-  console.log("shoppinglist", categories);
+  async function askAI() {
+    const categories = fetchCategorizedIngredients([
+      "Kartoffeln",
+      "Zwiebeln",
+      "Möhren",
+      "Milch",
+      "Eier",
+    ]);
+    console.log("shoppinglist", await categories);
+  }
+  askAI();
 
   user.shoppingList = Array.from(
     user.shoppingList

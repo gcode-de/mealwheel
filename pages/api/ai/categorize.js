@@ -15,18 +15,21 @@ export default async function handler(req, res) {
   }
 
   try {
+    // const prompt = `Kategorisiere diese Zutaten: ${ingredients.join(
+    //   ", "
+    // )}. Gibt mir jeweils die Kategorie und nach einem Doppelpunkt die passenden Zutaten, getrennt durch Kommas.`;
     const prompt = `Kategorisiere diese Zutaten: ${ingredients.join(
       ", "
-    )}. Gibt mir jeweils die Kategorie und nach einem Doppelpunkt die passenden Zutaten, getrennt durch Kommas.`;
+    )}. Gib mir das Ergebnis als Objekt zurück nach dem Schema {Kategorie1:["Zutat1","Zutat2"],Kategorie2:["Zutat3","Zutat4"]}`;
     const response = await openai.chat.completions.create({
       model: "gpt-3.5-turbo",
       messages: [{ role: "user", content: prompt }],
       temperature: 0.7,
       max_tokens: 500,
     });
-    console.log(response.choices[0].message.content);
+    console.log("response in API:\n", response.choices[0].message.content);
 
-    return res.status(200).json(response.data);
+    return res.status(200).json(response.choices[0].message.content);
   } catch (error) {
     console.error("Fehler beim Abrufen der Kategorisierung:", error);
     return res

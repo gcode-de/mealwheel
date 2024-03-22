@@ -10,7 +10,5 @@ export default async function fetchCategorizedIngredients(ingredients) {
   }
 
   const data = await response.json();
-  console.log("in function", data);
   return data;
-  // return response;
 }
