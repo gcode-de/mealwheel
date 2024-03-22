@@ -112,7 +112,7 @@ export default function Collections({ user, mutateUser }) {
                 }
               />
             )}
-            <CollectionCard collection={col}></CollectionCard>
+            <CollectionCard collection={collection}></CollectionCard>
           </CollectionContainer>
         ))}
       </CollectionWrapper>
