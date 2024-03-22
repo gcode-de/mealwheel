@@ -80,6 +80,7 @@ export default function MealCard({
             <SetNumberOfPeople
               numberOfPeople={numberOfPeople}
               handleChange={(change) => changeNumberOfPeople(change)}
+              $margin="0.75rem 0 0 1.5rem"
             />
           )}
         </StyledDiv>
