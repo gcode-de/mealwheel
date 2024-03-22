@@ -26,6 +26,7 @@ export default function Collections({ user, mutateUser }) {
 
   function toggleAddCollection() {
     setAddCollection(!addCollection);
+    setMenuVisible(false);
   }
   function toggleMenu() {
     setMenuVisible(!menuVisible);
