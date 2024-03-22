@@ -55,6 +55,14 @@
 - [ ] der User kann die Rezepte entfavorisieren, dann verschwinden die Rezepte aus der Favoritenansicht
 - [ ] Mit Klick auf das Rezept kommt der User auf die Detailansicht der Rezepte
 
+## Auf der Plan-Seite:
+
+- [ ] Der User kann unter dem Header von der aktuellen Woche aus in andere Wochen wechseln, dabei werden die jeweiligen Tage im Plan angezeigt
+- [ ] Der User kann wenn der Plan unbefüllt ist, anhand des "Zufällige Rezepte"-Schiebers steuern, wie das Verhältnis von eigenen und zufälligen Gerichten bei der Befüllung des Wochenplans ist
+- [ ] Wenn der Plan befüllt ist, dann ist der Schieber ausgegraut und deaktiviert
+- [ ] Das Datum der zu befüllenden Tage wird zusammen mit der gegrauten meal card angezeigt, dem "Tag deaktivieren" button und dem neues Gericht laden button
+- [ ] wenn der User den deaktivieren-button klickt
+
 # Weitere Funktionen
 
 ## Filter-Funktion:
