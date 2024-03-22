@@ -287,6 +287,7 @@ export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
             label="Öffentlich sichtbar"
             name="public"
             defaultChecked={data ? data.public : true}
+            sliderSize="2rem"
           />
           <ButtonContainer>
             <Button type="submit">speichern</Button>

@@ -55,6 +55,11 @@ export default function Plan({
   const [weekdays, setWeekdays] = useState([]);
   const [assignableDays, setAssignableDays] = useState([]);
   const [numberOfRandomRecipes, setNumberOfRandomRecipes] = useState(0);
+  const [isRandomnessActive, setIsRandomnessActive] = useState(false);
+
+  function toggleRandomness() {
+    setIsRandomnessActive(!isRandomnessActive);
+  }
 
   useEffect(() => {
     const generatedWeekdays = generateWeekdays(weekOffset);
@@ -347,7 +352,7 @@ export default function Plan({
         <Header text={"Wochenplan 🥗"} />
         <CalendarNavigation>
           <IconButton
-            style="ArrowLeft"
+            style="ArrowSmallLeft"
             left="var(--gap-out)"
             top="0.5rem"
             onClick={() => {
@@ -360,32 +365,44 @@ export default function Plan({
             <Link href={`/plan?week=0`}>zur aktuellen Woche</Link>
           )}
           <IconButton
-            style="TriangleRight"
+            style="ArrowSmallRight"
             right="var(--gap-out)"
             top="0.5rem"
+            rotate180="180deg"
             onClick={() => {
               router.push(`/plan?week=${weekOffset + 1}`);
             }}
           />
         </CalendarNavigation>
 
-        <RandomnessSliderContainer>
-          {assignableDays.length > 0 ? (
-            <p>Zufällige Rezepte: {numberOfRandomRecipes}</p>
-          ) : (
-            <p>Alle Tage geplant.</p>
-          )}
-          {weekdays && (
-            <RandomnessSlider
-              type="range"
-              $isActive={assignableDays.length > 0}
-              min="0"
-              max={assignableDays.length}
-              value={numberOfRandomRecipes}
-              onChange={handleSliderChange}
-            />
-          )}
-        </RandomnessSliderContainer>
+        <IconButton
+          right="var(--gap-out)"
+          top="8rem"
+          style="Menu"
+          rotate={isRandomnessActive}
+          onClick={toggleRandomness}
+        >
+          Anzahl der zufälligen Gerichte
+        </IconButton>
+        {isRandomnessActive && (
+          <RandomnessSliderContainer>
+            {assignableDays.length > 0 ? (
+              <p>Zufällige Rezepte: {numberOfRandomRecipes}</p>
+            ) : (
+              <p>Alle Tage geplant.</p>
+            )}
+            {weekdays && (
+              <RandomnessSlider
+                type="range"
+                $isActive={assignableDays.length > 0}
+                min="0"
+                max={assignableDays.length}
+                value={numberOfRandomRecipes}
+                onChange={handleSliderChange}
+              />
+            )}
+          </RandomnessSliderContainer>
+        )}
       </StyledHeader>
 
       <CalendarContainer>
@@ -428,6 +445,7 @@ export default function Plan({
                         onChange={() => {
                           toggleDayIsDisabled(weekday.date);
                         }}
+                        sliderSize="1rem"
                       />
                       {calendarDay?.isDisabled}
                       {weekday.readableDate}
@@ -518,18 +536,20 @@ const CalendarContainer = styled.ul`
 const StyledH2 = styled.h2`
   font-size: 1rem;
   margin: 20px 0 -15px 0;
-  padding: 0;
   color: ${(props) => props.$dayIsDisabled && "var(--color-lightgrey)"};
   text-decoration: ${(props) => (props.$dayIsDisabled ? "line-through" : "")};
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 `;
 
-const StyledPowerIcon = styled(PowerIcon)`
-  width: 1.5rem;
-  height: 1.5rem;
-  margin: -0.5rem 0.3rem 0 -0.2rem;
-  position: relative;
-  top: 0.3rem;
-  fill: ${(props) =>
-    props.$dayIsDisabled ? "var(--color-lightgrey)" : "var(--color-highlight)"};
-  cursor: pointer;
-`;
+// const StyledPowerIcon = styled(PowerIcon)`
+//   width: 1.5rem;
+//   height: 1.5rem;
+//   margin: -0.5rem 0.3rem 0 -0.2rem;
+//   position: relative;
+//   top: 0.3rem;
+//   fill: ${(props) =>
+//     props.$dayIsDisabled ? "var(--color-lightgrey)" : "var(--color-highlight)"};
+//   cursor: pointer;
+// `;

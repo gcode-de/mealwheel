@@ -6,6 +6,7 @@ export default function ToggleCheckbox({
   label,
   defaultChecked,
   onChange,
+  sliderSize,
 }) {
   return (
     <StyledCheckboxContainer>
@@ -18,7 +19,7 @@ export default function ToggleCheckbox({
           defaultChecked={defaultChecked}
           onChange={onChange}
         />
-        <StyledSliderCheckbox htmlFor="toggle" />
+        <StyledSliderCheckbox htmlFor="toggle" sliderSize={sliderSize} />
       </label>
     </StyledCheckboxContainer>
   );
@@ -42,20 +43,33 @@ const StyledSliderCheckbox = styled.span`
   position: relative;
   margin-left: 1rem;
   margin-top: 0rem;
-  height: 2rem;
-  width: 3.5rem;
+  height: ${(props) =>
+    props.sliderSize}; // Verwende die Prop sliderSize für die Höhe
+  width: ${(props) =>
+    parseFloat(props.sliderSize) * 1.75 +
+    "rem"}; // Berechne die Breite entsprechend der Höhe
   background-color: var(--color-background);
-  border-radius: 1rem;
+  border-radius: ${(props) =>
+    parseFloat(props.sliderSize) / 2 +
+    "rem"}; // Berechne den Radius entsprechend der Höhe
   cursor: pointer;
   box-shadow: inset 0 0 5px rgba(77, 74, 74, 0.1);
 
   &:before {
     content: "";
     position: absolute;
-    top: 0.25rem;
-    left: 0.25rem;
-    width: 1.5rem;
-    height: 1.5rem;
+    top: calc(
+      49.95% - ${(props) => parseFloat(props.sliderSize) * 0.375 + "rem"}
+    ); // Zentriere den Punkt auf der vertikalen Achse
+    left: calc(
+      30% - ${(props) => parseFloat(props.sliderSize) * 0.375 + "rem"}
+    ); // Zentriere den Punkt auf der horizontalen Achse
+    width: calc(
+      ${(props) => parseFloat(props.sliderSize) * 0.75 + "rem"}
+    ); // Verwende die Hälfte der Slider-Größe für den Punkt
+    height: calc(
+      ${(props) => parseFloat(props.sliderSize) * 0.75 + "rem"}
+    ); // Verwende die Hälfte der Slider-Größe für den Punkt
     background-color: var(--color-component);
     border-radius: 50%;
     transition: transform 0.3s ease-in-out;
@@ -66,6 +80,8 @@ const StyledSliderCheckbox = styled.span`
   }
 
   input:checked + &:before {
-    transform: translateX(1.5rem);
+    transform: translateX(
+      calc(${(props) => parseFloat(props.sliderSize) * 0.75 + "rem"})
+    ); // Bewege den Punkt auf die rechte Seite, basierend auf der Slider-Größe;
   }
 `;
