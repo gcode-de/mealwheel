@@ -451,7 +451,8 @@ const StyledForm = styled.form`
   button {
     width: 80px;
     line-height: 1.1rem;
-    padding: 0.25rem 0.5rem;
+    padding: 0.4rem 0.5rem;
+    min-height: 2rem;
     border: none;
     border-radius: 10px;
     background-color: var(--color-darkgrey);
@@ -463,7 +464,7 @@ const StyledForm = styled.form`
     border: none;
     border-radius: 10px;
     background-color: var(--color-background);
-    min-height: 1rem;
+    min-height: 2rem;
   }
 `;
 const StyledTitle = styled.h1`
