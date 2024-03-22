@@ -90,7 +90,7 @@ export default function MyRecipes({
           <BookPlus width={60} height={60} />
           <StyledParagraph />
         </StyledCollection>
-        {addCollection && (
+        {isModalCollection && (
           <NewCollection
             user={user}
             mutateUser={mutateUser}
