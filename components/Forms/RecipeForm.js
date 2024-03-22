@@ -48,7 +48,6 @@ export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
   const router = useRouter();
   const [selectedTags, setSelectedTags] = useState(data ? data.diet : []);
   const [imageUrl, setImageUrl] = useState(data ? data.imageLink : "");
-<<<<<<< HEAD
   const [servings, setServings] = useState(
     data?.servings ? data?.defaultNumberOfServings : 2
   );
@@ -56,9 +55,7 @@ export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
   function handleSetNumberOfPeople(change) {
     setServings((prevServings) => prevServings + change);
   }
-=======
   const [upload, setUpload] = useState(false);
->>>>>>> main
 
   function handleTagChange(value) {
     setSelectedTags(
@@ -101,10 +98,7 @@ export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
       diet: selectedTags,
       public: event.target.public.checked,
       publicId: imageUrl?.publicId,
-<<<<<<< HEAD
       defaultNumberOfServings: servings,
-=======
->>>>>>> main
     };
 
     onSubmit(newData);
