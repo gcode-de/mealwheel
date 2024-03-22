@@ -1,5 +1,6 @@
 import { useRouter } from "next/router";
 import { useState } from "react";
+import updateUserinDb from "@/helpers/updateUserInDb";
 
 import styled from "styled-components";
 import IconButton from "@/components/Styled/IconButton";
@@ -34,7 +35,13 @@ export default function Collections({ user, mutateUser }) {
     setMenuVisible(false);
   }
   function handleDeleteCollection() {
-    console.log("lösch mich");
+    const newCollections = user.collections.filter(
+      (collection, index) => !checkedItems.includes(index)
+    );
+    user.collections = newCollections;
+
+    updateUserinDb(user, mutateUser);
+    setIsEditing(false);
   }
   function handleCheckboxChange(index, checked) {
     setCheckedItems((prevItems) =>
@@ -95,7 +102,7 @@ export default function Collections({ user, mutateUser }) {
       <CollectionWrapper>
         {!user.collections.length && "Du hast noch keine Kochbücher angelegt."}
         {user.collections.map((col, index) => (
-          <>
+          <CollectionContainer key={index}>
             {isEditing && (
               <StyledCheckbox
                 type="checkbox"
@@ -104,8 +111,8 @@ export default function Collections({ user, mutateUser }) {
                 }
               />
             )}
-            <CollectionCard key={index} collection={col}></CollectionCard>
-          </>
+            <CollectionCard collection={col}></CollectionCard>
+          </CollectionContainer>
         ))}
       </CollectionWrapper>
     </>
@@ -163,9 +170,12 @@ const StyledCheckbox = styled.input`
   position: absolute;
   z-index: 5;
   top: calc(2 * var(--gap-between));
-  left: var(--gap-between);
+  right: 1rem;
   background-color: var(--color-background);
   margin: 0;
   width: 37px;
   height: 20px;
+`;
+const CollectionContainer = styled.div`
+  position: relative;
 `;

@@ -39,6 +39,7 @@ const StyledCollection = styled(Link)`
   margin-bottom: 0;
   height: 6rem;
   max-width: 6rem;
+  position: relative;
   &:hover {
     fill: var(--color-highlight);
     color: var(--color-highlight);
