@@ -1,4 +1,5 @@
 import { OpenAI } from "openai";
+import { ingredientCategories } from "@/helpers/ingredientCategories";
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -10,14 +11,16 @@ export default async function handler(req, res) {
   }
 
   const { ingredients } = req.body;
-  const categories =
-    '"Obst & Gemüse", "Fleisch & Fisch","Käse, Eier & Molkerei","Tiefkühlkost","Brot, Cerealien & Aufstriche","Kochen & Backen","Öle, Soßen & Gewürze","Fertiggerichte & Konserven","Süßes & Salziges","Kaffee, Tee & Kakao","Getränke & Genussmittel","Drogerie & Kosmetik","Babybedarf","Tierbedarf","Küche & Haushalt","Haus & Freizeit"';
   if (!ingredients || ingredients.length === 0) {
     return res.status(400).json({ message: "Zutaten sind erforderlich" });
   }
 
   try {
-    const prompt = `Kategorisiere diese Zutaten: ${ingredients}. Verwende nur diese Kategorien: '${categories}' und zwar jeweils maxmal ein mal. Gib mir das Ergebnis als Objekt zurück nach dem Schema {Kategorie1:["Zutat1","Zutat2"],Kategorie2:["Zutat3","Zutat4"]}`;
+    const prompt = `Ordne diese Zutaten passenden Kategorien zu: ${ingredients}.\n
+    Verwende nur diese Kategorien: '${ingredientCategories.join(
+      ","
+    )}' und zwar jeweils maxmal ein mal.\n
+    Gib mir das Ergebnis als Array aus Objekten zurück nach dem Schema [{name: "Name_der_Zutat", category: "Kategorie_der_Zutat", quantity:"Menge_der_Zutat",unit:"Einheit_der_Menge"}, ...]`;
     const response = await openai.chat.completions.create({
       model: "gpt-3.5-turbo",
       messages: [{ role: "user", content: prompt }],

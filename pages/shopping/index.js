@@ -117,6 +117,7 @@ export default function ShoppingList({ user, mutateUser }) {
   }
 
   async function setCategories() {
+    console.log("list-object", user.shoppingList);
     const itemsAsString = user.shoppingList
       .map((item) => {
         return `${item.name} (${item.quantity} ${item.unit})`;

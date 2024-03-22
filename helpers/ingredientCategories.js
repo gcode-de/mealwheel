@@ -1,0 +1,18 @@
+export const ingredientCategories = [
+  "Obst & Gemüse",
+  "Fleisch & Fisch",
+  "Käse, Eier & Molkerei",
+  "Tiefkühlkost",
+  "Brot, Cerealien & Aufstriche",
+  "Kochen & Backen",
+  "Öle, Soßen & Gewürze",
+  "Fertiggerichte & Konserven",
+  "Süßes & Salziges",
+  "Kaffee, Tee & Kakao",
+  "Getränke & Genussmittel",
+  "Drogerie & Kosmetik",
+  "Babybedarf",
+  "Tierbedarf",
+  "Küche & Haushalt",
+  "Haus & Freizeit",
+];
