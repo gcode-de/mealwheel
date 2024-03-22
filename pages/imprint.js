@@ -35,6 +35,10 @@ export default function Imprint() {
           </Link>
         </p>
         <p>
+          Stock-Foto:{" "}
+          <Link href="https://unsplash.com/de/@jsnbrsc">Jason Briscoe</Link>
+        </p>
+        <p>
           Weitere Informationen:{" "}
           <Link href="https://github.com/gcode-de/mealwheel">github</Link>
         </p>

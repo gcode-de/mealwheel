@@ -283,7 +283,7 @@ export default function DetailPage({
           onSubmit={handleAssignRecipeToCalendar}
           $isVisible={calendarFormIsVisible}
         >
-          <h3>Dieses Rezept einplanen:</h3>
+          <h3>Rezept einplanen:</h3>
           <label htmlFor="date">Datum:</label>
           <input
             type="date"
@@ -300,12 +300,13 @@ export default function DetailPage({
           onSubmit={handleCollection}
           $isVisible={collectionFormIsVisible}
         >
-          <h3>Dieses Rezept speichern:</h3>
+          <h3>Rezept in Kochbuch speichern:</h3>
           <StyledDropDown
             onChange={(event) => setselectedCollection(event.target.value)}
             name="collectionName"
             required
           >
+            <option>Kochbuch wählen</option>
             {user?.collections.map((col, index) => (
               <option key={index} value={col.collectionName}>
                 {col.collectionName}
@@ -462,6 +463,7 @@ const StyledForm = styled.form`
     border: none;
     border-radius: 10px;
     background-color: var(--color-background);
+    min-height: 1rem;
   }
 `;
 const StyledTitle = styled.h1`
