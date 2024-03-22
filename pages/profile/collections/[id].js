@@ -11,6 +11,7 @@ import StyledH2 from "@/components/Styled/StyledH2";
 import Trash from "/public/icons/svg/trash-xmark_10741775.svg";
 import Pen from "/public/icons/svg/pen-square_10435869.svg";
 import XSmall from "@/public/icons/XSmall.svg";
+import MenuContainer from "@/components/MenuContainer";
 
 export default function DetailCollection({ recipes, user, mutateUser }) {
   const [isEditing, setIsEditing] = useState(false);
@@ -66,7 +67,7 @@ export default function DetailCollection({ recipes, user, mutateUser }) {
         rotate={menuVisible}
       />
       {menuVisible && (
-        <MenuContainer>
+        <MenuContainer top="5rem" right="var(--gap-out)">
           <UnstyledButton onClick={toggleEdit}>
             <Pen width={15} height={15} />
             Kochbuch bearbeiten
@@ -89,14 +90,12 @@ export default function DetailCollection({ recipes, user, mutateUser }) {
         {foundCollection.recipes.map((recipe, index) => (
           <MealCardContainer key={index}>
             {isEditing && (
-              <>
-                <StyledCheckbox
-                  type="checkbox"
-                  onChange={(event) =>
-                    handleCheckboxChange(index, event.target.checked)
-                  }
-                />
-              </>
+              <StyledCheckbox
+                type="checkbox"
+                onChange={(event) =>
+                  handleCheckboxChange(index, event.target.checked)
+                }
+              />
             )}
             <MealCard recipe={recipe} />
           </MealCardContainer>
@@ -132,19 +131,7 @@ const UnstyledButton = styled.button`
     background-color: var(--color-background);
   }
 `;
-const MenuContainer = styled.div`
-  position: absolute;
-  top: 5rem;
-  right: var(--gap-out);
-  z-index: 5;
-  background-color: white;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
-  border-radius: 4px;
-  padding: var(--gap-between);
-  display: flex;
-  flex-direction: column;
-  gap: var(--gap-between);
-`;
+
 const ButtonContainer = styled.div`
   width: calc(100% - (2 * var(--gap-out)));
   margin: auto;
