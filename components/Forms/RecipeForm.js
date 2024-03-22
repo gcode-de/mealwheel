@@ -76,10 +76,10 @@ export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
       ...data,
       ingredients,
 
-      imageLink: imageUrl.imageUrl,
+      imageLink: imageUrl?.imageUrl,
       diet: selectedTags,
       public: event.target.public.checked,
-      publicId: imageUrl.publicId,
+      publicId: imageUrl?.publicId,
     };
 
     onSubmit(newData);
