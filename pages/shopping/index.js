@@ -10,6 +10,7 @@ import StyledDropDown from "@/components/Styled/StyledDropDown";
 import StyledListItem from "@/components/Styled/StyledListItem";
 import IconButtonLarge from "@/components/Styled/IconButtonLarge";
 import Link from "next/link";
+import { ingredientUnits } from "@/helpers/ingredientUnits";
 
 import updateUserinDb from "@/helpers/updateUserInDb";
 import { useEffect, useRef, useState } from "react";
@@ -18,7 +19,6 @@ import fetchCategorizedIngredients from "@/helpers/OpenAI/CategorizeIngredients"
 export default function ShoppingList({ user, mutateUser }) {
   const [editingIndex, setEditingIndex] = useState(null);
   const editFormRef = useRef(null);
-  const unitOptions = ["ml", "piece", "gramm", "EL", "TL", "Prise"];
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -151,7 +151,7 @@ export default function ShoppingList({ user, mutateUser }) {
                   />
                   <StyledDropDown name="unit" defaultValue={item.unit}>
                     <option value="">-</option>
-                    {unitOptions.map((unit) => (
+                    {ingredientUnits.map((unit) => (
                       <option key={unit} value={unit}>
                         {unit}
                       </option>
@@ -204,7 +204,7 @@ export default function ShoppingList({ user, mutateUser }) {
             />
             <StyledDropDown name="unit">
               <option value="">-</option>
-              {unitOptions.map((unit) => (
+              {ingredientUnits.map((unit) => (
                 <option key={unit} value={unit}>
                   {unit}
                 </option>
