@@ -48,7 +48,7 @@ export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
   const [selectedTags, setSelectedTags] = useState(data ? data.diet : []);
   const [imageUrl, setImageUrl] = useState(data ? data.imageLink : "");
   const [servings, setServings] = useState(
-    data ? data?.defaultNumberOfServings : 2
+    data?.servings ? data?.defaultNumberOfServings : 2
   );
 
   function handleSetNumberOfPeople(change) {
