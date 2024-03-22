@@ -288,7 +288,7 @@ export default function DetailPage({
           <input
             type="date"
             name="date"
-            value={selectedDate}
+            value={selectedDate || new Date().toISOString().split("T")[0]}
             required
             onChange={(event) => {
               setSelectedDate(event.target.value);
