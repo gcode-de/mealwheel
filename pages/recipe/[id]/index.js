@@ -175,7 +175,7 @@ export default function DetailPage({
     mutate();
   }
 
-  const foundInteractions = user?.recipeInteractions.find(
+  const foundInteractions = user?.recipeInteractions?.find(
     (interaction) => interaction.recipe._id === _id
   );
 

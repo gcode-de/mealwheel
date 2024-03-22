@@ -11,6 +11,7 @@ import Plus from "/public/icons/svg/plus.svg";
 import StyledIngredients from "../Styled/StyledIngredients";
 import StyledInput from "../Styled/StyledInput";
 import StyledDropDown from "../Styled/StyledDropDown";
+import StyledProgress from "../Styled/StyledProgress";
 
 import { filterTags } from "/helpers/filterTags";
 import { ingredientUnits } from "@/helpers/ingredientUnits";
@@ -47,6 +48,7 @@ export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
   const router = useRouter();
   const [selectedTags, setSelectedTags] = useState(data ? data.diet : []);
   const [imageUrl, setImageUrl] = useState(data ? data.imageLink : "");
+<<<<<<< HEAD
   const [servings, setServings] = useState(
     data?.servings ? data?.defaultNumberOfServings : 2
   );
@@ -54,6 +56,9 @@ export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
   function handleSetNumberOfPeople(change) {
     setServings((prevServings) => prevServings + change);
   }
+=======
+  const [upload, setUpload] = useState(false);
+>>>>>>> main
 
   function handleTagChange(value) {
     setSelectedTags(
@@ -96,7 +101,10 @@ export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
       diet: selectedTags,
       public: event.target.public.checked,
       publicId: imageUrl?.publicId,
+<<<<<<< HEAD
       defaultNumberOfServings: servings,
+=======
+>>>>>>> main
     };
 
     onSubmit(newData);
@@ -104,9 +112,9 @@ export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
 
   async function uploadImage(event) {
     event.preventDefault();
+    setUpload(true);
 
     const file = event.target.files[0];
-    setImageUrl({ imageUrl: URL.createObjectURL(file) });
 
     const formData = new FormData();
     formData.append("file", file);
@@ -121,6 +129,7 @@ export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
       }
       handlePostImage(formData, setImageUrl);
     }
+    setUpload(false);
   }
   return (
     <>
@@ -133,10 +142,13 @@ export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
             router.back();
           }}
         ></IconButton>
+        {upload && <StyledProgress />}
         {imageUrl && (
           <StyledImageCloudinary
             src={
-              imageUrl.imageUrl || "/img/jason-briscoe-7MAjXGUmaPw-unsplash.jpg"
+              imageUrl.imageUrl ||
+              data.imageLink ||
+              "/img/jason-briscoe-7MAjXGUmaPw-unsplash.jpg"
             }
             alt="Uploaded Image"
             width={100}
@@ -304,6 +316,7 @@ export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
 const StyledImageCloudinary = styled(Image)`
   width: 100%;
   height: auto;
+  opacity: 0.3;
 `;
 
 const StyledTop = styled.div`

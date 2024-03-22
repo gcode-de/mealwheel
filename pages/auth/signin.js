@@ -8,7 +8,7 @@ import { getProviders, signIn } from "next-auth/react";
 export default function SignIn({ providers }) {
   return (
     <>
-      <Header text={"Mealwheel 🥗"} />
+      <Header text={"Meal Wheel 🥗"} />
       <StyledWrapper>
         Melde dich an, um alle Funktionen zu nutzen!
         {Object.values(providers).map((provider) => (
