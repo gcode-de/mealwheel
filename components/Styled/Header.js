@@ -25,4 +25,5 @@ const StyledH1 = styled.h1`
   min-width: 80%;
   margin: 0;
   width: calc(100% - (2 * var(--gap-out)));
+  font-family: var(--font-header);
 `;

@@ -18,19 +18,16 @@ export default function Imprint() {
       <Spacer />
       <StyledH2>Impressum</StyledH2>
       <Wrapper>
-        <p>
-          Meal Wheel wird betrieben von:
-          <ul>
-            <li>Anna von Oesen</li>
-            <li>Björn Jentschke</li>
-            <li>Samuel Gesang</li>
-          </ul>
-        </p>
+        <p>Meal Wheel wird betrieben von:</p>
+        <ul>
+          <li>Anna von Oesen</li>
+          <li>Björn Jentschke</li>
+          <li>Samuel Gesang</li>
+        </ul>
         <p>
           Wir stellen diese App freiwillig und unentgeltlich zur Verfügung und
-          übernehmen keine Haftung in jeglicher Form.
+          übernehmen keinerlei Haftung.
         </p>
-        <p>Datenschutz: ...</p>
         <p>
           Icons:{" "}
           <Link href="https://de.freepik.com/autor/uicons/icons/uicons-rounded-thin_5090#from_element=families">
