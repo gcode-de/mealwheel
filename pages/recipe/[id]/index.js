@@ -306,7 +306,6 @@ export default function DetailPage({
             name="collectionName"
             required
           >
-            <option>Kochbuch wählen</option>
             {user?.collections.map((col, index) => (
               <option key={index} value={col.collectionName}>
                 {col.collectionName}
