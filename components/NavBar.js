@@ -19,7 +19,11 @@ export default function NavBar({ user }) {
     { href: "/plan", label: "Plan", Icon: Calendar },
     { href: "/profile/favorites", label: "Favoriten", Icon: Heart },
     { href: "/shopping", label: "Einkauf", Icon: Shopping },
-    { href: "/profile", label: user ? "Profil" : "Login", Icon: Profile },
+    {
+      href: user ? "/profile" : "/auth/signin",
+      label: user ? "Profil" : "Login",
+      Icon: Profile,
+    },
   ];
 
   return (
