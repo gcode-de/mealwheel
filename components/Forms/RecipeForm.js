@@ -286,7 +286,6 @@ export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
           <ToggleCheckbox
             label="Öffentlich sichtbar"
             name="public"
-            checked={data ? data.public : true}
             defaultChecked={data ? data.public : true}
           />
           <ButtonContainer>

@@ -1,7 +1,12 @@
 import React from "react";
 import styled from "styled-components";
 
-export default function ToggleCheckbox({ name, label, defaultChecked }) {
+export default function ToggleCheckbox({
+  name,
+  label,
+  defaultChecked,
+  onChange,
+}) {
   return (
     <StyledCheckboxContainer>
       <label htmlFor="toggle">
@@ -11,6 +16,7 @@ export default function ToggleCheckbox({ name, label, defaultChecked }) {
           id="toggle"
           name={name}
           defaultChecked={defaultChecked}
+          onChange={onChange}
         />
         <StyledSliderCheckbox htmlFor="toggle" />
       </label>

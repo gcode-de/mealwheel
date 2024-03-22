@@ -38,6 +38,7 @@ import assignRecipesToCalendarDays from "@/helpers/assignRecipesToCalendarDays";
 import LoadingComponent from "@/components/Loading";
 import IconButtonLarge from "@/components/Styled/IconButtonLarge";
 import { notifySuccess, notifyError } from "/helpers/toast";
+import ToggleCheckbox from "@/components/Styled/ToggleCheckbox";
 
 export default function Plan({
   isLoading,
@@ -346,7 +347,7 @@ export default function Plan({
         <Header text={"Wochenplan 🥗"} />
         <CalendarNavigation>
           <IconButton
-            style="TriangleLeft"
+            style="ArrowLeft"
             left="var(--gap-out)"
             top="0.5rem"
             onClick={() => {
@@ -409,12 +410,22 @@ export default function Plan({
                         !checkIfWeekdayIsDefaultEnabled(weekday.date)
                       }
                     >
-                      <StyledPowerIcon
+                      {/* <StyledPowerIcon
                         $dayIsDisabled={
                           calendarDay?.isDisabled ??
                           !checkIfWeekdayIsDefaultEnabled(weekday.date)
                         }
                         onClick={() => {
+                          toggleDayIsDisabled(weekday.date);
+                        }}
+                      /> */}
+                      <ToggleCheckbox
+                        defaultChecked={
+                          calendarDay?.hasOwnProperty("isDisabled")
+                            ? !calendarDay?.isDisabled
+                            : checkIfWeekdayIsDefaultEnabled(weekday.date)
+                        }
+                        onChange={() => {
                           toggleDayIsDisabled(weekday.date);
                         }}
                       />
