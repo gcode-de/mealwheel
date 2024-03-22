@@ -50,5 +50,7 @@ export default createGlobalStyle`
     color: var(--color-font);
     padding-bottom: 69px;
     position: relative;
+    input, button, select, option{color: var(--color-font)}
+
   }
 `;

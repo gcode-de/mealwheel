@@ -274,7 +274,7 @@ export default function Plan({
 
   if (error || randomRecipesError) {
     <div>
-      <Header text={"Wochenplan 🥗"} />
+      <Header text={"Wochenplan"} />
       Daten konnten nicht geladen werden...
     </div>;
   }
@@ -282,7 +282,7 @@ export default function Plan({
   if (isLoading || randomRecipesIsLoading) {
     return (
       <>
-        <Header text={"Wochenplan 🥗"} />
+        <Header text={"Wochenplan"} />
         <LoadingComponent amount />
       </>
     );
@@ -291,7 +291,7 @@ export default function Plan({
   if (!user) {
     return (
       <StyledHeader>
-        <Header text={"Wochenplan 🥗"} />
+        <Header text={"Wochenplan"} />
         <CalendarContainer>
           Bitte <Link href="/api/auth/signin">einloggen</Link>, um den
           Wochenplaner zu nutzen.
@@ -343,7 +343,7 @@ export default function Plan({
   return (
     <>
       <StyledHeader>
-        <Header text={"Wochenplan 🥗"} />
+        <Header text={"Wochenplan"} />
         <CalendarNavigation>
           <IconButton
             style="TriangleLeft"
