@@ -458,6 +458,7 @@ const StyledForm = styled.form`
     background-color: var(--color-darkgrey);
     color: var(--color-background);
     cursor: pointer;
+    margin-right: auto;
   }
   input {
     padding: 0.25rem 0.5rem;
