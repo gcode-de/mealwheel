@@ -22,7 +22,6 @@ export default createGlobalStyle`
   :root {
     --color-background: #F5F5F5; 
     --color-shadow: #000000; 
-    /* --color-highlight: #DF3F3F; */
     --color-highlight: #f0b000;
     --color-component: #FFFFFF;
     --color-darkgrey: #4D4A4A; 
@@ -42,15 +41,12 @@ export default createGlobalStyle`
   body {
     margin: auto;
     font-family: ${archivo.style.fontFamily};
-    /* font-family: ${fira_sans.style.fontFamily}; */
-    /* font-family: ${abril_fatface.style.fontFamily}; */
-    /* font-weight: semi-bold; */
     max-width: 400px;
     background-color: var(--color-background);
     color: var(--color-font);
     padding-bottom: 69px;
     position: relative;
-    input, button, select, option{color: var(--color-font)}
+    input, button, select, option, a{color: var(--color-font)}
 
   }
 `;
