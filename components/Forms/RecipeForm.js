@@ -23,7 +23,7 @@ import { notifySuccess, notifyError } from "/helpers/toast";
 import { useState } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
-import ToggleCheckboxSlider from "../Styled/StyledToggleSlider";
+import ToggleCheckbox from "../Styled/ToggleCheckbox";
 
 export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
   const [difficulty, setDifficulty] = useState(
@@ -103,7 +103,6 @@ export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
       publicId: imageUrl?.publicId,
       defaultNumberOfServings: servings,
     };
-    console.log(newData);
     onSubmit(newData);
   }
 
@@ -284,7 +283,7 @@ export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
             name="youtubeLink"
             defaultValue={data?.youtubeLink}
           />
-          <ToggleCheckboxSlider
+          <ToggleCheckbox
             label="Öffentlich sichtbar"
             name="public"
             checked={data ? data.public : true}
