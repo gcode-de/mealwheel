@@ -34,7 +34,9 @@ export default function DetailPage({
   const [selectedDate, setSelectedDate] = useState("");
   const [calendarFormIsVisible, setCalendarFormIsVisible] = useState(false);
   const [collectionFormIsVisible, setCollectionFormIsVisible] = useState(false);
-  const [selectedCollection, setselectedCollection] = useState("");
+  const [selectedCollection, setselectedCollection] = useState(
+    user?.collections?.[0]?.collectionName || ""
+  );
 
   const router = useRouter();
   const { id } = router.query;
@@ -112,7 +114,7 @@ export default function DetailPage({
     event.preventDefault();
     const isDuplicate = user.collections
       .find((col) => col.collectionName === selectedCollection)
-      .recipes.some((recipe) => recipe._id === id);
+      .recipes.find((recipe) => recipe._id === id);
     if (isDuplicate) {
       notifyError("Dieses Rezept ist bereits gespeichert.");
       return;
