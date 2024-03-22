@@ -1,6 +1,7 @@
 import Header from "../../components/Styled/Header";
 import GoogleIcon from "/public/icons/svg/google.svg";
 import Button from "../../components/Styled/StyledButton";
+import Image from "next/image";
 
 import styled from "styled-components";
 import { getProviders, signIn } from "next-auth/react";
@@ -8,9 +9,13 @@ import { getProviders, signIn } from "next-auth/react";
 export default function SignIn({ providers }) {
   return (
     <>
-      <Header text={"Meal Wheel"} />
+      <StyledBackround
+        src="/img/screensaver.png"
+        width={400}
+        height={700}
+        alt="screensaver"
+      />
       <StyledWrapper>
-        Melde dich an, um alle Funktionen zu nutzen!
         {Object.values(providers).map((provider) => (
           <div key={provider.name}>
             <StyledButton
@@ -48,6 +53,7 @@ const StyledWrapper = styled.div`
   gap: 1rem;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
 `;
 
 const StyledButton = styled(Button)`
@@ -56,10 +62,21 @@ const StyledButton = styled(Button)`
   display: flex;
   justify-content: center;
   align-items: center;
+  position: absolute;
+  bottom: 18rem;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
   .provider-icon {
     width: 1.5em;
     height: 1.5em;
     fill: white;
     margin-right: 0.5rem;
   }
+`;
+const StyledBackround = styled(Image)`
+  width: 100%;
+  height: 100%;
+  position: relative;
+  z-index: 1;
 `;

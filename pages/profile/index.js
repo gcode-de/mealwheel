@@ -1,22 +1,4 @@
-import IconButton from "@/components/Styled/IconButton";
-import StyledList from "@/components/Styled/StyledList";
-import BookUser from "@/public/icons/svg/notebook-alt_9795395.svg";
-import People from "@/public/icons/svg/employees_14644298.svg";
-import Heart from "@/public/icons/heart-svgrepo-com.svg";
-import Pot from "@/public/icons/svg/pot_7409547.svg";
-import Plus from "@/public/icons/Plus.svg";
-import Party from "@/public/icons/svg/party-horn_10470647.svg";
-import Pan from "@/public/icons/svg/plate_7409529.svg";
-import StyledH2 from "@/components/Styled/StyledH2";
-import Button from "@/components/Styled/StyledButton";
-import StyledProgress from "@/components/Styled/StyledProgress";
-import MenuContainer from "@/components/MenuContainer";
-import Pen from "/public/icons/svg/pen-square_10435869.svg";
-import Leave from "@/public/icons/svg/arrow-left-from-line_9253329.svg";
-import Settings from "@/public/icons/settings-svgrepo-com.svg";
-
 import updateUserinDb from "@/helpers/updateUserInDb";
-
 import Link from "next/link";
 import styled from "styled-components";
 import Image from "next/image";
@@ -25,8 +7,28 @@ import { useState } from "react";
 import { useSession, signIn, signOut } from "next-auth/react";
 import handlePostImage from "@/helpers/Cloudinary/handlePostImage";
 import handleDeleteImage from "@/helpers/Cloudinary/handleDeleteImage";
-
 import { notifySuccess, notifyError } from "/helpers/toast";
+//SVG
+import {
+  BookUser,
+  People,
+  Heart,
+  Pot,
+  Plus,
+  Party,
+  Pan,
+  Pen,
+  Leave,
+  Settings,
+} from "@/helpers/svg.js";
+
+//Components
+import StyledH2 from "@/components/Styled/StyledH2";
+import Button from "@/components/Styled/StyledButton";
+import StyledProgress from "@/components/Styled/StyledProgress";
+import MenuContainer from "@/components/MenuContainer";
+import IconButton from "@/components/Styled/IconButton";
+import StyledList from "@/components/Styled/StyledList";
 import ModalComponent from "../../components/Modal";
 
 export default function ProfilePage({ user, mutateUser }) {
@@ -156,13 +158,6 @@ export default function ProfilePage({ user, mutateUser }) {
                 Speichern
               </StyledSaveButton>
             </StyledUsernameForm>
-            {/* 
-            <IconButton
-              style="x"
-              top={"-1.75rem"}
-              right={"2rem"}
-              onClick={() => setEditUser((previousValue) => !previousValue)}
-            /> */}
           </StyledList>
         </>
       )}
@@ -186,12 +181,6 @@ export default function ProfilePage({ user, mutateUser }) {
               {user?.userName || user?.firstName || user?.email || "Gastnutzer"}
               !
             </p>
-            {/* <IconButton
-              style="Edit"
-              top={"-1.75rem"}
-              right={"2rem"}
-              onClick={() => setEditUser((previousValue) => !previousValue)}
-            /> */}
           </StyledList>
         </>
       )}
