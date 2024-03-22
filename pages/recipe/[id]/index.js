@@ -6,8 +6,11 @@ import { useState } from "react";
 import { useRouter } from "next/router";
 import { notifySuccess, notifyError } from "/helpers/toast";
 
-import assignRecipeToCalendarDay from "@/helpers/assignRecipeToDay";
+import assignRecipesToCalendarDays from "@/helpers/assignRecipesToCalendarDays";
+import updateUserinDb from "@/helpers/updateUserInDb";
+import { filterTags } from "@/helpers/filterTags";
 
+import SetNumberOfPeople from "@/components/Styled/SetNumberOfPeople";
 import IconButton from "@/components/Styled/IconButton";
 import StyledArticle from "@/components/Styled/StyledArticle";
 import StyledList from "@/components/Styled/StyledList";
@@ -15,11 +18,7 @@ import StyledH2 from "@/components/Styled/StyledH2";
 import StyledP from "@/components/Styled/StyledP";
 import StyledListItem from "@/components/Styled/StyledListItem";
 import LoadingComponent from "@/components/Loading";
-
 import StyledDropDown from "@/components/Styled/StyledDropDown";
-import updateUserinDb from "@/helpers/updateUserInDb";
-
-import { filterTags } from "@/helpers/filterTags";
 import Notes from "@/components/Notes";
 
 export default function DetailPage({
@@ -35,12 +34,13 @@ export default function DetailPage({
   const [selectedDate, setSelectedDate] = useState("");
   const [calendarFormIsVisible, setCalendarFormIsVisible] = useState(false);
   const [collectionFormIsVisible, setCollectionFormIsVisible] = useState(false);
-  const [selectedCollection, setselectedCollection] = useState("");
+  const [selectedCollection, setselectedCollection] = useState(
+    user?.collections?.[0]?.collectionName || ""
+  );
 
   const router = useRouter();
   const { id } = router.query;
 
-  const servings = Number(router.query.servings) || 1;
   const {
     data: recipe,
     isLoading: dataIsLoading,
@@ -48,25 +48,53 @@ export default function DetailPage({
     mutate,
   } = useSWR(id ? `/api/recipes/${id}` : null);
 
-  const userIsAuthor = user && user?._id === recipe?.author;
+  const defaultNumberOfServings = recipe?.defaultNumberOfServings;
+
+  const [servings, setServings] = useState(
+    Number(router?.query?.servings) || defaultNumberOfServings || 2
+  );
 
   if (error || dataError) {
-    return <h1>Fehler...</h1>;
+    return <h1>Fehler beim Laden des Rezepts...</h1>;
   }
 
   if (isLoading || dataIsLoading || !recipe) {
     return <LoadingComponent />;
   }
 
-  const handleSubmit = async (event) => {
+  const {
+    _id,
+    title,
+    instructions,
+    imageLink,
+    diet,
+    youtubeLink,
+    ingredients,
+    duration,
+    difficulty,
+    author,
+  } = recipe;
+
+  difficulty.toUpperCase();
+  const userIsAuthor = user && user?._id === author;
+
+  const handleAssignRecipeToCalendar = async (event) => {
     event.preventDefault();
 
-    //generate ISO-Date
+    // Generieren des ISO-Datums
     const isoDate = new Date(selectedDate);
     isoDate.setUTCHours(0, 0, 0, 0);
     const dbDate = isoDate.toISOString();
     try {
-      await assignRecipeToCalendarDay({ [dbDate]: id }, user, mutateUser);
+      const assignment = [
+        {
+          date: dbDate,
+          recipe: id,
+          servings: servings,
+        },
+      ];
+
+      await assignRecipesToCalendarDays(assignment, user, mutateUser);
 
       const localDate = new Date(dbDate).toLocaleDateString("de-DE", {
         weekday: "long",
@@ -86,7 +114,7 @@ export default function DetailPage({
     event.preventDefault();
     const isDuplicate = user.collections
       .find((col) => col.collectionName === selectedCollection)
-      .recipes.some((recipe) => recipe._id === id);
+      .recipes.find((recipe) => recipe._id === id);
     if (isDuplicate) {
       notifyError("Dieses Rezept ist bereits gespeichert.");
       return;
@@ -107,19 +135,49 @@ export default function DetailPage({
     }
   }
 
-  const {
-    _id,
-    title,
-    instructions,
-    imageLink,
-    diet,
-    youtubeLink,
-    ingredients,
-    duration,
-    difficulty,
-  } = recipe;
+  function handleSetNumberOfPeople(change) {
+    const newServings = servings + change;
+    setServings(newServings);
 
-  const foundInteractions = user.recipeInteractions?.find(
+    const newQuery = {
+      ...router.query,
+      servings: newServings,
+    };
+
+    const queryString = new URLSearchParams(newQuery).toString();
+    router.replace(`${router.pathname}?${queryString}`, undefined, {
+      shallow: true,
+    });
+  }
+
+  function handleAddNote(event) {
+    event.preventDefault();
+    if (!user) {
+      notifyError("Bitte zuerst einloggen.");
+      return;
+    }
+    const formData = new FormData(event.target);
+    const note = {
+      comment: formData.get("comment"),
+      date: new Date(),
+    };
+    getRecipeProperty(_id, "notes");
+
+    const interactionIndex = user.recipeInteractions.findIndex(
+      (interaction) => interaction.recipe._id === _id
+    );
+
+    if (interactionIndex !== -1) {
+      user.recipeInteractions[interactionIndex].notes.push(note);
+    } else {
+      user.recipeInteractions.push({ _id: _id, notes: [note] });
+    }
+    updateUserinDb(user, mutateUser);
+    event.target.reset();
+    mutate();
+  }
+
+  const foundInteractions = user?.recipeInteractions?.find(
     (interaction) => interaction.recipe._id === _id
   );
 
@@ -221,7 +279,10 @@ export default function DetailPage({
             toggleIsFavorite(_id);
           }}
         />
-        <StyledForm onSubmit={handleSubmit} $isVisible={calendarFormIsVisible}>
+        <StyledForm
+          onSubmit={handleAssignRecipeToCalendar}
+          $isVisible={calendarFormIsVisible}
+        >
           <h3>Dieses Rezept einplanen:</h3>
           <label htmlFor="date">Datum:</label>
           <input
@@ -260,14 +321,18 @@ export default function DetailPage({
         </StyledP>
         <StyledH2>
           Zutaten{" "}
-          {servings === 1 ? `(für 1 Person` : `(für ${servings} Personen`})
+          <SetNumberOfPeople
+            numberOfPeople={servings}
+            handleChange={handleSetNumberOfPeople}
+            $margin="-0.4rem 0 0 0"
+          />
         </StyledH2>
         <StyledList>
           {ingredients.map((ingredient) => (
             <StyledListItem key={ingredient._id}>
               <StyledP>{ingredient.name}</StyledP>
               <StyledP>
-                {ingredient.quantity} {ingredient.unit}
+                {ingredient.quantity * servings} {ingredient.unit}
               </StyledP>
             </StyledListItem>
           ))}

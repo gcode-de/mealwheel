@@ -8,16 +8,22 @@ export default function ModalComponent({
   btnCloseMessage,
   toggleModal,
   onConfirm,
+  children,
 }) {
   return (
     <>
-      <Overlay />
+      <Overlay onClick={toggleModal} />
       <Modal>
-        <StyledH2>{message}</StyledH2>
-        <ButtonContainer>
-          <Button onClick={onConfirm}>{btnConfirmMessage}</Button>
-          <Button onClick={toggleModal}>{btnCloseMessage}</Button>
-        </ButtonContainer>
+        {message && (
+          <>
+            <StyledH2>{message}</StyledH2>
+            <ButtonContainer>
+              <Button onClick={onConfirm}>{btnConfirmMessage}</Button>
+              <Button onClick={toggleModal}>{btnCloseMessage}</Button>
+            </ButtonContainer>
+          </>
+        )}
+        {children}
       </Modal>
     </>
   );
