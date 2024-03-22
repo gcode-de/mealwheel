@@ -31,7 +31,9 @@ export default function DetailPage({
   toggleHasCooked,
 }) {
   const [content, setContent] = useState("instructions");
-  const [selectedDate, setSelectedDate] = useState("");
+  const [selectedDate, setSelectedDate] = useState(
+    new Date().toISOString().split("T")[0]
+  );
   const [calendarFormIsVisible, setCalendarFormIsVisible] = useState(false);
   const [collectionFormIsVisible, setCollectionFormIsVisible] = useState(false);
   const [selectedCollection, setselectedCollection] = useState(
@@ -288,7 +290,7 @@ export default function DetailPage({
           <input
             type="date"
             name="date"
-            value={selectedDate || new Date().toISOString().split("T")[0]}
+            value={selectedDate}
             required
             onChange={(event) => {
               setSelectedDate(event.target.value);
