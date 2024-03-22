@@ -14,13 +14,15 @@ export default createGlobalStyle`
   :root {
     --color-background: #F5F5F5; 
     --color-shadow: #000000; 
-    --color-highlight: #DF3F3F;
+    /* --color-highlight: #DF3F3F; */
+    /* --color-highlight: #e1ad01; */
+    --color-highlight: #ffbf00;
     --color-component: #FFFFFF;
     --color-darkgrey: #4D4A4A; 
     --color-lightgrey: #928F8F;
     --color-font: #1E1E1E;
 
-    --gap-out: 2rem; 
+    --gap-out: 0.75rem; 
     --gap-between: 0.5rem; //halber Abstand
     --height-header: 5rem; 
     --height-nav: 4rem; 
