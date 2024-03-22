@@ -11,7 +11,7 @@ export default function NewCollection({ user, mutateUser, setModal }) {
   function addNewCollection(event) {
     event.preventDefault();
     const collectionName = event.target.collectionName.value;
-    const newCollection = { collectionName: collectionName, recipes: [] };
+    const newCollection = { collectionName, recipes: [] };
 
     if (!user.collections) {
       user.collections = [];
@@ -28,7 +28,11 @@ export default function NewCollection({ user, mutateUser, setModal }) {
     <ModalComponent toggleModal={setModal}>
       <StyledH2>Wie soll dein neues Kochbuch heißen?</StyledH2>
       <StyledForm onSubmit={addNewCollection}>
-        <StyledInput name="collectionName" placeholder="Kochbuch Name" />
+        <StyledInput
+          name="collectionName"
+          placeholder="Kochbuch Name"
+          aria-label="collection-name-input"
+        />
         <AddButton type="submit">
           <Plus width={20} height={20} />
         </AddButton>

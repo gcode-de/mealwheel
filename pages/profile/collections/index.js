@@ -15,7 +15,7 @@ import XSmall from "@/public/icons/XSmall.svg";
 
 export default function Collections({ user, mutateUser }) {
   const [addCollection, setAddCollection] = useState(false);
-  const [menuVisible, setMenuVisible] = useState(false);
+  const [isMenuVisible, setIsMenuVisible] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [checkedItems, setCheckedItems] = useState([]);
 
@@ -26,14 +26,14 @@ export default function Collections({ user, mutateUser }) {
 
   function toggleAddCollection() {
     setAddCollection(!addCollection);
-    setMenuVisible(false);
+    setIsMenuVisible(false);
   }
   function toggleMenu() {
-    setMenuVisible(!menuVisible);
+    setIsMenuVisible(!isMenuVisible);
   }
   function toggleEdit() {
     setIsEditing(!isEditing);
-    setMenuVisible(false);
+    setIsMenuVisible(false);
   }
   function handleDeleteCollection() {
     const newCollections = user.collections.filter(
@@ -66,9 +66,9 @@ export default function Collections({ user, mutateUser }) {
         right="var(--gap-out)"
         top="var(--gap-out)"
         style="Menu"
-        rotate={menuVisible}
+        rotate={isMenuVisible}
       />
-      {menuVisible && (
+      {isMenuVisible && (
         <MenuContainer top="5rem" right="var(--gap-out)">
           <UnstyledButton onClick={toggleAddCollection}>
             <Plus width={15} height={15} />
@@ -102,7 +102,7 @@ export default function Collections({ user, mutateUser }) {
       )}
       <CollectionWrapper>
         {!user.collections.length && "Du hast noch keine Kochbücher angelegt."}
-        {user.collections.map((col, index) => (
+        {user.collections.map((collection, index) => (
           <CollectionContainer key={index}>
             {isEditing && (
               <StyledCheckbox

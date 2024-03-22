@@ -16,23 +16,25 @@ import MenuContainer from "@/components/MenuContainer";
 export default function DetailCollection({ recipes, user, mutateUser }) {
   const [isEditing, setIsEditing] = useState(false);
   const [checkedItems, setCheckedItems] = useState([]);
-  const [menuVisible, setMenuVisible] = useState(false);
+  const [isMenuVisible, setIsMenuVisible] = useState(false);
   const router = useRouter();
   const { id } = router.query;
   if (!user || !recipes) {
     return;
   }
-  const foundCollection = user.collections.find((col) => col._id === id);
+  const foundCollection = user.collections.find(
+    (collection) => collection._id === id
+  );
   const foundCollectionIndex = user.collections.findIndex(
-    (col) => col._id === id
+    (collection) => collection._id === id
   );
 
   function toggleEdit() {
     setIsEditing(!isEditing);
-    setMenuVisible(false);
+    setIsMenuVisible(false);
   }
   function toggleMenu() {
-    setMenuVisible(!menuVisible);
+    setIsMenuVisible(!isMenuVisible);
   }
   function handleDeleteRecipes() {
     const newRecipes = foundCollection.recipes.filter(
@@ -64,9 +66,9 @@ export default function DetailCollection({ recipes, user, mutateUser }) {
         right="var(--gap-out)"
         top="var(--gap-out)"
         style="Menu"
-        rotate={menuVisible}
+        rotate={isMenuVisible}
       />
-      {menuVisible && (
+      {isMenuVisible && (
         <MenuContainer top="5rem" right="var(--gap-out)">
           <UnstyledButton onClick={toggleEdit}>
             <Pen width={15} height={15} />

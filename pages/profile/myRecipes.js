@@ -23,7 +23,7 @@ export default function MyRecipes({
   toggleIsFavorite,
   mutateUser,
 }) {
-  const [addCollection, setAddCollection] = useState(false);
+  const [isModalCollection, setIsModalCollection] = useState(false);
   const router = useRouter();
 
   const {
@@ -33,7 +33,7 @@ export default function MyRecipes({
   } = useSWR(`/api/recipes?author=${user?._id}`);
 
   function toggleAddCollection() {
-    setAddCollection(!addCollection);
+    setIsModalCollection(!isModalCollection);
   }
   if (error || recipesError || !myRecipes) {
     return (
