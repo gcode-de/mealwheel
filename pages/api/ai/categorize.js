@@ -18,9 +18,7 @@ export default async function handler(req, res) {
     // const prompt = `Kategorisiere diese Zutaten: ${ingredients.join(
     //   ", "
     // )}. Gibt mir jeweils die Kategorie und nach einem Doppelpunkt die passenden Zutaten, getrennt durch Kommas.`;
-    const prompt = `Kategorisiere diese Zutaten: ${ingredients.join(
-      ", "
-    )}. Gib mir das Ergebnis als Objekt zurück nach dem Schema {Kategorie1:["Zutat1","Zutat2"],Kategorie2:["Zutat3","Zutat4"]}`;
+    const prompt = `Kategorisiere diese Zutaten: ${ingredients}. Gib mir das Ergebnis als Objekt zurück nach dem Schema {Kategorie1:["Zutat1","Zutat2"],Kategorie2:["Zutat3","Zutat4"]}`;
     const response = await openai.chat.completions.create({
       model: "gpt-3.5-turbo",
       messages: [{ role: "user", content: prompt }],

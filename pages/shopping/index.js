@@ -14,8 +14,7 @@ import Link from "next/link";
 import updateUserinDb from "@/helpers/updateUserInDb";
 import { useEffect, useRef, useState } from "react";
 
-import fetchCategorizedIngredients from "@/helpers/OpenAI/categorizeIngredients";
-
+import fetchCategorizedIngredients from "@/helpers/OpenAI/CategorizeIngredients";
 export default function ShoppingList({ user, mutateUser }) {
   const [editingIndex, setEditingIndex] = useState(null);
   const editFormRef = useRef(null);
@@ -61,18 +60,6 @@ export default function ShoppingList({ user, mutateUser }) {
       </>
     );
   }
-
-  async function askAI() {
-    const categories = fetchCategorizedIngredients([
-      "Kartoffeln",
-      "Zwiebeln",
-      "Möhren",
-      "Milch",
-      "Eier",
-    ]);
-    console.log("shoppinglist", await categories);
-  }
-  askAI();
 
   user.shoppingList = Array.from(
     user.shoppingList
@@ -127,6 +114,17 @@ export default function ShoppingList({ user, mutateUser }) {
   function clearShopping() {
     user.shoppingList = [];
     updateUserinDb(user, mutateUser);
+  }
+
+  async function setCategories() {
+    const itemsAsString = user.shoppingList
+      .map((item) => {
+        return `${item.name} (${item.quantity} ${item.unit})`;
+      })
+      .join(", ");
+    console.log("Eingabe:", itemsAsString);
+    const categories = fetchCategorizedIngredients(itemsAsString);
+    console.log("Ausgabe:", await categories);
   }
   return (
     <>
@@ -226,6 +224,11 @@ export default function ShoppingList({ user, mutateUser }) {
         </form>
       </StyledList>
       <Spacer />
+      <IconButtonLarge
+        style={"generate"}
+        bottom="10rem"
+        onClick={setCategories}
+      />
       <IconButtonLarge style={"trash"} bottom="6rem" onClick={clearShopping} />
     </>
   );
