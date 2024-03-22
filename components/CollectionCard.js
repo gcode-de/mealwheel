@@ -23,5 +23,5 @@ const StyledParagraph = styled.p`
   text-overflow: ellipsis;
   margin: 0;
   margin-top: var(--gap-between);
-  height: 3rem;
+  height: 2.5;
 `;

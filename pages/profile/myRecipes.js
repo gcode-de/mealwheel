@@ -133,9 +133,8 @@ const StyledLink = styled(Link)`
   font-size: medium;
 `;
 const Wrapper = styled.div`
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
   gap: calc(2 * var(--gap-between));
   margin: auto;
   margin-bottom: 2rem;
@@ -154,7 +153,7 @@ const StyledCollection = styled.button`
   cursor: pointer;
   margin-top: 0;
   margin-bottom: 0;
-  height: 8rem;
+  height: 6.5rem;
   max-width: 6rem;
   &:hover {
     fill: var(--color-highlight);
@@ -168,5 +167,5 @@ const StyledParagraph = styled.p`
   text-overflow: ellipsis;
   margin: 0;
   margin-top: var(--gap-between);
-  height: 3rem;
+  height: 2.5;
 `;

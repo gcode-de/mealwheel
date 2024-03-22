@@ -52,11 +52,11 @@ export default function Collections({ user, mutateUser }) {
   );
 }
 const CollectionWrapper = styled.div`
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
   gap: calc(2 * var(--gap-between));
   margin: auto;
+  margin-bottom: 2rem;
   width: calc(100% - (2 * var(--gap-out)));
 `;
 

@@ -13,7 +13,7 @@ const StyledCollection = styled(Link)`
   cursor: pointer;
   margin-top: 0;
   margin-bottom: 0;
-  height: 8rem;
+  height: 6rem;
   max-width: 6rem;
   &:hover {
     fill: var(--color-highlight);
