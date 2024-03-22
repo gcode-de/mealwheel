@@ -38,7 +38,7 @@ const NumberOfPeopleContainer = styled.div`
   align-items: center;
   margin: ${(props) => props.$margin};
   font-size: 1.25rem;
-  z-index: 3;
+  z-index: 2;
   color: var(--color-highlight);
   background-color: var(--color-background);
   padding: 2px 12px;

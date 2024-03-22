@@ -9,10 +9,10 @@ import TriangleLeft from "@/public/icons/arrow-left-3-svgrepo-com.svg";
 import TriangleRight from "@/public/icons/arrow-right-2-svgrepo-com.svg";
 import Heart from "@/public/icons/heart-svgrepo-com.svg";
 import Pot from "@/public/icons/cooking-pot-fill-svgrepo-com.svg";
-import Calendar from "@/public/icons/calendar-1-svgrepo-com.svg";
+import Calendar from "@/public/icons/svg/calendar-days_9795297.svg";
 import Edit from "@/public/icons/edit-3-svgrepo-com (2).svg";
 import Settings from "@/public/icons/settings-svgrepo-com.svg";
-import Book from "@/public/icons/svg/book-user_9856365.svg";
+import Book from "@/public/icons/svg/notebook-alt_9795395.svg";
 import Leave from "@/public/icons/svg/arrow-left-from-line_9253329.svg";
 import Menu from "/public/icons/svg/menu.svg";
 

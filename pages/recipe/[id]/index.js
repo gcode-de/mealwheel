@@ -20,6 +20,11 @@ import StyledListItem from "@/components/Styled/StyledListItem";
 import LoadingComponent from "@/components/Loading";
 import StyledDropDown from "@/components/Styled/StyledDropDown";
 import Notes from "@/components/Notes";
+import MenuContainer from "@/components/MenuContainer";
+import Calendar from "@/public/icons/svg/calendar-days_9795297.svg";
+import Pen from "/public/icons/svg/pen-square_10435869.svg";
+import Book from "@/public/icons/svg/notebook-alt_9795395.svg";
+import ModalComponent from "../../../components/Modal";
 
 export default function DetailPage({
   user,
@@ -37,6 +42,9 @@ export default function DetailPage({
   const [selectedCollection, setselectedCollection] = useState(
     user?.collections?.[0]?.collectionName || ""
   );
+  const [isMenuVisible, setIsMenuVisible] = useState(false);
+  const [isModalCalendar, setIsModalCalendar] = useState(false);
+  const [isModalCollection, setIsModalCollection] = useState(false);
 
   const router = useRouter();
   const { id } = router.query;
@@ -77,7 +85,9 @@ export default function DetailPage({
 
   difficulty.toUpperCase();
   const userIsAuthor = user && user?._id === author;
-
+  function toggleMenu() {
+    setIsMenuVisible(!isMenuVisible);
+  }
   const handleAssignRecipeToCalendar = async (event) => {
     event.preventDefault();
 
@@ -180,6 +190,14 @@ export default function DetailPage({
   const foundInteractions = user?.recipeInteractions?.find(
     (interaction) => interaction.recipe._id === _id
   );
+  function toggleModalCalender() {
+    setIsModalCalendar(!isModalCalendar);
+    setIsMenuVisible(false);
+  }
+  function toggleModalCollection() {
+    setIsModalCollection(!isModalCollection);
+    setIsMenuVisible(false);
+  }
 
   return (
     <Wrapper>
@@ -199,55 +217,19 @@ export default function DetailPage({
         sizes="500px"
       />
       <StyledArticle>
-        {userIsAuthor && (
+        {/* {userIsAuthor && (
           <Link href={`/recipe/${id}/edit`}>
             <IconButton
               style="Edit"
-              right="14.25rem"
+              right="calc(5*3rem + var(--gap-out))"
               top="-1.25rem"
               fill={"var(--color-lightgrey)"}
             />
           </Link>
-        )}
-        <IconButton
-          style="Book"
-          right="11.25rem"
-          top="-1.25rem"
-          fill={
-            collectionFormIsVisible
-              ? "var(--color-highlight)"
-              : "var(--color-lightgrey)"
-          }
-          onClick={() => {
-            if (!user) {
-              notifyError("Bitte zuerst einloggen.");
-              return;
-            }
-            setCollectionFormIsVisible((prevState) => !prevState);
-            setCalendarFormIsVisible(false);
-          }}
-        />
-        <IconButton
-          style="Calendar"
-          right="8.25rem"
-          top="-1.25rem"
-          fill={
-            calendarFormIsVisible
-              ? "var(--color-highlight)"
-              : "var(--color-lightgrey)"
-          }
-          onClick={() => {
-            if (!user) {
-              notifyError("Bitte zuerst einloggen.");
-              return;
-            }
-            setCalendarFormIsVisible((prevState) => !prevState);
-            setCollectionFormIsVisible(false);
-          }}
-        />
+        )} */}
         <IconButton
           style="Pot"
-          right="5.25rem"
+          right="calc(2*3rem + var(--gap-out))"
           top="-1.25rem"
           fill={
             getRecipeProperty(_id, "hasCooked")
@@ -264,7 +246,7 @@ export default function DetailPage({
         />
         <IconButton
           style="Heart"
-          right="2.25rem"
+          right="calc(3rem + var(--gap-out))"
           top="-1.25rem"
           fill={
             getRecipeProperty(_id, "isFavorite")
@@ -279,42 +261,72 @@ export default function DetailPage({
             toggleIsFavorite(_id);
           }}
         />
-        <StyledForm
-          onSubmit={handleAssignRecipeToCalendar}
-          $isVisible={calendarFormIsVisible}
-        >
-          <h3>Dieses Rezept einplanen:</h3>
-          <label htmlFor="date">Datum:</label>
-          <input
-            type="date"
-            name="date"
-            value={selectedDate}
-            required
-            onChange={(event) => {
-              setSelectedDate(event.target.value);
-            }}
-          />
-          <button type="submit">speichern</button>
-        </StyledForm>
-        <StyledForm
-          onSubmit={handleCollection}
-          $isVisible={collectionFormIsVisible}
-        >
-          <h3>Dieses Rezept speichern:</h3>
-          <StyledDropDown
-            onChange={(event) => setselectedCollection(event.target.value)}
-            name="collectionName"
-            required
-          >
-            {user?.collections.map((col, index) => (
-              <option key={index} value={col.collectionName}>
-                {col.collectionName}
-              </option>
-            ))}
-          </StyledDropDown>
+        <IconButton
+          onClick={toggleMenu}
+          right="var(--gap-out)"
+          top="-1.25rem"
+          style="Menu"
+          rotate={isMenuVisible}
+        />
+        {isMenuVisible && (
+          <MenuContainer top="2rem" right="var(--gap-out)">
+            <UnstyledButton onClick={toggleModalCalender}>
+              <Calendar width={15} height={15} />
+              Rezept im Kalender speichern
+            </UnstyledButton>
+            <UnstyledButton onClick={toggleModalCollection}>
+              <Book width={15} height={15} />
+              Rezept im Kochbuch speichern
+            </UnstyledButton>
+            {userIsAuthor && (
+              <UnstyledButton onClick={() => router.push(`/recipe/${id}/edit`)}>
+                <Pen width={15} height={15} />
+                Rezept bearbeiten
+              </UnstyledButton>
+            )}
+          </MenuContainer>
+        )}
+        {isModalCalendar && (
+          <ModalComponent toggleModal={toggleModalCalender}>
+            <StyledForm onSubmit={handleAssignRecipeToCalendar}>
+              <h3>Dieses Rezept einplanen:</h3>
+              <label htmlFor="date">Datum:</label>
+              <input
+                type="date"
+                name="date"
+                value={selectedDate}
+                required
+                onChange={(event) => {
+                  setSelectedDate(event.target.value);
+                }}
+              />
+              <button type="submit">speichern</button>
+            </StyledForm>
+          </ModalComponent>
+        )}
+        {isModalCollection && (
+          <ModalComponent toggleModal={toggleModalCollection}>
+            <StyledForm
+              onSubmit={handleCollection}
+              $isVisible={collectionFormIsVisible}
+            >
+              <h3>Dieses Rezept speichern:</h3>
+              <StyledDropDown
+                onChange={(event) => setselectedCollection(event.target.value)}
+                name="collectionName"
+                required
+              >
+                {user?.collections.map((col, index) => (
+                  <option key={index} value={col.collectionName}>
+                    {col.collectionName}
+                  </option>
+                ))}
+              </StyledDropDown>
 
-          <button type="submit">speichern</button>
-        </StyledForm>
+              <button type="submit">speichern</button>
+            </StyledForm>
+          </ModalComponent>
+        )}
         <StyledTitle>{title}</StyledTitle>
         <StyledP>
           {duration} MIN | {difficulty}
@@ -434,12 +446,9 @@ const StyledForm = styled.form`
   flex-wrap: wrap;
   align-items: center;
   gap: 10px;
-  width: calc(100% - (2 * var(--gap-out)));
+  width: 100%;
   justify-content: space-between;
   transition: opacity 0.3s ease-in-out, margin 0.2s ease-out;
-  opacity: ${({ $isVisible }) => ($isVisible ? "1" : "0")};
-  height: ${({ $isVisible }) => ($isVisible ? "auto" : "0")};
-  margin: ${({ $isVisible }) => ($isVisible ? "2.5rem 0 0 0" : "0")};
   overflow: hidden;
   h3 {
     flex-basis: 100%;
@@ -492,4 +501,18 @@ const StyledCategoryButton = styled.button`
   height: 1.75rem;
   margin-bottom: 0.5rem;
   padding: 0.25rem;
+`;
+const UnstyledButton = styled.button`
+  background-color: transparent;
+  border: none;
+  text-align: start;
+  border-radius: var(--border-radius-small);
+  display: flex;
+  align-items: center;
+  gap: var(--gap-between);
+  height: 2rem;
+  color: var(--color-font);
+  &:hover {
+    background-color: var(--color-background);
+  }
 `;
