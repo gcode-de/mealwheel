@@ -217,16 +217,6 @@ export default function DetailPage({
         sizes="500px"
       />
       <StyledArticle>
-        {/* {userIsAuthor && (
-          <Link href={`/recipe/${id}/edit`}>
-            <IconButton
-              style="Edit"
-              right="calc(5*3rem + var(--gap-out))"
-              top="-1.25rem"
-              fill={"var(--color-lightgrey)"}
-            />
-          </Link>
-        )} */}
         <IconButton
           style="Pot"
           right="calc(2*3rem + var(--gap-out))"

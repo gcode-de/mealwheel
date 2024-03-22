@@ -1,13 +1,19 @@
 import IconButton from "@/components/Styled/IconButton";
 import StyledList from "@/components/Styled/StyledList";
-import BookUser from "@/public/icons/svg/book-user_9856365.svg";
-import StyledP from "@/components/Styled/StyledP";
+import BookUser from "@/public/icons/svg/notebook-alt_9795395.svg";
+import People from "@/public/icons/svg/employees_14644298.svg";
 import Heart from "@/public/icons/heart-svgrepo-com.svg";
-import Pot from "@/public/icons/cooking-pot-fill-svgrepo-com.svg";
+import Pot from "@/public/icons/svg/pot_7409547.svg";
 import Plus from "@/public/icons/Plus.svg";
+import Party from "@/public/icons/svg/party-horn_10470647.svg";
+import Pan from "@/public/icons/svg/plate_7409529.svg";
 import StyledH2 from "@/components/Styled/StyledH2";
 import Button from "@/components/Styled/StyledButton";
 import StyledProgress from "@/components/Styled/StyledProgress";
+import MenuContainer from "@/components/MenuContainer";
+import Pen from "/public/icons/svg/pen-square_10435869.svg";
+import Leave from "@/public/icons/svg/arrow-left-from-line_9253329.svg";
+import Settings from "@/public/icons/settings-svgrepo-com.svg";
 
 import updateUserinDb from "@/helpers/updateUserInDb";
 
@@ -21,6 +27,7 @@ import handlePostImage from "@/helpers/Cloudinary/handlePostImage";
 import handleDeleteImage from "@/helpers/Cloudinary/handleDeleteImage";
 
 import { notifySuccess, notifyError } from "/helpers/toast";
+import ModalComponent from "../../components/Modal";
 
 export default function ProfilePage({ user, mutateUser }) {
   const router = useRouter();
@@ -30,6 +37,7 @@ export default function ProfilePage({ user, mutateUser }) {
   const [feedbackVisible, setFeedbackVisible] = useState(false);
   const [imageUrl, setImageUrl] = useState(user?.profilePictureLink || "");
   const [upload, setUpload] = useState(false);
+  const [isMenuVisible, setIsMenuVisible] = useState(false);
 
   if (status === "unauthenticated") {
     signIn();
@@ -67,7 +75,10 @@ export default function ProfilePage({ user, mutateUser }) {
   function toggleFeedbackForm() {
     setFeedbackVisible(!feedbackVisible);
   }
-
+  function handleEditProfile() {
+    setEditUser(true);
+    setIsMenuVisible(false);
+  }
   async function handleFeedback(event) {
     event.preventDefault();
     const formData = new FormData(event.target);
@@ -82,25 +93,39 @@ export default function ProfilePage({ user, mutateUser }) {
       notifySuccess("danke, für deine Zeit!");
     }
   }
-
+  async function handleSignOut() {
+    await signOut({ callbackUrl: "/", redirect: true });
+    notifySuccess("Du hast dich erfolgreich abgemeldet");
+  }
+  function toggleMenu() {
+    setIsMenuVisible(!isMenuVisible);
+  }
   return (
     <>
       <IconButton
-        style="Settings"
-        top="var(--gap-out)"
-        left="var(--gap-out)"
-        onClick={() => router.push("/profile/settings")}
-        fill="var(--color-lightgrey)"
-      />
-      <IconButton
-        style={"Leave"}
+        style="Menu"
         top="var(--gap-out)"
         right="var(--gap-out)"
-        onClick={() => {
-          signOut({ callbackUrl: "/", redirect: true });
-        }}
+        onClick={toggleMenu}
         fill="var(--color-lightgrey)"
+        rotate={isMenuVisible}
       />
+      {isMenuVisible && (
+        <MenuContainer top="5rem" right="var(--gap-out)">
+          <UnstyledButton onClick={() => router.push("/profile/settings")}>
+            <Settings width={15} height={15} />
+            Einstellungen
+          </UnstyledButton>
+          <UnstyledButton onClick={handleEditProfile}>
+            <Pen width={15} height={15} />
+            Profil bearbeiten
+          </UnstyledButton>
+          <UnstyledButton onClick={handleSignOut}>
+            <Leave width={15} height={15} />
+            Abmelden
+          </UnstyledButton>
+        </MenuContainer>
+      )}
       {editUser && (
         <>
           <WrapperCenter>
@@ -131,13 +156,13 @@ export default function ProfilePage({ user, mutateUser }) {
                 Speichern
               </StyledSaveButton>
             </StyledUsernameForm>
-
+            {/* 
             <IconButton
               style="x"
               top={"-1.75rem"}
               right={"2rem"}
               onClick={() => setEditUser((previousValue) => !previousValue)}
-            />
+            /> */}
           </StyledList>
         </>
       )}
@@ -161,38 +186,47 @@ export default function ProfilePage({ user, mutateUser }) {
               {user?.userName || user?.firstName || user?.email || "Gastnutzer"}
               !
             </p>
-            <IconButton
+            {/* <IconButton
               style="Edit"
               top={"-1.75rem"}
               right={"2rem"}
               onClick={() => setEditUser((previousValue) => !previousValue)}
-            />
+            /> */}
           </StyledList>
         </>
       )}
-
       <Wrapper>
-        <StyledCollection href="/profile/favorites">
-          <Heart width={40} height={40} />
-          <StyledP>Favoriten</StyledP>
+        <StyledCollection onClick={() => router.push("/profile/favorites")}>
+          <Heart width={40} height={40} fill="var(--color-highlight)" />
+          <StyledP $color="var(--color-hightlight)">Favoriten</StyledP>
         </StyledCollection>
-        <StyledCollection href="/profile/hasCooked">
+        <StyledCollection onClick={() => router.push("/profile/hasCooked")}>
           <Pot width={40} height={40} />
           <StyledP>gekocht</StyledP>
         </StyledCollection>
-        <StyledCollection href="/profile/myRecipes">
+        <StyledCollection></StyledCollection>
+        <StyledCollection></StyledCollection>
+        <StyledCollection>
+          <People width={40} height={40} />
+          <StyledP>Freunde</StyledP>
+        </StyledCollection>
+        <StyledCollection onClick={() => router.push("/profile/collections")}>
           <BookUser width={40} height={40} />
+          <StyledP>Kochbücher</StyledP>
+        </StyledCollection>
+        <StyledCollection onClick={toggleFeedbackForm}>
+          <Party width={40} height={40} />
+          <StyledP>Feedback</StyledP>
+        </StyledCollection>
+        <StyledCollection></StyledCollection>
+        <StyledCollection onClick={() => router.push("/profile/myRecipes")}>
+          <Pan width={40} height={40} />
           <StyledP>Rezepte</StyledP>
         </StyledCollection>
       </Wrapper>
-
-      <StyledArticle>
-        {!feedbackVisible && (
-          <UnstyledButton onClick={toggleFeedbackForm}>
-            <StyledH2>Gib uns Feedback 🎉</StyledH2>
-          </UnstyledButton>
-        )}
-        {feedbackVisible && (
+      {feedbackVisible && (
+        <ModalComponent toggleModal={toggleFeedbackForm}>
+          <StyledH2>Gib uns Feedback</StyledH2>
           <StyledForm onSubmit={handleFeedback}>
             <StyledInput
               name="negativeFeedback"
@@ -208,16 +242,23 @@ export default function ProfilePage({ user, mutateUser }) {
             />
             <Button type="submit">schick&apos;s ab 🚀</Button>
           </StyledForm>
-        )}
-      </StyledArticle>
+        </ModalComponent>
+      )}
+      <StyledFooter>
+        <StyledLink href="/profile/impressum">Impressum</StyledLink>
+      </StyledFooter>
     </>
   );
 }
 const Wrapper = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  margin: 0 var(--gap-out);
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: calc(2 * var(--gap-between));
+  margin: auto;
+  margin-bottom: 2rem;
+  width: calc(100% - (2 * var(--gap-out)));
+  position: relative;
+  margin-top: calc(2 * var(--gap-between));
 `;
 const WrapperCenter = styled.div`
   display: flex;
@@ -295,26 +336,6 @@ const StyledForm = styled.form`
   flex-direction: column;
   gap: calc(2 * var(--gap-between));
 `;
-const UnstyledButton = styled.button`
-  border: none;
-  background-color: transparent;
-`;
-const StyledArticle = styled.article`
-  padding-top: calc(2 * var(--gap-between));
-  padding-bottom: calc(2 * var(--gap-between));
-  padding-right: calc(2 * var(--gap-between));
-  padding-left: calc(2 * var(--gap-between));
-  width: calc(100% - (2 * var(--gap-out)));
-  border: 1px solid var(--color-lightgrey);
-  border-radius: var(--border-radius-medium);
-  background-color: var(--color-component);
-  margin-right: var(--gap-out);
-  margin-left: var(--gap-out);
-  margin-top: var(--gap-between);
-  margin-bottom: var(--gap-between);
-  position: relative;
-  text-align: center;
-`;
 const StyledInput = styled.input`
   background-color: var(--color-background);
   border: none;
@@ -325,7 +346,7 @@ const StyledInput = styled.input`
   padding: 0.7rem;
 `;
 
-const StyledCollection = styled(Link)`
+const StyledCollection = styled.button`
   text-decoration: none;
   color: var(--color-font);
   display: flex;
@@ -334,16 +355,43 @@ const StyledCollection = styled(Link)`
   fill: var(--color-lightgrey);
   color: var(--color-lightgrey);
   border: 1px solid var(--color-lightgrey);
-  border-radius: var(--border-radius-medium);
+  border-radius: var(--border-radius-small);
   background-color: var(--color-component);
   justify-content: center;
   cursor: pointer;
   margin-top: 0;
   margin-bottom: 0;
-  height: 6rem;
-  width: 6rem;
+  height: 93px;
   &:hover {
     fill: var(--color-highlight);
     color: var(--color-highlight);
+  }
+`;
+
+const StyledP = styled.p`
+  margin-top: var(--gap-between);
+  margin-bottom: 0;
+  color: ${(props) => props.$color};
+`;
+const StyledFooter = styled.div`
+  width: calc(100% - (2 * var(--gap-out)));
+  margin: auto;
+`;
+const StyledLink = styled(Link)`
+  text-decoration: none;
+  color: var(--color-lightgrey);
+`;
+const UnstyledButton = styled.button`
+  background-color: transparent;
+  border: none;
+  text-align: start;
+  border-radius: var(--border-radius-small);
+  display: flex;
+  align-items: center;
+  gap: var(--gap-between);
+  height: 2rem;
+  color: var(--color-font);
+  &:hover {
+    background-color: var(--color-background);
   }
 `;
