@@ -84,7 +84,7 @@ export default function Collections({ user, mutateUser }) {
         <ButtonContainer>
           <DeleteButton onClick={handleDeleteCollection}>
             <Trash width={15} height={15} />
-            Rezepte entfernen
+            Kochbücher entfernen
           </DeleteButton>
           <DeleteButton onClick={toggleEdit}>
             <XSmall width={15} height={15} />
