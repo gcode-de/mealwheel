@@ -20,7 +20,7 @@ export default async function handler(req, res) {
     Verwende nur diese Kategorien: '${ingredientCategories.join(
       ","
     )}' und zwar jeweils maxmal ein mal.\n
-    Gib mir das Ergebnis als Array aus Objekten zurück nach dem Schema [{name: "Name_der_Zutat", category: "Kategorie_der_Zutat", quantity:"Menge_der_Zutat",unit:"Einheit_der_Menge"}, ...]`;
+    Gib mir das Ergebnis nur als Array aus Objekten zurück nach dem Schema [{category:"Name_der_Kategorie": [{name: "Name_der_Zutat", quantity:"Menge_der_Zutat",unit:"Einheit_der_Menge"},{name: "Name_der_Zutat", quantity:"Menge_der_Zutat",unit:"Einheit_der_Menge"}], ...}]`;
     const response = await openai.chat.completions.create({
       model: "gpt-3.5-turbo",
       messages: [{ role: "user", content: prompt }],

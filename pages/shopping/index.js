@@ -61,20 +61,20 @@ export default function ShoppingList({ user, mutateUser }) {
     );
   }
 
-  user.shoppingList = Array.from(
-    user.shoppingList
-      .reduce((map, obj) => {
-        const { id, name, quantity, unit, isChecked } = obj;
-        const existingObj = map.get(name + unit);
-        if (existingObj) {
-          existingObj.quantity += quantity;
-        } else {
-          map.set(name + unit, { id, name, quantity, unit, isChecked });
-        }
-        return map;
-      }, new Map())
-      .values()
-  );
+  // user.shoppingList = Array.from(
+  //   user.shoppingList
+  //     .reduce((map, obj) => {
+  //       const { id, name, quantity, unit, isChecked } = obj;
+  //       const existingObj = map.get(name + unit);
+  //       if (existingObj) {
+  //         existingObj.quantity += quantity;
+  //       } else {
+  //         map.set(name + unit, { id, name, quantity, unit, isChecked });
+  //       }
+  //       return map;
+  //     }, new Map())
+  //     .values()
+  // );
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -118,19 +118,19 @@ export default function ShoppingList({ user, mutateUser }) {
 
   async function setCategories() {
     console.log("list-object", user.shoppingList);
-    const itemsAsString = user.shoppingList
-      .map((item) => {
-        return `${item.name} (${item.quantity} ${item.unit})`;
-      })
-      .join(", ");
-    console.log("Eingabe:", itemsAsString);
-    const categories = fetchCategorizedIngredients(itemsAsString);
-    console.log("Ausgabe:", await categories);
+    // console.log("Eingabe:", itemsAsString);
+    const dataFromAPI = await fetchCategorizedIngredients(user.shoppingList);
+    const parsedData = JSON.parse(dataFromAPI);
+    console.log(await parsedData);
+    user.shoppingList = await parsedData;
+    console.log("nach ChatGPT:", user.shoppingList);
+    updateUserinDb(user, mutateUser);
   }
+
   return (
     <>
       <Header text="Einkaufsliste" />
-      <StyledList>
+      {/* <StyledList>
         {user.shoppingList.length === 0 ? (
           <StyledListItem>
             <StyledCheck>nichts zu erledigen</StyledCheck>
@@ -223,6 +223,25 @@ export default function ShoppingList({ user, mutateUser }) {
             </AddButton>
           </StyledIngredients>
         </form>
+      </StyledList> */}
+      <StyledList>
+        {user.shoppingList.map(
+          ({ category, items }) =>
+            items.length && (
+              <div key={category}>
+                <h4>{category}</h4>
+                {items.map((item, index) => (
+                  <StyledListItem
+                    key={index}
+                    onClick={() => handleItemClick(category, index)}
+                  >
+                    {item.name}
+                    {/* Item-Darstellung und Bearbeitung hier */}
+                  </StyledListItem>
+                ))}
+              </div>
+            )
+        )}
       </StyledList>
       <Spacer />
       <IconButtonLarge
