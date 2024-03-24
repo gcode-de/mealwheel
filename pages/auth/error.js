@@ -10,7 +10,7 @@ export default function Error({ providers }) {
     <>
       <Header text={"Meal Wheel"} />
       <StyledWrapper>
-        Etwas hat mit deiner Anmeldung nicht geklappt. Bitte versuche es erneut.
+        Ein Fehler ist aufgetreten. Bitte melde dich erneut an.
         {Object.values(providers).map((provider) => (
           <div key={provider.name}>
             <StyledButton
