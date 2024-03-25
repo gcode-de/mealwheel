@@ -9,12 +9,15 @@ import TriangleLeft from "@/public/icons/arrow-left-3-svgrepo-com.svg";
 import TriangleRight from "@/public/icons/arrow-right-2-svgrepo-com.svg";
 import Heart from "@/public/icons/heart-svgrepo-com.svg";
 import Pot from "@/public/icons/cooking-pot-fill-svgrepo-com.svg";
-import Calendar from "@/public/icons/calendar-1-svgrepo-com.svg";
+import Calendar from "@/public/icons/svg/calendar-days_9795297.svg";
 import Edit from "@/public/icons/edit-3-svgrepo-com (2).svg";
 import Settings from "@/public/icons/settings-svgrepo-com.svg";
-import Book from "@/public/icons/svg/book-user_9856365.svg";
+import Book from "@/public/icons/svg/notebook-alt_9795395.svg";
 import Leave from "@/public/icons/svg/arrow-left-from-line_9253329.svg";
 import Menu from "/public/icons/svg/menu.svg";
+import ArrowSmallLeft from "@/public/icons/arrow-small-left_10513360.svg";
+import ArrowSmallRight from "@/public/icons/arrow-small-right_10513361.svg";
+import Filter from "@/public/icons/sliders-v_10435878.svg";
 
 export default function IconButton({
   onClick,
@@ -41,6 +44,9 @@ export default function IconButton({
     Book: <Book width={25} height={25} />,
     Leave: <Leave width={20} height={20} />,
     Menu: <Menu width={30} height={30} />,
+    ArrowSmallLeft: <ArrowSmallLeft width={30} height={30} />,
+    ArrowSmallRight: <ArrowSmallRight width={30} height={30} />,
+    Filter: <Filter width={20} height={20} />,
   };
   return (
     <StyledBox $left={left} $right={right} $top={top} $rotate={rotate}>

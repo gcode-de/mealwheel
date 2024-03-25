@@ -243,6 +243,7 @@ export default function ShoppingList({ user, mutateUser }) {
                     handleItemEdit(event.target.parentElement, category, index)
                   }
                 >
+<<<<<<< HEAD
                   {editingIndex === `${category},${index}` ? (
                     <StyledEditForm
                       ref={editFormRef}
@@ -306,6 +307,54 @@ export default function ShoppingList({ user, mutateUser }) {
           ) : (
             ""
           )
+=======
+                  <StyledInput
+                    type="number"
+                    defaultValue={item.quantity}
+                    min="0"
+                    aria-label="edit ingredient quantity for the recipe"
+                    name="quantity"
+                  />
+                  <StyledDropDown name="unit" defaultValue={item.unit}>
+                    {ingredientUnits.map((unit) => (
+                      <option key={unit} value={unit}>
+                        {unit}
+                      </option>
+                    ))}
+                  </StyledDropDown>
+                  <StyledInput
+                    type="text"
+                    defaultValue={item.name}
+                    aria-label="edit ingredient name for the recipe"
+                    name="name"
+                    required
+                  />
+                </StyledEditForm>
+              ) : (
+                <>
+                  <StyledCheck>
+                    <StyledNumberUnit>
+                      <StyledCheckItem $text={item.isChecked} $flex={0.1}>
+                        {item.quantity || "1"}
+                      </StyledCheckItem>
+                      <StyledCheckItem $text={item.isChecked} $flex={1}>
+                        {item.unit}
+                      </StyledCheckItem>
+                    </StyledNumberUnit>
+                    <StyledCheckItem $text={item.isChecked} $flex={2}>
+                      {item.name}
+                    </StyledCheckItem>
+                  </StyledCheck>
+                  <StyledCheckbox
+                    type="checkbox"
+                    checked={item.isChecked}
+                    onChange={() => handleCheckboxChange(index)}
+                  ></StyledCheckbox>
+                </>
+              )}
+            </StyledListItem>
+          ))
+>>>>>>> main
         )}
         <form onSubmit={handleSubmit}>
           <StyledIngredients>
@@ -381,7 +430,7 @@ const Spacer = styled.div`
 
 const StyledEditForm = styled.form`
   display: flex;
-  width: 100%;
+  width: 277px;
   gap: 0.25rem;
 `;
 

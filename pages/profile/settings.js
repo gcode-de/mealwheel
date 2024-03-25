@@ -123,8 +123,9 @@ const Wrapper = styled.div`
 `;
 
 const WeekdayButton = styled.button`
+  color: var(--color-background);
   background-color: ${(props) =>
-    props.$enabled ? "var(--color-highlight)" : "var(--color-lightgrey)"};
+    props.$enabled ? "var(--color-darkgrey)" : "var(--color-lightgrey)"};
   text-decoration: ${(props) => (props.$enabled ? "none" : "line-through")};
   border: none;
   height: 2rem;

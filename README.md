@@ -1,4 +1,5 @@
 # MealWheel 🥗
+
 **(Frontend Web Dev Bootcamp - Capstone Project)**
 
 ## Description
@@ -15,6 +16,7 @@ Organize your recipes in collections, share filtered views with your friends and
 - **Community Sharing:** Share your favorite recipes with the MealWheel community and discover new favorites from other users.
 
 **Tech Stack:**
+
 - NextJS | MongoDB | KINDE Auth | Cloudinary | Github | Vercel
 - Dnd-Kit | SWR | Toastify | Mongoose | Styled components | PWA
 
@@ -22,15 +24,17 @@ Organize your recipes in collections, share filtered views with your friends and
 
 Meet the team behind MealWheel!
 
--  [Anna von Oesen](https://github.com/avoesen)
--  [Björn Jentschke](https://github.com/Bjoern-Jentschke)
--  [Samuel Gesang](https://github.com/gcode-de)
+- [Anna von Oesen](https://github.com/avoesen)
+- [Björn Jentschke](https://github.com/Bjoern-Jentschke)
+- [Samuel Gesang](https://github.com/gcode-de)
 
 Together we've been working on the app for the course of four weeks during the "capstone phase" of our web dev bootcamp at [NeueFische](https://github.com/neuefische).
 We really had an awesome time together, motivated and challenged each other and grew together in a great way!
 
 ## Challenges
+
 During the time working on the app we faced some really tricky challenges:
+
 - **Working under realistic conditions:**
   - Formulating user stories for the desired features and having them approved by a third party
   - Drawing wireframes in excalidraw and a design mockup in Figma
@@ -40,10 +44,11 @@ During the time working on the app we faced some really tricky challenges:
   - Undergoing quality-assurance in preview deployments
   - Getting new ideas and critical features by interviewing our peers and some test users of the app
 - **Getting some critical features to work:**
-  - Implementing login and auth with KINDE
+  - Implementing login and auth with NextAuth
   - Providing image upload and deletion with Cloudinary
   - Orchestrating all the data fetching, filter logic and API routes accessing MongoDB
   - Drag and Drop functionality to assign recipes to a different day in the planner
+  - using the OpenAI API to categorize ingredients on the fly
 - **Creating an app people actually want to use:**
   Some of our excitement for this project came from us actually wanting to use it once it would be finished.
   We actively asked friends and family for their input on how to streamline the UX and on what features to include (or maybe delete again).
@@ -57,3 +62,9 @@ Your support and feedback have been invaluable in making this project a success.
 ## Feedback
 
 Your feedback is valuable to us! If you have any suggestions for improvement or encounter any issues, please contact us on our profiles.
+
+## Running this app
+
+- clone this reop
+- install dependencies
+- set up your instances and accounts of MongoDB, Cloudinary, Google OAuth and NextJS and provide the keys, IDs and secrets as seen in the .env.example

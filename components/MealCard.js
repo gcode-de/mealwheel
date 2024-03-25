@@ -30,7 +30,7 @@ export default function MealCard({
           }}
         />
       )}
-      {reassignRecipe !== undefined && (
+      {/* {reassignRecipe !== undefined && (
         <IconButton
           style="Reload"
           right="-1rem"
@@ -39,8 +39,8 @@ export default function MealCard({
             reassignRecipe(day);
           }}
         />
-      )}
-      {removeRecipe !== undefined && (
+      )} */}
+      {/* {removeRecipe !== undefined && (
         <IconButton
           style="x"
           right="-1rem"
@@ -49,7 +49,7 @@ export default function MealCard({
             removeRecipe(day);
           }}
         />
-      )}
+      )} */}
       <CardContainer>
         {
           <ImageContainer>
@@ -81,6 +81,8 @@ export default function MealCard({
               numberOfPeople={numberOfPeople}
               handleChange={(change) => changeNumberOfPeople(change)}
               $margin="0.75rem 0 0 1.5rem"
+              reassignRecipe={reassignRecipe}
+              day={day}
             />
           )}
         </StyledDiv>
@@ -136,11 +138,15 @@ const StyledDiv = styled.div`
 const StyledPTitle = styled.p`
   font-size: 15px;
   font-weight: 600;
-  margin-bottom: 0;
-  margin-left: 1.5rem;
-  margin-top: 0;
+  margin: 0 0 0 1.5rem;
   width: fit-content;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2; /* Begrenzt den Text auf zwei Zeilen */
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
+
 const StyledPDuration = styled.p`
   font-size: 13px;
   font-weight: 600;
