@@ -166,7 +166,6 @@ export default function ShoppingList({ user, mutateUser }) {
   // }
 
   function handleCheckboxChange(categoryName, itemIndex) {
-    // Finde die Kategorie im Array
     const categoryIndex = user.shoppingList.findIndex(
       (category) => category.category === categoryName
     );
