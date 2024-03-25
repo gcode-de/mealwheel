@@ -5,8 +5,15 @@ import { useRouter } from "next/router";
 import ProfileCard from "../../../components/Cards/ProfileCard";
 import updateCommunityUserInDB from "../../../helpers/updateCommunityUserInDB";
 import { notifySuccess, notifyError } from "/helpers/toast";
+import updateUserinDb from "@/helpers/updateUserInDb";
+import { mutate } from "swr";
 
-export default function Community({ user, allUsers, mutateAllUsers }) {
+export default function Community({
+  user,
+  mutateUser,
+  allUsers,
+  mutateAllUsers,
+}) {
   const router = useRouter();
   if (!user || !allUsers) {
     return;
@@ -35,6 +42,16 @@ export default function Community({ user, allUsers, mutateAllUsers }) {
     updateCommunityUserInDB(communityUser, mutateAllUsers);
     notifySuccess("Freundschaftsanfrage versendet");
   }
+  function handleUnfollowPeople(id) {
+    const updateUser = user.friends.filter((friend) => friend !== id);
+    user.friend = updateUser;
+    updateUserinDb(user, mutateUser);
+    const foundUser = community.filter((human) => human._id === user._id);
+    const updateFoundUser = foundUser.friends.filter(
+      (friend) => friend === user._id
+    );
+    updateCommunityUserInDB(updateFoundUser, mutateAllUsers);
+  }
 
   return (
     <>
@@ -55,6 +72,7 @@ export default function Community({ user, allUsers, mutateAllUsers }) {
           isRequested={communityUser.connectionRequests.some(
             (request) => request.senderId === user._id
           )}
+          handleUnfollowPeople={handleUnfollowPeople}
         />
       ))}
     </>

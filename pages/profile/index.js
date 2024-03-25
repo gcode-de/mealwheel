@@ -111,17 +111,11 @@ export default function ProfilePage({
     updateUserinDb(user, mutateUser);
     let foundUser = allUsers.find((user) => user._id === id);
 
-    if (foundUser.friends) {
-      foundUser = {
-        ...foundUser,
-        friends: [...friends, user._id],
-      };
-    } else {
-      foundUser = {
-        ...foundUser,
-        friends: [user._id],
-      };
-    }
+    foundUser = {
+      ...foundUser,
+      friends: [...foundUser.friends, user._id],
+    };
+
     updateCommunityUserInDB(foundUser, mutateAllUsers);
     notifySuccess(`${foundUser.userName} als Freund hinzugefügt`);
   }
