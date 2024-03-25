@@ -206,7 +206,7 @@ export default function HomePage({
   if (error) {
     return (
       <>
-        <Header text={"Meal Wheel 🥗"} />
+        <Header text={"Meal Wheel"} />
         <StyledUl>User nicht gefunden...</StyledUl>
         <IconButton
           onClick={() => {
@@ -223,7 +223,7 @@ export default function HomePage({
   if (recipesIsLoading || isLoading) {
     return (
       <>
-        <Header text={"Meal Wheel 🥗"} />
+        <Header text={"Meal Wheel"} />
         <LoadingComponent amount />
       </>
     );
@@ -231,7 +231,7 @@ export default function HomePage({
 
   return (
     <>
-      <Header text={"Meal Wheel 🥗"} />
+      <Header text={"Meal Wheel"} />
       <StyledFilterButton onClick={toggleFilter}>
         <Filter width="20" height="20" />
       </StyledFilterButton>

@@ -47,6 +47,9 @@ export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
 
   const router = useRouter();
   const [selectedTags, setSelectedTags] = useState(data ? data.diet : []);
+  const [selectedMealtype, setSelectedMealtype] = useState(
+    data?.mealtype ? data.mealtype : []
+  );
   const [imageUrl, setImageUrl] = useState(data ? data.imageLink : "");
   const [servings, setServings] = useState(
     data?.servings ? data?.defaultNumberOfServings : 2
@@ -61,6 +64,14 @@ export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
     setSelectedTags(
       selectedTags.includes(value)
         ? selectedTags.filter((item) => item !== value)
+        : [value]
+    );
+  }
+
+  function handleMealtypeChange(value) {
+    setSelectedMealtype(
+      selectedMealtype.includes(value)
+        ? selectedMealtype.filter((item) => item !== value)
         : [value]
     );
   }
@@ -96,6 +107,7 @@ export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
 
       imageLink: imageUrl?.imageUrl,
       diet: selectedTags,
+      mealtype: selectedMealtype,
       public: event.target.public.checked,
       publicId: imageUrl?.publicId,
       defaultNumberOfServings: servings,
@@ -260,6 +272,25 @@ export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
                       type="button"
                       $isActive={selectedTags.includes(option.value)}
                       onClick={() => handleTagChange(option.value)}
+                    >
+                      {option.label}
+                    </StyledCategoryButton>
+                  ))}
+                </StyledCategoriesDiv>
+              </div>
+            ))}
+          {filterTags
+            .filter(({ type }) => type === "mealtype")
+            .map(({ label, type, options }) => (
+              <div key={type}>
+                <StyledH2>{label}</StyledH2>
+                <StyledCategoriesDiv>
+                  {options.map((option) => (
+                    <StyledCategoryButton
+                      key={option.value}
+                      type="button"
+                      $isActive={selectedMealtype.includes(option.value)}
+                      onClick={() => handleMealtypeChange(option.value)}
                     >
                       {option.label}
                     </StyledCategoryButton>

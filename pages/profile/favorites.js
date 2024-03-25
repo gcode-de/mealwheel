@@ -16,7 +16,7 @@ export default function Favorites({
   if (!user) {
     return (
       <>
-        <Header text="Favoriten 🥗" />
+        <Header text="Favoriten" />
         <StyledArticle>
           <StyledUl>
             Bitte <Link href="/api/auth/signin">einloggen</Link>, um Favoriten
@@ -33,7 +33,7 @@ export default function Favorites({
 
   if (error) {
     <div>
-      <Header text={"Favoriten 🥗"} />
+      <Header text={"Favoriten"} />
       Error...
     </div>;
   }
@@ -41,7 +41,7 @@ export default function Favorites({
   if (isLoading) {
     return (
       <>
-        <Header text="Favoriten 🥗" />
+        <Header text="Favoriten" />
         <LoadingComponent amount />
       </>
     );
@@ -50,7 +50,7 @@ export default function Favorites({
   if (!favoriteRecipes.length) {
     return (
       <>
-        <Header text="Favoriten 🥗" />
+        <Header text="Favoriten" />
         <StyledArticle>
           <StyledUl>Du hast noch keine Favoriten gespeichert.</StyledUl>
         </StyledArticle>
@@ -60,7 +60,7 @@ export default function Favorites({
 
   return (
     <>
-      <Header text="Favoriten 🥗" />
+      <Header text="Favoriten" />
       <StyledArticle>
         <StyledUl>
           {favoriteRecipes?.map((recipe) => {
