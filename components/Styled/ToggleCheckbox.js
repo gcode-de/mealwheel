@@ -8,9 +8,11 @@ export default function ToggleCheckbox({
   onChange,
   sliderSize,
   index,
+  marginTop,
+  marginLeft,
 }) {
   return (
-    <StyledCheckboxContainer>
+    <StyledCheckboxContainer marginTop={marginTop}>
       <label htmlFor={`toggle-${index}`}>
         {label}
         <StyledHiddenCheckbox
@@ -23,6 +25,7 @@ export default function ToggleCheckbox({
         <StyledSliderCheckbox
           htmlFor={`toggle-${index}`}
           sliderSize={sliderSize}
+          marginLeft={marginLeft}
         />
       </label>
     </StyledCheckboxContainer>
@@ -36,7 +39,7 @@ const StyledCheckboxContainer = styled.div`
     cursor: pointer;
     display: flex;
     align-items: center;
-    margin-top: 1rem;
+    margin-top: ${(props) => props.marginTop};
   }
 `;
 
@@ -45,7 +48,7 @@ const StyledHiddenCheckbox = styled.input`
 `;
 const StyledSliderCheckbox = styled.span`
   position: relative;
-  margin-left: 1rem;
+  margin-left: ${(props) => props.marginLeft};
   margin-top: 0rem;
   height: ${(props) =>
     props.sliderSize}; // Verwende die Prop sliderSize für die Höhe

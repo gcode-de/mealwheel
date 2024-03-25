@@ -288,6 +288,8 @@ export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
             name="public"
             defaultChecked={data ? data.public : true}
             sliderSize="2rem"
+            marginTop={"1rem"}
+            marginLeft={"1rem"}
           />
           <ButtonContainer>
             <Button type="submit">speichern</Button>

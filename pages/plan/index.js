@@ -380,7 +380,7 @@ export default function Plan({
 
         <IconButton
           right="var(--gap-out)"
-          top="8rem"
+          top="0.25rem"
           style="Menu"
           rotate={isRandomnessActive}
           onClick={toggleRandomness}
