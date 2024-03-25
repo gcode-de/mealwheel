@@ -16,7 +16,10 @@ export default function Community({ user, allUsers, mutateAllUsers }) {
 
   function handleAddPeople(id) {
     let communityUser = allUsers.find((user) => user._id === id);
-    console.log(communityUser);
+
+    if (communityUser.friends.includes(id)) {
+      notifyError("Ihr seid schon Freunde");
+    }
     communityUser = {
       ...communityUser,
       connectionRequests: [

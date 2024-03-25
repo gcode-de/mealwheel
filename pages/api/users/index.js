@@ -6,7 +6,7 @@ export default async function handler(request, response) {
 
   if (request.method === "GET") {
     const users = await User.find().select(
-      "userName _id profilePictureLink connectionRequests"
+      "userName _id profilePictureLink connectionRequests friends"
     );
 
     if (!users) {

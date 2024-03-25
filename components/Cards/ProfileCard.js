@@ -30,7 +30,7 @@ export default function ProfileCard({ user, handleAddPeople, isFriend }) {
             {isRequested ? "Freund angefragt" : "Freund anfragen"}
           </button>
         )}
-        {/* <p>2 Freunde</p> */}
+        <p>{user.friends.length} Freunde</p>
       </StyledProfiletext>
     </ProfileWrapper>
   );
