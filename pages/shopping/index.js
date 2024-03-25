@@ -8,6 +8,8 @@ import StyledInput from "@/components/Styled/StyledInput";
 import StyledDropDown from "@/components/Styled/StyledDropDown";
 import StyledListItem from "@/components/Styled/StyledListItem";
 import IconButtonLarge from "@/components/Styled/IconButtonLarge";
+import Button from "@/components/Styled/StyledButton";
+import PlateWheel from "/public/icons/svg/plate-wheel.svg";
 
 import { ingredientUnits } from "@/helpers/ingredientUnits";
 import fetchCategorizedIngredients from "@/helpers/OpenAI/CategorizeIngredients";
@@ -16,9 +18,11 @@ import updateUserinDb from "@/helpers/updateUserInDb";
 import styled from "styled-components";
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { notifySuccess, notifyError } from "/helpers/toast";
 
 export default function ShoppingList({ user, mutateUser }) {
   const [editingIndex, setEditingIndex] = useState("");
+  const [isKiGenerating, setIsKiGenerating] = useState(false);
   const editFormRef = useRef(null);
 
   // useEffect(() => {
@@ -199,16 +203,23 @@ export default function ShoppingList({ user, mutateUser }) {
   }
 
   async function setCategories() {
-    console.log("Start setCategories", user.shoppingList);
-    // console.log("Eingabe:", itemsAsString);
-    const dataFromAPI = await fetchCategorizedIngredients(
-      JSON.stringify(user.shoppingList)
-    );
-    console.log("dataFromAPI", dataFromAPI);
-    const parsedData = JSON.parse(dataFromAPI);
-    console.log(await parsedData);
-    user.shoppingList = await parsedData;
-    console.log("nach ChatGPT:", user.shoppingList);
+    if (user.shoppingList.length === 0) {
+      notifyError("Bitte befülle zuerst deine Einkaufsliste.");
+      return;
+    }
+    setIsKiGenerating(true);
+    try {
+      const dataFromAPI = await fetchCategorizedIngredients(
+        JSON.stringify(user.shoppingList)
+      );
+      const parsedData = JSON.parse(dataFromAPI);
+      user.shoppingList = await parsedData;
+      notifySuccess("Einkaufsliste wurde sortiert.");
+    } catch (error) {
+      console.error("Fehler beim Abrufen der Daten:", error);
+      notifyError("Sortieren fehlgeschlagen.");
+    }
+    setIsKiGenerating(false);
     updateUserinDb(user, mutateUser);
   }
 
@@ -327,12 +338,13 @@ export default function ShoppingList({ user, mutateUser }) {
           </StyledIngredients>
         </form>
       </StyledList>
+      {user.shoppingList.length > 0 && (
+        <StyledButton onClick={setCategories}>
+          <RotatingSVG $rotate={isKiGenerating} />
+          {!isKiGenerating ? "KI-Sortierung" : "bitte warten..."}
+        </StyledButton>
+      )}
       <Spacer />
-      <IconButtonLarge
-        style={"generate"}
-        bottom="10rem"
-        onClick={setCategories}
-      />
       <IconButtonLarge style={"trash"} bottom="6rem" onClick={clearShopping} />
     </>
   );
@@ -372,4 +384,29 @@ const StyledEditForm = styled.form`
   display: flex;
   width: 100%;
   gap: 0.25rem;
+`;
+
+const RotatingSVG = styled(PlateWheel)`
+  width: 1.5rem;
+  animation: ${(props) =>
+    props.$rotate ? "rotate 2s linear infinite" : "none"};
+  fill: var(--color-component);
+
+  @keyframes rotate {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+`;
+
+const StyledButton = styled(Button)`
+  padding: 8px 15px;
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  width: max-content;
+  margin: 0 auto;
 `;
