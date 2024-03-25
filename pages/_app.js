@@ -39,6 +39,13 @@ export default function App({
     isLoading: recipesIsLoading,
   } = useSWR(`/api/recipes`, fetcher);
 
+  const {
+    data: allUsers,
+    isLoading: allUsersAreLoading,
+    error: allUsersError,
+    mutate: mutateAllUsers,
+  } = useSWR(`/api/users`, fetcher);
+
   //recipe Interaction
   function getRecipeProperty(_id, property) {
     const recipeInteraction = user?.recipeInteractions.find(
@@ -121,6 +128,7 @@ export default function App({
               recipes={recipes}
               recipesError={recipesError}
               recipesIsLoading={recipesIsLoading}
+              allUsers={allUsers}
             />
           </Layout>
         </SessionProvider>

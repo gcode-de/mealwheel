@@ -2,26 +2,19 @@ import StyledH2 from "@/components/Styled/StyledH2";
 import IconButton from "@/components/Styled/IconButton";
 import Spacer from "@/components/Styled/Spacer";
 import { useRouter } from "next/router";
-import useSWR from "swr";
 import ProfileCard from "../../../components/Cards/ProfileCard";
 import updateCommunityUserInDB from "../../../helpers/updateCommunityUserInDB";
 
-export default function Community({ user, fetcher }) {
-  const {
-    data: users,
-    isLoading,
-    error,
-    mutate,
-  } = useSWR(`/api/users`, fetcher);
-  if (!user || !users) {
+export default function Community({ user, allUsers }) {
+  if (!user || !allUsers) {
     return;
   }
   const router = useRouter();
 
-  const community = users.filter((human) => human._id !== user._id);
+  const community = allUsers.filter((human) => human._id !== user._id);
   function handleAddPeople(id) {
     // nimm die user._id und sende sie an den user mit der übergebenen id
-    let communityUser = users.find((user) => user._id === id);
+    let communityUser = allUsers.find((user) => user._id === id);
 
     communityUser = {
       ...communityUser,
@@ -29,9 +22,9 @@ export default function Community({ user, fetcher }) {
         {
           senderId: user._id,
           timestamp: Date(),
+          message: `${user.userName} möchte mit dir befreundet sein`,
         },
       ],
-      type: "friends",
     };
     updateCommunityUserInDB(communityUser, mutate);
   }

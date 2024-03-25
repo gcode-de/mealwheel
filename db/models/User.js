@@ -59,9 +59,10 @@ const userSchema = new Schema({
     {
       senderId: mongoose.Schema.Types.ObjectId,
       timestamp: { type: Date, default: Date.now },
-      type: { type: String },
+      message: { type: String },
     },
   ],
+  friends: [{ type: String }],
 });
 
 const User = mongoose.models.User || mongoose.model("User", userSchema);

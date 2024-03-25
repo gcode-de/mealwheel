@@ -30,8 +30,9 @@ import MenuContainer from "@/components/MenuContainer";
 import IconButton from "@/components/Styled/IconButton";
 import StyledList from "@/components/Styled/StyledList";
 import ModalComponent from "../../components/Modal";
+import updateCommunityUserInDB from "../../helpers/updateCommunityUserInDB";
 
-export default function ProfilePage({ user, mutateUser }) {
+export default function ProfilePage({ user, mutateUser, allUsers }) {
   const router = useRouter();
   const { data: session, status } = useSession();
 
@@ -74,10 +75,6 @@ export default function ProfilePage({ user, mutateUser }) {
     updateUserinDb(user, mutateUser);
     setEditUser(false);
   };
-
-  function toggleFeedbackForm() {
-    setFeedbackVisible(!feedbackVisible);
-  }
   function handleEditProfile() {
     setEditUser(true);
     setIsMenuVisible(false);
@@ -100,8 +97,17 @@ export default function ProfilePage({ user, mutateUser }) {
     await signOut({ callbackUrl: "/", redirect: true });
     notifySuccess("Du hast dich erfolgreich abgemeldet");
   }
-  function toggleMenu() {
-    setIsMenuVisible(!isMenuVisible);
+  function addFriend(id, index) {
+    user.friends = [...user.friends, id];
+    user.connectionRequests.filter((request, ind) => ind !== index);
+    updateUserinDb(user, mutateUser);
+    const foundUser = allUsers.find((user) => user._id === id);
+    console.log(foundUser)
+    foundUser.connectionRequests.message = `${foundUser.userName} hat deine Anfrage angenommen`);
+    // updateCommunityUserInDB()
+  }
+  function rejectFriendRequest() {
+    console.log("xy möchte nicht mit dir befreundet sein");
   }
   return (
     <>
@@ -109,7 +115,7 @@ export default function ProfilePage({ user, mutateUser }) {
         style="Menu"
         top="var(--gap-out)"
         right="var(--gap-out)"
-        onClick={toggleMenu}
+        onClick={() => setIsMenuVisible(!isMenuVisible)}
         fill="var(--color-lightgrey)"
         rotate={isMenuVisible}
       />
@@ -119,14 +125,27 @@ export default function ProfilePage({ user, mutateUser }) {
         left="var(--gap-out)"
         onClick={() => setIsNotificationVisible(!isNotificationVisible)}
         fill="var(--color-lightgrey)"
-      >
-        <div>Punkt</div>
-      </IconButton>
+      ></IconButton>
+      {user.connectionRequests.length >= 1 && <Notification />}
       {isNotificationVisible && (
-        <MenuContainer top="5rem" left="var(--gap-out)"></MenuContainer>
+        <MenuContainer top="3.5rem" left="var(--gap-out)">
+          {user.connectionRequests.length >= 1 ? (
+            user.connectionRequests.map((request, index) => (
+              <>
+                <p key={request.senderId}>{request.message}</p>
+                <button onClick={() => addFriend(request.senderId, index)}>
+                  bestätigen
+                </button>
+                <button onClick={rejectFriendRequest}>ablehnen</button>
+              </>
+            ))
+          ) : (
+            <p>Du bist auf dem neuesten Stand!</p>
+          )}
+        </MenuContainer>
       )}
       {isMenuVisible && (
-        <MenuContainer top="5rem" right="var(--gap-out)">
+        <MenuContainer top="3.5rem" right="var(--gap-out)">
           <UnstyledButton onClick={() => router.push("/profile/settings")}>
             <Settings width={15} height={15} />
             Einstellungen
@@ -210,13 +229,13 @@ export default function ProfilePage({ user, mutateUser }) {
         <StyledCollection></StyledCollection>
         <StyledCollection onClick={() => router.push("/profile/community")}>
           <People width={40} height={40} />
-          <StyledP>Freunde</StyledP>
+          <StyledP>Community</StyledP>
         </StyledCollection>
         <StyledCollection onClick={() => router.push("/profile/collections")}>
           <BookUser width={40} height={40} />
           <StyledP>Kochbücher</StyledP>
         </StyledCollection>
-        <StyledCollection onClick={toggleFeedbackForm}>
+        <StyledCollection onClick={() => setFeedbackVisible(!feedbackVisible)}>
           <Party width={40} height={40} />
           <StyledP>Feedback</StyledP>
         </StyledCollection>
@@ -227,7 +246,9 @@ export default function ProfilePage({ user, mutateUser }) {
         </StyledCollection>
       </Wrapper>
       {feedbackVisible && (
-        <ModalComponent toggleModal={toggleFeedbackForm}>
+        <ModalComponent
+          toggleModal={() => setFeedbackVisible(!feedbackVisible)}
+        >
           <StyledH2>Gib uns Feedback</StyledH2>
           <StyledForm onSubmit={handleFeedback}>
             <StyledInput
@@ -396,4 +417,14 @@ const UnstyledButton = styled.button`
   &:hover {
     background-color: var(--color-background);
   }
+`;
+const Notification = styled.div`
+  height: 0.6rem;
+  width: 0.6rem;
+  background-color: var(--color-highlight);
+  border-radius: 100%;
+  position: absolute;
+  z-index: 4000;
+  left: 2.7rem;
+  top: 0.8rem;
 `;
