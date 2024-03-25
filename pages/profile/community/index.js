@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 import ProfileCard from "../../../components/Cards/ProfileCard";
 import updateCommunityUserInDB from "../../../helpers/updateCommunityUserInDB";
 
-export default function Community({ user, allUsers }) {
+export default function Community({ user, allUsers, mutateAllUsers }) {
   if (!user || !allUsers) {
     return;
   }
@@ -26,7 +26,7 @@ export default function Community({ user, allUsers }) {
         },
       ],
     };
-    updateCommunityUserInDB(communityUser, mutate);
+    updateCommunityUserInDB(communityUser, mutateAllUsers);
   }
 
   return (

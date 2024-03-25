@@ -129,6 +129,7 @@ export default function App({
               recipesError={recipesError}
               recipesIsLoading={recipesIsLoading}
               allUsers={allUsers}
+              mutateAllUsers={mutateAllUsers}
             />
           </Layout>
         </SessionProvider>

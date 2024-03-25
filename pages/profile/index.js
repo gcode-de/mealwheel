@@ -32,7 +32,12 @@ import StyledList from "@/components/Styled/StyledList";
 import ModalComponent from "../../components/Modal";
 import updateCommunityUserInDB from "../../helpers/updateCommunityUserInDB";
 
-export default function ProfilePage({ user, mutateUser, allUsers }) {
+export default function ProfilePage({
+  user,
+  mutateUser,
+  allUsers,
+  mutateAllUsers,
+}) {
   const router = useRouter();
   const { data: session, status } = useSession();
 
@@ -102,9 +107,9 @@ export default function ProfilePage({ user, mutateUser, allUsers }) {
     user.connectionRequests.filter((request, ind) => ind !== index);
     updateUserinDb(user, mutateUser);
     const foundUser = allUsers.find((user) => user._id === id);
-    console.log(foundUser)
-    foundUser.connectionRequests.message = `${foundUser.userName} hat deine Anfrage angenommen`);
-    // updateCommunityUserInDB()
+    console.log(foundUser);
+    foundUser.connectionRequests.message = `${foundUser.userName} hat deine Anfrage angenommen`;
+    // updateCommunityUserInDB(foundUser, mutateAllUsers)
   }
   function rejectFriendRequest() {
     console.log("xy möchte nicht mit dir befreundet sein");
