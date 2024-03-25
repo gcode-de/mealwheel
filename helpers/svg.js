@@ -1,0 +1,21 @@
+import BookUserIcon from "@/public/icons/svg/notebook-alt_9795395.svg";
+import PeopleIcon from "@/public/icons/svg/employees_14644298.svg";
+import HeartIcon from "@/public/icons/heart-svgrepo-com.svg";
+import PotIcon from "@/public/icons/svg/pot_7409547.svg";
+import PlusIcon from "@/public/icons/Plus.svg";
+import PartyIcon from "@/public/icons/svg/party-horn_10470647.svg";
+import PanIcon from "@/public/icons/svg/plate_7409529.svg";
+import PenIcon from "/public/icons/svg/pen-square_10435869.svg";
+import LeaveIcon from "@/public/icons/svg/arrow-left-from-line_9253329.svg";
+import SettingsIcon from "@/public/icons/settings-svgrepo-com.svg";
+
+export const BookUser = BookUserIcon;
+export const People = PeopleIcon;
+export const Heart = HeartIcon;
+export const Pot = PotIcon;
+export const Plus = PlusIcon;
+export const Party = PartyIcon;
+export const Pan = PanIcon;
+export const Pen = PenIcon;
+export const Leave = LeaveIcon;
+export const Settings = SettingsIcon;
