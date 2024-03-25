@@ -1,12 +1,12 @@
-import StyledH2 from "@/components/Styled/StyledH2";
-import IconButton from "@/components/Styled/IconButton";
-import Spacer from "@/components/Styled/Spacer";
 import { useRouter } from "next/router";
-import ProfileCard from "../../../components/Cards/ProfileCard";
 import updateCommunityUserInDB from "../../../helpers/updateCommunityUserInDB";
 import { notifySuccess, notifyError } from "/helpers/toast";
 import updateUserinDb from "@/helpers/updateUserInDb";
-import { mutate } from "swr";
+
+import StyledH2 from "@/components/Styled/StyledH2";
+import IconButton from "@/components/Styled/IconButton";
+import Spacer from "@/components/Styled/Spacer";
+import ProfileCard from "../../../components/Cards/ProfileCard";
 
 export default function Community({
   user,

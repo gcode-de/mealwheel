@@ -152,12 +152,14 @@ export default function ProfilePage({
             user.connectionRequests.map((request, index) => (
               <div key={request.senderId}>
                 <p>{request.message}</p>
-                <button onClick={() => addFriend(request.senderId, index)}>
-                  bestätigen
-                </button>
-                <button onClick={() => rejectFriendRequest(index)}>
-                  ablehnen
-                </button>
+                <div>
+                  <button onClick={() => addFriend(request.senderId, index)}>
+                    bestätigen
+                  </button>
+                  <button onClick={() => rejectFriendRequest(index)}>
+                    ablehnen
+                  </button>
+                </div>
               </div>
             ))
           ) : (
