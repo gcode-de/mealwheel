@@ -336,20 +336,20 @@ export default function Plan({
         isChecked: false,
       })),
     ];
-    // console.log("new ingredients", newIngredients);
+    console.log("new ingredients", newIngredients);
 
     const uncategorizedIndex = user.shoppingList.findIndex(
-      (category) => category.category === "uncategorized"
+      (category) => category.category === "Unsortiert"
     );
 
     uncategorizedIndex === -1
       ? user.shoppingList.push({
-          category: "uncategorized",
+          category: "Unsortiert",
           items: [...newIngredients],
         })
       : user.shoppingList[uncategorizedIndex].items.push(newIngredients);
 
-    // console.log("User vorm Speichern", user.shoppingList);
+    console.log("Shoppinglist vorm Speichern", user.shoppingList);
 
     updateUserinDb(user, mutateUser);
     notifySuccess("Einkaufsliste aktualisiert");

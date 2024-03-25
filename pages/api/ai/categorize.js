@@ -11,6 +11,22 @@ export default async function handler(req, res) {
   }
 
   const { ingredients } = req.body;
+  const dataSchema = [
+    {
+      category: "Obst & Gemüse",
+      items: [
+        { name: "Äpfel", quantity: 5, unit: "Stück", isChecked: false },
+        { name: "Tomaten", quantity: 1, unit: "kg", isChecked: false },
+      ],
+    },
+    {
+      category: "Backwaren",
+      items: [
+        { name: "Vollkornbrot", quantity: 1, unit: "Laib", isChecked: false },
+      ],
+    },
+  ];
+
   if (!ingredients || ingredients.length === 0) {
     return res.status(400).json({ message: "Zutaten sind erforderlich" });
   }
@@ -20,11 +36,18 @@ export default async function handler(req, res) {
     Verwende nur diese Kategorien: '${ingredientCategories.join(
       ","
     )}' und zwar jeweils maxmal ein mal.\n
-    Gib mir das Ergebnis nur als Array aus Objekten zurück nach dem Schema [{category:"Name_der_Kategorie": [{name: "Name_der_Zutat", quantity:"Menge_der_Zutat",unit:"Einheit_der_Menge"},{name: "Name_der_Zutat", quantity:"Menge_der_Zutat",unit:"Einheit_der_Menge"}], ...}]`;
+    Beachte dabei vor allem den Namen der Zutat und weniger die anderen Eigenschaften.\n
+    Behalte für Zutaten, die du nicht eindeutig zuordnen kannst, einfach die Kategorie "Unsortiert".\n
+    Gib mir das Ergebnis nur als Array aus Objekten zurück nach dem Schema "${JSON.stringify(
+      dataSchema
+    )}".\n
+    Stelle sicher, dass ich deine Antwort direkt als JSON parsen kann und dass das Array am Ende vollständig abgeschlossen ist.\n
+    Gibt NICHT am Anfang deiner Antwort "Json", Anführungszeichen oder Backticks aus.`;
     const response = await openai.chat.completions.create({
       model: "gpt-3.5-turbo",
+      // model: "gpt-4",
       messages: [{ role: "user", content: prompt }],
-      temperature: 0.7,
+      temperature: 0.6,
       max_tokens: 500,
     });
     console.log("response in API:\n", response.choices[0].message.content);
