@@ -119,9 +119,10 @@ export default function ProfilePage({
             senderId: user._id,
             timestamp: Date(),
             message: `${user.userName} hat deine Anfrage angenommen`,
+            type: 2,
           },
         ],
-        friends: [...foundUser?.friends, user._id],
+        friends: [...friends, user._id],
       };
     } else {
       foundUser = {
@@ -131,6 +132,7 @@ export default function ProfilePage({
             senderId: user._id,
             timestamp: Date(),
             message: `${user.userName} hat deine Anfrage angenommen`,
+            type: 2,
           },
         ],
         friends: [user._id],
@@ -138,8 +140,13 @@ export default function ProfilePage({
     }
     updateCommunityUserInDB(foundUser, mutateAllUsers);
   }
-  function rejectFriendRequest() {
-    console.log("xy möchte nicht mit dir befreundet sein");
+
+  function rejectFriendRequest(index) {
+    const updatedRequests = user.connectionRequests.filter(
+      (request, ind) => ind !== index
+    );
+    user.connectionRequests = updatedRequests;
+    updateUserinDb(user, mutateUser);
   }
   return (
     <>
@@ -163,13 +170,15 @@ export default function ProfilePage({
         <MenuContainer top="3.5rem" left="var(--gap-out)">
           {user.connectionRequests.length >= 1 ? (
             user.connectionRequests.map((request, index) => (
-              <>
-                <p key={request.senderId}>{request.message}</p>
+              <div key={request.senderId}>
+                <p>{request.message}</p>
                 <button onClick={() => addFriend(request.senderId, index)}>
                   bestätigen
                 </button>
-                <button onClick={rejectFriendRequest}>ablehnen</button>
-              </>
+                <button onClick={() => rejectFriendRequest(index)}>
+                  ablehnen
+                </button>
+              </div>
             ))
           ) : (
             <p>Du bist auf dem neuesten Stand!</p>

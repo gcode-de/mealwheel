@@ -60,6 +60,7 @@ const userSchema = new Schema({
       senderId: mongoose.Schema.Types.ObjectId,
       timestamp: { type: Date, default: Date.now },
       message: { type: String },
+      type: { type: Number },
     },
   ],
   friends: [{ type: String }],

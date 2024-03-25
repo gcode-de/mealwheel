@@ -4,6 +4,7 @@ import Spacer from "@/components/Styled/Spacer";
 import { useRouter } from "next/router";
 import ProfileCard from "../../../components/Cards/ProfileCard";
 import updateCommunityUserInDB from "../../../helpers/updateCommunityUserInDB";
+import { notifySuccess, notifyError } from "/helpers/toast";
 
 export default function Community({ user, allUsers, mutateAllUsers }) {
   const router = useRouter();
@@ -12,21 +13,24 @@ export default function Community({ user, allUsers, mutateAllUsers }) {
   }
 
   const community = allUsers.filter((human) => human._id !== user._id);
-  function handleAddPeople(id) {
-    // nimm die user._id und sende sie an den user mit der übergebenen id
-    let communityUser = allUsers.find((user) => user._id === id);
 
+  function handleAddPeople(id) {
+    let communityUser = allUsers.find((user) => user._id === id);
+    console.log(communityUser);
     communityUser = {
       ...communityUser,
       connectionRequests: [
+        ...communityUser.connectionRequests,
         {
           senderId: user._id,
           timestamp: Date(),
           message: `${user.userName} möchte mit dir befreundet sein`,
+          type: 1,
         },
       ],
     };
     updateCommunityUserInDB(communityUser, mutateAllUsers);
+    notifySuccess("Freundschaftsanfrage versendet");
   }
 
   return (

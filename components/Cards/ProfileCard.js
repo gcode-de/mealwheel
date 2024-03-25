@@ -1,8 +1,9 @@
 import styled from "styled-components";
 import Image from "next/image";
-import StyledH2 from "../Styled/StyledH2";
+import { useState } from "react";
 
 export default function ProfileCard({ user, handleAddPeople, isFriend }) {
+  const [isRequested, setIsRequested] = useState(false);
   return (
     <ProfileWrapper>
       <WrapperCenter>
@@ -22,8 +23,11 @@ export default function ProfileCard({ user, handleAddPeople, isFriend }) {
         {isFriend ? (
           <button>unfollow</button>
         ) : (
-          <button onClick={() => handleAddPeople(user._id)}>
-            Freund anfragen
+          <button
+            onClick={() => handleAddPeople(user._id)}
+            disabled={isRequested}
+          >
+            {isRequested ? "Freund angefragt" : "Freund anfragen"}
           </button>
         )}
         {/* <p>2 Freunde</p> */}
