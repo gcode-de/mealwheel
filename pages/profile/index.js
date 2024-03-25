@@ -196,8 +196,8 @@ export default function ProfilePage({ user, mutateUser }) {
         <StyledCollection></StyledCollection>
         <StyledCollection></StyledCollection>
         <StyledCollection>
-          <People width={40} height={40} />
-          <StyledP>Freunde</StyledP>
+          {/* <People width={40} height={40} />
+          <StyledP>Freunde</StyledP> */}
         </StyledCollection>
         <StyledCollection onClick={() => router.push("/profile/collections")}>
           <BookUser width={40} height={40} />
