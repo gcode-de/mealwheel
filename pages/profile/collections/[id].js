@@ -4,7 +4,7 @@ import updateUserinDb from "@/helpers/updateUserInDb";
 
 import styled from "styled-components";
 import IconButton from "@/components/Styled/IconButton";
-import MealCard from "@/components/MealCard";
+import MealCard from "@/components/Cards/MealCard";
 import StyledUl from "@/components/Styled/StyledUl";
 import Spacer from "@/components/Styled/Spacer";
 import StyledH2 from "@/components/Styled/StyledH2";

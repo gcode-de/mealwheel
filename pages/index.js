@@ -1,6 +1,6 @@
 import Header from "@/components/Styled/Header";
 
-import MealCard from "@/components/MealCard";
+import MealCard from "@/components/Cards/MealCard";
 
 import StyledUl from "@/components/Styled/StyledUl";
 import IconButtonLarge from "@/components/Styled/IconButtonLarge";
