@@ -15,7 +15,7 @@ export default async function handler(request, response) {
           .json({ status: "User not found or unauthorized" });
       }
 
-      await Users.findByIdAndUpdate(id, request.body);
+      await User.findByIdAndUpdate(id, request.body);
       return response.status(200).json({ status: `User ${id} updated!` });
     } catch (error) {
       console.error(error);

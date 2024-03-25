@@ -4,6 +4,7 @@ import Spacer from "@/components/Styled/Spacer";
 import { useRouter } from "next/router";
 import useSWR from "swr";
 import ProfileCard from "../../../components/Cards/ProfileCard";
+import updateCommunityUserInDB from "../../../helpers/updateCommunityUserInDB";
 
 export default function Community({ user, fetcher }) {
   const {
@@ -20,12 +21,20 @@ export default function Community({ user, fetcher }) {
   const community = users.filter((human) => human._id !== user._id);
   function handleAddPeople(id) {
     // nimm die user._id und sende sie an den user mit der übergebenen id
-    // connectionRequests: [
-    //   {
-    //     senderId: mongoose.Schema.Types.ObjectId,
-    //     timestamp: { type: Date, default: Date.now },
-    //   },
-    // ];
+    let communityUser = users.find((user) => user._id === id);
+
+    communityUser = {
+      ...communityUser,
+      connectionRequests: [
+        {
+          senderId: user._id,
+          timestamp: Date(),
+        },
+      ],
+    };
+    console.log(communityUser);
+
+    updateCommunityUserInDB(communityUser, mutate);
   }
 
   return (
