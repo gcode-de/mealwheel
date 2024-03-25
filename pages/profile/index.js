@@ -247,7 +247,7 @@ export default function ProfilePage({ user, mutateUser }) {
         </ModalComponent>
       )}
       <StyledFooter>
-        <StyledLink href="/profile/impressum">Impressum</StyledLink>
+        <StyledLink href="/imprint">Impressum</StyledLink>
       </StyledFooter>
     </>
   );

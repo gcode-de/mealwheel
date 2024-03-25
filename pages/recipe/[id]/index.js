@@ -36,7 +36,9 @@ export default function DetailPage({
   toggleHasCooked,
 }) {
   const [content, setContent] = useState("instructions");
-  const [selectedDate, setSelectedDate] = useState("");
+  const [selectedDate, setSelectedDate] = useState(
+    new Date().toISOString().split("T")[0]
+  );
   const [calendarFormIsVisible, setCalendarFormIsVisible] = useState(false);
   const [collectionFormIsVisible, setCollectionFormIsVisible] = useState(false);
   const [selectedCollection, setselectedCollection] = useState(
@@ -76,6 +78,7 @@ export default function DetailPage({
     instructions,
     imageLink,
     diet,
+    mealtype,
     youtubeLink,
     ingredients,
     duration,
@@ -317,6 +320,7 @@ export default function DetailPage({
             </StyledForm>
           </ModalComponent>
         )}
+
         <StyledTitle>{title}</StyledTitle>
         <StyledP>
           {duration} MIN | {difficulty}
@@ -339,25 +343,47 @@ export default function DetailPage({
             </StyledListItem>
           ))}
         </StyledList>
-        {filterTags
-          .filter(({ type }) => type === "diet")
-          .map(({ label, type }) => (
-            <StyledH2 key={type}>{label}</StyledH2>
-          ))}
         <StyledCategoriesDiv>
-          {diet?.map((tag) => {
-            const filterTag = filterTags.find(
-              (filter) => filter.type === "diet"
-            );
-            const matchingOption = filterTag.options.find(
-              (option) => option.value === tag
-            );
-            return (
-              <StyledCategoryButton key={tag}>
-                {matchingOption ? matchingOption.label : tag}
-              </StyledCategoryButton>
-            );
-          })}
+          <div>
+            {filterTags
+              .filter(({ type }) => type === "diet")
+              .map(({ label, type }) => (
+                <StyledH2 key={type}>{label}</StyledH2>
+              ))}
+            {diet?.map((tag) => {
+              const filterTag = filterTags.find(
+                (filter) => filter.type === "diet"
+              );
+              const matchingOption = filterTag.options.find(
+                (option) => option.value === tag
+              );
+              return (
+                <StyledCategoryButton key={tag}>
+                  {matchingOption ? matchingOption.label : tag}
+                </StyledCategoryButton>
+              );
+            })}
+          </div>
+          <div>
+            {filterTags
+              .filter(({ type }) => type === "mealtype")
+              .map(({ label, type }) => (
+                <StyledH2 key={type}>{label}</StyledH2>
+              ))}
+            {mealtype?.map((tag) => {
+              const filterTag = filterTags.find(
+                (filter) => filter.type === "mealtype"
+              );
+              const matchingOption = filterTag.options.find(
+                (option) => option.value === tag
+              );
+              return (
+                <StyledCategoryButton key={tag}>
+                  {matchingOption ? matchingOption.label : tag}
+                </StyledCategoryButton>
+              );
+            })}
+          </div>
         </StyledCategoriesDiv>
         <StyledHyper>
           <StyledLink onClick={() => setContent("instructions")}>
@@ -449,18 +475,21 @@ const StyledForm = styled.form`
   button {
     width: 80px;
     line-height: 1.1rem;
-    padding: 0.25rem 0.5rem;
+    padding: 0.4rem 0.5rem;
+    min-height: 2rem;
     border: none;
     border-radius: 10px;
     background-color: var(--color-darkgrey);
     color: var(--color-background);
     cursor: pointer;
+    margin-right: auto;
   }
   input {
     padding: 0.25rem 0.5rem;
     border: none;
     border-radius: 10px;
     background-color: var(--color-background);
+    min-height: 2rem;
   }
 `;
 const StyledTitle = styled.h1`
