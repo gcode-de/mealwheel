@@ -21,35 +21,31 @@ export default function ShoppingList({ user, mutateUser }) {
   const [editingIndex, setEditingIndex] = useState("");
   const editFormRef = useRef(null);
 
-  useEffect(() => {
-    function handleClickOutside(event) {
-      if (editFormRef.current && !editFormRef.current.contains(event.target)) {
-        setEditingIndex(null);
-      }
-    }
+  // useEffect(() => {
+  //   function handleClickOutside(event) {
+  //     if (editFormRef.current && !editFormRef.current.contains(event.target)) {
+  //       setEditingIndex(null);
+  //     }
+  //   }
 
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+  //   document.addEventListener("mousedown", handleClickOutside);
+  //   return () => document.removeEventListener("mousedown", handleClickOutside);
+  // }, []);
 
   function handleItemClick(category, index) {
     setEditingIndex(`${category},${index}`);
   }
 
-  function handleItemEdit(event, categoryName, itemIndex) {
-    event.preventDefault();
-
-    const formData = new FormData(event.target);
+  function handleItemEdit(eventTarget, categoryName, itemIndex) {
+    const formData = new FormData(eventTarget);
     const data = Object.fromEntries(formData);
     data.quantity = Number(data.quantity);
 
-    // Finden der Kategorie anhand ihres Namens
     const category = user.shoppingList.find(
       (cat) => cat.category === categoryName
     );
 
     if (category) {
-      // Aktualisieren des Items im Array
       const updatedItem = {
         ...category.items[itemIndex],
         ...data,
@@ -57,10 +53,7 @@ export default function ShoppingList({ user, mutateUser }) {
 
       category.items[itemIndex] = updatedItem;
 
-      // Update des gesamten Users in der Datenbank
       updateUserinDb(user, mutateUser);
-
-      // Reset des Editing Index
       setEditingIndex("");
     } else {
       console.log("Kategorie nicht gefunden.");
@@ -94,7 +87,6 @@ export default function ShoppingList({ user, mutateUser }) {
   //     .values()
   // );
 
-  // Funktion, um Einkaufslisten-Items innerhalb ihrer Kategorien zu konsolidieren
   function consolidateShoppingListItems(userShoppingList) {
     // Iteration über jede Kategorie in der Einkaufsliste
     userShoppingList.forEach((category) => {
@@ -102,25 +94,20 @@ export default function ShoppingList({ user, mutateUser }) {
         // Eindeutiger Schlüssel für jedes Item basierend auf Namen und Einheit
         const key = `${item.name}-${item.unit}`;
 
-        // Prüfen, ob das Item bereits im Map existiert
         if (map.has(key)) {
-          // Wenn ja, Menge des Items kumulieren
           const existingItem = map.get(key);
           existingItem.quantity += item.quantity;
         } else {
-          // Wenn nein, Item zum Map hinzufügen
           map.set(key, { ...item });
         }
 
         return map;
       }, new Map());
 
-      // Ersetzen der Items der Kategorie mit den konsolidierten Items
       category.items = Array.from(consolidatedItems.values());
     });
   }
 
-  // Beispielaufruf der Funktion
   // consolidateShoppingListItems(user.shoppingList);
 
   async function handleSubmit(event) {
@@ -203,7 +190,6 @@ export default function ShoppingList({ user, mutateUser }) {
       }
     }, 10000);
 
-    // Speichere die Änderungen
     updateUserinDb(user, mutateUser);
   }
 
@@ -229,100 +215,6 @@ export default function ShoppingList({ user, mutateUser }) {
   return (
     <>
       <Header text="Einkaufsliste" />
-      {/* <StyledList>
-        {user.shoppingList.length === 0 ? (
-          <StyledListItem>
-            <StyledCheck>nichts zu erledigen</StyledCheck>
-          </StyledListItem>
-        ) : (
-          user.shoppingList.map((item, index) => (
-            <StyledListItem key={index} onClick={() => handleItemClick(index)}>
-              {editingIndex === index ? (
-                <StyledEditForm
-                  ref={editFormRef}
-                  onSubmit={(event) => handleItemEdit(event, index)}
-                >
-                  <StyledInput
-                    type="number"
-                    defaultValue={item.quantity}
-                    min="0"
-                    aria-label="edit ingredient quantity for the recipe"
-                    name="quantity"
-                  />
-                  <StyledDropDown name="unit" defaultValue={item.unit}>
-                    <option value="">-</option>
-                    {ingredientUnits.map((unit) => (
-                      <option key={unit} value={unit}>
-                        {unit}
-                      </option>
-                    ))}
-                  </StyledDropDown>
-                  <StyledInput
-                    type="text"
-                    defaultValue={item.name}
-                    aria-label="edit ingredient name for the recipe"
-                    name="name"
-                    required
-                  />
-                  <AddButton type="submit" $color="var(--color-background)">
-                    <Check width={20} height={20} />
-                  </AddButton>
-                </StyledEditForm>
-              ) : (
-                <>
-                  <StyledCheck>
-                    <StyledNumberUnit>
-                      <StyledCheckItem $text={item.isChecked} $flex={0.1}>
-                        {item.quantity}
-                      </StyledCheckItem>
-                      <StyledCheckItem $text={item.isChecked} $flex={1}>
-                        {item.unit}
-                      </StyledCheckItem>
-                    </StyledNumberUnit>
-                    <StyledCheckItem $text={item.isChecked} $flex={2}>
-                      {item.name}
-                    </StyledCheckItem>
-                  </StyledCheck>
-                  <StyledCheckbox
-                    type="checkbox"
-                    checked={item.isChecked}
-                    onChange={() => handleCheckboxChange(index)}
-                  ></StyledCheckbox>
-                </>
-              )}
-            </StyledListItem>
-          ))
-        )}
-        <form onSubmit={handleSubmit}>
-          <StyledIngredients>
-            <StyledInput
-              type="number"
-              $width={"3rem"}
-              min="0"
-              aria-label="add ingredient quantity for the recipe"
-              name="quantity"
-            />
-            <StyledDropDown name="unit">
-              <option value="">-</option>
-              {ingredientUnits.map((unit) => (
-                <option key={unit} value={unit}>
-                  {unit}
-                </option>
-              ))}
-            </StyledDropDown>
-            <StyledInput
-              type="text"
-              name="name"
-              placeholder="neue Zutat"
-              aria-label="add igredient name for the recipe"
-              required
-            />
-            <AddButton type="submit" $color="var(--color-background)">
-              <Plus width={20} height={20} />
-            </AddButton>
-          </StyledIngredients>
-        </form>
-      </StyledList> */}
       <StyledList>
         {user.shoppingList.length === 0 && (
           <StyledListItem>
@@ -334,22 +226,18 @@ export default function ShoppingList({ user, mutateUser }) {
             <div key={category}>
               <h4>{category}</h4>
               {items.map((item, index) => (
-                // <StyledListItem
-                //   key={index}
-                //   onClick={() => handleItemClick(category, index)}
-                // >
-                //   {item.name}
-                //   ...Item...
-                // </StyledListItem>
                 <StyledListItem
                   key={index}
                   onClick={() => handleItemClick(category, index)}
+                  onBlur={(event) =>
+                    handleItemEdit(event.target.parentElement, category, index)
+                  }
                 >
                   {editingIndex === `${category},${index}` ? (
                     <StyledEditForm
                       ref={editFormRef}
                       onSubmit={(event) =>
-                        handleItemEdit(event, category, index)
+                        handleItemEdit(event.target, category, index)
                       }
                     >
                       <StyledInput
