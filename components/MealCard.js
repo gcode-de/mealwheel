@@ -30,7 +30,7 @@ export default function MealCard({
           }}
         />
       )}
-      {reassignRecipe !== undefined && (
+      {/* {reassignRecipe !== undefined && (
         <IconButton
           style="Reload"
           right="-1rem"
@@ -39,8 +39,8 @@ export default function MealCard({
             reassignRecipe(day);
           }}
         />
-      )}
-      {removeRecipe !== undefined && (
+      )} */}
+      {/* {removeRecipe !== undefined && (
         <IconButton
           style="x"
           right="-1rem"
@@ -49,7 +49,7 @@ export default function MealCard({
             removeRecipe(day);
           }}
         />
-      )}
+      )} */}
       <CardContainer>
         {
           <ImageContainer>
@@ -81,6 +81,8 @@ export default function MealCard({
               numberOfPeople={numberOfPeople}
               handleChange={(change) => changeNumberOfPeople(change)}
               $margin="0.75rem 0 0 1.5rem"
+              reassignRecipe={reassignRecipe}
+              day={day}
             />
           )}
         </StyledDiv>

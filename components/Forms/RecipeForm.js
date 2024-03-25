@@ -23,6 +23,7 @@ import { notifySuccess, notifyError } from "/helpers/toast";
 import { useState } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
+import ToggleCheckbox from "../Styled/ToggleCheckbox";
 
 export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
   const [difficulty, setDifficulty] = useState(
@@ -54,6 +55,8 @@ export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
   const [servings, setServings] = useState(
     data?.servings ? data?.defaultNumberOfServings : 2
   );
+
+  const [isChecked, setIsChecked] = useState(true);
 
   function handleSetNumberOfPeople(change) {
     setServings((prevServings) => prevServings + change);
@@ -112,7 +115,6 @@ export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
       publicId: imageUrl?.publicId,
       defaultNumberOfServings: servings,
     };
-
     onSubmit(newData);
   }
 
@@ -312,18 +314,14 @@ export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
             name="youtubeLink"
             defaultValue={data?.youtubeLink}
           />
-          <StyledCheckboxContainer>
-            <label htmlFor="public">
-              öffentlich sichtbar
-              <StyledHiddenCheckbox
-                type="checkbox"
-                id="public"
-                name="public"
-                defaultChecked={data ? data.public : true}
-              />
-              <StyledSliderCheckbox htmlFor="public" />
-            </label>
-          </StyledCheckboxContainer>
+          <ToggleCheckbox
+            label="Öffentlich sichtbar"
+            name="public"
+            defaultChecked={data ? data.public : true}
+            sliderSize="2rem"
+            marginTop={"1rem"}
+            marginLeft={"1rem"}
+          />
           <ButtonContainer>
             <Button type="submit">speichern</Button>
             {onDelete && (
@@ -384,52 +382,6 @@ const StyledCategoryButton = styled.button`
   height: 1.75rem;
   margin-bottom: 0.5rem;
   padding: 0.25rem;
-`;
-
-const StyledCheckboxContainer = styled.div`
-  label {
-    color: var(--color-text);
-    font-size: 1rem;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    margin-top: 1rem;
-  }
-`;
-
-const StyledHiddenCheckbox = styled.input`
-  display: none;
-`;
-const StyledSliderCheckbox = styled.span`
-  position: relative;
-  margin-left: 1rem;
-  margin-top: 0rem;
-  height: 2rem;
-  width: 3.5rem;
-  background-color: var(--color-background);
-  border-radius: 1rem;
-  cursor: pointer;
-  box-shadow: inset 0 0 5px rgba(77, 74, 74, 0.1);
-
-  &:before {
-    content: "";
-    position: absolute;
-    top: 0.25rem;
-    left: 0.25rem;
-    width: 1.5rem;
-    height: 1.5rem;
-    background-color: var(--color-component);
-    border-radius: 50%;
-    transition: transform 0.3s ease-in-out;
-  }
-
-  input:checked + & {
-    background-color: var(--color-darkgrey);
-  }
-
-  input:checked + &:before {
-    transform: translateX(1.5rem);
-  }
 `;
 
 const ButtonContainer = styled.div`
