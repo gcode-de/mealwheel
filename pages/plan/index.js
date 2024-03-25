@@ -38,6 +38,7 @@ import assignRecipesToCalendarDays from "@/helpers/assignRecipesToCalendarDays";
 import LoadingComponent from "@/components/Loading";
 import IconButtonLarge from "@/components/Styled/IconButtonLarge";
 import { notifySuccess, notifyError } from "/helpers/toast";
+import ToggleCheckbox from "@/components/Styled/ToggleCheckbox";
 
 export default function Plan({
   isLoading,
@@ -54,6 +55,11 @@ export default function Plan({
   const [weekdays, setWeekdays] = useState([]);
   const [assignableDays, setAssignableDays] = useState([]);
   const [numberOfRandomRecipes, setNumberOfRandomRecipes] = useState(0);
+  const [isRandomnessActive, setIsRandomnessActive] = useState(false);
+
+  function toggleRandomness() {
+    setIsRandomnessActive(!isRandomnessActive);
+  }
 
   useEffect(() => {
     const generatedWeekdays = generateWeekdays(weekOffset);
@@ -128,7 +134,7 @@ export default function Plan({
     } else {
       user.calendar.push({
         date: day,
-        isDisabled: checkIfWeekdayIsDefaultEnabled(day), //TO DO!
+        isDisabled: checkIfWeekdayIsDefaultEnabled(day),
       });
     }
     await updateUserinDb(user, mutateUser);
@@ -263,18 +269,20 @@ export default function Plan({
     const [movedItem] = recipesArray.splice(fromIndex, 1);
     recipesArray.splice(toIndex, 0, movedItem);
 
-    // Kombiniere datesArray und recipesArray zu einem Objekt mit "Date: Rezept-ID"-Paaren
-    const dateRecipePairs = datesArray.reduce((acc, date, index) => {
-      acc[date] = recipesArray[index]; // Zuweisung der Rezept-ID zum entsprechenden Datum
-      return acc;
-    }, {});
+    // Erstelle ein Array von Objekten mit "date" und "recipe" Eigenschaften
+    const resultArray = datesArray.map((date, index) => {
+      return {
+        date: date,
+        recipe: recipesArray[index],
+      };
+    });
 
-    assignRecipesToCalendarDays(dateRecipePairs, user, mutateUser);
+    assignRecipesToCalendarDays(resultArray, user, mutateUser);
   }
 
   if (error || randomRecipesError) {
     <div>
-      <Header text={"Wochenplan 🥗"} />
+      <Header text={"Wochenplan"} />
       Daten konnten nicht geladen werden...
     </div>;
   }
@@ -282,7 +290,7 @@ export default function Plan({
   if (isLoading || randomRecipesIsLoading) {
     return (
       <>
-        <Header text={"Wochenplan 🥗"} />
+        <Header text={"Wochenplan"} />
         <LoadingComponent amount />
       </>
     );
@@ -291,7 +299,7 @@ export default function Plan({
   if (!user) {
     return (
       <StyledHeader>
-        <Header text={"Wochenplan 🥗"} />
+        <Header text={"Wochenplan"} />
         <CalendarContainer>
           Bitte <Link href="/api/auth/signin">einloggen</Link>, um den
           Wochenplaner zu nutzen.
@@ -343,10 +351,10 @@ export default function Plan({
   return (
     <>
       <StyledHeader>
-        <Header text={"Wochenplan 🥗"} />
+        <Header text={"Wochenplan"} />
         <CalendarNavigation>
           <IconButton
-            style="TriangleLeft"
+            style="ArrowSmallLeft"
             left="var(--gap-out)"
             top="0.5rem"
             onClick={() => {
@@ -359,32 +367,44 @@ export default function Plan({
             <Link href={`/plan?week=0`}>zur aktuellen Woche</Link>
           )}
           <IconButton
-            style="TriangleRight"
+            style="ArrowSmallRight"
             right="var(--gap-out)"
             top="0.5rem"
+            rotate180="180deg"
             onClick={() => {
               router.push(`/plan?week=${weekOffset + 1}`);
             }}
           />
         </CalendarNavigation>
 
-        <RandomnessSliderContainer>
-          {assignableDays.length > 0 ? (
-            <p>Zufällige Rezepte: {numberOfRandomRecipes}</p>
-          ) : (
-            <p>Alle Tage geplant.</p>
-          )}
-          {weekdays && (
-            <RandomnessSlider
-              type="range"
-              $isActive={assignableDays.length > 0}
-              min="0"
-              max={assignableDays.length}
-              value={numberOfRandomRecipes}
-              onChange={handleSliderChange}
-            />
-          )}
-        </RandomnessSliderContainer>
+        <IconButton
+          right="var(--gap-out)"
+          top="0.25rem"
+          style="Menu"
+          rotate={isRandomnessActive}
+          onClick={toggleRandomness}
+        >
+          Anzahl der zufälligen Gerichte
+        </IconButton>
+        {isRandomnessActive && (
+          <RandomnessSliderContainer>
+            {assignableDays.length > 0 ? (
+              <p>Zufällige Rezepte: {numberOfRandomRecipes}</p>
+            ) : (
+              <p>Alle Tage geplant.</p>
+            )}
+            {weekdays && (
+              <RandomnessSlider
+                type="range"
+                $isActive={assignableDays.length > 0}
+                min="0"
+                max={assignableDays.length}
+                value={numberOfRandomRecipes}
+                onChange={handleSliderChange}
+              />
+            )}
+          </RandomnessSliderContainer>
+        )}
       </StyledHeader>
 
       <CalendarContainer>
@@ -399,7 +419,7 @@ export default function Plan({
             strategy={verticalListSortingStrategy}
           >
             {weekdays &&
-              weekdays.map((weekday) => {
+              weekdays.map((weekday, index) => {
                 const calendarDay = getCalendarDayFromDb(weekday.date);
                 return (
                   <Fragment key={weekday.date}>
@@ -409,7 +429,7 @@ export default function Plan({
                         !checkIfWeekdayIsDefaultEnabled(weekday.date)
                       }
                     >
-                      <StyledPowerIcon
+                      {/* <StyledPowerIcon
                         $dayIsDisabled={
                           calendarDay?.isDisabled ??
                           !checkIfWeekdayIsDefaultEnabled(weekday.date)
@@ -417,6 +437,19 @@ export default function Plan({
                         onClick={() => {
                           toggleDayIsDisabled(weekday.date);
                         }}
+                      /> */}
+                      <ToggleCheckbox
+                        defaultChecked={
+                          calendarDay?.hasOwnProperty("isDisabled")
+                            ? !calendarDay?.isDisabled
+                            : checkIfWeekdayIsDefaultEnabled(weekday.date)
+                        }
+                        onChange={() => {
+                          toggleDayIsDisabled(weekday.date);
+                          removeRecipe(weekday.date);
+                        }}
+                        sliderSize="1rem"
+                        index={index}
                       />
                       {calendarDay?.isDisabled}
                       {weekday.readableDate}
@@ -507,18 +540,20 @@ const CalendarContainer = styled.ul`
 const StyledH2 = styled.h2`
   font-size: 1rem;
   margin: 20px 0 -15px 0;
-  padding: 0;
   color: ${(props) => props.$dayIsDisabled && "var(--color-lightgrey)"};
   text-decoration: ${(props) => (props.$dayIsDisabled ? "line-through" : "")};
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 `;
 
-const StyledPowerIcon = styled(PowerIcon)`
-  width: 1.5rem;
-  height: 1.5rem;
-  margin: -0.5rem 0.3rem 0 -0.2rem;
-  position: relative;
-  top: 0.3rem;
-  fill: ${(props) =>
-    props.$dayIsDisabled ? "var(--color-lightgrey)" : "var(--color-highlight)"};
-  cursor: pointer;
-`;
+// const StyledPowerIcon = styled(PowerIcon)`
+//   width: 1.5rem;
+//   height: 1.5rem;
+//   margin: -0.5rem 0.3rem 0 -0.2rem;
+//   position: relative;
+//   top: 0.3rem;
+//   fill: ${(props) =>
+//     props.$dayIsDisabled ? "var(--color-lightgrey)" : "var(--color-highlight)"};
+//   cursor: pointer;
+// `;

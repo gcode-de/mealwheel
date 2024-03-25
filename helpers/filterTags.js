@@ -29,4 +29,15 @@ export const filterTags = [
       { label: "low carb", value: "low carb" },
     ],
   },
+  {
+    label: "Anlass",
+    type: "mealtype",
+    options: [
+      { label: "Frühstück", value: "breakafast" },
+      { label: "Snack", value: "snack" },
+      { label: "Dessert", value: "dessert" },
+      { label: "Hauptgericht", value: "main" },
+      { label: "Suppe", value: "soup" },
+    ],
+  },
 ];
