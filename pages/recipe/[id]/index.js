@@ -70,6 +70,7 @@ export default function DetailPage({
     instructions,
     imageLink,
     diet,
+    mealtype,
     youtubeLink,
     ingredients,
     duration,
@@ -339,25 +340,47 @@ export default function DetailPage({
             </StyledListItem>
           ))}
         </StyledList>
-        {filterTags
-          .filter(({ type }) => type === "diet")
-          .map(({ label, type }) => (
-            <StyledH2 key={type}>{label}</StyledH2>
-          ))}
         <StyledCategoriesDiv>
-          {diet?.map((tag) => {
-            const filterTag = filterTags.find(
-              (filter) => filter.type === "diet"
-            );
-            const matchingOption = filterTag.options.find(
-              (option) => option.value === tag
-            );
-            return (
-              <StyledCategoryButton key={tag}>
-                {matchingOption ? matchingOption.label : tag}
-              </StyledCategoryButton>
-            );
-          })}
+          <div>
+            {filterTags
+              .filter(({ type }) => type === "diet")
+              .map(({ label, type }) => (
+                <StyledH2 key={type}>{label}</StyledH2>
+              ))}
+            {diet?.map((tag) => {
+              const filterTag = filterTags.find(
+                (filter) => filter.type === "diet"
+              );
+              const matchingOption = filterTag.options.find(
+                (option) => option.value === tag
+              );
+              return (
+                <StyledCategoryButton key={tag}>
+                  {matchingOption ? matchingOption.label : tag}
+                </StyledCategoryButton>
+              );
+            })}
+          </div>
+          <div>
+            {filterTags
+              .filter(({ type }) => type === "mealtype")
+              .map(({ label, type }) => (
+                <StyledH2 key={type}>{label}</StyledH2>
+              ))}
+            {mealtype?.map((tag) => {
+              const filterTag = filterTags.find(
+                (filter) => filter.type === "mealtype"
+              );
+              const matchingOption = filterTag.options.find(
+                (option) => option.value === tag
+              );
+              return (
+                <StyledCategoryButton key={tag}>
+                  {matchingOption ? matchingOption.label : tag}
+                </StyledCategoryButton>
+              );
+            })}
+          </div>
         </StyledCategoriesDiv>
         <StyledHyper>
           <StyledLink onClick={() => setContent("instructions")}>

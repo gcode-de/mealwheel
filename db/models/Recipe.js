@@ -4,23 +4,24 @@ const { Schema } = mongoose;
 const ingredientSchema = new Schema({
   name: { type: String, required: true },
   quantity: { type: Number, required: true },
-  unit: { type: String }, // Optional, da im Beispiel ein leerer String als Möglichkeit angegeben wurde
+  unit: { type: String },
 });
 
 const recipeSchema = new mongoose.Schema({
   title: { type: String, required: true },
   instructions: { type: String, required: true },
   imageLink: { type: String },
-  diet: [{ type: String }], // Ein Array von Strings
+  diet: [{ type: String }],
+  mealtype: [{ type: String }],
   youtubeLink: { type: String },
   defaultNumberOfServings: { type: Number, required: true },
-  ingredients: [ingredientSchema], // Verwendet das obige Ingredient-Schema
+  ingredients: [ingredientSchema],
   difficulty: {
     type: String,
     required: true,
     enum: ["easy", "medium", "hard"],
-  }, // Enum, um die Schwierigkeitsgrade einzuschränken
-  duration: { type: Number, required: true }, // Angenommen, dass die Dauer in Minuten angegeben wird
+  },
+  duration: { type: Number, required: true }, // in minutes
   author: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
