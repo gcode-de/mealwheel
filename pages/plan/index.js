@@ -134,9 +134,10 @@ export default function Plan({
     } else {
       user.calendar.push({
         date: day,
-        isDisabled: checkIfWeekdayIsDefaultEnabled(day), //TO DO!
+        isDisabled: checkIfWeekdayIsDefaultEnabled(day),
       });
     }
+    console.log(user.calendar);
     await updateUserinDb(user, mutateUser);
   };
 
@@ -269,13 +270,15 @@ export default function Plan({
     const [movedItem] = recipesArray.splice(fromIndex, 1);
     recipesArray.splice(toIndex, 0, movedItem);
 
-    // Kombiniere datesArray und recipesArray zu einem Objekt mit "Date: Rezept-ID"-Paaren
-    const dateRecipePairs = datesArray.reduce((acc, date, index) => {
-      acc[date] = recipesArray[index]; // Zuweisung der Rezept-ID zum entsprechenden Datum
-      return acc;
-    }, {});
+    // Erstelle ein Array von Objekten mit "date" und "recipe" Eigenschaften
+    const resultArray = datesArray.map((date, index) => {
+      return {
+        date: date,
+        recipe: recipesArray[index],
+      };
+    });
 
-    assignRecipesToCalendarDays(dateRecipePairs, user, mutateUser);
+    assignRecipesToCalendarDays(resultArray, user, mutateUser);
   }
 
   if (error || randomRecipesError) {
@@ -417,7 +420,7 @@ export default function Plan({
             strategy={verticalListSortingStrategy}
           >
             {weekdays &&
-              weekdays.map((weekday) => {
+              weekdays.map((weekday, index) => {
                 const calendarDay = getCalendarDayFromDb(weekday.date);
                 return (
                   <Fragment key={weekday.date}>
@@ -444,8 +447,10 @@ export default function Plan({
                         }
                         onChange={() => {
                           toggleDayIsDisabled(weekday.date);
+                          removeRecipe(weekday.date);
                         }}
                         sliderSize="1rem"
+                        index={index}
                       />
                       {calendarDay?.isDisabled}
                       {weekday.readableDate}

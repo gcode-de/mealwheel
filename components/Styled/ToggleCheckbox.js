@@ -7,19 +7,23 @@ export default function ToggleCheckbox({
   defaultChecked,
   onChange,
   sliderSize,
+  index,
 }) {
   return (
     <StyledCheckboxContainer>
-      <label htmlFor="toggle">
+      <label htmlFor={`toggle-${index}`}>
         {label}
         <StyledHiddenCheckbox
           type="checkbox"
-          id="toggle"
+          id={`toggle-${index}`}
           name={name}
           defaultChecked={defaultChecked}
           onChange={onChange}
         />
-        <StyledSliderCheckbox htmlFor="toggle" sliderSize={sliderSize} />
+        <StyledSliderCheckbox
+          htmlFor={`toggle-${index}`}
+          sliderSize={sliderSize}
+        />
       </label>
     </StyledCheckboxContainer>
   );
