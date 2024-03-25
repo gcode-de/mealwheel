@@ -137,7 +137,6 @@ export default function Plan({
         isDisabled: checkIfWeekdayIsDefaultEnabled(day),
       });
     }
-    console.log(user.calendar);
     await updateUserinDb(user, mutateUser);
   };
 
