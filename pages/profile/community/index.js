@@ -31,9 +31,8 @@ export default function Community({ user, fetcher }) {
           timestamp: Date(),
         },
       ],
+      type: "friends",
     };
-    console.log(communityUser);
-
     updateCommunityUserInDB(communityUser, mutate);
   }
 

@@ -15,6 +15,7 @@ import Settings from "@/public/icons/settings-svgrepo-com.svg";
 import Book from "@/public/icons/svg/notebook-alt_9795395.svg";
 import Leave from "@/public/icons/svg/arrow-left-from-line_9253329.svg";
 import Menu from "/public/icons/svg/menu.svg";
+import Bell from "/public/icons/svg/cowbell_9083627.svg";
 
 export default function IconButton({
   onClick,
@@ -41,6 +42,7 @@ export default function IconButton({
     Book: <Book width={25} height={25} />,
     Leave: <Leave width={20} height={20} />,
     Menu: <Menu width={30} height={30} />,
+    Bell: <Bell width={30} height={30} />,
   };
   return (
     <StyledBox $left={left} $right={right} $top={top} $rotate={rotate}>

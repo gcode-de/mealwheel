@@ -40,6 +40,7 @@ export default function ProfilePage({ user, mutateUser }) {
   const [imageUrl, setImageUrl] = useState(user?.profilePictureLink || "");
   const [upload, setUpload] = useState(false);
   const [isMenuVisible, setIsMenuVisible] = useState(false);
+  const [isNotificationVisible, setIsNotificationVisible] = useState(false);
 
   if (status === "unauthenticated") {
     signIn();
@@ -112,6 +113,18 @@ export default function ProfilePage({ user, mutateUser }) {
         fill="var(--color-lightgrey)"
         rotate={isMenuVisible}
       />
+      <IconButton
+        style="Bell"
+        top="var(--gap-out)"
+        left="var(--gap-out)"
+        onClick={() => setIsNotificationVisible(!isNotificationVisible)}
+        fill="var(--color-lightgrey)"
+      >
+        <div>Punkt</div>
+      </IconButton>
+      {isNotificationVisible && (
+        <MenuContainer top="5rem" left="var(--gap-out)"></MenuContainer>
+      )}
       {isMenuVisible && (
         <MenuContainer top="5rem" right="var(--gap-out)">
           <UnstyledButton onClick={() => router.push("/profile/settings")}>

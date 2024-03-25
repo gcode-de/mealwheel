@@ -4,7 +4,6 @@ import User from "../../../db/models/User";
 export default async function handler(request, response) {
   await dbConnect();
   const { id } = request.query;
-
   if (request.method === "PUT") {
     try {
       const user = await User.findById(id);
@@ -14,7 +13,7 @@ export default async function handler(request, response) {
           .status(404)
           .json({ status: "User not found or unauthorized" });
       }
-
+      console.log("test", response);
       await User.findByIdAndUpdate(id, request.body);
       return response.status(200).json({ status: `User ${id} updated!` });
     } catch (error) {

@@ -4,11 +4,11 @@ export default async function updateCommunityUserInDB(
 ) {
   if (!communityUser) return;
 
-  const currentUser = communityUser;
-  await mutateCommunityUser(
-    (prevUser) => ({ ...prevUser, ...communityUser }),
-    false
-  );
+  // const currentUser = communityUser;
+  // await mutateCommunityUser(
+  //   (prevUser) => ({ ...prevUser, ...communityUser }),
+  //   false
+  // );
 
   try {
     const response = await fetch(`/api/users/${communityUser._id}`, {
