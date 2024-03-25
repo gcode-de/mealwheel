@@ -151,9 +151,6 @@ export default function ShoppingList({ user, mutateUser }) {
                     name="name"
                     required
                   />
-                  <AddButton type="submit" $color="var(--color-background)">
-                    <Check width={20} height={20} />
-                  </AddButton>
                 </StyledEditForm>
               ) : (
                 <>
@@ -247,6 +244,6 @@ const Spacer = styled.div`
 
 const StyledEditForm = styled.form`
   display: flex;
-  width: 100%;
+  width: 277px;
   gap: 0.25rem;
 `;

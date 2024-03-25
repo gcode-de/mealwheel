@@ -232,9 +232,13 @@ export default function HomePage({
   return (
     <>
       <Header text={"Meal Wheel"} />
-      <StyledFilterButton onClick={toggleFilter}>
-        <Filter width="20" height="20" />
-      </StyledFilterButton>
+      <IconButton
+        right="var(--gap-out)"
+        top="0.25rem"
+        style="Filter"
+        rotate={isFilterButton}
+        onClick={toggleFilter}
+      ></IconButton>
       {isFilterButton && (
         <StyledFiltersContainer>
           <StyledSearchContainer>
