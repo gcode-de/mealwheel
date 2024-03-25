@@ -39,11 +39,12 @@ export default function Community({ user, allUsers, mutateAllUsers }) {
         left="var(--gap-out)"
         onClick={() => router.back()}
       />
-      {community.map((user) => (
+      {community.map((communityUser) => (
         <ProfileCard
-          key={user._id}
-          user={user}
+          key={communityUser._id}
+          user={communityUser}
           handleAddPeople={handleAddPeople}
+          isFriend={user.friends.includes(communityUser._id)}
         />
       ))}
     </>

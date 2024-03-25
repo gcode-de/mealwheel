@@ -2,7 +2,7 @@ import styled from "styled-components";
 import Image from "next/image";
 import StyledH2 from "../Styled/StyledH2";
 
-export default function ProfileCard({ user, handleAddPeople }) {
+export default function ProfileCard({ user, handleAddPeople, isFriend }) {
   return (
     <ProfileWrapper>
       <WrapperCenter>
@@ -19,9 +19,13 @@ export default function ProfileCard({ user, handleAddPeople }) {
       </WrapperCenter>
       <StyledProfiletext>
         <p>{user?.userName || user?.firstName}</p>
-        <button onClick={() => handleAddPeople(user._id)}>
-          Freund anfragen
-        </button>
+        {isFriend ? (
+          <button>unfollow</button>
+        ) : (
+          <button onClick={() => handleAddPeople(user._id)}>
+            Freund anfragen
+          </button>
+        )}
         {/* <p>2 Freunde</p> */}
       </StyledProfiletext>
     </ProfileWrapper>

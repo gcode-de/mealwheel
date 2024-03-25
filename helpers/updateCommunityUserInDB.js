@@ -6,7 +6,7 @@ export default async function updateCommunityUserInDB(
 
   try {
     const response = await fetch(`/api/users/${communityUser._id}`, {
-      method: "PUT",
+      method: "PATCH",
       headers: {
         "Content-Type": "application/json",
       },

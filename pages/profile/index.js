@@ -104,12 +104,39 @@ export default function ProfilePage({
   }
   function addFriend(id, index) {
     user.friends = [...user.friends, id];
-    user.connectionRequests.filter((request, ind) => ind !== index);
+    const updatedRequests = user.connectionRequests.filter(
+      (request, ind) => ind !== index
+    );
+    user.connectionRequests = updatedRequests;
     updateUserinDb(user, mutateUser);
-    const foundUser = allUsers.find((user) => user._id === id);
-    console.log(foundUser);
-    foundUser.connectionRequests.message = `${foundUser.userName} hat deine Anfrage angenommen`;
-    // updateCommunityUserInDB(foundUser, mutateAllUsers)
+    let foundUser = allUsers.find((user) => user._id === id);
+
+    if (foundUser.friends) {
+      foundUser = {
+        ...foundUser,
+        connectionRequests: [
+          {
+            senderId: user._id,
+            timestamp: Date(),
+            message: `${user.userName} hat deine Anfrage angenommen`,
+          },
+        ],
+        friends: [...foundUser?.friends, user._id],
+      };
+    } else {
+      foundUser = {
+        ...foundUser,
+        connectionRequests: [
+          {
+            senderId: user._id,
+            timestamp: Date(),
+            message: `${user.userName} hat deine Anfrage angenommen`,
+          },
+        ],
+        friends: [user._id],
+      };
+    }
+    updateCommunityUserInDB(foundUser, mutateAllUsers);
   }
   function rejectFriendRequest() {
     console.log("xy möchte nicht mit dir befreundet sein");
@@ -235,7 +262,6 @@ export default function ProfilePage({
         <StyledCollection onClick={() => router.push("/profile/community")}>
           <People width={40} height={40} />
           <StyledP>Community</StyledP>
-
         </StyledCollection>
         <StyledCollection onClick={() => router.push("/profile/collections")}>
           <BookUser width={40} height={40} />
