@@ -52,6 +52,9 @@ export default function Community({ user, allUsers, mutateAllUsers }) {
           user={communityUser}
           handleAddPeople={handleAddPeople}
           isFriend={user.friends.includes(communityUser._id)}
+          isRequested={communityUser.connectionRequests.some(
+            (request) => request.senderId === user._id
+          )}
         />
       ))}
     </>

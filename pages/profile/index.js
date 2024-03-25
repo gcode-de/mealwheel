@@ -114,31 +114,16 @@ export default function ProfilePage({
     if (foundUser.friends) {
       foundUser = {
         ...foundUser,
-        connectionRequests: [
-          {
-            senderId: user._id,
-            timestamp: Date(),
-            message: `${user.userName} hat deine Anfrage angenommen`,
-            type: 2,
-          },
-        ],
         friends: [...friends, user._id],
       };
     } else {
       foundUser = {
         ...foundUser,
-        connectionRequests: [
-          {
-            senderId: user._id,
-            timestamp: Date(),
-            message: `${user.userName} hat deine Anfrage angenommen`,
-            type: 2,
-          },
-        ],
         friends: [user._id],
       };
     }
     updateCommunityUserInDB(foundUser, mutateAllUsers);
+    notifySuccess(`${foundUser.userName} als Freund hinzugefügt`);
   }
 
   function rejectFriendRequest(index) {
@@ -147,6 +132,7 @@ export default function ProfilePage({
     );
     user.connectionRequests = updatedRequests;
     updateUserinDb(user, mutateUser);
+    notifyError("Anfrage abgelehnt");
   }
   return (
     <>
