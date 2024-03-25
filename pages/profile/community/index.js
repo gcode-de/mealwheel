@@ -6,10 +6,10 @@ import ProfileCard from "../../../components/Cards/ProfileCard";
 import updateCommunityUserInDB from "../../../helpers/updateCommunityUserInDB";
 
 export default function Community({ user, allUsers, mutateAllUsers }) {
+  const router = useRouter();
   if (!user || !allUsers) {
     return;
   }
-  const router = useRouter();
 
   const community = allUsers.filter((human) => human._id !== user._id);
   function handleAddPeople(id) {
