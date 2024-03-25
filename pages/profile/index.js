@@ -235,6 +235,7 @@ export default function ProfilePage({
         <StyledCollection onClick={() => router.push("/profile/community")}>
           <People width={40} height={40} />
           <StyledP>Community</StyledP>
+
         </StyledCollection>
         <StyledCollection onClick={() => router.push("/profile/collections")}>
           <BookUser width={40} height={40} />

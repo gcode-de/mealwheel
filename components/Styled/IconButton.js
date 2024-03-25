@@ -18,6 +18,7 @@ import Menu from "/public/icons/svg/menu.svg";
 import Bell from "/public/icons/svg/cowbell_9083627.svg";
 import ArrowSmallLeft from "@/public/icons/arrow-small-left_10513360.svg";
 import ArrowSmallRight from "@/public/icons/arrow-small-right_10513361.svg";
+import Filter from "@/public/icons/sliders-v_10435878.svg";
 
 export default function IconButton({
   onClick,
@@ -47,6 +48,7 @@ export default function IconButton({
     Bell: <Bell width={30} height={30} />,
     ArrowSmallLeft: <ArrowSmallLeft width={30} height={30} />,
     ArrowSmallRight: <ArrowSmallRight width={30} height={30} />,
+    Filter: <Filter width={20} height={20} />,
   };
   return (
     <StyledBox $left={left} $right={right} $top={top} $rotate={rotate}>
