@@ -28,7 +28,7 @@ export default function DetailCommunityPage({ allUsers, recipes }) {
         left="var(--gap-out)"
         onClick={() => router.back()}
       />
-      <Profile user={foundUser} name="" />
+      <Profile user={foundUser} name="external-profil" />
       <StyledH2>
         <div>Kochbücher</div>
       </StyledH2>

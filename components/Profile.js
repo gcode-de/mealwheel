@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import Image from "next/image";
 import StyledList from "@/components/Styled/StyledList";
+import FollowButton from "./Button/FollowButton";
 export default function Profile({ user, name }) {
   return (
     <>
@@ -16,14 +17,21 @@ export default function Profile({ user, name }) {
           )) || <h1>🙋‍♀️</h1>}
         </StyledProfile>
       </WrapperCenter>
-      <StyledList>
+      <Wrapper>
         <p>
           {(name = "external - profil")
             ? user.userName
             : `Hallo,
           ${user?.userName || user?.firstName || user?.email || "Gastnutzer"}!`}
         </p>
-      </StyledList>
+        <FollowButton
+          isFriend={isFriend}
+          isRequested={isRequested}
+          handleAddPeople={handleAddPeople}
+          handleUnfollowPeople={handleUnfollowPeople}
+          user={user}
+        />
+      </Wrapper>
     </>
   );
 }
@@ -48,4 +56,20 @@ const StyledProfile = styled.div`
 const StyledProfilePicture = styled(Image)`
   border-radius: 50%;
   object-fit: cover;
+`;
+const Wrapper = styled.div`
+  padding: var(--gap-between) calc(2 * var(--gap-between));
+  padding-top: 1.5rem;
+  width: calc(100% - (2 * var(--gap-out)));
+  border: 1px solid var(--color-lightgrey);
+  border-radius: var(--border-radius-small);
+  background-color: var(--color-component);
+  margin-right: var(--gap-out);
+  margin-left: var(--gap-out);
+  margin-top: var(--gap-between);
+  margin-bottom: var(--gap-between);
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 `;
