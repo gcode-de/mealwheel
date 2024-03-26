@@ -23,7 +23,7 @@ import { notifySuccess, notifyError } from "/helpers/toast";
 
 export default function ShoppingList({ user, mutateUser }) {
   const [editingIndex, setEditingIndex] = useState("");
-  const [isKiGenerating, setIsKiGenerating] = useState(false);
+  const [isAiGenerating, setIsAiGenerating] = useState(false);
   const editFormRef = useRef(null);
 
   function handleItemClick(category, index) {
@@ -108,7 +108,7 @@ export default function ShoppingList({ user, mutateUser }) {
       });
     });
 
-    // Optional: Entferne leere Kategorien,
+    //Entferne leere Kategorien,
     const nonEmptyCategories = userShoppingList.filter(
       (category) => category.items.length > 0
     );
@@ -125,7 +125,6 @@ export default function ShoppingList({ user, mutateUser }) {
     if (!user.shoppingList) {
       user.shoppingList = [];
     }
-    // user.shoppingList.push({ ...data, isChecked: false });
 
     const unsortedIndex = user.shoppingList.findIndex(
       (category) => category.category === "Unsortiert"
@@ -146,38 +145,6 @@ export default function ShoppingList({ user, mutateUser }) {
     await updateUserInDb(user, mutateUser);
     event.target.reset();
   }
-
-  // function handleCheckboxChange(categoryName, itemIndex) {
-  //   // Finde die Kategorie basierend auf dem übergebenen Namen
-  //   const categoryIndex = user.shoppingList.findIndex(
-  //     (c) => c.category === categoryName
-  //   );
-  //   if (categoryIndex === -1) {
-  //     console.error("Kategorie nicht gefunden");
-  //     return;
-  //   }
-
-  //   // Direktes Umschalten des isChecked-Status für das spezifizierte Item
-  //   user.shoppingList[categoryIndex].items[itemIndex].isChecked =
-  //     !user.shoppingList[categoryIndex].items[itemIndex].isChecked;
-
-  //   // Sofortige Aktualisierung der Nutzerdaten in der Datenbank
-  //   updateUserInDb(user, mutateUser);
-
-  //   //Gecheckte Items nach einer Verzögerung entfernen
-  //   setTimeout(() => {
-  //     const updatedItems = user.shoppingList[categoryIndex].items.filter(
-  //       (item) => !item.isChecked
-  //     );
-  //     user.shoppingList[categoryIndex].items = updatedItems;
-  //     if (user.shoppingList[categoryIndex].items.length === 0) {
-  //       user.shoppingList = user.shoppingList.filter(
-  //         (_, index) => index !== categoryIndex
-  //       );
-  //     }
-  //     updateUserInDb(user, mutateUser);
-  //   }, 10000);
-  // }
 
   function handleCheckboxChange(categoryName, itemIndex) {
     const categoryIndex = user.shoppingList.findIndex(
@@ -222,8 +189,7 @@ export default function ShoppingList({ user, mutateUser }) {
       notifyError("Bitte befülle zuerst deine Einkaufsliste.");
       return;
     }
-    setIsKiGenerating(true);
-    console.log("before KI", user.shoppingList);
+    setIsAiGenerating(true);
     try {
       const dataFromAPI = await fetchCategorizedIngredients(
         JSON.stringify(user.shoppingList)
@@ -235,8 +201,7 @@ export default function ShoppingList({ user, mutateUser }) {
       console.error("Fehler beim Abrufen der Daten:", error);
       notifyError("Sortieren fehlgeschlagen.");
     }
-    setIsKiGenerating(false);
-    console.log("after KI", user.shoppingList);
+    setIsAiGenerating(false);
     updateUserInDb(user, mutateUser);
   }
 
@@ -364,13 +329,12 @@ export default function ShoppingList({ user, mutateUser }) {
       </StyledList>
       {user.shoppingList.length > 0 && (
         <>
-          {/* {"Shoppingliste sortieren"} */}
           <StyledButton
             onClick={setCategories}
             aria-label="trigger AI-based sorting and grouping of items (this takes a moment)"
           >
-            <RotatingSVG $rotate={isKiGenerating} />
-            {!isKiGenerating ? "Sortieren" : "bitte warten..."}
+            <RotatingSVG $rotate={isAiGenerating} />
+            {!isAiGenerating ? "Sortieren" : "bitte warten..."}
           </StyledButton>
         </>
       )}
