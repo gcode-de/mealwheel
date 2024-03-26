@@ -209,7 +209,7 @@ export default function ShoppingList({ user, mutateUser }) {
     } catch (error) {
       console.error("Fehler beim Abrufen der Daten:", error);
       if (error.message.startsWith("504")) {
-        notifyError("KI überlastet. Versuch's später!");
+        notifyError("KI ist überlastet. Bitte später versuchen!");
       } else {
         notifyError("Sortieren fehlgeschlagen.");
       }
