@@ -9,14 +9,16 @@ import { useState } from "react";
 import Link from "next/link";
 import CollectionCard from "@/components/CollectionCard";
 import StyledH2 from "@/components/Styled/StyledH2";
-
-import useSWR from "swr";
 import styled from "styled-components";
+import Profile from "../../../../components/Profile";
 
 export default function DetailCommunityPage({ allUsers }) {
   const [isModalCollection, setIsModalCollection] = useState(false);
   const router = useRouter();
   const { id } = router.query;
+  if (!allUsers) {
+    return;
+  }
   const foundUser = allUsers.find((user) => user._id === id);
 
   return (
@@ -27,8 +29,7 @@ export default function DetailCommunityPage({ allUsers }) {
         left="var(--gap-out)"
         onClick={() => router.back()}
       />
-      <Spacer />
-
+      <Profile user={foundUser} />
       <StyledH2>
         <div>Kochbücher</div>
         <StyledLink href={`/profile/community/${id}/collections`}>
@@ -36,19 +37,19 @@ export default function DetailCommunityPage({ allUsers }) {
         </StyledLink>
       </StyledH2>
       <Wrapper>
-        {user.collections.length
-          ? user.collections.map((col, index) => (
-              <CollectionCard key={index} collection={col} />
+        {foundUser.collections.length
+          ? foundUser.collections.map((collection, index) => (
+              <CollectionCard key={index} collection={collection} />
             ))
-          : `${user.userName} hat noch keine Kochbücher angelegt.`}
+          : `${foundUser.userName} hat noch keine Kochbücher angelegt.`}
       </Wrapper>
       <StyledH2>
-        <div>{user.userName}s Rezepte</div>
+        <div> Rezepte</div>
         <StyledLink href={`/profile/community/${id}/recipes`}>
           alle anzeigen
         </StyledLink>
       </StyledH2>
-      <StyledArticle>
+      {/* <StyledArticle>
         <StyledUl>
           {myRecipes.length
             ? myRecipes?.map((recipe) => {
@@ -63,7 +64,7 @@ export default function DetailCommunityPage({ allUsers }) {
               })
             : "Du hast noch keine eigenen Rezepte erstellt."}
         </StyledUl>
-      </StyledArticle>
+      </StyledArticle> */}
     </>
   );
 }

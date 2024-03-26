@@ -31,6 +31,7 @@ import IconButton from "@/components/Styled/IconButton";
 import StyledList from "@/components/Styled/StyledList";
 import ModalComponent from "../../components/Modal";
 import updateCommunityUserInDB from "../../helpers/updateCommunityUserInDB";
+import Profile from "../../components/Profile";
 
 export default function ProfilePage({
   user,
@@ -216,29 +217,7 @@ export default function ProfilePage({
           </StyledList>
         </>
       )}
-      {!editUser && (
-        <>
-          <WrapperCenter>
-            <StyledProfile>
-              {(user?.profilePictureLink && (
-                <StyledProfilePicture
-                  src={user?.profilePictureLink}
-                  alt="Profile Picture"
-                  width={106}
-                  height={106}
-                />
-              )) || <h1>🙋‍♀️</h1>}
-            </StyledProfile>
-          </WrapperCenter>
-          <StyledList>
-            <p>
-              Hallo,{" "}
-              {user?.userName || user?.firstName || user?.email || "Gastnutzer"}
-              !
-            </p>
-          </StyledList>
-        </>
-      )}
+      {!editUser && <Profile user={user} />}
       <Wrapper>
         <StyledCollection onClick={() => router.push("/profile/favorites")}>
           <Heart width={40} height={40} fill="var(--color-highlight)" />
@@ -370,11 +349,6 @@ const StyledImageUploadContainer = styled.label`
 `;
 const StyledImageUpload = styled.input`
   display: none;
-`;
-
-const StyledProfilePicture = styled(Image)`
-  border-radius: 50%;
-  object-fit: cover;
 `;
 
 const StyledForm = styled.form`

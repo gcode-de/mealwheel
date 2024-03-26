@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function ProfileCard({
   user,
@@ -10,7 +11,7 @@ export default function ProfileCard({
 }) {
   return (
     <ProfileWrapper>
-      <WrapperCenter>
+      <WrapperCenter href={`/profile/community/${user._id}`}>
         <StyledProfile>
           {(user?.profilePictureLink && (
             <StyledProfilePicture
@@ -40,7 +41,7 @@ export default function ProfileCard({
     </ProfileWrapper>
   );
 }
-const WrapperCenter = styled.div`
+const WrapperCenter = styled(Link)`
   display: flex;
 
   position: absolute;
