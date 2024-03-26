@@ -48,7 +48,7 @@ const StyledNav = styled.div`
   padding: 10px 10px;
   background-color: var(--color-background);
   border-top: 1.5px solid var(--color-darkgrey);
-  z-index: 3;
+  z-index: 10;
   display: flex;
   justify-content: space-between;
   gap: 10px;

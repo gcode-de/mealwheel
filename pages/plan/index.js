@@ -60,16 +60,20 @@ export default function Plan({
   const [assignableDays, setAssignableDays] = useState([]);
   const [numberOfRandomRecipes, setNumberOfRandomRecipes] = useState(0);
   const [isRandomnessActive, setIsRandomnessActive] = useState(false);
-  const [isMenuVisible, setIsMenuVisible] = useState(
-    weekdays ? new Array(weekdays.length).fill(true) : []
+  const [menuVisible, setMenuVisible] = useState(
+    weekdays ? new Array(weekdays.length).fill(false) : []
   );
 
   function toggleRandomness() {
     setIsRandomnessActive(!isRandomnessActive);
   }
 
-  function toggleMenu() {
-    setIsMenuVisible(!isMenuVisible);
+  function toggleMenu(index) {
+    setMenuVisible((prevMenuVisible) => {
+      const updatedMenuVisible = [...prevMenuVisible];
+      updatedMenuVisible[index] = !prevMenuVisible[index];
+      return updatedMenuVisible;
+    });
   }
 
   useEffect(() => {
@@ -464,31 +468,17 @@ export default function Plan({
                       />
                       {calendarDay?.isDisabled}
                       {weekday.readableDate}
-                      <MenuButton onClick={toggleMenu}>
+                      <MenuButton onClick={() => toggleMenu(index)}>
                         <StyledMenu width={25} height={25} />
                       </MenuButton>
-
-                      {/* {menuVisible[index] && (
+                      {menuVisible[index] && (
                         <MenuContainer
                           top="var(--gap-between)"
-                          right="calc(3 * var(--gap-between) + 20px)"
+                          right="calc(3 * var(--gap-between) + 10px)"
                         >
-                          <UnstyledButton onClick={() => handleEditNote(index)}>
-                            <Pen width={15} height={15} />
-                            Notiz bearbeiten
-                          </UnstyledButton>
-                          <UnstyledButton onClick={toggleModal}>
-                            <Trash width={15} height={15} />
-                            Notiz löschen
-                          </UnstyledButton>
-                        </MenuContainer>
-                      )} */}
-
-                      {isMenuVisible && (
-                        <MenuContainer right="calc(3 * var(--gap-between) + 10px)">
                           <UnstyledButton
                             onClick={() => {
-                              reassignRecipe();
+                              reassignRecipe(weekdays[index].date);
                             }}
                           >
                             <Rotate width={15} height={15} /> zufälliges Rezept
@@ -496,7 +486,7 @@ export default function Plan({
                           </UnstyledButton>
                           <UnstyledButton
                             onClick={() => {
-                              removeRecipe();
+                              removeRecipe(weekdays[index].date);
                             }}
                           >
                             <Xmark width={15} height={15} />
