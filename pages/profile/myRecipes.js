@@ -5,6 +5,7 @@ import IconButton from "@/components/Styled/IconButton";
 import { useRouter } from "next/router";
 import Spacer from "@/components/Styled/Spacer";
 import { useState } from "react";
+import IconButtonLarge from "@/components/Styled/IconButtonLarge";
 
 import StyledH2 from "@/components/Styled/StyledH2";
 
@@ -87,6 +88,11 @@ export default function MyRecipes({
             })
           : "Du hast noch keine eigenen Rezepte erstellt."}
       </StyledUl>
+      <IconButtonLarge
+        style={"plus"}
+        bottom="5rem"
+        onClick={() => router.push("/addRecipe")}
+      />
     </>
   );
 }

@@ -327,7 +327,7 @@ export default function HomePage({
       {user && (
         <IconButtonLarge
           style={"plus"}
-          bottom="6rem"
+          bottom="5rem"
           onClick={() => router.push("/addRecipe")}
         />
       )}
