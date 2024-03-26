@@ -248,10 +248,6 @@ export default function Plan({
     );
   };
 
-  function onDragStart() {
-    window.navigator.vibrate([50]);
-  }
-
   function onDragEnd({ active, over }) {
     if (!over || active.id === over.id) {
       return;
@@ -428,7 +424,6 @@ export default function Plan({
         <DndContext
           collisionDetection={closestCenter}
           onDragEnd={onDragEnd}
-          // onDragStart={onDragStart}
           sensors={sensors}
           modifiers={[restrictToVerticalAxis, restrictToParentElement]}
         >
