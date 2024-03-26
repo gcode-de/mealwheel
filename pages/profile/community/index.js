@@ -51,7 +51,6 @@ export default function Community({
       (friend) => friend !== user._id
     );
     foundUser.friends = updateFoundUser;
-    console.log(updateFoundUser);
     updateCommunityUserInDB(foundUser, mutateAllUsers);
   }
 
