@@ -194,7 +194,7 @@ export default function Plan({
 
   const touchSensor = useSensor(TouchSensor, {
     activationConstraint: {
-      delay: 250, // Drag wird nach einer Verzögerung von 250ms aktiviert
+      delay: 150, // Drag wird nach einer Verzögerung von 250ms aktiviert
       tolerance: 5, // Drag wird aktiviert, wenn die Berührung um 5 Pixel bewegt wurde
     },
   });
@@ -247,6 +247,10 @@ export default function Plan({
       </article>
     );
   };
+
+  function onDragStart() {
+    window.navigator.vibrate([50]);
+  }
 
   function onDragEnd({ active, over }) {
     if (!over || active.id === over.id) {
@@ -424,6 +428,7 @@ export default function Plan({
         <DndContext
           collisionDetection={closestCenter}
           onDragEnd={onDragEnd}
+          onDragStart={onDragStart}
           sensors={sensors}
           modifiers={[restrictToVerticalAxis, restrictToParentElement]}
         >
