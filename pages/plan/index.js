@@ -344,7 +344,6 @@ export default function Plan({
         isChecked: false,
       })),
     ];
-    console.log("new ingredients", newIngredients);
 
     const uncategorizedIndex = user.shoppingList.findIndex(
       (category) => category.category === "Unsortiert"
@@ -355,9 +354,7 @@ export default function Plan({
           category: "Unsortiert",
           items: [...newIngredients],
         })
-      : user.shoppingList[uncategorizedIndex].items.push(newIngredients);
-
-    console.log("Shoppinglist vorm Speichern", user.shoppingList);
+      : user.shoppingList[uncategorizedIndex].items.push(...newIngredients);
 
     updateUserinDb(user, mutateUser);
     notifySuccess("Einkaufsliste aktualisiert");
@@ -463,7 +460,7 @@ export default function Plan({
                           toggleDayIsDisabled(weekday.date);
                           removeRecipe(weekday.date);
                         }}
-                        sliderSize="1rem"
+                        slidersize="1rem"
                         index={index}
                       />
                       {calendarDay?.isDisabled}

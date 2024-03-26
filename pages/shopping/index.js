@@ -297,6 +297,7 @@ export default function ShoppingList({ user, mutateUser }) {
                         onChange={() => {
                           handleCheckboxChange(category, index);
                         }}
+                        onClick={(e) => {}}
                       ></StyledCheckbox>
                     </>
                   )}
