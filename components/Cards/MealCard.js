@@ -30,6 +30,7 @@ export default function MealCard({
           }}
         />
       )}
+
       {/* {reassignRecipe !== undefined && (
         <IconButton
           style="Reload"
@@ -86,6 +87,7 @@ export default function MealCard({
             />
           )}
         </StyledDiv>
+        {recipe.likes}
       </CardContainer>
     </StyledLi>
   );

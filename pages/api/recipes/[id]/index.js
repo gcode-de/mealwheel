@@ -1,9 +1,9 @@
-import dbConnect from "../../../db/connect";
-import Recipe from "../../../db/models/Recipe";
+import dbConnect from "../../../../db/connect";
+import Recipe from "../../../../db/models/Recipe";
 import mongoose from "mongoose";
-import { cleanupRecipeReferences } from "../../../db/models/Recipe";
+import { cleanupRecipeReferences } from "../../../../db/models/Recipe";
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "../auth/[...nextauth]";
+import { authOptions } from "../../auth/[...nextauth]";
 
 export default async function handler(request, response) {
   await dbConnect();
