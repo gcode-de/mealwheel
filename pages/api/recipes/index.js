@@ -80,7 +80,11 @@ export default async function handler(request, response) {
     response.status(200).json(recipes);
   } else if (request.method === "POST") {
     try {
-      const recipe = new Recipe(request.body);
+      const recipeData = {
+        ...request.body,
+        likes: request.body.likes || 0,
+      };
+      const recipe = new Recipe(recipeData);
       await recipe.save();
       return response.status(201).json({ status: "Recipe created." });
     } catch (error) {

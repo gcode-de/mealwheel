@@ -22,6 +22,7 @@ const recipeSchema = new mongoose.Schema({
     enum: ["easy", "medium", "hard"],
   },
   duration: { type: Number, required: true }, // in minutes
+  likes: { type: Number },
   author: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
