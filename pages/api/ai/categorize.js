@@ -50,7 +50,6 @@ export default async function handler(req, res) {
       temperature: 0.6,
       max_tokens: 500,
     });
-    console.log("response in API:\n", response.choices[0].message.content);
 
     return res.status(200).json(response.choices[0].message.content);
   } catch (error) {
