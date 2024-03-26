@@ -26,9 +26,6 @@ export default function DetailCollection({
   const [foundCollection, setFoundCollection] = useState(null);
   const router = useRouter();
   const { id } = router.query;
-  if (!user || !recipes) {
-    return;
-  }
   useEffect(() => {
     let foundCollection = user.collections.find(
       (collection) => collection._id === id
@@ -46,6 +43,9 @@ export default function DetailCollection({
     setFoundCollection(foundCollection);
   }, [id, allUsers, user.collections]);
 
+  if (!user || !recipes) {
+    return;
+  }
   const foundCollectionIndex = user.collections.findIndex(
     (collection) => collection._id === id
   );
