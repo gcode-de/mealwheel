@@ -89,14 +89,14 @@ export default function Collections({ user, mutateUser }) {
       )}
       {isEditing && (
         <ButtonContainer>
-          <DeleteButton onClick={handleDeleteCollection}>
+          <button onClick={handleDeleteCollection}>
             <Trash width={15} height={15} />
             entfernen
-          </DeleteButton>
-          <DeleteButton onClick={toggleEdit}>
+          </button>
+          <button onClick={toggleEdit}>
             <Check width={15} height={15} />
             speichern
-          </DeleteButton>
+          </button>
         </ButtonContainer>
       )}
 
@@ -107,8 +107,12 @@ export default function Collections({ user, mutateUser }) {
           setModal={toggleAddCollection}
         />
       )}
+      {!user.collections.length && (
+        <NoRecipesMessage>
+          Du hast noch keine Kochbücher angelegt.
+        </NoRecipesMessage>
+      )}
       <CollectionWrapper>
-        {!user.collections.length && "Du hast noch keine Kochbücher angelegt."}
         {user.collections.map((collection, index) => (
           <CollectionContainer key={index}>
             {isEditing && (
@@ -164,22 +168,24 @@ const ButtonContainer = styled.div`
   display: flex;
   justify-content: space-between;
   margin-bottom: var(--gap-between);
-`;
-const DeleteButton = styled.button`
-  background-color: var(--color-component);
-  border: none;
-  text-align: start;
-  border-radius: var(--border-radius-small);
-  display: flex;
-  align-items: center;
-  gap: var(--gap-between);
-  height: 2rem;
-  color: var(--color-font);
-  cursor: pointer;
-  &:hover {
-    background-color: var(--color-background);
+
+  .button {
+    background-color: var(--color-component);
+    border: none;
+    text-align: start;
+    border-radius: var(--border-radius-small);
+    display: flex;
+    align-items: center;
+    gap: var(--gap-between);
+    height: 2rem;
+    color: var(--color-font);
+    cursor: pointer;
+    &:hover {
+      background-color: var(--color-background);
+    }
   }
 `;
+
 const StyledCheckbox = styled.input`
   position: absolute;
   z-index: 5;
@@ -192,4 +198,8 @@ const StyledCheckbox = styled.input`
 `;
 const CollectionContainer = styled.div`
   position: relative;
+`;
+const NoRecipesMessage = styled.p`
+  width: calc(100% - (2 * var(--gap-out)));
+  margin: auto;
 `;

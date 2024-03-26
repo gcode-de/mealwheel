@@ -35,7 +35,7 @@ export default function MyRecipes({
   if (error || recipesError || !myRecipes) {
     return (
       <>
-        <Header text={"Meine Rezepte 🥗"} />
+        <Header text={"Meine Rezepte"} />
         <StyledUl>Keine eigenen Rezepte vorhanden...</StyledUl>
         <IconButton
           onClick={() => {
@@ -52,7 +52,7 @@ export default function MyRecipes({
   if (isLoading || recipesIsLoading) {
     return (
       <>
-        <Header text="Meine Rezepte 🥗" />
+        <Header text="Meine Rezepte" />
         <StyledArticle>
           <StyledUl>
             <h2>Lade Rezepte...</h2>
