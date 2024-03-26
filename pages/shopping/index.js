@@ -17,7 +17,7 @@ import fetchCategorizedIngredients from "@/helpers/OpenAI/CategorizeIngredients"
 import updateUserinDb from "@/helpers/updateUserInDb";
 
 import styled from "styled-components";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import Link from "next/link";
 import { notifySuccess, notifyError } from "/helpers/toast";
 
@@ -142,7 +142,7 @@ export default function ShoppingList({ user, mutateUser }) {
     event.target.reset();
   }
 
-  // function handleCheckboxChange(category, ind) {
+  // function handleCheckboxChange(ind) {
   //   const toggleChecked = user.shoppingList.map((item, index) =>
   //     index === ind ? { ...item, isChecked: !item.isChecked } : item
   //   );
@@ -164,34 +164,32 @@ export default function ShoppingList({ user, mutateUser }) {
   // }
 
   function handleCheckboxChange(categoryName, itemIndex) {
-    const categoryIndex = user.shoppingList.findIndex(
-      (category) => category.category === categoryName
-    );
-    if (categoryIndex === -1) return; // Kategorie nicht gefunden
+    // Finde die Kategorie basierend auf dem übergebenen Namen
+    const category = user.shoppingList.find((c) => c.category === categoryName);
+    if (!category) {
+      console.error("Kategorie nicht gefunden");
+      return;
+    }
 
-    // Kopiere das Kategorieobjekt, um Manipulationen vorzunehmen
-    const updatedCategory = { ...user.shoppingList[categoryIndex] };
-
-    // Toggle den isChecked Status des Items
-    const item = updatedCategory.items[itemIndex];
+    // Umschalten des isChecked-Status für das spezifizierte Item
+    const item = category.items[itemIndex];
     item.isChecked = !item.isChecked;
 
-    // Aktualisiere das Kategorieobjekt in der Liste
-    user.shoppingList[categoryIndex] = updatedCategory;
-
-    // Optional: Lösche gecheckte Items nach einer Verzögerung
+    // Optional: Items, die als gecheckt markiert sind, sofort oder nach einer Verzögerung entfernen
+    // Wenn du möchtest, dass gecheckte Items nach einer Verzögerung entfernt werden:
     setTimeout(() => {
-      const uncheckedItems = updatedCategory.items.filter(
-        (item) => !item.isChecked
-      );
-      if (uncheckedItems.length !== updatedCategory.items.length) {
-        // Aktualisiere die Kategorie nur, wenn sich die Anzahl der Items geändert hat
-        user.shoppingList[categoryIndex].items = uncheckedItems;
-        updateUserinDb(user, mutateUser);
-      }
-    }, 10000);
+      // Filtere nicht-gecheckte Items und aktualisiere die Kategorie
+      const uncheckedItems = category.items.filter((i) => !i.isChecked);
+      category.items = uncheckedItems;
 
-    updateUserinDb(user, mutateUser);
+      // Aktualisiere die Nutzerdaten in der Datenbank
+      updateUserinDb(user, mutateUser);
+    }, 10000); // 10000 Millisekunden = 10 Sekunden Verzögerung
+
+    // Ohne Verzögerung (sofortiges Entfernen):
+    // const uncheckedItems = category.items.filter(i => !i.isChecked);
+    // category.items = uncheckedItems;
+    // updateUserinDb(user, mutateUser);
   }
 
   function clearShopping() {
@@ -294,10 +292,16 @@ export default function ShoppingList({ user, mutateUser }) {
                       <StyledCheckbox
                         type="checkbox"
                         checked={item.isChecked}
-                        onChange={() => {
+                        onChange={(event) => {
                           handleCheckboxChange(category, index);
+                          event.stopPropagation();
                         }}
-                        onClick={(e) => {}}
+                        onClick={(event) => {
+                          event.stopPropagation();
+                        }}
+                        onBlur={(event) => {
+                          event.stopPropagation();
+                        }}
                       ></StyledCheckbox>
                     </>
                   )}
@@ -373,6 +377,7 @@ const StyledCheckbox = styled.input`
   margin: 0;
   width: 37px;
   height: 20px;
+  z-index: 2;
 `;
 const StyledNumberUnit = styled.div`
   width: 40%;
