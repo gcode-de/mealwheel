@@ -11,7 +11,7 @@ import NewCollection from "../../../components/Forms/NewCollection";
 import MenuContainer from "@/components/MenuContainer";
 import Pen from "/public/icons/svg/pen-square_10435869.svg";
 import Trash from "/public/icons/svg/trash-xmark_10741775.svg";
-import XSmall from "@/public/icons/XSmall.svg";
+import Check from "@/public/icons/svg/check-circle_10470513.svg";
 
 export default function Collections({ user, mutateUser }) {
   const [addCollection, setAddCollection] = useState(false);
@@ -94,8 +94,8 @@ export default function Collections({ user, mutateUser }) {
             entfernen
           </DeleteButton>
           <DeleteButton onClick={toggleEdit}>
-            <XSmall width={15} height={15} />
-            abbrechen
+            <Check width={15} height={15} />
+            speichern
           </DeleteButton>
         </ButtonContainer>
       )}
