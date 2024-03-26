@@ -2,8 +2,8 @@ function isValidCategoryItem(item) {
   return (
     typeof item === "object" &&
     typeof item.name === "string" &&
-    typeof item.quantity === "number" &&
-    typeof item.unit === "string" &&
+    // typeof item.quantity === "number" &&
+    // typeof item.unit === "string" &&
     (typeof item.isChecked === "boolean" ||
       typeof item.isChecked === "undefined")
   );
