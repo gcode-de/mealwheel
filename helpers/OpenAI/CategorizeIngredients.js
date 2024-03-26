@@ -1,5 +1,5 @@
 export default async function fetchCategorizedIngredients(ingredients) {
-  const response = await fetch(`http://localhost:3000/api/ai/categorize`, {
+  const response = await fetch(`/api/ai/categorize`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ ingredients }),
