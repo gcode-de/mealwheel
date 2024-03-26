@@ -41,7 +41,7 @@ export default function DetailCollection({
       setIsUser(true);
     }
     setFoundCollection(foundCollection);
-  }, [id, allUsers, user.collections]);
+  }, [id, user, recipes, allUsers]);
 
   if (!user || !recipes) {
     return;
