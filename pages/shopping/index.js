@@ -10,6 +10,7 @@ import StyledListItem from "@/components/Styled/StyledListItem";
 import IconButtonLarge from "@/components/Styled/IconButtonLarge";
 import Button from "@/components/Styled/StyledButton";
 import PlateWheel from "/public/icons/svg/plate-wheel.svg";
+import StyledH2 from "@/components/Styled/StyledH2";
 
 import { ingredientUnits } from "@/helpers/ingredientUnits";
 import fetchCategorizedIngredients from "@/helpers/OpenAI/CategorizeIngredients";
@@ -207,6 +208,7 @@ export default function ShoppingList({ user, mutateUser }) {
       return;
     }
     setIsKiGenerating(true);
+    console.log("before KI", user.shoppingList);
     try {
       const dataFromAPI = await fetchCategorizedIngredients(
         JSON.stringify(user.shoppingList)
@@ -219,6 +221,7 @@ export default function ShoppingList({ user, mutateUser }) {
       notifyError("Sortieren fehlgeschlagen.");
     }
     setIsKiGenerating(false);
+    console.log("after KI", user.shoppingList);
     updateUserinDb(user, mutateUser);
   }
 
@@ -234,7 +237,7 @@ export default function ShoppingList({ user, mutateUser }) {
         {user.shoppingList.map(({ category, items }) =>
           items?.length ? (
             <div key={category}>
-              <h4>{category}</h4>
+              <RestyledH2>{category}</RestyledH2>
               {items.map((item, index) => (
                 <StyledListItem
                   key={index}
@@ -339,7 +342,10 @@ export default function ShoppingList({ user, mutateUser }) {
         </form>
       </StyledList>
       {user.shoppingList.length > 0 && (
-        <StyledButton onClick={setCategories}>
+        <StyledButton
+          onClick={setCategories}
+          aria-label="trigger AI-based sorting and grouping of items (this takes a moment)"
+        >
           <RotatingSVG $rotate={isKiGenerating} />
           {!isKiGenerating ? "KI-Sortierung" : "bitte warten..."}
         </StyledButton>
@@ -409,4 +415,9 @@ const StyledButton = styled(Button)`
   align-items: center;
   width: max-content;
   margin: 0 auto;
+`;
+
+const RestyledH2 = styled(StyledH2)`
+  font-size: 1rem;
+  margin: 1rem 0 0 0;
 `;

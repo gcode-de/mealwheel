@@ -38,6 +38,7 @@ export default async function handler(req, res) {
     )}' und zwar jeweils maxmal ein mal.\n
     Beachte dabei vor allem den Namen der Zutat und weniger die anderen Eigenschaften.\n
     Behalte für Zutaten, die du nicht eindeutig zuordnen kannst, einfach die Kategorie "Unsortiert".\n
+    Kumuliere Zutaten, die mehrfach auftauchen, indem du die Quantity addierst.\n
     Gib mir das Ergebnis nur als Array aus Objekten zurück nach dem Schema "${JSON.stringify(
       dataSchema
     )}".\n

@@ -344,6 +344,7 @@ export default function Plan({
         isChecked: false,
       })),
     ];
+    console.log("new ingredients", newIngredients);
 
     const uncategorizedIndex = user.shoppingList.findIndex(
       (category) => category.category === "Unsortiert"
