@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import IconButton from "./Styled/IconButton";
 import SetNumberOfPeople from "./Styled/SetNumberOfPeople";
+import Reload from "@/public/icons/svg/arrows-retweet_9253335.svg";
 
 export default function MealCard({
   recipe,
@@ -76,15 +77,30 @@ export default function MealCard({
             {recipe?.duration && `${recipe?.duration} MIN | `}
             {recipe?.difficulty?.toUpperCase()}
           </StyledPDuration>
-          {numberOfPeople !== undefined && (
-            <SetNumberOfPeople
-              numberOfPeople={numberOfPeople}
-              handleChange={(change) => changeNumberOfPeople(change)}
-              $margin="0.75rem 0 0 1.5rem"
-              reassignRecipe={reassignRecipe}
-              day={day}
-            />
-          )}
+          <StyledSettingsDiv>
+            {numberOfPeople !== undefined && (
+              <SetNumberOfPeople
+                numberOfPeople={numberOfPeople}
+                handleChange={(change) => changeNumberOfPeople(change)}
+                $margin="0.75rem 0 0 1.5rem"
+                reassignRecipe={reassignRecipe}
+                day={day}
+              />
+            )}
+            <StyledButtonDiv>
+              {reassignRecipe !== undefined && (
+                <button>
+                  <Reload
+                    width="1.2em"
+                    height="1.2em"
+                    onClick={() => {
+                      reassignRecipe(day);
+                    }}
+                  />
+                </button>
+              )}
+            </StyledButtonDiv>
+          </StyledSettingsDiv>
         </StyledDiv>
       </CardContainer>
     </StyledLi>
@@ -158,4 +174,24 @@ const StyledLi = styled.li`
   list-style-type: none;
   position: relative;
   padding: 0;
+`;
+
+const StyledButtonDiv = styled.div`
+  z-index: 2;
+  color: var(--color-highlight);
+  background-color: var(--color-background);
+  border-radius: 10px;
+  margin: 0.75rem 0 0 0.25rem;
+  button {
+    border: none;
+    background: none;
+    font-size: 1.25rem;
+    cursor: pointer;
+    position: relative;
+    top: 0.15rem;
+  }
+`;
+
+const StyledSettingsDiv = styled.div`
+  display: flex;
 `;

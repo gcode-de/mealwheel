@@ -29,6 +29,9 @@ import MealCard from "@/components/MealCard";
 import IconButton from "@/components/Styled/IconButton";
 import RandomnessSlider from "@/components/Styled/RandomnessSlider";
 import PowerIcon from "@/public/icons/power-material-svgrepo-com.svg";
+import Rotate from "@/public/icons/svg/arrows-retweet_9253335.svg";
+import Xmark from "@/public/icons/svg/trash-xmark_10741775.svg";
+import Menu from "@/public/icons/svg/menu.svg";
 
 import generateWeekdays from "@/helpers/generateWeekdays";
 import assignRecipeToCalendarDay from "@/helpers/assignRecipesToCalendarDays";
@@ -39,6 +42,7 @@ import LoadingComponent from "@/components/Loading";
 import IconButtonLarge from "@/components/Styled/IconButtonLarge";
 import { notifySuccess, notifyError } from "/helpers/toast";
 import ToggleCheckbox from "@/components/Styled/ToggleCheckbox";
+import MenuContainer from "@/components/MenuContainer";
 
 export default function Plan({
   isLoading,
@@ -56,9 +60,16 @@ export default function Plan({
   const [assignableDays, setAssignableDays] = useState([]);
   const [numberOfRandomRecipes, setNumberOfRandomRecipes] = useState(0);
   const [isRandomnessActive, setIsRandomnessActive] = useState(false);
+  const [isMenuVisible, setIsMenuVisible] = useState(
+    weekdays ? new Array(weekdays.length).fill(true) : []
+  );
 
   function toggleRandomness() {
     setIsRandomnessActive(!isRandomnessActive);
+  }
+
+  function toggleMenu() {
+    setIsMenuVisible(!isMenuVisible);
   }
 
   useEffect(() => {
@@ -453,6 +464,46 @@ export default function Plan({
                       />
                       {calendarDay?.isDisabled}
                       {weekday.readableDate}
+                      <MenuButton onClick={toggleMenu}>
+                        <StyledMenu width={25} height={25} />
+                      </MenuButton>
+
+                      {/* {menuVisible[index] && (
+                        <MenuContainer
+                          top="var(--gap-between)"
+                          right="calc(3 * var(--gap-between) + 20px)"
+                        >
+                          <UnstyledButton onClick={() => handleEditNote(index)}>
+                            <Pen width={15} height={15} />
+                            Notiz bearbeiten
+                          </UnstyledButton>
+                          <UnstyledButton onClick={toggleModal}>
+                            <Trash width={15} height={15} />
+                            Notiz löschen
+                          </UnstyledButton>
+                        </MenuContainer>
+                      )} */}
+
+                      {isMenuVisible && (
+                        <MenuContainer right="calc(3 * var(--gap-between) + 10px)">
+                          <UnstyledButton
+                            onClick={() => {
+                              reassignRecipe();
+                            }}
+                          >
+                            <Rotate width={15} height={15} /> zufälliges Rezept
+                            hinzufügen
+                          </UnstyledButton>
+                          <UnstyledButton
+                            onClick={() => {
+                              removeRecipe();
+                            }}
+                          >
+                            <Xmark width={15} height={15} />
+                            Tag leeren
+                          </UnstyledButton>
+                        </MenuContainer>
+                      )}
                     </StyledH2>
                     <SortableWeekday
                       key={weekday.date}
@@ -545,6 +596,34 @@ const StyledH2 = styled.h2`
   display: flex;
   align-items: center;
   gap: 0.5rem;
+`;
+
+const MenuButton = styled.button`
+  background-color: transparent;
+  border: none;
+  position: absolute;
+  right: 0;
+`;
+
+const StyledMenu = styled(Menu)`
+  background-color: var(--color-background);
+  rotate: 90deg;
+  cursor: pointer;
+`;
+
+const UnstyledButton = styled.button`
+  background-color: transparent;
+  border: none;
+  text-align: start;
+  border-radius: var(--border-radius-small);
+  display: flex;
+  align-items: center;
+  gap: var(--gap-between);
+  height: 2rem;
+  color: var(--color-font);
+  &:hover {
+    background-color: var(--color-background);
+  }
 `;
 
 // const StyledPowerIcon = styled(PowerIcon)`
