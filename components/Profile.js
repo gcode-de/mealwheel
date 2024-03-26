@@ -1,15 +1,14 @@
 import styled from "styled-components";
 import Image from "next/image";
-import StyledList from "@/components/Styled/StyledList";
 import FollowButton from "./Button/FollowButton";
-export default function Profile({ user, name }) {
+export default function Profile({ foundUser, name, user }) {
   return (
     <>
       <WrapperCenter>
         <StyledProfile>
-          {(user?.profilePictureLink && (
+          {(foundUser?.profilePictureLink && (
             <StyledProfilePicture
-              src={user?.profilePictureLink}
+              src={foundUser?.profilePictureLink}
               alt="Profile Picture"
               width={106}
               height={106}
@@ -19,18 +18,14 @@ export default function Profile({ user, name }) {
       </WrapperCenter>
       <Wrapper>
         <p>
-          {(name = "external - profil")
-            ? user.userName
+          {name === "external-profil"
+            ? foundUser.userName
             : `Hallo,
-          ${user?.userName || user?.firstName || user?.email || "Gastnutzer"}!`}
+          ${foundUser?.userName || foundUser?.firstName || "Gastnutzer"}!`}
         </p>
-        <FollowButton
-          isFriend={isFriend}
-          isRequested={isRequested}
-          handleAddPeople={handleAddPeople}
-          handleUnfollowPeople={handleUnfollowPeople}
-          user={user}
-        />
+        {name === "external-profil" && (
+          <FollowButton foundUser={foundUser} user={user} />
+        )}
       </Wrapper>
     </>
   );

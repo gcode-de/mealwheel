@@ -217,7 +217,7 @@ export default function ProfilePage({
           </StyledList>
         </>
       )}
-      {!editUser && <Profile user={user} />}
+      {!editUser && <Profile foundUser={user} />}
       <Wrapper>
         <StyledCollection onClick={() => router.push("/profile/favorites")}>
           <Heart width={40} height={40} fill="var(--color-highlight)" />

@@ -3,20 +3,14 @@ import Image from "next/image";
 import Link from "next/link";
 import FollowButton from "../Button/FollowButton";
 
-export default function ProfileCard({
-  user,
-  handleAddPeople,
-  isFriend,
-  isRequested,
-  handleUnfollowPeople,
-}) {
+export default function ProfileCard({ foundUser, user }) {
   return (
     <ProfileWrapper>
-      <WrapperCenter href={`/profile/community/${user._id}`}>
+      <WrapperCenter href={`/profile/community/${foundUser._id}`}>
         <StyledProfile>
-          {(user?.profilePictureLink && (
+          {(foundUser?.profilePictureLink && (
             <StyledProfilePicture
-              src={user?.profilePictureLink}
+              src={foundUser?.profilePictureLink}
               alt="Profile Picture"
               width={106}
               height={106}
@@ -25,14 +19,10 @@ export default function ProfileCard({
         </StyledProfile>
       </WrapperCenter>
       <StyledProfiletext>
-        <p>{user?.userName || user?.firstName}</p>
-        <FollowButton
-          isFriend={isFriend}
-          isRequested={isRequested}
-          handleAddPeople={handleAddPeople}
-          handleUnfollowPeople={handleUnfollowPeople}
-          user={user}
-        />
+        <StyledLink href={`/profile/community/${foundUser._id}`}>
+          {foundUser?.userName || foundUser?.firstName}
+        </StyledLink>
+        <FollowButton foundUser={foundUser} user={user} />
       </StyledProfiletext>
     </ProfileWrapper>
   );
@@ -67,8 +57,8 @@ const ProfileWrapper = styled.div`
   margin-bottom: calc(3 * var(--gap-between));
 `;
 const StyledProfiletext = styled.div`
-  padding-top: var(--gap-between);
-  padding-bottom: var(--gap-between);
+  padding-top: calc(2 * var(--gap-between));
+  padding-bottom: calc(2 * var(--gap-between));
   padding-right: calc(2 * var(--gap-between));
   padding-left: 80px;
   width: 100%;
@@ -78,4 +68,10 @@ const StyledProfiletext = styled.div`
   background-color: var(--color-component);
   height: 106px;
   position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+`;
+const StyledLink = styled(Link)`
+  text-decoration: none;
 `;

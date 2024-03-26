@@ -10,7 +10,7 @@ import StyledH2 from "@/components/Styled/StyledH2";
 import styled from "styled-components";
 import Profile from "../../../../components/Profile";
 
-export default function DetailCommunityPage({ allUsers, recipes }) {
+export default function DetailCommunityPage({ allUsers, recipes, user }) {
   const router = useRouter();
   const { id } = router.query;
   if (!allUsers || !recipes) {
@@ -28,7 +28,7 @@ export default function DetailCommunityPage({ allUsers, recipes }) {
         left="var(--gap-out)"
         onClick={() => router.back()}
       />
-      <Profile user={foundUser} name="external-profil" />
+      <Profile foundUser={foundUser} name="external-profil" user={user} />
       <StyledH2>
         <div>Kochbücher</div>
       </StyledH2>
