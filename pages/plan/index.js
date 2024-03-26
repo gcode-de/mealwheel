@@ -257,6 +257,7 @@ export default function Plan({
                 ? "small"
                 : ""
             }
+            weekdays={weekdays}
           />
         )}
       </article>

@@ -19,17 +19,6 @@ export default function CardSkeleton({
           $isLoading={$isLoading}
           $height={$height}
         >
-          {reassignRecipe !== undefined && (
-            <IconButton
-              style="Reload"
-              right="-1rem"
-              top="1rem"
-              onClick={() => {
-                reassignRecipe(day);
-              }}
-            />
-          )}
-
           {text}
         </StyledCardSkeleton>
       ))}

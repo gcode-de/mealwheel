@@ -31,26 +31,6 @@ export default function MealCard({
           }}
         />
       )}
-      {/* {reassignRecipe !== undefined && (
-        <IconButton
-          style="Reload"
-          right="-1rem"
-          top="1rem"
-          onClick={() => {
-            reassignRecipe(day);
-          }}
-        />
-      )} */}
-      {/* {removeRecipe !== undefined && (
-        <IconButton
-          style="x"
-          right="-1rem"
-          top="4rem"
-          onClick={() => {
-            removeRecipe(day);
-          }}
-        />
-      )} */}
       <CardContainer>
         {
           <ImageContainer>
@@ -87,19 +67,6 @@ export default function MealCard({
                 day={day}
               />
             )}
-            <StyledButtonDiv>
-              {reassignRecipe !== undefined && (
-                <button>
-                  <Reload
-                    width="1.2em"
-                    height="1.2em"
-                    onClick={() => {
-                      reassignRecipe(day);
-                    }}
-                  />
-                </button>
-              )}
-            </StyledButtonDiv>
           </StyledSettingsDiv>
         </StyledDiv>
       </CardContainer>
