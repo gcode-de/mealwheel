@@ -32,6 +32,7 @@ import StyledList from "@/components/Styled/StyledList";
 import ModalComponent from "../../components/Modal";
 import updateCommunityUserInDB from "../../helpers/updateCommunityUserInDB";
 import Profile from "../../components/Profile";
+import ToggleCheckbox from "../../components/Styled/ToggleCheckbox";
 
 export default function ProfilePage({
   user,
@@ -210,6 +211,7 @@ export default function ProfilePage({
                 defaultValue={user?.userName}
                 placeholder="Dein Benutzername"
               />
+              <ToggleCheckbox />
               <StyledSaveButton type="submit" disabled={upload}>
                 Speichern
               </StyledSaveButton>

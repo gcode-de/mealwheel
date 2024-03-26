@@ -27,10 +27,10 @@ export default function DetailCollection({
   const router = useRouter();
   const { id } = router.query;
   useEffect(() => {
-    let foundCollection = user.collections.find(
+    let foundCollection = user?.collections.find(
       (collection) => collection._id === id
     );
-    const foundUser = allUsers.filter((user) =>
+    const foundUser = allUsers?.filter((user) =>
       user.collections.find((collection) => collection._id === id)
     );
     if (!foundCollection) {
