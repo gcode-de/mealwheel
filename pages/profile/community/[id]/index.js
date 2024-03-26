@@ -50,8 +50,8 @@ export default function DetailCommunityPage({ allUsers, recipes, user }) {
                   <MealCard
                     key={recipe._id}
                     recipe={recipe}
-                    // isFavorite={getRecipeProperty(recipe._id, "isFavorite")}
-                    // onToggleIsFavorite={toggleIsFavorite}
+                    isFavorite={getRecipeProperty(recipe._id, "isFavorite")}
+                    onToggleIsFavorite={toggleIsFavorite}
                   ></MealCard>
                 );
               })
