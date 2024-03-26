@@ -5,27 +5,21 @@ import useSWR from "swr";
 import Link from "next/link";
 import MealCard from "@/components/Cards/MealCard";
 import IconButton from "@/components/Styled/IconButton";
-import CollectionCard from "@/components/CollectionCard";
+import CollectionCard from "@/components/Cards/CollectionCard";
 import StyledH2 from "@/components/Styled/StyledH2";
 import styled from "styled-components";
 import Profile from "../../../../components/Profile";
 
-export default function DetailCommunityPage({ allUsers, fetcher }) {
-  const [isModalCollection, setIsModalCollection] = useState(false);
+export default function DetailCommunityPage({ allUsers, recipes }) {
   const router = useRouter();
   const { id } = router.query;
-  if (!allUsers) {
+  if (!allUsers || !recipes) {
     return;
   }
   const foundUser = allUsers.find((user) => user._id === id);
-  const {
-    data: myRecipes,
-    error: recipesError,
-    isLoading: recipesIsLoading,
-  } = useSWR(`/api/recipes?author=${foundUser?._id}`, fetcher);
-  if (!myRecipes || !recipesError || recipesIsLoading) {
-    return;
-  }
+  const userRecipes = recipes.filter(
+    (recipe) => recipe.author === foundUser._id
+  );
   return (
     <>
       <IconButton
@@ -50,18 +44,18 @@ export default function DetailCommunityPage({ allUsers, fetcher }) {
       </StyledH2>
       <StyledArticle>
         <StyledUl>
-          {myRecipes.length
-            ? myRecipes?.map((recipe) => {
+          {userRecipes.length
+            ? userRecipes?.map((recipe) => {
                 return (
                   <MealCard
                     key={recipe._id}
                     recipe={recipe}
-                    isFavorite={getRecipeProperty(recipe._id, "isFavorite")}
-                    onToggleIsFavorite={toggleIsFavorite}
+                    // isFavorite={getRecipeProperty(recipe._id, "isFavorite")}
+                    // onToggleIsFavorite={toggleIsFavorite}
                   ></MealCard>
                 );
               })
-            : "Du hast noch keine eigenen Rezepte erstellt."}
+            : `${foundUser.userName} hat noch keine eigenen Rezepte erstellt.`}
         </StyledUl>
       </StyledArticle>
     </>

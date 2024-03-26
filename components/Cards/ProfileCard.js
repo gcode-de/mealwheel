@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import Image from "next/image";
 import Link from "next/link";
+import FollowButton from "../Button/FollowButton";
 
 export default function ProfileCard({
   user,
@@ -25,18 +26,13 @@ export default function ProfileCard({
       </WrapperCenter>
       <StyledProfiletext>
         <p>{user?.userName || user?.firstName}</p>
-        {isFriend ? (
-          <Button onClick={() => handleUnfollowPeople(user._id)}>
-            Freundschaft beenden
-          </Button>
-        ) : (
-          <Button
-            onClick={() => handleAddPeople(user._id)}
-            disabled={isRequested}
-          >
-            {isRequested ? "Freundschaft angefragt" : "Freundschaft anfragen"}
-          </Button>
-        )}
+        <FollowButton
+          isFriend={isFriend}
+          isRequested={isRequested}
+          handleAddPeople={handleAddPeople}
+          handleUnfollowPeople={handleUnfollowPeople}
+          user={user}
+        />
       </StyledProfiletext>
     </ProfileWrapper>
   );
@@ -82,17 +78,4 @@ const StyledProfiletext = styled.div`
   background-color: var(--color-component);
   height: 106px;
   position: relative;
-`;
-const Button = styled.button`
-  background-color: ${(props) =>
-    props.disabled ? "var(--color-darkgrey)" : "var(--color-background)"};
-  color: ${(props) =>
-    props.disabled ? "var(--color-background)" : "var(--color-font)"};
-  border: none;
-  border-radius: var(--border-radius-small);
-  height: 30px;
-  flex-grow: ${(props) => props.$flexGrow};
-  padding: 0.7rem;
-  display: flex;
-  align-items: center;
 `;
