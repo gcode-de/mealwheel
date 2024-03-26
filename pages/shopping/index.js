@@ -26,17 +26,6 @@ export default function ShoppingList({ user, mutateUser }) {
   const [isKiGenerating, setIsKiGenerating] = useState(false);
   const editFormRef = useRef(null);
 
-  // useEffect(() => {
-  //   function handleClickOutside(event) {
-  //     if (editFormRef.current && !editFormRef.current.contains(event.target)) {
-  //       setEditingIndex(null);
-  //     }
-  //   }
-
-  //   document.addEventListener("mousedown", handleClickOutside);
-  //   return () => document.removeEventListener("mousedown", handleClickOutside);
-  // }, []);
-
   function handleItemClick(category, index) {
     setEditingIndex(`${category},${index}`);
   }
@@ -77,43 +66,51 @@ export default function ShoppingList({ user, mutateUser }) {
     );
   }
 
-  // user.shoppingList = Array.from(
-  //   user.shoppingList
-  //     .reduce((map, obj) => {
-  //       const { id, name, quantity, unit, isChecked } = obj;
-  //       const existingObj = map.get(name + unit);
-  //       if (existingObj) {
-  //         existingObj.quantity += quantity;
-  //       } else {
-  //         map.set(name + unit, { id, name, quantity, unit, isChecked });
-  //       }
-  //       return map;
-  //     }, new Map())
-  //     .values()
-  // );
-
   function consolidateShoppingListItems(userShoppingList) {
-    // Iteration über jede Kategorie in der Einkaufsliste
-    userShoppingList.forEach((category) => {
-      const consolidatedItems = category.items.reduce((map, item) => {
-        // Eindeutiger Schlüssel für jedes Item basierend auf Namen und Einheit
-        const key = `${item.name}-${item.unit}`;
+    const allItems = new Map();
 
-        if (map.has(key)) {
-          const existingItem = map.get(key);
+    // Sammle alle Items über alle Kategorien hinweg
+    userShoppingList.forEach((category) => {
+      category.items.forEach((item) => {
+        const key = `${item.name}-${item.unit}`;
+        if (allItems.has(key)) {
+          const existingItem = allItems.get(key);
           existingItem.quantity += item.quantity;
         } else {
-          map.set(key, { ...item });
+          allItems.set(key, { ...item, categories: [category.category] });
+        }
+      });
+    });
+
+    // Leere die ursprüngliche Liste und füge konsolidierte Items hinzu
+    userShoppingList.splice(0, userShoppingList.length); // Leert das Array, behält aber die Referenz bei
+
+    allItems.forEach((item, key) => {
+      const [name, unit] = key.split("-");
+      const categoryNames = item.categories;
+
+      categoryNames.forEach((categoryName) => {
+        // Finde oder erstelle die Kategorie
+        let category = userShoppingList.find(
+          (c) => c.category === categoryName
+        );
+        if (!category) {
+          category = { category: categoryName, items: [] };
+          userShoppingList.push(category);
         }
 
-        return map;
-      }, new Map());
-
-      category.items = Array.from(consolidatedItems.values());
+        category.items.push({ name, quantity: item.quantity, unit });
+      });
     });
+
+    // Optional: Entferne leere Kategorien,
+    const nonEmptyCategories = userShoppingList.filter(
+      (category) => category.items.length > 0
+    );
+    userShoppingList.splice(0, userShoppingList.length, ...nonEmptyCategories);
   }
 
-  // consolidateShoppingListItems(user.shoppingList);
+  consolidateShoppingListItems(user.shoppingList);
 
   async function handleSubmit(event) {
     event.preventDefault();
