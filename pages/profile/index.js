@@ -30,8 +30,14 @@ import MenuContainer from "@/components/MenuContainer";
 import IconButton from "@/components/Styled/IconButton";
 import StyledList from "@/components/Styled/StyledList";
 import ModalComponent from "../../components/Modal";
+import updateCommunityUserInDB from "../../helpers/updateCommunityUserInDB";
 
-export default function ProfilePage({ user, mutateUser }) {
+export default function ProfilePage({
+  user,
+  mutateUser,
+  allUsers,
+  mutateAllUsers,
+}) {
   const router = useRouter();
   const { data: session, status } = useSession();
 
@@ -40,6 +46,7 @@ export default function ProfilePage({ user, mutateUser }) {
   const [imageUrl, setImageUrl] = useState(user?.profilePictureLink || "");
   const [upload, setUpload] = useState(false);
   const [isMenuVisible, setIsMenuVisible] = useState(false);
+  const [isNotificationVisible, setIsNotificationVisible] = useState(false);
 
   if (status === "unauthenticated") {
     signIn();
@@ -73,10 +80,6 @@ export default function ProfilePage({ user, mutateUser }) {
     updateUserinDb(user, mutateUser);
     setEditUser(false);
   };
-
-  function toggleFeedbackForm() {
-    setFeedbackVisible(!feedbackVisible);
-  }
   function handleEditProfile() {
     setEditUser(true);
     setIsMenuVisible(false);
@@ -99,8 +102,31 @@ export default function ProfilePage({ user, mutateUser }) {
     await signOut({ callbackUrl: "/", redirect: true });
     notifySuccess("Du hast dich erfolgreich abgemeldet");
   }
-  function toggleMenu() {
-    setIsMenuVisible(!isMenuVisible);
+  function addFriend(id, index) {
+    user.friends = [...user.friends, id];
+    const updatedRequests = user.connectionRequests.filter(
+      (request, ind) => ind !== index
+    );
+    user.connectionRequests = updatedRequests;
+    updateUserinDb(user, mutateUser);
+    let foundUser = allUsers.find((user) => user._id === id);
+
+    foundUser = {
+      ...foundUser,
+      friends: [...foundUser.friends, user._id],
+    };
+
+    updateCommunityUserInDB(foundUser, mutateAllUsers);
+    notifySuccess(`${foundUser.userName} als Freund hinzugefügt`);
+  }
+
+  function rejectFriendRequest(index) {
+    const updatedRequests = user.connectionRequests.filter(
+      (request, ind) => ind !== index
+    );
+    user.connectionRequests = updatedRequests;
+    updateUserinDb(user, mutateUser);
+    notifyError("Anfrage abgelehnt");
   }
   return (
     <>
@@ -108,12 +134,41 @@ export default function ProfilePage({ user, mutateUser }) {
         style="Menu"
         top="var(--gap-out)"
         right="var(--gap-out)"
-        onClick={toggleMenu}
+        onClick={() => setIsMenuVisible(!isMenuVisible)}
         fill="var(--color-lightgrey)"
         rotate={isMenuVisible}
       />
+      <IconButton
+        style="Bell"
+        top="var(--gap-out)"
+        left="var(--gap-out)"
+        onClick={() => setIsNotificationVisible(!isNotificationVisible)}
+        fill="var(--color-lightgrey)"
+      ></IconButton>
+      {user.connectionRequests.length >= 1 && <Notification />}
+      {isNotificationVisible && (
+        <MenuContainer top="3.5rem" left="var(--gap-out)">
+          {user.connectionRequests.length >= 1 ? (
+            user.connectionRequests.map((request, index) => (
+              <div key={request.senderId}>
+                <p>{request.message}</p>
+                <div>
+                  <button onClick={() => addFriend(request.senderId, index)}>
+                    bestätigen
+                  </button>
+                  <button onClick={() => rejectFriendRequest(index)}>
+                    ablehnen
+                  </button>
+                </div>
+              </div>
+            ))
+          ) : (
+            <p>Du bist auf dem neuesten Stand!</p>
+          )}
+        </MenuContainer>
+      )}
       {isMenuVisible && (
-        <MenuContainer top="5rem" right="var(--gap-out)">
+        <MenuContainer top="3.5rem" right="var(--gap-out)">
           <UnstyledButton onClick={() => router.push("/profile/settings")}>
             <Settings width={15} height={15} />
             Einstellungen
@@ -195,15 +250,15 @@ export default function ProfilePage({ user, mutateUser }) {
         </StyledCollection>
         <StyledCollection></StyledCollection>
         <StyledCollection></StyledCollection>
-        <StyledCollection>
-          {/* <People width={40} height={40} />
-          <StyledP>Freunde</StyledP> */}
+        <StyledCollection onClick={() => router.push("/profile/community")}>
+          <People width={40} height={40} />
+          <StyledP>Community</StyledP>
         </StyledCollection>
         <StyledCollection onClick={() => router.push("/profile/collections")}>
           <BookUser width={40} height={40} />
           <StyledP>Kochbücher</StyledP>
         </StyledCollection>
-        <StyledCollection onClick={toggleFeedbackForm}>
+        <StyledCollection onClick={() => setFeedbackVisible(!feedbackVisible)}>
           <Party width={40} height={40} />
           <StyledP>Feedback</StyledP>
         </StyledCollection>
@@ -214,7 +269,9 @@ export default function ProfilePage({ user, mutateUser }) {
         </StyledCollection>
       </Wrapper>
       {feedbackVisible && (
-        <ModalComponent toggleModal={toggleFeedbackForm}>
+        <ModalComponent
+          toggleModal={() => setFeedbackVisible(!feedbackVisible)}
+        >
           <StyledH2>Gib uns Feedback</StyledH2>
           <StyledForm onSubmit={handleFeedback}>
             <StyledInput
@@ -383,4 +440,14 @@ const UnstyledButton = styled.button`
   &:hover {
     background-color: var(--color-background);
   }
+`;
+const Notification = styled.div`
+  height: 0.6rem;
+  width: 0.6rem;
+  background-color: var(--color-highlight);
+  border-radius: 100%;
+  position: absolute;
+  z-index: 4000;
+  left: 2.7rem;
+  top: 0.8rem;
 `;

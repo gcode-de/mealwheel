@@ -31,13 +31,20 @@ export default function App({
     isLoading,
     error,
     mutate,
-  } = useSWR(`/api/users`, fetcher);
+  } = useSWR(`/api/users/user`, fetcher);
 
   const {
     data: recipes,
     error: recipesError,
     isLoading: recipesIsLoading,
   } = useSWR(`/api/recipes`, fetcher);
+
+  const {
+    data: allUsers,
+    isLoading: allUsersAreLoading,
+    error: allUsersError,
+    mutate: mutateAllUsers,
+  } = useSWR(`/api/users`, fetcher);
 
   //recipe Interaction
   function getRecipeProperty(_id, property) {
@@ -121,6 +128,8 @@ export default function App({
               recipes={recipes}
               recipesError={recipesError}
               recipesIsLoading={recipesIsLoading}
+              allUsers={allUsers}
+              mutateAllUsers={mutateAllUsers}
             />
           </Layout>
         </SessionProvider>
