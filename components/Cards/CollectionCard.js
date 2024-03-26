@@ -1,9 +1,13 @@
 import Book from "/public/icons/svg/notebook-alt_9795395.svg";
 import styled from "styled-components";
-import Link from "next/link";
 import { useRouter } from "next/router";
 
-export default function CollectionCard({ collection, isEditing }) {
+export default function CollectionCard({
+  collection,
+  isEditing,
+  handleSave,
+  index,
+}) {
   const router = useRouter();
   return (
     <StyledCollection
@@ -13,10 +17,11 @@ export default function CollectionCard({ collection, isEditing }) {
     >
       <StyledBook width={40} height={40} />
       {isEditing ? (
-        <input
+        <StyledInput
           name="collectionName"
           defaultValue={collection.collectionName}
           aria-label="collection-name"
+          onBlur={(event) => handleSave(event, index)}
         />
       ) : (
         <StyledParagraph>{collection.collectionName}</StyledParagraph>
@@ -56,4 +61,14 @@ const StyledCollection = styled.button`
     fill: var(--color-highlight);
     color: var(--color-highlight);
   }
+`;
+const StyledInput = styled.input`
+  background-color: var(--color-background);
+  border: none;
+  border-radius: 10px;
+  height: 30px;
+  width: 100%;
+  flex-grow: ${(props) => props.$flexGrow};
+  padding: 0.7rem;
+  margin-top: var(--gap-between);
 `;
