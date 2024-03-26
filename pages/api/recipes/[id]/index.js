@@ -48,9 +48,9 @@ export default async function handler(request, response) {
           .status(404)
           .json({ status: "Recipe not found or unauthorized" });
       }
+      await cleanupRecipeReferences(id);
 
       await Recipe.findByIdAndDelete(id);
-      //call CLEANUP function!!
       return response.status(200).json({ status: `Recipe ${id} deleted!` });
     } catch (error) {
       console.error(error);
