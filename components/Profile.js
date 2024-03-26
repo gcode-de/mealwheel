@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import Image from "next/image";
 import StyledList from "@/components/Styled/StyledList";
-export default function Profile({ user }) {
+export default function Profile({ user, name }) {
   return (
     <>
       <WrapperCenter>
@@ -18,8 +18,10 @@ export default function Profile({ user }) {
       </WrapperCenter>
       <StyledList>
         <p>
-          Hallo,{" "}
-          {user?.userName || user?.firstName || user?.email || "Gastnutzer"}!
+          {(name = "external - profil")
+            ? user.userName
+            : `Hallo,
+          ${user?.userName || user?.firstName || user?.email || "Gastnutzer"}!`}
         </p>
       </StyledList>
     </>
