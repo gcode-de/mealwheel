@@ -468,13 +468,13 @@ export default function Plan({
 
       <IconButtonLarge
         style={"saveShopping"}
-        bottom="10rem"
+        bottom="9rem"
         onClick={() => saveToShopping()}
       />
       {assignableDays.length !== 0 ? (
         <IconButtonLarge
           style={"generate"}
-          bottom="6rem"
+          bottom="5rem"
           onClick={() => {
             populateEmptyWeekdays(
               weekdays,
@@ -489,7 +489,7 @@ export default function Plan({
       ) : (
         <IconButtonLarge
           style={"trash"}
-          bottom="6rem"
+          bottom="5rem"
           onClick={() => {
             removeAllRecipes(weekdays);
           }}
