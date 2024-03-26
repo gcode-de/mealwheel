@@ -208,7 +208,11 @@ export default function ShoppingList({ user, mutateUser }) {
       notifySuccess("Einkaufsliste wurde sortiert.");
     } catch (error) {
       console.error("Fehler beim Abrufen der Daten:", error);
-      notifyError("Sortieren fehlgeschlagen.");
+      if (error.message.startsWith("504")) {
+        notifyError("KI überlastet. Versuch's später!");
+      } else {
+        notifyError("Sortieren fehlgeschlagen.");
+      }
     }
     setIsAiGenerating(false);
     updateUserInDb(user, mutateUser);
