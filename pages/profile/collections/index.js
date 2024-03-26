@@ -5,13 +5,13 @@ import updateUserinDb from "@/helpers/updateUserInDb";
 import styled from "styled-components";
 import IconButton from "@/components/Styled/IconButton";
 import Plus from "@/public/icons/svg/plus.svg";
-import CollectionCard from "@/components/CollectionCard";
+import CollectionCard from "@/components/Cards/CollectionCard";
 import StyledH2 from "@/components/Styled/StyledH2";
 import NewCollection from "../../../components/Forms/NewCollection";
 import MenuContainer from "@/components/MenuContainer";
 import Pen from "/public/icons/svg/pen-square_10435869.svg";
 import Trash from "/public/icons/svg/trash-xmark_10741775.svg";
-import XSmall from "@/public/icons/XSmall.svg";
+import Check from "@/public/icons/svg/check-circle_10470513.svg";
 
 export default function Collections({ user, mutateUser }) {
   const [addCollection, setAddCollection] = useState(false);
@@ -51,6 +51,13 @@ export default function Collections({ user, mutateUser }) {
         : prevItems.filter((item) => item !== index)
     );
   }
+  function handleSave(event, index) {
+    event.preventDefault();
+    const newCollectionName = event.target.value;
+    user.collections[index].collectionName = newCollectionName;
+    updateUserinDb(user, mutateUser);
+    setIsEditing(false);
+  }
   return (
     <>
       <Spacer />
@@ -69,7 +76,7 @@ export default function Collections({ user, mutateUser }) {
         rotate={isMenuVisible}
       />
       {isMenuVisible && (
-        <MenuContainer top="5rem" right="var(--gap-out)">
+        <MenuContainer top="3.5rem" right="var(--gap-out)">
           <UnstyledButton onClick={toggleAddCollection}>
             <Plus width={15} height={15} />
             Kochbuch hinzufügen
@@ -84,11 +91,11 @@ export default function Collections({ user, mutateUser }) {
         <ButtonContainer>
           <DeleteButton onClick={handleDeleteCollection}>
             <Trash width={15} height={15} />
-            Kochbücher entfernen
+            entfernen
           </DeleteButton>
           <DeleteButton onClick={toggleEdit}>
-            <XSmall width={15} height={15} />
-            abbrechen
+            <Check width={15} height={15} />
+            speichern
           </DeleteButton>
         </ButtonContainer>
       )}
@@ -112,7 +119,12 @@ export default function Collections({ user, mutateUser }) {
                 }
               />
             )}
-            <CollectionCard collection={collection}></CollectionCard>
+            <CollectionCard
+              collection={collection}
+              isEditing={isEditing}
+              handleSave={handleSave}
+              index={index}
+            ></CollectionCard>
           </CollectionContainer>
         ))}
       </CollectionWrapper>
@@ -151,6 +163,7 @@ const ButtonContainer = styled.div`
   margin: auto;
   display: flex;
   justify-content: space-between;
+  margin-bottom: var(--gap-between);
 `;
 const DeleteButton = styled.button`
   background-color: var(--color-component);
@@ -171,7 +184,7 @@ const StyledCheckbox = styled.input`
   position: absolute;
   z-index: 5;
   top: calc(2 * var(--gap-between));
-  right: 1rem;
+  left: 0.3rem;
   background-color: var(--color-background);
   margin: 0;
   width: 37px;
