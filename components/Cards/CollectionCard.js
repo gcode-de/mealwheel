@@ -1,15 +1,26 @@
 import Book from "/public/icons/svg/notebook-alt_9795395.svg";
 import styled from "styled-components";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
-export default function CollectionCard({ collection }) {
+export default function CollectionCard({ collection, isEditing }) {
+  const router = useRouter();
   return (
     <StyledCollection
       key={collection._id}
-      href={`/profile/collections/${collection._id}`}
+      onClick={() => router.push(`/profile/collections/${collection._id}`)}
+      disabled={isEditing}
     >
-      <StyledBook width={60} height={60} />
-      <StyledParagraph>{collection.collectionName}</StyledParagraph>
+      <StyledBook width={40} height={40} />
+      {isEditing ? (
+        <input
+          name="collectionName"
+          defaultValue={collection.collectionName}
+          aria-label="collection-name"
+        />
+      ) : (
+        <StyledParagraph>{collection.collectionName}</StyledParagraph>
+      )}
     </StyledCollection>
   );
 }
@@ -25,21 +36,22 @@ const StyledParagraph = styled.p`
   margin-top: var(--gap-between);
   height: 2.5;
 `;
-const StyledCollection = styled(Link)`
+const StyledCollection = styled.button`
   text-decoration: none;
   color: var(--color-font);
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: start;
   fill: var(--color-lightgrey);
   color: var(--color-lightgrey);
+  border: 1px solid var(--color-lightgrey);
+  border-radius: var(--border-radius-small);
+  background-color: var(--color-component);
   justify-content: center;
   cursor: pointer;
   margin-top: 0;
   margin-bottom: 0;
-  height: 6rem;
-  max-width: 6rem;
-  position: relative;
+  height: 93px;
   &:hover {
     fill: var(--color-highlight);
     color: var(--color-highlight);

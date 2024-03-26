@@ -5,7 +5,7 @@ import updateUserinDb from "@/helpers/updateUserInDb";
 import styled from "styled-components";
 import IconButton from "@/components/Styled/IconButton";
 import Plus from "@/public/icons/svg/plus.svg";
-import CollectionCard from "@/components/CollectionCard";
+import CollectionCard from "@/components/Cards/CollectionCard";
 import StyledH2 from "@/components/Styled/StyledH2";
 import NewCollection from "../../../components/Forms/NewCollection";
 import MenuContainer from "@/components/MenuContainer";
@@ -112,7 +112,10 @@ export default function Collections({ user, mutateUser }) {
                 }
               />
             )}
-            <CollectionCard collection={collection}></CollectionCard>
+            <CollectionCard
+              collection={collection}
+              isEditing={isEditing}
+            ></CollectionCard>
           </CollectionContainer>
         ))}
       </CollectionWrapper>
