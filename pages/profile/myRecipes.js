@@ -1,5 +1,5 @@
 import CardSkeleton from "@/components/Styled/CardSkeleton";
-import MealCard from "@/components/MealCard";
+import MealCard from "@/components/Cards/MealCard";
 import Header from "@/components/Styled/Header";
 import IconButton from "@/components/Styled/IconButton";
 import { useRouter } from "next/router";

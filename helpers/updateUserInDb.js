@@ -5,7 +5,7 @@ export default async function updateUserInDb(user, mutateUser) {
   await mutateUser((prevUser) => ({ ...prevUser, ...user }), false);
 
   try {
-    const response = await fetch(`/api/users/`, {
+    const response = await fetch(`/api/users/user`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
