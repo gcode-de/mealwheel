@@ -25,7 +25,9 @@ export default function ProfileCard({
       <StyledProfiletext>
         <p>{user?.userName || user?.firstName}</p>
         {isFriend ? (
-          <Button onClick={handleUnfollowPeople}>Freundschaft beenden</Button>
+          <Button onClick={() => handleUnfollowPeople(user._id)}>
+            Freundschaft beenden
+          </Button>
         ) : (
           <Button
             onClick={() => handleAddPeople(user._id)}

@@ -44,9 +44,9 @@ export default function Community({
   }
   function handleUnfollowPeople(id) {
     const updateUser = user.friends.filter((friend) => friend !== id);
-    user.friend = updateUser;
+    user.friends = updateUser;
     updateUserinDb(user, mutateUser);
-    const foundUser = community.filter((human) => human._id === user._id);
+    const foundUser = community.find((human) => human._id === id);
     const updateFoundUser = foundUser.friends.filter(
       (friend) => friend === user._id
     );
