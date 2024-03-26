@@ -48,9 +48,11 @@ export default function Community({
     updateUserinDb(user, mutateUser);
     const foundUser = community.find((human) => human._id === id);
     const updateFoundUser = foundUser.friends.filter(
-      (friend) => friend === user._id
+      (friend) => friend !== user._id
     );
-    updateCommunityUserInDB(updateFoundUser, mutateAllUsers);
+    foundUser.friends = updateFoundUser;
+    console.log(updateFoundUser);
+    updateCommunityUserInDB(foundUser, mutateAllUsers);
   }
 
   return (
