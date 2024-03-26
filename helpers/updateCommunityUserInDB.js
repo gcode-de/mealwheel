@@ -1,26 +1,26 @@
 export default async function updateCommunityUserInDB(
-  communityUser,
-  mutateCommunityUser
+  allUsers,
+  mutateAllUsers
 ) {
-  if (!communityUser) return;
+  if (!allUsers) return;
 
   try {
-    const response = await fetch(`/api/users/${communityUser._id}`, {
+    const response = await fetch(`/api/users/${allUsers._id}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(communityUser),
+      body: JSON.stringify(allUsers),
     });
 
     if (response.ok) {
-      await mutateCommunityUser();
+      await mutateAllUsers();
     } else {
       throw new Error("Failed to update user data.");
     }
   } catch (error) {
     console.error(error);
-    await mutateCommunityUser(currentUser, false);
+    await mutateAllUsers(allUsers, false);
     throw error;
   }
 }

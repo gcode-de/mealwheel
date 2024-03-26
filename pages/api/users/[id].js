@@ -13,7 +13,7 @@ export default async function handler(request, response) {
           .status(404)
           .json({ status: "User not found or unauthorized" });
       }
-      console.log("test", response);
+
       await User.findByIdAndUpdate(id, request.body);
       return response.status(200).json({ status: `User ${id} updated!` });
     } catch (error) {

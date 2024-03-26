@@ -1,9 +1,13 @@
 import styled from "styled-components";
 import Image from "next/image";
-import { useState } from "react";
 
-export default function ProfileCard({ user, handleAddPeople, isFriend }) {
-  const [isRequested, setIsRequested] = useState(false);
+export default function ProfileCard({
+  user,
+  handleAddPeople,
+  isFriend,
+  isRequested,
+  handleUnfollowPeople,
+}) {
   return (
     <ProfileWrapper>
       <WrapperCenter>
@@ -21,16 +25,17 @@ export default function ProfileCard({ user, handleAddPeople, isFriend }) {
       <StyledProfiletext>
         <p>{user?.userName || user?.firstName}</p>
         {isFriend ? (
-          <button>unfollow</button>
+          <Button onClick={() => handleUnfollowPeople(user._id)}>
+            Freundschaft beenden
+          </Button>
         ) : (
-          <button
+          <Button
             onClick={() => handleAddPeople(user._id)}
             disabled={isRequested}
           >
-            {isRequested ? "Freund angefragt" : "Freund anfragen"}
-          </button>
+            {isRequested ? "Freundschaft angefragt" : "Freundschaft anfragen"}
+          </Button>
         )}
-        <p>{user.friends.length} Freunde</p>
       </StyledProfiletext>
     </ProfileWrapper>
   );
@@ -76,4 +81,17 @@ const StyledProfiletext = styled.div`
   background-color: var(--color-component);
   height: 106px;
   position: relative;
+`;
+const Button = styled.button`
+  background-color: ${(props) =>
+    props.disabled ? "var(--color-darkgrey)" : "var(--color-background)"};
+  color: ${(props) =>
+    props.disabled ? "var(--color-background)" : "var(--color-font)"};
+  border: none;
+  border-radius: var(--border-radius-small);
+  height: 30px;
+  flex-grow: ${(props) => props.$flexGrow};
+  padding: 0.7rem;
+  display: flex;
+  align-items: center;
 `;

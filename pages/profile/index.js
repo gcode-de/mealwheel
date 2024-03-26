@@ -111,34 +111,13 @@ export default function ProfilePage({
     updateUserinDb(user, mutateUser);
     let foundUser = allUsers.find((user) => user._id === id);
 
-    if (foundUser.friends) {
-      foundUser = {
-        ...foundUser,
-        connectionRequests: [
-          {
-            senderId: user._id,
-            timestamp: Date(),
-            message: `${user.userName} hat deine Anfrage angenommen`,
-            type: 2,
-          },
-        ],
-        friends: [...friends, user._id],
-      };
-    } else {
-      foundUser = {
-        ...foundUser,
-        connectionRequests: [
-          {
-            senderId: user._id,
-            timestamp: Date(),
-            message: `${user.userName} hat deine Anfrage angenommen`,
-            type: 2,
-          },
-        ],
-        friends: [user._id],
-      };
-    }
+    foundUser = {
+      ...foundUser,
+      friends: [...foundUser.friends, user._id],
+    };
+
     updateCommunityUserInDB(foundUser, mutateAllUsers);
+    notifySuccess(`${foundUser.userName} als Freund hinzugefügt`);
   }
 
   function rejectFriendRequest(index) {
@@ -147,6 +126,7 @@ export default function ProfilePage({
     );
     user.connectionRequests = updatedRequests;
     updateUserinDb(user, mutateUser);
+    notifyError("Anfrage abgelehnt");
   }
   return (
     <>
@@ -172,12 +152,14 @@ export default function ProfilePage({
             user.connectionRequests.map((request, index) => (
               <div key={request.senderId}>
                 <p>{request.message}</p>
-                <button onClick={() => addFriend(request.senderId, index)}>
-                  bestätigen
-                </button>
-                <button onClick={() => rejectFriendRequest(index)}>
-                  ablehnen
-                </button>
+                <div>
+                  <button onClick={() => addFriend(request.senderId, index)}>
+                    bestätigen
+                  </button>
+                  <button onClick={() => rejectFriendRequest(index)}>
+                    ablehnen
+                  </button>
+                </div>
               </div>
             ))
           ) : (
