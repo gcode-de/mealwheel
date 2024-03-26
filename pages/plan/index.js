@@ -586,6 +586,7 @@ const StyledH2 = styled.h2`
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  position: relative;
 `;
 
 const MenuButton = styled.button`
