@@ -56,6 +56,7 @@ const StyledCollection = styled.button`
   cursor: pointer;
   margin-top: 0;
   margin-bottom: 0;
+  width: 100%;
   height: 93px;
   &:hover {
     fill: var(--color-highlight);
