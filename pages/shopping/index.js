@@ -14,6 +14,7 @@ import StyledH2 from "@/components/Styled/StyledH2";
 
 import { ingredientUnits } from "@/helpers/ingredientUnits";
 import fetchCategorizedIngredients from "@/helpers/OpenAI/CategorizeIngredients";
+import validateAIData from "@/helpers/OpenAI/validateAIData";
 import updateUserInDb from "@/helpers/updateUserInDb";
 
 import styled from "styled-components";
@@ -195,6 +196,14 @@ export default function ShoppingList({ user, mutateUser }) {
         JSON.stringify(user.shoppingList)
       );
       const parsedData = JSON.parse(dataFromAPI);
+
+      if (!validateAIData(parsedData)) {
+        console.error(
+          "Erhaltene KI-Daten entsprechen nicht dem erwarteten Schema."
+        );
+        return;
+      }
+
       user.shoppingList = await parsedData;
       notifySuccess("Einkaufsliste wurde sortiert.");
     } catch (error) {
