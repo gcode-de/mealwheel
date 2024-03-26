@@ -14,7 +14,7 @@ import StyledH2 from "@/components/Styled/StyledH2";
 
 import { ingredientUnits } from "@/helpers/ingredientUnits";
 import fetchCategorizedIngredients from "@/helpers/OpenAI/CategorizeIngredients";
-import updateUserinDb from "@/helpers/updateUserInDb";
+import updateUserInDb from "@/helpers/updateUserInDb";
 
 import styled from "styled-components";
 import { useRef, useState } from "react";
@@ -47,7 +47,7 @@ export default function ShoppingList({ user, mutateUser }) {
 
       category.items[itemIndex] = updatedItem;
 
-      updateUserinDb(user, mutateUser);
+      updateUserInDb(user, mutateUser);
       setEditingIndex("");
     } else {
       console.log("Kategorie nicht gefunden.");
@@ -99,7 +99,12 @@ export default function ShoppingList({ user, mutateUser }) {
           userShoppingList.push(category);
         }
 
-        category.items.push({ name, quantity: item.quantity, unit });
+        category.items.push({
+          name,
+          quantity: item.quantity,
+          unit,
+          isChecked: item.isChecked,
+        });
       });
     });
 
@@ -138,63 +143,78 @@ export default function ShoppingList({ user, mutateUser }) {
       });
     }
 
-    await updateUserinDb(user, mutateUser);
+    await updateUserInDb(user, mutateUser);
     event.target.reset();
   }
 
-  // function handleCheckboxChange(ind) {
-  //   const toggleChecked = user.shoppingList.map((item, index) =>
-  //     index === ind ? { ...item, isChecked: !item.isChecked } : item
+  // function handleCheckboxChange(categoryName, itemIndex) {
+  //   // Finde die Kategorie basierend auf dem übergebenen Namen
+  //   const categoryIndex = user.shoppingList.findIndex(
+  //     (c) => c.category === categoryName
   //   );
-  //   toggleChecked.sort((a, b) => {
-  //     if (a.isChecked === b.isChecked) {
-  //       return a.index - b.index;
-  //     }
-  //     return a.isChecked ? 1 : -1;
-  //   });
-  //   user.shoppingList = toggleChecked;
+  //   if (categoryIndex === -1) {
+  //     console.error("Kategorie nicht gefunden");
+  //     return;
+  //   }
 
-  //   updateUserinDb(user, mutateUser);
+  //   // Direktes Umschalten des isChecked-Status für das spezifizierte Item
+  //   user.shoppingList[categoryIndex].items[itemIndex].isChecked =
+  //     !user.shoppingList[categoryIndex].items[itemIndex].isChecked;
 
+  //   // Sofortige Aktualisierung der Nutzerdaten in der Datenbank
+  //   updateUserInDb(user, mutateUser);
+
+  //   //Gecheckte Items nach einer Verzögerung entfernen
   //   setTimeout(() => {
-  //     const deleteChecked = user.shoppingList.filter((item) => !item.isChecked);
-  //     user.shoppingList = deleteChecked;
-  //     updateUserinDb(user, mutateUser);
+  //     const updatedItems = user.shoppingList[categoryIndex].items.filter(
+  //       (item) => !item.isChecked
+  //     );
+  //     user.shoppingList[categoryIndex].items = updatedItems;
+  //     if (user.shoppingList[categoryIndex].items.length === 0) {
+  //       user.shoppingList = user.shoppingList.filter(
+  //         (_, index) => index !== categoryIndex
+  //       );
+  //     }
+  //     updateUserInDb(user, mutateUser);
   //   }, 10000);
   // }
 
   function handleCheckboxChange(categoryName, itemIndex) {
-    // Finde die Kategorie basierend auf dem übergebenen Namen
-    const category = user.shoppingList.find((c) => c.category === categoryName);
-    if (!category) {
+    const categoryIndex = user.shoppingList.findIndex(
+      (c) => c.category === categoryName
+    );
+    if (categoryIndex === -1) {
       console.error("Kategorie nicht gefunden");
       return;
     }
 
-    // Umschalten des isChecked-Status für das spezifizierte Item
-    const item = category.items[itemIndex];
-    item.isChecked = !item.isChecked;
+    const newUserShoppingList = [...user.shoppingList];
+    newUserShoppingList[categoryIndex].items[itemIndex].isChecked =
+      !newUserShoppingList[categoryIndex].items[itemIndex].isChecked;
 
-    // Optional: Items, die als gecheckt markiert sind, sofort oder nach einer Verzögerung entfernen
-    // Wenn du möchtest, dass gecheckte Items nach einer Verzögerung entfernt werden:
-    setTimeout(() => {
-      // Filtere nicht-gecheckte Items und aktualisiere die Kategorie
-      const uncheckedItems = category.items.filter((i) => !i.isChecked);
-      category.items = uncheckedItems;
+    updateUserInDb(user, mutateUser);
 
-      // Aktualisiere die Nutzerdaten in der Datenbank
-      updateUserinDb(user, mutateUser);
-    }, 10000); // 10000 Millisekunden = 10 Sekunden Verzögerung
+    setTimeout(async () => {
+      const updatedCategories = [...user.shoppingList];
+      const updatedItems = updatedCategories[categoryIndex].items.filter(
+        (item) => !item.isChecked
+      );
 
-    // Ohne Verzögerung (sofortiges Entfernen):
-    // const uncheckedItems = category.items.filter(i => !i.isChecked);
-    // category.items = uncheckedItems;
-    // updateUserinDb(user, mutateUser);
+      if (updatedItems.length > 0) {
+        updatedCategories[categoryIndex].items = updatedItems;
+      } else {
+        // Entferne die Kategorie, wenn alle Items gecheckt sind
+        updatedCategories.splice(categoryIndex, 1);
+      }
+      user.shoppingList = updatedCategories;
+
+      updateUserInDb(user, mutateUser);
+    }, 10000);
   }
 
   function clearShopping() {
     user.shoppingList = [];
-    updateUserinDb(user, mutateUser);
+    updateUserInDb(user, mutateUser);
   }
 
   async function setCategories() {
@@ -217,7 +237,7 @@ export default function ShoppingList({ user, mutateUser }) {
     }
     setIsKiGenerating(false);
     console.log("after KI", user.shoppingList);
-    updateUserinDb(user, mutateUser);
+    updateUserInDb(user, mutateUser);
   }
 
   return (
@@ -343,13 +363,16 @@ export default function ShoppingList({ user, mutateUser }) {
         </form>
       </StyledList>
       {user.shoppingList.length > 0 && (
-        <StyledButton
-          onClick={setCategories}
-          aria-label="trigger AI-based sorting and grouping of items (this takes a moment)"
-        >
-          <RotatingSVG $rotate={isKiGenerating} />
-          {!isKiGenerating ? "KI-Sortierung" : "bitte warten..."}
-        </StyledButton>
+        <>
+          {/* {"Shoppingliste sortieren"} */}
+          <StyledButton
+            onClick={setCategories}
+            aria-label="trigger AI-based sorting and grouping of items (this takes a moment)"
+          >
+            <RotatingSVG $rotate={isKiGenerating} />
+            {!isKiGenerating ? "Sortieren" : "bitte warten..."}
+          </StyledButton>
+        </>
       )}
       <Spacer />
       <IconButtonLarge style={"trash"} bottom="6rem" onClick={clearShopping} />
@@ -416,7 +439,8 @@ const StyledButton = styled(Button)`
   gap: 0.5rem;
   align-items: center;
   width: max-content;
-  margin: 0 auto;
+  margin-right: var(--gap-out);
+  margin-left: auto;
 `;
 
 const RestyledH2 = styled(StyledH2)`
