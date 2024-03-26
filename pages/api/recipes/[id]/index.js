@@ -50,6 +50,7 @@ export default async function handler(request, response) {
       }
 
       await Recipe.findByIdAndDelete(id);
+      //call CLEANUP function!!
       return response.status(200).json({ status: `Recipe ${id} deleted!` });
     } catch (error) {
       console.error(error);
