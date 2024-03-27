@@ -50,8 +50,10 @@ export default async function handler(req, res) {
 
     const prompt = `Basierend auf den folgenden Zutaten, erstelle eine strukturierte Einkaufsliste als JSON. Die Liste soll in Kategorien unterteilt sein, die ausschließlich aus dieser Liste stammen: ${ingredientCategories.join(
       ", "
-    )}.\n\nZutaten: ${ingredients.join(
-      ", "
+    )}.\n\nZutaten: ${JSON.stringify(
+      ingredients,
+      null,
+      2
     )}.\n\nFolge exakt diesem JSON-Format für die Ausgabe: ${JSON.stringify(
       dataSchema,
       null,
