@@ -8,6 +8,9 @@ import PanIcon from "@/public/icons/svg/plate_7409529.svg";
 import PenIcon from "/public/icons/svg/pen-square_10435869.svg";
 import LeaveIcon from "@/public/icons/svg/arrow-left-from-line_9253329.svg";
 import SettingsIcon from "@/public/icons/settings-svgrepo-com.svg";
+import TrashIcon from "@/public/icons/svg/trash-xmark_10741775.svg";
+import MenuIcon from "@/public/icons/svg/menu.svg";
+import ReloadIcon from "@/public/icons/svg/arrows-retweet_9253335.svg";
 
 export const BookUser = BookUserIcon;
 export const People = PeopleIcon;
@@ -19,3 +22,6 @@ export const Pan = PanIcon;
 export const Pen = PenIcon;
 export const Leave = LeaveIcon;
 export const Settings = SettingsIcon;
+export const Trash = TrashIcon;
+export const Menu = MenuIcon;
+export const Reload = ReloadIcon;

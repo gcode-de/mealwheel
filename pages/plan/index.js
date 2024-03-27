@@ -29,7 +29,6 @@ import MealCard from "@/components/MealCard";
 import IconButton from "@/components/Styled/IconButton";
 import RandomnessSlider from "@/components/Styled/RandomnessSlider";
 import PowerIcon from "@/public/icons/power-material-svgrepo-com.svg";
-import Rotate from "@/public/icons/svg/arrows-retweet_9253335.svg";
 import Xmark from "@/public/icons/svg/trash-xmark_10741775.svg";
 import Menu from "@/public/icons/svg/menu.svg";
 
@@ -43,6 +42,7 @@ import IconButtonLarge from "@/components/Styled/IconButtonLarge";
 import { notifySuccess, notifyError } from "/helpers/toast";
 import ToggleCheckbox from "@/components/Styled/ToggleCheckbox";
 import MenuContainer from "@/components/MenuContainer";
+import { BookUser } from "@/helpers/svg";
 
 export default function Plan({
   isLoading,
@@ -60,20 +60,9 @@ export default function Plan({
   const [assignableDays, setAssignableDays] = useState([]);
   const [numberOfRandomRecipes, setNumberOfRandomRecipes] = useState(0);
   const [isRandomnessActive, setIsRandomnessActive] = useState(false);
-  const [menuVisible, setMenuVisible] = useState(
-    weekdays ? new Array(weekdays.length).fill(false) : []
-  );
 
   function toggleRandomness() {
     setIsRandomnessActive(!isRandomnessActive);
-  }
-
-  function toggleMenu(index) {
-    setMenuVisible((prevMenuVisible) => {
-      const updatedMenuVisible = [...prevMenuVisible];
-      updatedMenuVisible[index] = !prevMenuVisible[index];
-      return updatedMenuVisible;
-    });
   }
 
   useEffect(() => {
@@ -216,7 +205,7 @@ export default function Plan({
 
   const sensors = useSensors(mouseSensor, touchSensor);
 
-  const SortableWeekday = ({ weekday, calendarDay }) => {
+  const SortableWeekday = ({ weekday, calendarDay, index }) => {
     const { attributes, listeners, setNodeRef, transform, transition } =
       useSortable({ id: weekday.date });
     const style = { transform: CSS.Transform.toString(transform), transition };
@@ -246,6 +235,8 @@ export default function Plan({
             day={calendarDay.date}
             isFavorite={null}
             user={user}
+            weekdays={weekdays}
+            index={index}
           />
         ) : (
           <CardSkeleton
@@ -258,6 +249,7 @@ export default function Plan({
                 : ""
             }
             weekdays={weekdays}
+            index={index}
           />
         )}
       </article>
@@ -445,15 +437,6 @@ export default function Plan({
                         !checkIfWeekdayIsDefaultEnabled(weekday.date)
                       }
                     >
-                      {/* <StyledPowerIcon
-                        $dayIsDisabled={
-                          calendarDay?.isDisabled ??
-                          !checkIfWeekdayIsDefaultEnabled(weekday.date)
-                        }
-                        onClick={() => {
-                          toggleDayIsDisabled(weekday.date);
-                        }}
-                      /> */}
                       <ToggleCheckbox
                         defaultChecked={
                           calendarDay?.hasOwnProperty("isDisabled")
@@ -469,37 +452,12 @@ export default function Plan({
                       />
                       {calendarDay?.isDisabled}
                       {weekday.readableDate}
-                      <MenuButton onClick={() => toggleMenu(index)}>
-                        <StyledMenu width={25} height={25} />
-                      </MenuButton>
-                      {menuVisible[index] && (
-                        <MenuContainer
-                          top="var(--gap-between)"
-                          right="calc(3 * var(--gap-between) + 10px)"
-                        >
-                          <UnstyledButton
-                            onClick={() => {
-                              reassignRecipe(weekdays[index].date);
-                            }}
-                          >
-                            <Rotate width={15} height={15} /> zufälliges Rezept
-                            hinzufügen
-                          </UnstyledButton>
-                          <UnstyledButton
-                            onClick={() => {
-                              removeRecipe(weekdays[index].date);
-                            }}
-                          >
-                            <Xmark width={15} height={15} />
-                            Tag leeren
-                          </UnstyledButton>
-                        </MenuContainer>
-                      )}
                     </StyledH2>
                     <SortableWeekday
                       key={weekday.date}
                       weekday={weekday}
                       calendarDay={calendarDay}
+                      index={index}
                     />
                   </Fragment>
                 );
@@ -585,46 +543,7 @@ const StyledH2 = styled.h2`
   color: ${(props) => props.$dayIsDisabled && "var(--color-lightgrey)"};
   text-decoration: ${(props) => (props.$dayIsDisabled ? "line-through" : "")};
   display: flex;
-  align-items: center;
+  align-items: space-around;
   gap: 0.5rem;
   position: relative;
 `;
-
-const MenuButton = styled.button`
-  background-color: transparent;
-  border: none;
-  position: absolute;
-  right: 0;
-`;
-
-const StyledMenu = styled(Menu)`
-  background-color: var(--color-background);
-  rotate: 90deg;
-  cursor: pointer;
-`;
-
-const UnstyledButton = styled.button`
-  background-color: transparent;
-  border: none;
-  text-align: start;
-  border-radius: var(--border-radius-small);
-  display: flex;
-  align-items: center;
-  gap: var(--gap-between);
-  height: 2rem;
-  color: var(--color-font);
-  &:hover {
-    background-color: var(--color-background);
-  }
-`;
-
-// const StyledPowerIcon = styled(PowerIcon)`
-//   width: 1.5rem;
-//   height: 1.5rem;
-//   margin: -0.5rem 0.3rem 0 -0.2rem;
-//   position: relative;
-//   top: 0.3rem;
-//   fill: ${(props) =>
-//     props.$dayIsDisabled ? "var(--color-lightgrey)" : "var(--color-highlight)"};
-//   cursor: pointer;
-// `;

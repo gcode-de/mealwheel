@@ -3,7 +3,9 @@ import Image from "next/image";
 import Link from "next/link";
 import IconButton from "./Styled/IconButton";
 import SetNumberOfPeople from "./Styled/SetNumberOfPeople";
-import Reload from "@/public/icons/svg/arrows-retweet_9253335.svg";
+import MenuContainer from "./MenuContainer";
+import { BookUser, Menu, Reload, Trash } from "@/helpers/svg";
+import { useState } from "react";
 
 export default function MealCard({
   recipe,
@@ -15,7 +17,21 @@ export default function MealCard({
   removeRecipe,
   day,
   user,
+  weekdays,
+  index,
 }) {
+  const [menuVisible, setMenuVisible] = useState(
+    weekdays ? new Array(weekdays.length).fill(false) : []
+  );
+
+  function toggleMenu(index) {
+    setMenuVisible((prevMenuVisible) => {
+      const updatedMenuVisible = [...prevMenuVisible];
+      updatedMenuVisible[index] = !prevMenuVisible[index];
+      return updatedMenuVisible;
+    });
+  }
+
   return (
     <StyledLi>
       {isFavorite !== null && (
@@ -57,6 +73,7 @@ export default function MealCard({
             {recipe?.duration && `${recipe?.duration} MIN | `}
             {recipe?.difficulty?.toUpperCase()}
           </StyledPDuration>
+          {weekdays && <StyledDragLine />}
           <StyledSettingsDiv>
             {numberOfPeople !== undefined && (
               <SetNumberOfPeople
@@ -66,6 +83,45 @@ export default function MealCard({
                 reassignRecipe={reassignRecipe}
                 day={day}
               />
+            )}
+            {reassignRecipe !== undefined && (
+              <MenuButton>
+                <Reload
+                  width={20}
+                  height={20}
+                  onClick={() => {
+                    reassignRecipe(day);
+                  }}
+                />
+              </MenuButton>
+            )}
+            {weekdays && (
+              <MenuButton onClick={() => toggleMenu(index)}>
+                <StyledMenu width={30} height={30} />
+              </MenuButton>
+            )}
+            {menuVisible[index] && (
+              <MenuContainer
+                top="6.5rem"
+                right="calc(3 * var(--gap-between) + 20px)"
+              >
+                <UnstyledButton
+                // onClick={() => {
+                //   reassignRecipe(weekdays[index].date);
+                // }}
+                >
+                  <BookUser width={15} height={15} /> Rezept im Kochbuch
+                  speichern
+                </UnstyledButton>
+                <UnstyledButton
+                  onClick={() => {
+                    removeRecipe(weekdays[index].date);
+                  }}
+                >
+                  <Trash width={15} height={15} />
+                  Tag leeren
+                </UnstyledButton>
+              </MenuContainer>
             )}
           </StyledSettingsDiv>
         </StyledDiv>
@@ -112,10 +168,11 @@ const StyledLink = styled(Link)`
 const StyledDiv = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: space-between;
   align-items: left;
   width: 210px;
   height: 7.5;
+  padding: 0.5rem 0 0.5rem 0;
 `;
 
 const StyledPTitle = styled.p`
@@ -143,22 +200,54 @@ const StyledLi = styled.li`
   padding: 0;
 `;
 
-const StyledButtonDiv = styled.div`
-  z-index: 2;
-  color: var(--color-highlight);
+const StyledSettingsDiv = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
+
+const MenuButton = styled.button`
   background-color: var(--color-background);
-  border-radius: 10px;
-  margin: 0.75rem 0 0 0.25rem;
-  button {
-    border: none;
-    background: none;
-    font-size: 1.25rem;
-    cursor: pointer;
-    position: relative;
-    top: 0.15rem;
+  border: none;
+  z-index: 3;
+  border-radius: 50px;
+  align-self: end;
+  padding-bottom: 0;
+  height: 30px;
+  width: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const StyledMenu = styled(Menu)`
+  rotate: 90deg;
+  cursor: pointer;
+  border-radius: var(--border-radius-large);
+`;
+
+const UnstyledButton = styled.button`
+  background-color: transparent;
+  border: none;
+  text-align: start;
+  border-radius: var(--border-radius-small);
+  display: flex;
+  align-items: center;
+  gap: var(--gap-between);
+  height: 2rem;
+  color: var(--color-font);
+  &:hover {
+    background-color: var(--color-background);
   }
 `;
 
-const StyledSettingsDiv = styled.div`
-  display: flex;
+const StyledDragLine = styled.div`
+  position: absolute;
+  right: 0.25rem;
+  top: 2.25rem;
+  z-index: 3;
+  width: 3px;
+  box-shadow: inset 0 0 5px rgba(77, 74, 74, 0.2);
+  height: 3.25rem;
+  border-radius: var(--border-radius-medium);
+  background-color: var(--color-background);
 `;
