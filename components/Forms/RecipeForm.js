@@ -8,6 +8,7 @@ import StyledP from "../Styled/StyledP";
 import AddButton from "../Styled/AddButton";
 import SetNumberOfPeople from "../Styled/SetNumberOfPeople";
 import Plus from "/public/icons/svg/plus.svg";
+import Minus from "/public/icons/svg/horizontal-rule_9272854.svg";
 import StyledIngredients from "../Styled/StyledIngredients";
 import StyledInput from "../Styled/StyledInput";
 import StyledDropDown from "../Styled/StyledDropDown";
@@ -56,12 +57,12 @@ export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
     data?.servings ? data?.defaultNumberOfServings : 2
   );
 
+  const [upload, setUpload] = useState(false);
   const [isChecked, setIsChecked] = useState(true);
 
   function handleSetNumberOfPeople(change) {
     setServings((prevServings) => prevServings + change);
   }
-  const [upload, setUpload] = useState(false);
 
   function handleTagChange(value) {
     setSelectedTags(
@@ -93,6 +94,11 @@ export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
         name: "",
       },
     ]);
+  }
+  function deleteIngredient() {
+    setIngredients((prevIngredients) =>
+      prevIngredients.slice(0, prevIngredients.length - 1)
+    );
   }
   function handleSubmit(event) {
     event.preventDefault();
@@ -150,7 +156,6 @@ export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
             router.back();
           }}
         ></IconButton>
-        {upload && <StyledProgress />}
         {imageUrl && (
           <StyledImageCloudinary
             src={
@@ -165,6 +170,7 @@ export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
         )}
 
         <StyledImageUploadContainer htmlFor="upload">
+          {upload && <StyledProgress />}
           <form>
             <Plus width={40} height={40} />
             <HiddenInput
@@ -254,13 +260,22 @@ export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
                 />
               </StyledIngredients>
             ))}
-            <AddButton
-              type="button"
-              $color="var(--color-background)"
-              onClick={addIngredient}
-            >
-              <Plus width={20} height={20} />
-            </AddButton>
+            <Wrapper>
+              <AddButton
+                type="button"
+                $color="var(--color-background)"
+                onClick={addIngredient}
+              >
+                <Plus width={20} height={20} />
+              </AddButton>
+              <AddButton
+                type="button"
+                $color="var(--color-background)"
+                onClick={deleteIngredient}
+              >
+                <Minus width={20} height={20} />
+              </AddButton>
+            </Wrapper>
           </StyledList>
           {filterTags
             .filter(({ type }) => type === "diet")
@@ -406,6 +421,7 @@ const StyledImageUploadContainer = styled.label`
 const HiddenInput = styled.input`
   display: none;
 `;
+
 const StyledSmallArticle = styled.article`
   display: flex;
   justify-content: space-between;
@@ -414,4 +430,9 @@ const StyledSmallArticle = styled.article`
   width: calc(100% - (2 * var(--gap-out)));
   margin-bottom: var(--gap-between);
   margin-top: var(--gap-between);
+
+const Wrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+
 `;

@@ -12,7 +12,10 @@ export default function FollowButton({
 }) {
   function handleAddPeople(id) {
     let communityUser = allUsers.find((user) => user._id === id);
-
+    if (!communityUser) {
+      notifyError("Benutzer nicht gefunden");
+      return;
+    }
     if (communityUser.friends.includes(id)) {
       notifyError("Ihr seid schon Freunde");
     }
