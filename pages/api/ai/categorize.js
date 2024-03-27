@@ -49,7 +49,7 @@ export default async function handler(req, res) {
       // model: "gpt-4",
       messages: [{ role: "user", content: prompt }],
       temperature: 0.3,
-      max_tokens: 5000,
+      max_tokens: 4096,
     });
 
     console.log("Response ChatGPT:", response);
