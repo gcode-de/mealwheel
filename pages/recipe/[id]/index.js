@@ -392,8 +392,17 @@ export default function DetailPage({
           <StyledLink onClick={() => setContent("instructions")}>
             Zubereitung
           </StyledLink>
-          <StyledLink onClick={() => setContent("notes")}>Notizen</StyledLink>
-          <StyledLink onClick={() => setContent("video")}>Video</StyledLink>
+          <StyledLink
+            onClick={() => {
+              if (!user) {
+                notifyError("Bitte zuerst einloggen.");
+                return;
+              }
+              setContent("notes");
+            }}
+          >
+            Notizen
+          </StyledLink>
         </StyledHyper>
         {content === "instructions" && (
           <StyledIngredients>{instructions}</StyledIngredients>
@@ -405,9 +414,6 @@ export default function DetailPage({
             mutateUser={mutateUser}
             foundInteractions={foundInteractions}
           />
-        )}
-        {content === "video" && (
-          <Link href={youtubeLink}>auf youtube anschauen</Link>
         )}
       </StyledArticle>
     </Wrapper>
