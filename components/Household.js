@@ -17,7 +17,6 @@ export default function Household({ allUsers, user, mutateAllUsers }) {
     setIsModal(true);
   }
   function sendRequest() {
-    console.log("sendRequest", selectedFriend);
     let requestedFriend = friends.find(
       (friend) => friend._id === selectedFriend
     );
@@ -28,7 +27,7 @@ export default function Household({ allUsers, user, mutateAllUsers }) {
         {
           senderId: user._id,
           timestamp: Date(),
-          message: `${user.userName} möchte sich den Haushalt mit dir teilen`,
+          message: `${user.userName} möchte sich den Haushalt mit dir teilen, wenn du die Anfrage annimmst, wird dein Planer überschrieben`,
           type: 3,
         },
       ],

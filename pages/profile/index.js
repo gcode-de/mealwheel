@@ -130,6 +130,28 @@ export default function ProfilePage({
     updateUserinDb(user, mutateUser);
     notifyError("Anfrage abgelehnt");
   }
+  function addFriendToHousehold(id, index) {
+    user.household = [{ ...user.household, _id: id, role: admin }];
+    //calender + shopping aktivität muss überschrieben werden und die referenz von dem anderen muss gespeichert werden
+    // user.calender =
+    // user.shopping =
+    const updatedRequests = user.connectionRequests.filter(
+      (request, ind) => ind !== index
+    );
+    user.connectionRequests = updatedRequests;
+    // updateUserinDb(user, mutateUser);
+
+    //update requested user
+    let foundUser = allUsers.find((user) => user._id === id);
+
+    foundUser = {
+      ...foundUser,
+      household: [{ ...foundUser.household, id: user._id, role: owner }],
+    };
+
+    // updateCommunityUserInDB(foundUser, mutateAllUsers);
+    notifySuccess(`${foundUser.userName} zum Haushalt hinzugefügt`);
+  }
   return (
     <>
       <IconButton
@@ -151,19 +173,38 @@ export default function ProfilePage({
       {isNotificationVisible && (
         <MenuContainer top="3.5rem" left="var(--gap-out)">
           {user.connectionRequests.length >= 1 ? (
-            user.connectionRequests.map((request, index) => (
-              <div key={request.senderId}>
-                <p>{request.message}</p>
-                <div>
-                  <button onClick={() => addFriend(request.senderId, index)}>
-                    bestätigen
-                  </button>
-                  <button onClick={() => rejectFriendRequest(index)}>
-                    ablehnen
-                  </button>
+            (user.connectionRequests.type === 1 &&
+              user.connectionRequests.map((request, index) => (
+                <div key={request.senderId}>
+                  <p>{request.message}</p>
+                  <div>
+                    <button onClick={() => addFriend(request.senderId, index)}>
+                      bestätigen
+                    </button>
+                    <button onClick={() => rejectFriendRequest(index)}>
+                      ablehnen
+                    </button>
+                  </div>
                 </div>
-              </div>
-            ))
+              ))) ||
+            (user.connectionRequests.type === 3 &&
+              user.connectionRequests.map((request, index) => (
+                <div key={request.senderId}>
+                  <p>{request.message}</p>
+                  <div>
+                    <button
+                      onClick={() =>
+                        addFriendToHousehold(request.senderId, index)
+                      }
+                    >
+                      bestätigen
+                    </button>
+                    <button onClick={() => rejectFriendRequest(index)}>
+                      ablehnen
+                    </button>
+                  </div>
+                </div>
+              )))
           ) : (
             <p>Du bist auf dem neuesten Stand!</p>
           )}

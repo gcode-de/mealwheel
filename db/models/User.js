@@ -64,6 +64,7 @@ const userSchema = new Schema({
     },
   ],
   friends: [{ type: String }],
+  household: [{ id: String, role: String }],
 });
 
 const User = mongoose.models.User || mongoose.model("User", userSchema);
