@@ -12,14 +12,15 @@ export default function Favorites({
   isLoading,
   getRecipeProperty,
   toggleIsFavorite,
+  mutateUser,
 }) {
   if (!user) {
     return (
       <>
-        <Header text="Favoriten" />
+        <Header text="Schmeckos" />
         <StyledArticle>
           <StyledUl>
-            Bitte <Link href="/api/auth/signin">einloggen</Link>, um Favoriten
+            Bitte <Link href="/api/auth/signin">einloggen</Link>, um Schmeckos
             zu speichern.
           </StyledUl>
         </StyledArticle>
@@ -50,9 +51,9 @@ export default function Favorites({
   if (!favoriteRecipes.length) {
     return (
       <>
-        <Header text="Favoriten" />
+        <Header text="Meine Schmeckos" />
         <StyledArticle>
-          <StyledUl>Du hast noch keine Favoriten gespeichert.</StyledUl>
+          <StyledUl>Du hast noch keine Schmeckos gespeichert.</StyledUl>
         </StyledArticle>
       </>
     );
@@ -60,7 +61,7 @@ export default function Favorites({
 
   return (
     <>
-      <Header text="Favoriten" />
+      <Header text="Meine Schmeckos" />
       <StyledArticle>
         <StyledUl>
           {favoriteRecipes?.map((recipe) => {
@@ -69,7 +70,9 @@ export default function Favorites({
                 key={recipe._id}
                 recipe={recipe}
                 isFavorite={getRecipeProperty(recipe._id, "isFavorite")}
-                onToggleIsFavorite={toggleIsFavorite}
+                onToggleIsFavorite={() => {
+                  toggleIsFavorite(recipe._id, mutateUser);
+                }}
               />
             );
           })}

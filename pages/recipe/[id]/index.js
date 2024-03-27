@@ -10,7 +10,7 @@ import assignRecipesToCalendarDays from "@/helpers/assignRecipesToCalendarDays";
 import updateUserinDb from "@/helpers/updateUserInDb";
 import { filterTags } from "@/helpers/filterTags";
 
-import SetNumberOfPeople from "@/components/Styled/SetNumberOfPeople";
+import SetNumberOfPeople from "@/components/Cards/SetNumberOfPeople";
 import IconButton from "@/components/Styled/IconButton";
 import StyledArticle from "@/components/Styled/StyledArticle";
 import StyledList from "@/components/Styled/StyledList";
@@ -55,7 +55,7 @@ export default function DetailPage({
     data: recipe,
     isLoading: dataIsLoading,
     error: dataError,
-    mutate,
+    mutate: mutateRecipe,
   } = useSWR(id ? `/api/recipes/${id}` : null);
 
   const defaultNumberOfServings = recipe?.defaultNumberOfServings;
@@ -252,7 +252,7 @@ export default function DetailPage({
               notifyError("Bitte zuerst einloggen.");
               return;
             }
-            toggleIsFavorite(_id);
+            toggleIsFavorite(_id, mutateRecipe);
           }}
         />
         <IconButton
@@ -324,7 +324,9 @@ export default function DetailPage({
 
         <StyledTitle>{title}</StyledTitle>
         <StyledP>
-          {duration} MIN | {difficulty} | {recipe.likes} likes
+          {duration} MIN | {difficulty} |{" "}
+          {recipe.likes &&
+            `${recipe.likes} ${recipe.likes > 1 ? "Schmeckos" : "Schmecko"}`}
         </StyledP>
         <StyledH2>
           Zutaten{" "}

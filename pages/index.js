@@ -200,7 +200,7 @@ export default function HomePage({
     data: recipes,
     error: recipesError,
     isLoading: recipesIsLoading,
-    mutate,
+    mutate: mutateRecipes,
   } = useSWR(apiQuery);
 
   if (error) {
@@ -309,7 +309,10 @@ export default function HomePage({
                   key={recipe._id}
                   recipe={recipe}
                   isFavorite={getRecipeProperty(recipe._id, "isFavorite")}
-                  onToggleIsFavorite={toggleIsFavorite}
+                  onToggleIsFavorite={() => {
+                    toggleIsFavorite(recipe?._id, mutateRecipes);
+                  }}
+                  mutateRecipes={mutateRecipes}
                 />
               );
             })}

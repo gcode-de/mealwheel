@@ -2,10 +2,12 @@ import styled from "styled-components";
 import Image from "next/image";
 import Link from "next/link";
 import IconButton from "../Styled/IconButton";
-import SetNumberOfPeople from "../Styled/SetNumberOfPeople";
+import SetNumberOfPeople from "./SetNumberOfPeople";
+import LikesDisplay from "./LikesDisplay";
 
 export default function MealCard({
   recipe,
+  mutateRecipes,
   isFavorite,
   onToggleIsFavorite,
   numberOfPeople,
@@ -17,7 +19,7 @@ export default function MealCard({
 }) {
   return (
     <StyledLi>
-      {isFavorite !== null && (
+      {/* {isFavorite !== null && (
         <IconButton
           style="Heart"
           right="-0.5rem"
@@ -29,7 +31,7 @@ export default function MealCard({
             onToggleIsFavorite(recipe._id);
           }}
         />
-      )}
+      )} */}
 
       {/* {reassignRecipe !== undefined && (
         <IconButton
@@ -86,8 +88,15 @@ export default function MealCard({
               day={day}
             />
           )}
+          {isFavorite !== null && (
+            <LikesDisplay
+              likes={recipe?.likes}
+              isFavorite={isFavorite}
+              onToggleIsFavorite={onToggleIsFavorite}
+              $margin="0.75rem 0 0 1.5rem"
+            />
+          )}
         </StyledDiv>
-        {recipe.likes}
       </CardContainer>
     </StyledLi>
   );

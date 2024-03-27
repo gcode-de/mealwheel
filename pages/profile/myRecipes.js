@@ -30,6 +30,7 @@ export default function MyRecipes({
     data: myRecipes,
     error: recipesError,
     isLoading: recipesIsLoading,
+    mutate: mutateRecipes,
   } = useSWR(`/api/recipes?author=${user?._id}`);
 
   function toggleAddCollection() {
@@ -108,7 +109,9 @@ export default function MyRecipes({
                     key={recipe._id}
                     recipe={recipe}
                     isFavorite={getRecipeProperty(recipe._id, "isFavorite")}
-                    onToggleIsFavorite={toggleIsFavorite}
+                    onToggleIsFavorite={() => {
+                      toggleIsFavorite(recipe._id, mutateRecipes);
+                    }}
                   ></MealCard>
                 );
               })
