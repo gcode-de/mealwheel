@@ -89,11 +89,11 @@ export default function Collections({ user, mutateUser }) {
       )}
       {isEditing && (
         <ButtonContainer>
-          <button onClick={handleDeleteCollection}>
+          <button type="button" onClick={handleDeleteCollection}>
             <Trash width={15} height={15} />
             entfernen
           </button>
-          <button onClick={toggleEdit}>
+          <button type="button" onClick={toggleEdit}>
             <Check width={15} height={15} />
             speichern
           </button>

@@ -75,7 +75,7 @@ export default function MyRecipes({
 
       <StyledUl>
         {myRecipes.length
-          ? myRecipes?.map((recipe) => {
+          ? myRecipes.map((recipe) => {
               return (
                 <MealCard
                   key={recipe._id}
