@@ -5,8 +5,9 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-export const maxDuration = 25;
-export const dynamic = "force-dynamic";
+export const config = {
+  maxDuration: 5,
+};
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
@@ -52,8 +53,10 @@ export default async function handler(req, res) {
       // model: "gpt-4",
       messages: [{ role: "user", content: prompt }],
       temperature: 0.3,
-      max_tokens: 1000,
+      max_tokens: 2500,
     });
+
+    console.log("Response ChatGPT:", response);
 
     return res.status(200).json(response.choices[0].message.content);
   } catch (error) {

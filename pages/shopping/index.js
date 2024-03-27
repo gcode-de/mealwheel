@@ -235,6 +235,109 @@ export default function ShoppingList({ user, mutateUser }) {
     updateUserInDb(user, mutateUser);
   }
 
+  // async function setCategories() {
+  //   if (user.shoppingList.length === 0) {
+  //     notifyError("Bitte befülle zuerst deine Einkaufsliste.");
+  //     return;
+  //   }
+
+  //   setIsAiGenerating(true);
+  //   setDurationAiGenerating(25); // Beginne mit der Countdown-Zeit
+
+  //   try {
+  //     // Starte die asynchrone Verarbeitung und speichere die ID für späteres Polling
+  //     await startCategorization(JSON.stringify(user.shoppingList));
+
+  //     // Funktion zum Polling des Verarbeitungsergebnisses
+  //     async function pollCategorizationResult() {
+  //       try {
+  //         const result = await getCategorizationResult();
+  //         if (result) {
+  //           // Wenn ein Ergebnis verfügbar ist, aktualisiere den State und das UI
+  //           if (!validateShoppinglistItems(result)) {
+  //             throw new Error(
+  //               "Erhaltene KI-Daten entsprechen nicht dem erwarteten Schema."
+  //             );
+  //           }
+  //           user.shoppingList = result;
+  //           notifySuccess("Einkaufsliste wurde sortiert.");
+  //           setIsAiGenerating(false);
+  //           setDurationAiGenerating(0);
+  //           updateUserInDb(user, mutateUser);
+  //         } else {
+  //           // Wenn kein Ergebnis verfügbar ist, versuche es erneut
+  //           setTimeout(pollCategorizationResult, 2000); // Warte 2 Sekunden vor dem nächsten Polling-Versuch
+  //         }
+  //       } catch (error) {
+  //         console.error(
+  //           "Fehler beim Abrufen der Kategorisierungsergebnisse:",
+  //           error
+  //         );
+  //         notifyError("Fehler beim Abrufen der Ergebnisse.");
+  //         setIsAiGenerating(false);
+  //         setDurationAiGenerating(0);
+  //       }
+  //     }
+
+  //     // Beginne mit dem Polling des Ergebnisses
+  //     pollCategorizationResult();
+  //   } catch (error) {
+  //     console.error("Fehler beim Starten der Kategorisierung:", error);
+  //     notifyError("Fehler beim Starten der Kategorisierung.");
+  //     setIsAiGenerating(false);
+  //     setDurationAiGenerating(0);
+  //   }
+  // }
+
+  // async function startCategorization(shoppingListJson) {
+  //   try {
+  //     const response = await fetch(`/api/ai/start-categorization`, {
+  //       method: "POST",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: shoppingListJson,
+  //     });
+  //     const data = await response.json();
+  //     if (!response.ok) {
+  //       throw new Error(
+  //         data.message || "Start der Kategorisierung fehlgeschlagen."
+  //       );
+  //     }
+  //     // Speichere die ID/Token für späteres Polling, falls notwendig
+  //     sessionStorage.setItem("categorizationToken", data.token);
+  //   } catch (error) {
+  //     console.error("Fehler beim Starten der Kategorisierung:", error);
+  //     throw error; // Weitergeben des Fehlers zum Fehler-Handling im aufrufenden Code
+  //   }
+  // }
+
+  // async function getCategorizationResult() {
+  //   const token = sessionStorage.getItem("categorizationToken");
+  //   try {
+  //     const response = await fetch(
+  //       `/api/ai/get-categorization-result?token=${token}`
+  //     );
+  //     const data = await response.json();
+  //     if (!response.ok) {
+  //       throw new Error(
+  //         data.message ||
+  //           "Abrufen des Kategorisierungsergebnisses fehlgeschlagen."
+  //       );
+  //     }
+  //     // Prüfe, ob ein Ergebnis verfügbar ist
+  //     if (data.status === "completed") {
+  //       return data.result; // Das tatsächliche Ergebnis
+  //     }
+  //     // Kein Ergebnis verfügbar, continue Polling
+  //     return null;
+  //   } catch (error) {
+  //     console.error(
+  //       "Fehler beim Abrufen der Kategorisierungsergebnisse:",
+  //       error
+  //     );
+  //     throw error;
+  //   }
+  // }
+
   return (
     <>
       <Header text="Einkaufsliste" />
