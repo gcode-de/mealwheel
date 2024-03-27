@@ -1,9 +1,9 @@
 import { OpenAI } from "openai";
 import { ingredientCategories } from "@/helpers/ingredientCategories";
 
-export const config = {
-  maxDuration: 25,
-};
+// export const config = {
+//   maxDuration: 25,
+// };
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
