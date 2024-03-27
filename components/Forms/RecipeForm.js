@@ -430,9 +430,9 @@ const StyledSmallArticle = styled.article`
   width: calc(100% - (2 * var(--gap-out)));
   margin-bottom: var(--gap-between);
   margin-top: var(--gap-between);
+`;
 
 const Wrapper = styled.div`
   display: flex;
   justify-content: space-between;
-
 `;
