@@ -1,13 +1,13 @@
 import { OpenAI } from "openai";
 import { ingredientCategories } from "@/helpers/ingredientCategories";
 
+export const config = {
+  maxDuration: 25,
+};
+
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
-
-export const config = {
-  maxDuration: 5,
-};
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
