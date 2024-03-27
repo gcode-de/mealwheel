@@ -469,7 +469,7 @@ export default function Plan({
       <IconButtonLarge
         style={"saveShopping"}
         bottom="9rem"
-        onClick={() => saveToShopping()}
+        onClick={saveToShopping}
       />
       {assignableDays.length !== 0 ? (
         <IconButtonLarge
