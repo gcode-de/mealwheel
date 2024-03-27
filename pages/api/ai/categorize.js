@@ -1,10 +1,6 @@
 import { OpenAI } from "openai";
 import { ingredientCategories } from "@/helpers/ingredientCategories";
 
-// export const config = {
-//   maxDuration: 25,
-// };
-
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
@@ -43,7 +39,7 @@ export default async function handler(req, res) {
     Beachte dabei vor allem den Namen der Zutat und weniger die anderen Eigenschaften.\n
     Behalte für Zutaten, die du nicht eindeutig zuordnen kannst, einfach die Kategorie "Unsortiert".\n
     Kumuliere Zutaten, die mehrfach auftauchen, indem du die Quantity addierst.\n
-    Gib mir das Ergebnis nur JSON - Array aus Objekten zurück nach diesem Schema: "${JSON.stringify(
+    Gib mir das Ergebnis nur vollständiges JSON zurück - als Array aus Objekten zurück nach diesem Schema: "${JSON.stringify(
       dataSchema
     )}".\n
     Stelle absolut sicher, dass ich deine Antwort direkt als JSON parsen kann und dass das Array am Ende vollständig abgeschlossen ist.\n
@@ -53,7 +49,7 @@ export default async function handler(req, res) {
       // model: "gpt-4",
       messages: [{ role: "user", content: prompt }],
       temperature: 0.3,
-      max_tokens: 2500,
+      max_tokens: 5000,
     });
 
     console.log("Response ChatGPT:", response);

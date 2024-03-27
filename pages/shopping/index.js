@@ -197,7 +197,7 @@ export default function ShoppingList({ user, mutateUser }) {
       return;
     }
     setIsAiGenerating(true);
-    setDurationAiGenerating(25);
+    setDurationAiGenerating(30);
 
     const countdownInterval = setInterval(() => {
       setDurationAiGenerating((prevDuration) => {
@@ -498,7 +498,7 @@ const StyledCheckbox = styled.input`
   background-color: var(--color-background);
   margin: 0;
   width: 37px;
-  height: 20px;
+  height: 0px;
   z-index: 2;
 `;
 const StyledNumberUnit = styled.div`
