@@ -53,12 +53,11 @@ export default function MyRecipes({
     return (
       <>
         <Header text="Meine Rezepte" />
-        <StyledArticle>
-          <StyledUl>
-            <h2>Lade Rezepte...</h2>
-            <CardSkeleton amount={5} $isLoading />
-          </StyledUl>
-        </StyledArticle>
+
+        <StyledUl>
+          <h2>Lade Rezepte...</h2>
+          <CardSkeleton amount={5} $isLoading />
+        </StyledUl>
       </>
     );
   }
