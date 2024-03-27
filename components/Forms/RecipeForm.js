@@ -193,7 +193,7 @@ export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
             aria-label="add titel of the recipe"
             defaultValue={data?.title}
           />
-          <StyledListItem>
+          <StyledSmallArticle>
             <StyledInput
               type="number"
               name="duration"
@@ -216,7 +216,7 @@ export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
               <option value="medium">Fortgeschritten</option>
               <option value="hard">Profi</option>
             </StyledDropDown>
-          </StyledListItem>
+          </StyledSmallArticle>
           <StyledH2>
             Zutaten
             <SetNumberOfPeople
@@ -421,6 +421,17 @@ const StyledImageUploadContainer = styled.label`
 const HiddenInput = styled.input`
   display: none;
 `;
+
+const StyledSmallArticle = styled.article`
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.5rem;
+  width: calc(100% - (2 * var(--gap-out)));
+  margin-bottom: var(--gap-between);
+  margin-top: var(--gap-between);
+`;
+
 const Wrapper = styled.div`
   display: flex;
   justify-content: space-between;

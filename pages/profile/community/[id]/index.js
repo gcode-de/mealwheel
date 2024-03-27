@@ -10,7 +10,13 @@ import StyledH2 from "@/components/Styled/StyledH2";
 import styled from "styled-components";
 import Profile from "../../../../components/Profile";
 
-export default function DetailCommunityPage({ allUsers, recipes, user }) {
+export default function DetailCommunityPage({
+  allUsers,
+  recipes,
+  user,
+  toggleIsFavorite,
+  getRecipeProperty,
+}) {
   const router = useRouter();
   const { id } = router.query;
   if (!allUsers || !recipes) {
@@ -32,12 +38,15 @@ export default function DetailCommunityPage({ allUsers, recipes, user }) {
       <StyledH2>
         <div>Kochbücher</div>
       </StyledH2>
+      <WrapperFlex>
+        {!foundUser.collections.length &&
+          `${foundUser.userName} hat noch keine Kochbücher angelegt.`}
+      </WrapperFlex>
       <Wrapper>
-        {foundUser.collections.length
-          ? foundUser.collections.map((collection, index) => (
-              <CollectionCard key={index} collection={collection} />
-            ))
-          : `${foundUser.userName} hat noch keine Kochbücher angelegt.`}
+        {foundUser.collections &&
+          foundUser.collections.map((collection, index) => (
+            <CollectionCard key={index} collection={collection} />
+          ))}
       </Wrapper>
       <StyledH2>
         <div> Rezepte</div>
@@ -65,7 +74,7 @@ export default function DetailCommunityPage({ allUsers, recipes, user }) {
 const StyledArticle = styled.article``;
 
 const StyledUl = styled.ul`
-  padding: 10px;
+  padding: 0;
   max-width: 350px;
   margin: 0 auto;
 `;
@@ -111,4 +120,8 @@ const StyledParagraph = styled.p`
   margin: 0;
   margin-top: var(--gap-between);
   height: 2.5;
+`;
+const WrapperFlex = styled.div`
+  width: calc(100% - (2 * var(--gap-out)));
+  margin: auto;
 `;
