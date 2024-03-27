@@ -5,6 +5,7 @@ import useSWR from "swr";
 import { useState } from "react";
 import { useRouter } from "next/router";
 import { notifySuccess, notifyError } from "/helpers/toast";
+import { Fragment } from "react";
 
 import assignRecipesToCalendarDays from "@/helpers/assignRecipesToCalendarDays";
 import updateUserinDb from "@/helpers/updateUserInDb";
@@ -91,6 +92,18 @@ export default function DetailPage({
   function toggleMenu() {
     setIsMenuVisible(!isMenuVisible);
   }
+
+  function RenderTextWithBreaks(text) {
+    const textParts = text.split("\n").map((part, index) => (
+      <StyledInstructionsP key={index}>
+        {part}
+        <br />
+      </StyledInstructionsP>
+    ));
+
+    return <div>{textParts}</div>;
+  }
+
   const handleAssignRecipeToCalendar = async (event) => {
     event.preventDefault();
 
@@ -393,7 +406,9 @@ export default function DetailPage({
           <StyledLink onClick={() => setContent("video")}>Video</StyledLink>
         </StyledHyper>
         {content === "instructions" && (
-          <StyledIngredients>{instructions}</StyledIngredients>
+          <StyledIngredients>
+            {RenderTextWithBreaks(instructions)}
+          </StyledIngredients>
         )}
         {content === "notes" && (
           <Notes
@@ -534,4 +549,8 @@ const UnstyledButton = styled.button`
   &:hover {
     background-color: var(--color-background);
   }
+`;
+
+const StyledInstructionsP = styled.p`
+  margin: 0 0 var(--gap-between) 0;
 `;
