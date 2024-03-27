@@ -45,8 +45,8 @@ export default async function handler(req, res) {
     Stelle absolut sicher, dass ich deine Antwort direkt als JSON parsen kann und dass das Array am Ende vollständig abgeschlossen ist.\n
     Gibt NICHT am Anfang deiner Antwort "Json", Anführungszeichen oder Backticks aus.`;
     const response = await openai.chat.completions.create({
-      // model: "gpt-3.5-turbo",
-      model: "gpt-4",
+      model: "gpt-3.5-turbo",
+      // model: "gpt-4",
       messages: [{ role: "user", content: prompt }],
       temperature: 0.3,
       max_tokens: 1000,
