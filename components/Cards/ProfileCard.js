@@ -3,7 +3,13 @@ import Image from "next/image";
 import Link from "next/link";
 import FollowButton from "../Button/FollowButton";
 
-export default function ProfileCard({ foundUser, user }) {
+export default function ProfileCard({
+  foundUser,
+  user,
+  allUsers,
+  mutateAllUsers,
+  mutateUser,
+}) {
   return (
     <ProfileWrapper>
       <WrapperCenter href={`/profile/community/${foundUser._id}`}>
@@ -22,7 +28,13 @@ export default function ProfileCard({ foundUser, user }) {
         <StyledLink href={`/profile/community/${foundUser._id}`}>
           {foundUser?.userName || foundUser?.firstName}
         </StyledLink>
-        <FollowButton foundUser={foundUser} user={user} />
+        <FollowButton
+          foundUser={foundUser}
+          user={user}
+          allUsers={allUsers}
+          mutateAllUsers={mutateAllUsers}
+          mutateUser={mutateUser}
+        />
       </StyledProfiletext>
     </ProfileWrapper>
   );

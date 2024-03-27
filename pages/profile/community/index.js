@@ -32,11 +32,10 @@ export default function Community({
         <ProfileCard
           key={communityUser._id}
           foundUser={communityUser}
-          isFriend={user.friends.includes(communityUser._id)}
-          isRequested={communityUser.connectionRequests.some(
-            (request) => request.senderId === user._id
-          )}
           user={user}
+          allUsers={allUsers}
+          mutateAllUsers={mutateAllUsers}
+          mutateUser={mutateUser}
         />
       ))}
     </>

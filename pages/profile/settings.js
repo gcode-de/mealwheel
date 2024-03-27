@@ -8,8 +8,14 @@ import IconButton from "@/components/Styled/IconButton";
 import { useRouter } from "next/router";
 import Spacer from "@/components/Styled/Spacer";
 import SetNumberOfPeople from "../../components/Styled/SetNumberOfPeople";
+import Household from "../../components/Household";
 
-export default function Settings({ user, mutateUser }) {
+export default function Settings({
+  user,
+  mutateUser,
+  allUsers,
+  mutateAllUsers,
+}) {
   const router = useRouter();
   if (!user) {
     return <p>kein Benutzer gefunden...</p>;
@@ -113,6 +119,11 @@ export default function Settings({ user, mutateUser }) {
           />
         </Wrapper>
       </StyledList>
+      <Household
+        allUsers={allUsers}
+        user={user}
+        mutateAllUsers={mutateAllUsers}
+      />
     </>
   );
 }

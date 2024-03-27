@@ -10,7 +10,13 @@ import StyledH2 from "@/components/Styled/StyledH2";
 import styled from "styled-components";
 import Profile from "../../../../components/Profile";
 
-export default function DetailCommunityPage({ allUsers, recipes, user }) {
+export default function DetailCommunityPage({
+  allUsers,
+  recipes,
+  user,
+  getRecipeProperty,
+  toggleIsFavorite,
+}) {
   const router = useRouter();
   const { id } = router.query;
   if (!allUsers || !recipes) {
