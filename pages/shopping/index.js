@@ -197,7 +197,7 @@ export default function ShoppingList({ user, mutateUser }) {
       return;
     }
     setIsAiGenerating(true);
-    setDurationAiGenerating(30);
+    setDurationAiGenerating(45);
 
     const countdownInterval = setInterval(() => {
       setDurationAiGenerating((prevDuration) => {
