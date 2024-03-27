@@ -43,7 +43,10 @@ export default async function handler(req, res) {
       dataSchema
     )}".\n
     Stelle absolut sicher, dass ich deine Antwort direkt als JSON parsen kann und dass das Array am Ende vollständig abgeschlossen ist.\n
-    Gibt NICHT am Anfang deiner Antwort "Json", Anführungszeichen oder Backticks aus.`;
+    Gibt NICHT am Anfang deiner Antwort "Json", Anführungszeichen oder Backticks aus.\n
+    Vorgehensweise: 1) Erstelle für jede der Kategorien ein Objekt mit den Properties "category: NAME_DER_KATEGORIE" und "items: []"\n
+    2) füge den Items-Arrays der Kategorien nacheinander die vorhandenen Item-Objekte hinzu.\n
+    3)Fasse am Ende alle Kategorie-Objekte mit innenliegenden Items-Arrays einem gemeinsamen Array hinzu, das du mir als valides JSON zurück gibst.`;
     const response = await openai.chat.completions.create({
       model: "gpt-3.5-turbo",
       // model: "gpt-4",
