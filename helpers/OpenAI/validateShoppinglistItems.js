@@ -18,6 +18,6 @@ function isValidCategoryStructure(category) {
   );
 }
 
-export default function validateAIData(aiData) {
+export default function validateShoppinglistItems(aiData) {
   return Array.isArray(aiData) && aiData.every(isValidCategoryStructure);
 }

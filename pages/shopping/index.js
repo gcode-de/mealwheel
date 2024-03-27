@@ -14,7 +14,7 @@ import StyledH2 from "@/components/Styled/StyledH2";
 
 import { ingredientUnits } from "@/helpers/ingredientUnits";
 import fetchCategorizedIngredients from "@/helpers/OpenAI/CategorizeIngredients";
-import validateAIData from "@/helpers/OpenAI/validateAIData";
+import validateShoppinglistItems from "@/helpers/OpenAI/validateShoppinglistItems";
 import updateUserInDb from "@/helpers/updateUserInDb";
 
 import styled from "styled-components";
@@ -25,6 +25,7 @@ import { notifySuccess, notifyError } from "/helpers/toast";
 export default function ShoppingList({ user, mutateUser }) {
   const [editingIndex, setEditingIndex] = useState("");
   const [isAiGenerating, setIsAiGenerating] = useState(false);
+  const [durationAiGenerating, setDurationAiGenerating] = useState(0);
   const editFormRef = useRef(null);
 
   function handleItemClick(category, index) {
@@ -68,6 +69,11 @@ export default function ShoppingList({ user, mutateUser }) {
   }
 
   function consolidateShoppingListItems(userShoppingList) {
+    if (!validateShoppinglistItems(userShoppingList)) {
+      console.error("Shoppingliste enthält ungültige Daten.");
+      return;
+    }
+
     const allItems = new Map();
 
     // Sammle alle Items über alle Kategorien hinweg
@@ -191,13 +197,23 @@ export default function ShoppingList({ user, mutateUser }) {
       return;
     }
     setIsAiGenerating(true);
+    setDurationAiGenerating(25);
+
+    const countdownInterval = setInterval(() => {
+      setDurationAiGenerating((prevDuration) => {
+        if (prevDuration > 1) return prevDuration - 1;
+        clearInterval(countdownInterval); // Stoppe Countdown, wenn Dauer auf 0 ist
+        return 0;
+      });
+    }, 1000);
+
     try {
       const dataFromAPI = await fetchCategorizedIngredients(
         JSON.stringify(user.shoppingList)
       );
       const parsedData = JSON.parse(dataFromAPI);
 
-      if (!validateAIData(parsedData)) {
+      if (!validateShoppinglistItems(parsedData)) {
         console.error(
           "Erhaltene KI-Daten entsprechen nicht dem erwarteten Schema."
         );
@@ -215,6 +231,7 @@ export default function ShoppingList({ user, mutateUser }) {
       }
     }
     setIsAiGenerating(false);
+    setDurationAiGenerating(0);
     updateUserInDb(user, mutateUser);
   }
 
@@ -347,7 +364,9 @@ export default function ShoppingList({ user, mutateUser }) {
             aria-label="trigger AI-based sorting and grouping of items (this takes a moment)"
           >
             <RotatingSVG $rotate={isAiGenerating} />
-            {!isAiGenerating ? "Sortieren" : "bitte warten..."}
+            {!isAiGenerating
+              ? "Sortieren"
+              : `bitte warten... (${durationAiGenerating})`}
           </StyledButton>
         </>
       )}
