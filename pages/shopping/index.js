@@ -352,7 +352,7 @@ export default function ShoppingList({ user, mutateUser }) {
             <div key={category}>
               <RestyledH2>{category}</RestyledH2>
               {items.map((item, index) => (
-                <StyledListItem
+                <RestyledListItem
                   key={index}
                   onClick={() => handleItemClick(category, index)}
                   onBlur={(event) =>
@@ -399,7 +399,7 @@ export default function ShoppingList({ user, mutateUser }) {
                           <StyledCheckItem $text={item.isChecked} $flex={0.1}>
                             {item.quantity}
                           </StyledCheckItem>
-                          <StyledCheckItem $text={item.isChecked} $flex={1}>
+                          <StyledCheckItem $text={item.isChecked} $flex={0.5}>
                             {item.unit}
                           </StyledCheckItem>
                         </StyledNumberUnit>
@@ -423,7 +423,7 @@ export default function ShoppingList({ user, mutateUser }) {
                       ></StyledCheckbox>
                     </>
                   )}
-                </StyledListItem>
+                </RestyledListItem>
               ))}
             </div>
           ) : (
@@ -498,7 +498,7 @@ const StyledCheckbox = styled.input`
   background-color: var(--color-background);
   margin: 0;
   width: 37px;
-  height: 0px;
+  height: 30px;
   z-index: 2;
 `;
 const StyledNumberUnit = styled.div`
@@ -512,7 +512,7 @@ const Spacer = styled.div`
 
 const StyledEditForm = styled.form`
   display: flex;
-  width: 277px;
+  width: 100%;
   gap: 0.25rem;
 `;
 
@@ -545,4 +545,8 @@ const StyledButton = styled(Button)`
 const RestyledH2 = styled(StyledH2)`
   font-size: 1rem;
   margin: 1rem 0 0 0;
+`;
+
+const RestyledListItem = styled(StyledListItem)`
+  align-items: center;
 `;
