@@ -367,7 +367,7 @@ const StyledTextarea = styled.textarea`
   padding: 0.7rem;
   font-family: unset;
   font-size: 0.9rem;
-  line-height: 1.1rem;
+  line-height: 1.15rem;
 `;
 const Spacer = styled.div`
   margin-top: 2rem;
