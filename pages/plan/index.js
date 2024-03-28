@@ -412,7 +412,8 @@ export default function Plan({
             {assignableDays.length > 0 ? (
               <p>
                 Zufällige Rezepte: {numberOfRandomRecipes} Rezepte, die weder
-                mit einem "Schmecko" noch als schon gekocht markiert wurden
+                mit einem &quot;Schmecko&quot; noch als schon gekocht markiert
+                wurden
               </p>
             ) : (
               <p>Alle Tage geplant.</p>
