@@ -1,13 +1,11 @@
 import updateUserinDb from "@/helpers/updateUserInDb";
-
-import StyledH2 from "../../components/Styled/StyledH2";
-import StyledList from "@/components/Styled/StyledList";
-import StyledP from "@/components/Styled/StyledP";
-import styled from "styled-components";
-import IconButton from "@/components/Styled/IconButton";
 import { useRouter } from "next/router";
-import Spacer from "@/components/Styled/Spacer";
-import SetNumberOfPeople from "../../components/Styled/SetNumberOfPeople";
+
+import styled from "styled-components";
+import { Spacer, H2, List, P } from "@/components/Styled/Styled";
+
+import IconButton from "@/components/Styled/IconButton";
+import SetNumberOfPeople from "@/components/Styled/SetNumberOfPeople";
 
 export default function Settings({ user, mutateUser }) {
   const router = useRouter();
@@ -74,9 +72,9 @@ export default function Settings({ user, mutateUser }) {
         top={"var(--gap-out)"}
       />
       <Spacer />
-      <StyledH2>Anpassung Menü-Planer</StyledH2>
-      <StyledList>
-        <StyledP>Tage, für die geplant werden soll:</StyledP>
+      <H2>Anpassung Menü-Planer</H2>
+      <List>
+        <P>Tage, für die geplant werden soll:</P>
         <Wrapper>
           {
             // Konvertieren der Objekt-Einträge in ein Array und Sortierung
@@ -103,16 +101,16 @@ export default function Settings({ user, mutateUser }) {
               ))
           }
         </Wrapper>
-      </StyledList>
-      <StyledList>
-        <StyledP>Standard-Anzahl Portionen:</StyledP>
+      </List>
+      <List>
+        <P>Standard-Anzahl Portionen:</P>
         <Wrapper>
           <SetNumberOfPeople
             numberOfPeople={user.settings.defaultNumberOfPeople}
             handleChange={changeDefaultNumberOfPeople}
           />
         </Wrapper>
-      </StyledList>
+      </List>
     </>
   );
 }

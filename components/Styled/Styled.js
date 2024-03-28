@@ -113,3 +113,11 @@ const StyledP = styled.p`
   margin: 0;
   margin-bottom: var(--gap-between);
 `;
+export function Spacer() {
+  return <StyledSpacer></StyledSpacer>;
+}
+
+const StyledSpacer = styled.div`
+  height: var(--height-header);
+  position: relative;
+`;

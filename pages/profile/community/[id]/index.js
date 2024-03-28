@@ -1,6 +1,4 @@
 import { useRouter } from "next/router";
-import { useState } from "react";
-import useSWR from "swr";
 
 import Link from "next/link";
 import MealCard from "@/components/Cards/MealCard";
@@ -8,7 +6,7 @@ import IconButton from "@/components/Styled/IconButton";
 import CollectionCard from "@/components/Cards/CollectionCard";
 import StyledH2 from "@/components/Styled/StyledH2";
 import styled from "styled-components";
-import Profile from "../../../../components/Profile";
+import Profile from "@/components/Profile";
 
 export default function DetailCommunityPage({
   allUsers,

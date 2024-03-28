@@ -3,10 +3,10 @@ import MealCard from "@/components/Cards/MealCard";
 import Header from "@/components/Styled/Header";
 import IconButton from "@/components/Styled/IconButton";
 import { useRouter } from "next/router";
-import Spacer from "@/components/Styled/Spacer";
 import { useState } from "react";
 import IconButtonLarge from "@/components/Styled/IconButtonLarge";
 
+import { Spacer } from "@/components/Styled/Styled";
 import StyledH2 from "@/components/Styled/StyledH2";
 
 import useSWR from "swr";

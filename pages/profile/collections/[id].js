@@ -6,12 +6,11 @@ import styled from "styled-components";
 import IconButton from "@/components/Styled/IconButton";
 import MealCard from "@/components/Cards/MealCard";
 import StyledUl from "@/components/Styled/StyledUl";
-import Spacer from "@/components/Styled/Spacer";
 import StyledH2 from "@/components/Styled/StyledH2";
-import Trash from "/public/icons/svg/trash-xmark_10741775.svg";
-import Pen from "/public/icons/svg/pen-square_10435869.svg";
-import XSmall from "@/public/icons/XSmall.svg";
 import MenuContainer from "@/components/MenuContainer";
+
+import { Spacer } from "@/components/Styled/Styled";
+import { Trash, Pen, XSmall } from "@/helpers/svg";
 
 export default function DetailCollection({
   recipes,
@@ -34,7 +33,7 @@ export default function DetailCollection({
       user.collections.find((collection) => collection._id === id)
     );
     if (!foundCollection) {
-      foundCollection = foundUser[0].collections.find(
+      foundCollection = foundUser?.[0].collections.find(
         (collection) => collection._id === id
       );
     } else {
@@ -50,13 +49,6 @@ export default function DetailCollection({
     (collection) => collection._id === id
   );
 
-  function toggleEdit() {
-    setIsEditing(!isEditing);
-    setIsMenuVisible(false);
-  }
-  function toggleMenu() {
-    setIsMenuVisible(!isMenuVisible);
-  }
   function handleDeleteRecipes() {
     const newRecipes = foundCollection.recipes.filter(
       (recipe, index) => !checkedItems.includes(index)
@@ -84,7 +76,7 @@ export default function DetailCollection({
       />
       {isUser && (
         <IconButton
-          onClick={toggleMenu}
+          onClick={() => setIsMenuVisible(!isMenuVisible)}
           right="var(--gap-out)"
           top="var(--gap-out)"
           style="Menu"
@@ -93,7 +85,12 @@ export default function DetailCollection({
       )}
       {isMenuVisible && (
         <MenuContainer top="5rem" right="var(--gap-out)">
-          <UnstyledButton onClick={toggleEdit}>
+          <UnstyledButton
+            onClick={() => {
+              setIsEditing(!isEditing);
+              setIsMenuVisible(false);
+            }}
+          >
             <Pen width={15} height={15} />
             Kochbuch bearbeiten
           </UnstyledButton>
@@ -105,7 +102,12 @@ export default function DetailCollection({
             <Trash width={15} height={15} />
             Rezepte entfernen
           </DeleteButton>
-          <DeleteButton onClick={toggleEdit}>
+          <DeleteButton
+            onClick={() => {
+              setIsEditing(!isEditing);
+              setIsMenuVisible(false);
+            }}
+          >
             <XSmall width={15} height={15} />
             abbrechen
           </DeleteButton>

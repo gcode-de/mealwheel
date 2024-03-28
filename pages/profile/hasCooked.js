@@ -5,8 +5,8 @@ import Header from "@/components/Styled/Header";
 import IconButton from "@/components/Styled/IconButton";
 import { useRouter } from "next/router";
 import StyledH2 from "@/components/Styled/StyledH2";
-import Spacer from "@/components/Styled/Spacer";
 import LoadingComponent from "@/components/Loading";
+import { Spacer } from "@/components/Styled/Styled";
 
 export default function HasCooked({
   user,

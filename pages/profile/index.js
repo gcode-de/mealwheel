@@ -29,10 +29,10 @@ import StyledProgress from "@/components/Styled/StyledProgress";
 import MenuContainer from "@/components/MenuContainer";
 import IconButton from "@/components/Styled/IconButton";
 import StyledList from "@/components/Styled/StyledList";
-import ModalComponent from "../../components/Modal";
-import updateCommunityUserInDB from "../../helpers/updateCommunityUserInDB";
-import Profile from "../../components/Profile";
-import ToggleCheckbox from "../../components/Styled/ToggleCheckbox";
+import ModalComponent from "@/components/Modal";
+import updateCommunityUserInDB from "@/helpers/updateCommunityUserInDB";
+import Profile from "@/components/Profile";
+import ToggleCheckbox from "@/components/Styled/ToggleCheckbox";
 
 export default function ProfilePage({
   user,

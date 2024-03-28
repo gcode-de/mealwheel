@@ -12,19 +12,20 @@ import { filterTags } from "@/helpers/filterTags";
 
 import SetNumberOfPeople from "@/components/Styled/SetNumberOfPeople";
 import IconButton from "@/components/Styled/IconButton";
+import { Pen, Book, Calendar } from "@/helpers/svg";
+
+import { Article, List, H2, P, ListItem } from "@/components/Styled/Styled";
 import StyledArticle from "@/components/Styled/StyledArticle";
 import StyledList from "@/components/Styled/StyledList";
 import StyledH2 from "@/components/Styled/StyledH2";
 import StyledP from "@/components/Styled/StyledP";
 import StyledListItem from "@/components/Styled/StyledListItem";
+
 import LoadingComponent from "@/components/Loading";
 import StyledDropDown from "@/components/Styled/StyledDropDown";
 import Notes from "@/components/Notes";
 import MenuContainer from "@/components/MenuContainer";
-import Calendar from "@/public/icons/svg/calendar-days_9795297.svg";
-import Pen from "/public/icons/svg/pen-square_10435869.svg";
-import Book from "@/public/icons/svg/notebook-alt_9795395.svg";
-import ModalComponent from "../../../components/Modal";
+import ModalComponent from "@/components/Modal";
 
 export default function DetailPage({
   user,

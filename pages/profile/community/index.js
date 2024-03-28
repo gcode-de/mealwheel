@@ -2,8 +2,8 @@ import { useRouter } from "next/router";
 
 import StyledH2 from "@/components/Styled/StyledH2";
 import IconButton from "@/components/Styled/IconButton";
-import Spacer from "@/components/Styled/Spacer";
-import ProfileCard from "../../../components/Cards/ProfileCard";
+import ProfileCard from "@/components/Cards/ProfileCard";
+import { Spacer } from "@/components/Styled/Styled";
 
 export default function Community({
   user,
