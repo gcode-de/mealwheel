@@ -1,17 +1,16 @@
 import HeartIcon from "@/public/icons/heart-svgrepo-com.svg";
-import PlusIcon from "@/public/icons/svg/plus.svg";
 import SettingsIcon from "@/public/icons/settings-svgrepo-com.svg";
 import XSmallIcon from "@/public/icons/XSmall.svg";
 import ArrowSmallLeftIcon from "@/public/icons/arrow-small-left_10513360.svg";
 import ArrowSmallRightIcon from "@/public/icons/arrow-small-right_10513361.svg";
 import ChevronSmallIcon from "@/public/icons/ChevronSmall.svg";
-import ArrowLeftIcon from "@/public/icons/ArrowSmall.svg";
 import TriangleLeftIcon from "@/public/icons/arrow-left-3-svgrepo-com.svg";
 import TriangleRightIcon from "@/public/icons/arrow-right-2-svgrepo-com.svg";
 import EditIcon from "@/public/icons/edit-3-svgrepo-com (2).svg";
 import FilterIcon from "@/public/icons/sliders-v_10435878.svg";
 
-import ReloadIcon from "@/public/icons/svg/arrows-retweet_9253335.svg";
+import ArrowLeftIcon from "@/public/icons/svg/chevron-left-svgrepo-com.svg";
+import PlusIcon from "@/public/icons/svg/plus.svg";
 import BookUserIcon from "@/public/icons/svg/notebook-alt_9795395.svg";
 import ReloadIcon from "@/public/icons/svg/arrows-retweet_9253335.svg";
 import PeopleIcon from "@/public/icons/svg/employees_14644298.svg";
