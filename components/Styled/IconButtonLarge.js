@@ -6,7 +6,7 @@ import {
   Plus,
   ArrowLeft,
   ChevronSmall,
-  ArrowUP,
+  ArrowUp,
   SaveShopping,
   Generate,
 } from "@/helpers/svg";
