@@ -1,9 +1,8 @@
-import StyledH2 from "../components/Styled/StyledH2";
-import IconButton from "@/components/Styled/IconButton";
-import Spacer from "@/components/Styled/Spacer";
 import Link from "next/link";
 import styled from "styled-components";
 import { useRouter } from "next/router";
+import { Spacer, H2 } from "@/components/Styled/Styled";
+import IconButton from "@/components/Styled/IconButton";
 
 export default function Imprint() {
   const router = useRouter();
@@ -16,7 +15,7 @@ export default function Imprint() {
         top={"var(--gap-out)"}
       />
       <Spacer />
-      <StyledH2>Impressum</StyledH2>
+      <H2>Impressum</H2>
       <Wrapper>
         <p>Meal Wheel wird betrieben von:</p>
         <ul>

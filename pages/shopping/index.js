@@ -1,8 +1,7 @@
 import StyledList from "@/components/Styled/StyledList";
 import AddButton from "@/components/Styled/AddButton";
 import Header from "@/components/Styled/Header";
-import Plus from "@/public/icons/Plus.svg";
-import Check from "@/public/icons/svg/check-circle_10470513.svg";
+import { Plus } from "@/helpers/svg";
 import StyledIngredients from "@/components/Styled/StyledIngredients";
 import StyledInput from "@/components/Styled/StyledInput";
 import StyledDropDown from "@/components/Styled/StyledDropDown";

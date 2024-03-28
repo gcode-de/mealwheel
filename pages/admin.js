@@ -1,9 +1,8 @@
 import StyledH2 from "../components/Styled/StyledH2";
 import useSWR from "swr";
-import StyledList from "../components/Styled/StyledList";
 import IconButton from "@/components/Styled/IconButton";
 import { useRouter } from "next/router";
-import Spacer from "@/components/Styled/Spacer";
+import { Spacer } from "@/components/Styled/Styled";
 
 export default function Admin({ user, fetcher, recipes, allUsers }) {
   const {
