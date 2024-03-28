@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import PlateWheel from "/public/icons/svg/plate-wheel.svg";
+import { PlateWheel } from "@/helpers/svg";
 import StyledUl from "./Styled/StyledUl";
 import CardSkeleton from "@/components/Cards/CardSkeleton";
 

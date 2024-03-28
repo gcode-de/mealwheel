@@ -309,7 +309,7 @@ export default function HomePage({
                 <MealCard
                   key={recipe._id}
                   recipe={recipe}
-                  isFavorite={getRecipeProperty(recipe._id, "isFavorite")}
+                  $isFavorite={getRecipeProperty(recipe._id, "isFavorite")}
                   onToggleIsFavorite={() => {
                     toggleIsFavorite(recipe?._id, mutateUser, mutateRecipes);
                   }}

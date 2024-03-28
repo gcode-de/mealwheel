@@ -1,15 +1,19 @@
-import StyledList from "@/components/Styled/StyledList";
-import AddButton from "@/components/Styled/AddButton";
+// import StyledH2 from "@/components/Styled/StyledH2";
+import {
+  Input,
+  Select,
+  H2,
+  Button,
+  List,
+  ListItem,
+  Spacer,
+} from "@/components//Styled/Styled";
+
+import AddButton from "@/components/Button/AddButton";
 import Header from "@/components/Styled/Header";
-import { Plus } from "@/helpers/svg";
+import { Plus, PlateWheel } from "@/helpers/svg";
 import StyledIngredients from "@/components/Styled/StyledIngredients";
-import StyledInput from "@/components/Styled/StyledInput";
-import StyledDropDown from "@/components/Styled/StyledDropDown";
-import StyledListItem from "@/components/Styled/StyledListItem";
 import IconButtonLarge from "@/components/Button/IconButtonLarge";
-import Button from "@/components/Styled/StyledButton";
-import PlateWheel from "/public/icons/svg/plate-wheel.svg";
-import StyledH2 from "@/components/Styled/StyledH2";
 
 import { ingredientUnits } from "@/helpers/ingredientUnits";
 import fetchCategorizedIngredients from "@/helpers/OpenAI/CategorizeIngredients";
@@ -59,10 +63,10 @@ export default function ShoppingList({ user, mutateUser }) {
     return (
       <>
         <Header text="Einkaufsliste" />
-        <StyledList>
+        <List>
           Bitte <Link href="/api/auth/signin">einloggen</Link>, um die
           Einkaufsliste zu verwenden.
-        </StyledList>
+        </List>
       </>
     );
   }
@@ -237,11 +241,11 @@ export default function ShoppingList({ user, mutateUser }) {
   return (
     <>
       <Header text="Einkaufsliste" />
-      <StyledList>
+      <List>
         {user.shoppingList.length === 0 && (
-          <StyledListItem>
+          <ListItem>
             <StyledCheck>nichts zu erledigen</StyledCheck>
-          </StyledListItem>
+          </ListItem>
         )}
         {user.shoppingList.map(({ category, items }) =>
           items?.length ? (
@@ -262,7 +266,7 @@ export default function ShoppingList({ user, mutateUser }) {
                         handleItemEdit(event.target, category, index)
                       }
                     >
-                      <StyledInput
+                      <Input
                         type="number"
                         defaultValue={item.quantity}
                         min="0"
@@ -277,7 +281,7 @@ export default function ShoppingList({ user, mutateUser }) {
                           </option>
                         ))}
                       </StyledDropDown>
-                      <StyledInput
+                      <Input
                         type="text"
                         defaultValue={item.name}
                         aria-label="edit ingredient name for the recipe"
@@ -328,22 +332,22 @@ export default function ShoppingList({ user, mutateUser }) {
         )}
         <form onSubmit={handleSubmit}>
           <StyledIngredients>
-            <StyledInput
+            <Input
               type="number"
               $width={"3rem"}
               min="0"
               aria-label="add ingredient quantity for the recipe"
               name="quantity"
             />
-            <StyledDropDown name="unit">
+            <Select name="unit">
               <option value="">-</option>
               {ingredientUnits.map((unit) => (
                 <option key={unit} value={unit}>
                   {unit}
                 </option>
               ))}
-            </StyledDropDown>
-            <StyledInput
+            </Select>
+            <Input
               type="text"
               name="name"
               placeholder="neue Zutat"
@@ -355,10 +359,10 @@ export default function ShoppingList({ user, mutateUser }) {
             </AddButton>
           </StyledIngredients>
         </form>
-      </StyledList>
+      </List>
       {user.shoppingList.length > 0 && (
         <>
-          <StyledButton
+          <Button
             onClick={setCategories}
             aria-label="trigger AI-based sorting and grouping of items (this takes a moment)"
           >
@@ -366,7 +370,7 @@ export default function ShoppingList({ user, mutateUser }) {
             {!isAiGenerating
               ? "Sortieren"
               : `bitte warten... (${durationAiGenerating})`}
-          </StyledButton>
+          </Button>
         </>
       )}
       <Spacer />
@@ -401,10 +405,6 @@ const StyledNumberUnit = styled.div`
   width: 40%;
   display: flex;
 `;
-const Spacer = styled.div`
-  height: 6rem;
-  position: relative;
-`;
 
 const StyledEditForm = styled.form`
   display: flex;
@@ -428,21 +428,21 @@ const RotatingSVG = styled(PlateWheel)`
   }
 `;
 
-const StyledButton = styled(Button)`
-  padding: 8px 15px;
-  display: flex;
-  gap: 0.5rem;
-  align-items: center;
-  width: max-content;
-  margin-right: var(--gap-out);
-  margin-left: auto;
-`;
+// const StyledButton = styled(Button)`
+//   padding: 8px 15px;
+//   display: flex;
+//   gap: 0.5rem;
+//   align-items: center;
+//   width: max-content;
+//   margin-right: var(--gap-out);
+//   margin-left: auto;
+// `;
 
-const RestyledH2 = styled(StyledH2)`
+const RestyledH2 = styled(H2)`
   font-size: 1rem;
   margin: 1rem 0 0 0;
 `;
 
-const RestyledListItem = styled(StyledListItem)`
+const RestyledListItem = styled(ListItem)`
   align-items: center;
 `;

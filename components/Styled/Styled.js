@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
-export function Article() {
-  return <StyledArticle></StyledArticle>;
+export function Article({ children }) {
+  return <StyledArticle>{children}</StyledArticle>;
 }
 
 const StyledArticle = styled.article`
@@ -17,8 +17,9 @@ const StyledArticle = styled.article`
   z-index: 3;
   padding-bottom: 1rem;
 `;
-export function Button() {
-  return <StyledButton></StyledButton>;
+
+export function Button({ children }) {
+  return <StyledButton>{children}</StyledButton>;
 }
 const StyledButton = styled.button`
   border: none;
@@ -32,8 +33,8 @@ const StyledButton = styled.button`
   height: 3rem;
   margin-top: 1rem;
 `;
-export function Select() {
-  return <StyledDropDown></StyledDropDown>;
+export function Select({ children }) {
+  return <StyledDropDown>{children}</StyledDropDown>;
 }
 const StyledDropDown = styled.select`
   background-color: transparent;
@@ -43,8 +44,8 @@ const StyledDropDown = styled.select`
   height: 30px;
   align-items: center;
 `;
-export function H2() {
-  return <StyledH2></StyledH2>;
+export function H2({ children }) {
+  return <StyledH2>{children}</StyledH2>;
 }
 const StyledH2 = styled.h2`
   font-size: large;
@@ -64,7 +65,7 @@ const StyledH2 = styled.h2`
   }
 `;
 export function Input() {
-  return <StyledInput></StyledInput>;
+  return <StyledInput />;
 }
 
 const StyledInput = styled.input`
@@ -76,8 +77,8 @@ const StyledInput = styled.input`
   flex-grow: ${(props) => props.$flexGrow};
   padding: 0.7rem;
 `;
-export function List() {
-  return <StyledList></StyledList>;
+export function List({ children }) {
+  return <StyledList>{children}</StyledList>;
 }
 const StyledList = styled.ul`
   list-style: none;
@@ -95,8 +96,8 @@ const StyledList = styled.ul`
   margin-bottom: var(--gap-between);
   position: relative;
 `;
-export function ListItem() {
-  return <StyledListItem></StyledListItem>;
+export function ListItem({ children }) {
+  return <StyledListItem>{children}</StyledListItem>;
 }
 const StyledListItem = styled.li`
   display: flex;
@@ -106,15 +107,15 @@ const StyledListItem = styled.li`
   margin-bottom: var(--gap-between);
   margin-top: var(--gap-between);
 `;
-export function P() {
-  return <StyledP></StyledP>;
+export function P({ children }) {
+  return <StyledP>{children}</StyledP>;
 }
 const StyledP = styled.p`
   margin: 0;
   margin-bottom: var(--gap-between);
 `;
-export function Spacer() {
-  return <StyledSpacer></StyledSpacer>;
+export function Spacer({ children }) {
+  return <StyledSpacer>{children}</StyledSpacer>;
 }
 
 const StyledSpacer = styled.div`

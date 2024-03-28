@@ -32,9 +32,9 @@ import SearchIcon from "@/public/icons/svg/pan_7409478.svg";
 import PlateIcon from "@/public/icons/svg/plate-and-utensils-top-view-svgrepo-com.svg";
 import MinusIcon from "/public/icons/svg/horizontal-rule_9272854.svg";
 import ShoppingIcon from "../public/icons/svg/square-u_10457596.svg";
-
 import PizzaIcon from "../public/icons/svg/restaurant_7409576.svg";
 import ProfileIcon from "../public/icons/svg/profile.svg";
+import PlateWheelIcon from "/public/icons/svg/plate-wheel.svg";
 
 export const ArrowUp = ArrowUpIcon;
 export const ArrowLeft = ArrowLeftIcon;
@@ -59,6 +59,7 @@ export const Pen = PenIcon;
 export const People = PeopleIcon;
 export const Pot = PotIcon;
 export const Plate = PlateIcon;
+export const PlateWheel = PlateWheelIcon;
 export const Plus = PlusIcon;
 export const Pizza = PizzaIcon;
 export const Profile = ProfileIcon;

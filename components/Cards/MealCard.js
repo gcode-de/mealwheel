@@ -11,7 +11,7 @@ import AddToCollection from "../Forms/AddToCollection";
 
 export default function MealCard({
   recipe,
-  isFavorite,
+  $isFavorite,
   onToggleIsFavorite,
   numberOfPeople,
   changeNumberOfPeople,
@@ -63,10 +63,10 @@ export default function MealCard({
             {recipe?.duration && `${recipe?.duration} MIN | `}
             {recipe?.difficulty?.toUpperCase()}
           </StyledPDuration>
-          {isFavorite !== null && (
+          {$isFavorite !== null && (
             <LikesDisplay
               likes={recipe?.likes}
-              isFavorite={isFavorite}
+              $isFavorite={$isFavorite}
               onToggleIsFavorite={onToggleIsFavorite}
               $margin="0.75rem 0 0 1.5rem"
             />
