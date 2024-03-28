@@ -28,7 +28,6 @@ export default function App({
   Component,
   pageProps: { session, ...pageProps },
 }) {
-  //fetcher
   const {
     data: user,
     isLoading,
@@ -50,7 +49,6 @@ export default function App({
     mutate: mutateAllUsers,
   } = useSWR(`/api/users`, fetcher);
 
-  //recipe Interaction
   function getRecipeProperty(_id, property) {
     const recipeInteraction = user?.recipeInteractions.find(
       (interaction) => interaction.recipe._id === _id
@@ -58,66 +56,40 @@ export default function App({
     return recipeInteraction?.[property];
   }
 
-  // async function toggleIsFavorite(_id) {
-  //   if (!user) {
-  //     notifyError("Bitte zuerst einloggen.");
-  //     return;
-  //   }
-  //   if (
-  //     user.recipeInteractions.find(
-  //       (interaction) => interaction.recipe._id === _id
-  //     )
-  //   ) {
-  //     user.recipeInteractions = user.recipeInteractions.map((interaction) =>
-  //       interaction.recipe._id === _id
-  //         ? { ...interaction, isFavorite: !interaction.isFavorite }
-  //         : interaction
-  //     );
-  //   } else {
-  //     user.recipeInteractions.push({ isFavorite: true, recipe: _id });
-  //   }
-  //   updateUserinDb(user, mutate);
-  // }
-
   async function toggleIsFavorite(_id, mutateUser, mutateRecipes) {
     if (!user) {
       notifyError("Bitte zuerst einloggen.");
       return;
     }
 
-    let likeChange = 0; // Standardmäßig keine Veränderung der Likes
+    let likeChange = 0;
 
-    // Durchgehe das Array und aktualisiere oder füge die Interaktion hinzu
     const updatedRecipeInteractions = user.recipeInteractions.map(
       (interaction) => {
         if (interaction.recipe._id === _id) {
-          // Existierende Interaktion für das Rezept gefunden
-          likeChange = interaction.isFavorite ? -1 : 1; // Bestimme, ob wir einen Like hinzufügen oder entfernen basierend auf dem aktuellen Favoritenstatus
-          return { ...interaction, isFavorite: !interaction.isFavorite }; // Umschalten von isFavorite
+          likeChange = interaction.isFavorite ? -1 : 1;
+          return { ...interaction, isFavorite: !interaction.isFavorite };
         }
         return interaction;
       }
     );
 
-    // Wenn keine bestehende Interaktion gefunden wurde, füge eine neue hinzu
     if (likeChange === 0) {
       updatedRecipeInteractions.push({ recipe: { _id }, isFavorite: true });
-      likeChange = 1; // Ein Like hinzufügen, da es eine neue Interaktion ist
+      likeChange = 1;
     }
 
-    // Aktualisiere den Benutzer in der Datenbank mit den neuen recipeInteractions
     user.recipeInteractions = updatedRecipeInteractions;
     await updateUserinDb(user, mutateUser);
 
     try {
-      // Unabhängig davon, ob es eine neue oder bestehende Interaktion ist, aktualisiere die Likes
       await updateLikes(_id, likeChange, mutateRecipes);
     } catch (error) {
       console.error(error);
       notifyError(
         "Ein Fehler ist aufgetreten beim Aktualisieren der Likes. Bitte versuche es später erneut."
       );
-      return; // Beende die Funktion hier, um weitere Ausführungen zu verhindern
+      return;
     }
   }
 
