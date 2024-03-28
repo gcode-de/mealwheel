@@ -1,13 +1,11 @@
 import { useState } from "react";
 import updateUserinDb from "@/helpers/updateUserInDb";
-import Modal from "../Modal";
 
 import styled from "styled-components";
-import Menu from "/public/icons/svg/menu.svg";
+import Modal from "../Modal";
 import Button from "../Styled/StyledButton";
-import Pen from "/public/icons/svg/pen-square_10435869.svg";
-import Trash from "/public/icons/svg/trash-xmark_10741775.svg";
 import MenuContainer from "../MenuContainer";
+import { Trash, Pen, Menu } from "@/helpers/svg";
 
 export default function Notes({ user, mutateUser, _id, foundInteractions }) {
   const [menuVisible, setMenuVisible] = useState(
@@ -90,6 +88,7 @@ export default function Notes({ user, mutateUser, _id, foundInteractions }) {
     setModal(false);
     updateUserinDb(user, mutateUser);
   }
+
   function closeMenu(event, index) {
     event.preventDefault();
     setMenuVisible((prevMenuVisible) => {
@@ -137,7 +136,7 @@ export default function Notes({ user, mutateUser, _id, foundInteractions }) {
             <MenuContainer
               top="var(--gap-between)"
               right="calc(3 * var(--gap-between) + 20px)"
-              toggleMenu={() => setMenuVisible(false)}
+              toggleMenu={() => toggleMenu(index)}
             >
               <UnstyledButton onClick={() => handleEditNote(index)}>
                 <Pen width={15} height={15} />
