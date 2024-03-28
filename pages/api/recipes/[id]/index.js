@@ -1,9 +1,9 @@
-import dbConnect from "../../../db/connect";
-import Recipe from "../../../db/models/Recipe";
+import dbConnect from "../../../../db/connect";
+import Recipe from "../../../../db/models/Recipe";
 import mongoose from "mongoose";
-import { cleanupRecipeReferences } from "../../../db/models/Recipe";
+import { cleanupRecipeReferences } from "../../../../db/models/Recipe";
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "../auth/[...nextauth]";
+import { authOptions } from "../../auth/[...nextauth]";
 
 export default async function handler(request, response) {
   await dbConnect();
@@ -48,6 +48,7 @@ export default async function handler(request, response) {
           .status(404)
           .json({ status: "Recipe not found or unauthorized" });
       }
+      await cleanupRecipeReferences(id);
 
       await Recipe.findByIdAndDelete(id);
       return response.status(200).json({ status: `Recipe ${id} deleted!` });

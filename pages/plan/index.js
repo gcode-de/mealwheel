@@ -28,7 +28,6 @@ import Header from "@/components/Styled/Header";
 import MealCard from "@/components/Cards/MealCard";
 import IconButton from "@/components/Styled/IconButton";
 import RandomnessSlider from "@/components/Styled/RandomnessSlider";
-import PowerIcon from "@/public/icons/power-material-svgrepo-com.svg";
 
 import generateWeekdays from "@/helpers/generateWeekdays";
 import assignRecipeToCalendarDay from "@/helpers/assignRecipesToCalendarDays";
@@ -201,7 +200,7 @@ export default function Plan({
 
   const sensors = useSensors(mouseSensor, touchSensor);
 
-  const SortableWeekday = ({ weekday, calendarDay }) => {
+  const SortableWeekday = ({ weekday, calendarDay, index }) => {
     const { attributes, listeners, setNodeRef, transform, transition } =
       useSortable({ id: weekday.date });
     const style = { transform: CSS.Transform.toString(transform), transition };
@@ -231,6 +230,9 @@ export default function Plan({
             day={calendarDay.date}
             isFavorite={null}
             user={user}
+            weekdays={weekdays}
+            index={index}
+            mutateUser={mutateUser}
           />
         ) : (
           <CardSkeleton
@@ -242,6 +244,8 @@ export default function Plan({
                 ? "small"
                 : ""
             }
+            weekdays={weekdays}
+            index={index}
           />
         )}
       </article>
@@ -281,10 +285,10 @@ export default function Plan({
   }
 
   if (error || randomRecipesError) {
-    <div>
+    <>
       <Header text={"Wochenplan"} />
       Daten konnten nicht geladen werden...
-    </div>;
+    </>;
   }
 
   if (isLoading || randomRecipesIsLoading) {
@@ -298,14 +302,14 @@ export default function Plan({
 
   if (!user) {
     return (
-      <StyledHeader>
+      <>
         <Header text={"Wochenplan"} />
         <CalendarContainer>
           Bitte <Link href="/api/auth/signin">einloggen</Link>, um den
           Wochenplaner zu nutzen.
           <CardSkeleton amount={3} />
         </CalendarContainer>
-      </StyledHeader>
+      </>
     );
   }
 
@@ -337,12 +341,24 @@ export default function Plan({
       (acc, curr) => acc.concat(curr),
       []
     );
-    user.shoppingList.push(
+
+    const newIngredients = [
       ...combinedIngredients.map((ingredient) => ({
         ...ingredient,
         isChecked: false,
-      }))
+      })),
+    ];
+
+    const uncategorizedIndex = user.shoppingList.findIndex(
+      (category) => category.category === "Unsortiert"
     );
+
+    uncategorizedIndex === -1
+      ? user.shoppingList.push({
+          category: "Unsortiert",
+          items: [...newIngredients],
+        })
+      : user.shoppingList[uncategorizedIndex].items.push(...newIngredients);
 
     updateUserinDb(user, mutateUser);
     notifySuccess("Einkaufsliste aktualisiert");
@@ -350,7 +366,7 @@ export default function Plan({
 
   return (
     <>
-      <StyledHeader>
+      <article>
         <Header text={"Wochenplan"} />
         <CalendarNavigation>
           <IconButton
@@ -405,7 +421,7 @@ export default function Plan({
             )}
           </RandomnessSliderContainer>
         )}
-      </StyledHeader>
+      </article>
 
       <CalendarContainer>
         <DndContext
@@ -429,15 +445,6 @@ export default function Plan({
                         !checkIfWeekdayIsDefaultEnabled(weekday.date)
                       }
                     >
-                      {/* <StyledPowerIcon
-                        $dayIsDisabled={
-                          calendarDay?.isDisabled ??
-                          !checkIfWeekdayIsDefaultEnabled(weekday.date)
-                        }
-                        onClick={() => {
-                          toggleDayIsDisabled(weekday.date);
-                        }}
-                      /> */}
                       <ToggleCheckbox
                         defaultChecked={
                           calendarDay?.hasOwnProperty("isDisabled")
@@ -448,7 +455,7 @@ export default function Plan({
                           toggleDayIsDisabled(weekday.date);
                           removeRecipe(weekday.date);
                         }}
-                        sliderSize="1rem"
+                        slidersize="1rem"
                         index={index}
                       />
                       {calendarDay?.isDisabled}
@@ -458,6 +465,7 @@ export default function Plan({
                       key={weekday.date}
                       weekday={weekday}
                       calendarDay={calendarDay}
+                      index={index}
                     />
                   </Fragment>
                 );
@@ -498,8 +506,6 @@ export default function Plan({
     </>
   );
 }
-
-const StyledHeader = styled.header``;
 
 const CalendarNavigation = styled.div`
   position: relative;
@@ -543,17 +549,7 @@ const StyledH2 = styled.h2`
   color: ${(props) => props.$dayIsDisabled && "var(--color-lightgrey)"};
   text-decoration: ${(props) => (props.$dayIsDisabled ? "line-through" : "")};
   display: flex;
-  align-items: center;
+  align-items: space-around;
   gap: 0.5rem;
+  position: relative;
 `;
-
-// const StyledPowerIcon = styled(PowerIcon)`
-//   width: 1.5rem;
-//   height: 1.5rem;
-//   margin: -0.5rem 0.3rem 0 -0.2rem;
-//   position: relative;
-//   top: 0.3rem;
-//   fill: ${(props) =>
-//     props.$dayIsDisabled ? "var(--color-lightgrey)" : "var(--color-highlight)"};
-//   cursor: pointer;
-// `;

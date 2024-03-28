@@ -14,4 +14,9 @@ export const sortingMethods = [
     type: "duration",
     order: "asc",
   },
+  {
+    label: "beliebteste",
+    type: "likes",
+    order: "desc",
+  },
 ];

@@ -2,36 +2,34 @@ import CardSkeleton from "@/components/Styled/CardSkeleton";
 import MealCard from "@/components/Cards/MealCard";
 import Header from "@/components/Styled/Header";
 import IconButton from "@/components/Styled/IconButton";
-import { useRouter } from "next/router";
 import { useState } from "react";
 import IconButtonLarge from "@/components/Styled/IconButtonLarge";
 
 import { Spacer } from "@/components/Styled/Styled";
 import StyledH2 from "@/components/Styled/StyledH2";
 
-import useSWR from "swr";
 import styled from "styled-components";
 
 export default function MyRecipes({
   user,
+  mutateUser,
   error,
   isLoading,
   getRecipeProperty,
   toggleIsFavorite,
-  mutateUser,
+  recipes,
+  recipesIsLoading,
+  recipesError,
+  mutateRecipes,
 }) {
   const [isModalCollection, setIsModalCollection] = useState(false);
-  const router = useRouter();
 
-  const {
-    data: myRecipes,
-    error: recipesError,
-    isLoading: recipesIsLoading,
-  } = useSWR(`/api/recipes?author=${user?._id}`);
+  const myRecipes = recipes?.filter((recipe) => recipe.author === user?._id);
 
   function toggleAddCollection() {
     setIsModalCollection(!isModalCollection);
   }
+
   if (error || recipesError || !myRecipes) {
     return (
       <>
@@ -81,7 +79,9 @@ export default function MyRecipes({
                   key={recipe._id}
                   recipe={recipe}
                   isFavorite={getRecipeProperty(recipe._id, "isFavorite")}
-                  onToggleIsFavorite={toggleIsFavorite}
+                  onToggleIsFavorite={() => {
+                    toggleIsFavorite(recipe._id, mutateUser, mutateRecipes);
+                  }}
                 ></MealCard>
               );
             })

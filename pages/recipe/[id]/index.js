@@ -5,12 +5,13 @@ import useSWR from "swr";
 import { useState } from "react";
 import { useRouter } from "next/router";
 import { notifySuccess, notifyError } from "/helpers/toast";
+import { Fragment } from "react";
 
 import assignRecipesToCalendarDays from "@/helpers/assignRecipesToCalendarDays";
 import updateUserinDb from "@/helpers/updateUserInDb";
 import { filterTags } from "@/helpers/filterTags";
 
-import SetNumberOfPeople from "@/components/Styled/SetNumberOfPeople";
+import SetNumberOfPeople from "@/components/Cards/SetNumberOfPeople";
 import IconButton from "@/components/Styled/IconButton";
 import { Pen, Book, Calendar } from "@/helpers/svg";
 
@@ -22,10 +23,13 @@ import StyledP from "@/components/Styled/StyledP";
 import StyledListItem from "@/components/Styled/StyledListItem";
 
 import LoadingComponent from "@/components/Loading";
-import StyledDropDown from "@/components/Styled/StyledDropDown";
+
 import Notes from "@/components/Notes";
 import MenuContainer from "@/components/MenuContainer";
+
 import ModalComponent from "@/components/Modal";
+
+import AddToCollection from "../../../components/Forms/AddToCollection";
 
 export default function DetailPage({
   user,
@@ -35,6 +39,7 @@ export default function DetailPage({
   getRecipeProperty,
   toggleIsFavorite,
   toggleHasCooked,
+  mutateRecipes,
 }) {
   const [content, setContent] = useState("instructions");
   const [selectedDate, setSelectedDate] = useState(
@@ -42,9 +47,7 @@ export default function DetailPage({
   );
   const [calendarFormIsVisible, setCalendarFormIsVisible] = useState(false);
   const [collectionFormIsVisible, setCollectionFormIsVisible] = useState(false);
-  const [selectedCollection, setselectedCollection] = useState(
-    user?.collections?.[0]?.collectionName || ""
-  );
+
   const [isMenuVisible, setIsMenuVisible] = useState(false);
   const [isModalCalendar, setIsModalCalendar] = useState(false);
   const [isModalCollection, setIsModalCollection] = useState(false);
@@ -56,7 +59,7 @@ export default function DetailPage({
     data: recipe,
     isLoading: dataIsLoading,
     error: dataError,
-    mutate,
+    mutate: mutateRecipe,
   } = useSWR(id ? `/api/recipes/${id}` : null);
 
   const defaultNumberOfServings = recipe?.defaultNumberOfServings;
@@ -85,6 +88,7 @@ export default function DetailPage({
     duration,
     difficulty,
     author,
+    likes,
   } = recipe;
 
   difficulty.toUpperCase();
@@ -92,6 +96,18 @@ export default function DetailPage({
   function toggleMenu() {
     setIsMenuVisible(!isMenuVisible);
   }
+
+  function RenderTextWithBreaks(text) {
+    const textParts = text.split("\n").map((part, index) => (
+      <StyledInstructionsP key={index}>
+        {part}
+        <br />
+      </StyledInstructionsP>
+    ));
+
+    return <div>{textParts}</div>;
+  }
+
   const handleAssignRecipeToCalendar = async (event) => {
     event.preventDefault();
 
@@ -123,31 +139,6 @@ export default function DetailPage({
       notifyError("Das Rezept konnte nicht eingeplant werden.");
     }
   };
-
-  async function handleCollection(event) {
-    event.preventDefault();
-    const isDuplicate = user.collections
-      .find((col) => col.collectionName === selectedCollection)
-      .recipes.find((recipe) => recipe._id === id);
-    if (isDuplicate) {
-      notifyError("Dieses Rezept ist bereits gespeichert.");
-      return;
-    }
-
-    const updateCollection = user.collections.map((col) =>
-      col.collectionName === selectedCollection
-        ? { ...col, recipes: [...col.recipes, id] }
-        : col
-    );
-    user.collections = updateCollection;
-    try {
-      updateUserinDb(user, mutateUser);
-      setCollectionFormIsVisible(false);
-      notifySuccess(`Das Rezept wurde gespeichert.`);
-    } catch (error) {
-      notifyError("Das Rezept konnte nicht gespeichert werden.");
-    }
-  }
 
   function handleSetNumberOfPeople(change) {
     const newServings = servings + change;
@@ -252,7 +243,7 @@ export default function DetailPage({
               notifyError("Bitte zuerst einloggen.");
               return;
             }
-            toggleIsFavorite(_id);
+            toggleIsFavorite(_id, mutateUser, mutateRecipe);
           }}
         />
         <IconButton
@@ -300,31 +291,23 @@ export default function DetailPage({
         )}
         {isModalCollection && (
           <ModalComponent toggleModal={toggleModalCollection}>
-            <StyledForm
-              onSubmit={handleCollection}
-              $isVisible={collectionFormIsVisible}
-            >
-              <h3>Dieses Rezept speichern:</h3>
-              <StyledDropDown
-                onChange={(event) => setselectedCollection(event.target.value)}
-                name="collectionName"
-                required
-              >
-                {user?.collections.map((col, index) => (
-                  <option key={index} value={col.collectionName}>
-                    {col.collectionName}
-                  </option>
-                ))}
-              </StyledDropDown>
-
-              <button type="submit">speichern</button>
-            </StyledForm>
+            <AddToCollection
+              isModalCollection={isModalCollection}
+              setIsModalCollection={setIsModalCollection}
+              user={user}
+              id={id}
+              mutateUser={mutateUser}
+            />
           </ModalComponent>
         )}
 
         <StyledTitle>{title}</StyledTitle>
         <StyledP>
           {duration} MIN | {difficulty}
+          {recipe.likes > 0 &&
+            ` |  ${recipe.likes} ${
+              recipe.likes > 1 ? "Schmeckos" : "Schmecko"
+            }`}
         </StyledP>
         <StyledH2>
           Zutaten{" "}
@@ -349,7 +332,7 @@ export default function DetailPage({
             {filterTags
               .filter(({ type }) => type === "diet")
               .map(({ label, type }) => (
-                <StyledH2 key={type}>{label}</StyledH2>
+                <RestyledH2 key={type}>{label}</RestyledH2>
               ))}
             {diet?.map((tag) => {
               const filterTag = filterTags.find(
@@ -369,7 +352,7 @@ export default function DetailPage({
             {filterTags
               .filter(({ type }) => type === "mealtype")
               .map(({ label, type }) => (
-                <StyledH2 key={type}>{label}</StyledH2>
+                <RestyledH2 key={type}>{label}</RestyledH2>
               ))}
             {mealtype?.map((tag) => {
               const filterTag = filterTags.find(
@@ -390,11 +373,22 @@ export default function DetailPage({
           <StyledLink onClick={() => setContent("instructions")}>
             Zubereitung
           </StyledLink>
-          <StyledLink onClick={() => setContent("notes")}>Notizen</StyledLink>
-          <StyledLink onClick={() => setContent("video")}>Video</StyledLink>
+          <StyledLink
+            onClick={() => {
+              if (!user) {
+                notifyError("Bitte zuerst einloggen.");
+                return;
+              }
+              setContent("notes");
+            }}
+          >
+            Notizen
+          </StyledLink>
         </StyledHyper>
         {content === "instructions" && (
-          <StyledIngredients>{instructions}</StyledIngredients>
+          <StyledIngredients>
+            {RenderTextWithBreaks(instructions)}
+          </StyledIngredients>
         )}
         {content === "notes" && (
           <Notes
@@ -403,9 +397,6 @@ export default function DetailPage({
             mutateUser={mutateUser}
             foundInteractions={foundInteractions}
           />
-        )}
-        {content === "video" && (
-          <Link href={youtubeLink}>auf youtube anschauen</Link>
         )}
       </StyledArticle>
     </Wrapper>
@@ -458,6 +449,10 @@ const ImageContainer = styled(Image)`
   height: auto;
 `;
 
+const RestyledH2 = styled(StyledH2)`
+  margin-left: 0;
+`;
+
 const StyledForm = styled.form`
   display: flex;
   flex-wrap: wrap;
@@ -493,23 +488,28 @@ const StyledForm = styled.form`
     min-height: 2rem;
   }
 `;
-const StyledTitle = styled.h1`
-  margin-right: var(--gap-out);
-  margin-left: var(--gap-out);
-  margin-top: 2rem;
-  margin-bottom: 1rem;
-  width: calc(100% - (2 * var(--gap-out)));
-  text-align: center;
-`;
 
 const StyledCategoriesDiv = styled.div`
   display: flex;
   justify-content: left;
-  gap: 0.5rem;
+  gap: calc(2 * var(--gap-between));
   flex-wrap: wrap;
   width: calc(100% - (2 * var(--gap-out)));
   margin: 0;
   margin-top: 0.25rem;
+  div:first-child {
+    position: relative;
+    margin-right: var(--gap-between);
+  }
+  div:first-child::after {
+    content: "";
+    position: absolute;
+    right: calc(-1 * var(--gap-between));
+    top: 25%;
+    bottom: 25%;
+    width: 1px;
+    background-color: black;
+  }
 `;
 
 const StyledCategoryButton = styled.button`
@@ -535,4 +535,17 @@ const UnstyledButton = styled.button`
   &:hover {
     background-color: var(--color-background);
   }
+`;
+
+const StyledTitle = styled.h1`
+  margin-right: var(--gap-out);
+  margin-left: var(--gap-out);
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  width: calc(100% - (2 * var(--gap-out)));
+  text-align: center;
+`;
+
+const StyledInstructionsP = styled.p`
+  margin: 0 0 var(--gap-between) 0;
 `;

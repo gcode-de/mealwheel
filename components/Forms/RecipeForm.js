@@ -6,7 +6,7 @@ import StyledH2 from "../Styled/StyledH2";
 import Button from "../Styled/StyledButton";
 import StyledP from "../Styled/StyledP";
 import AddButton from "../Styled/AddButton";
-import SetNumberOfPeople from "../Styled/SetNumberOfPeople";
+import SetNumberOfPeople from "../Cards/SetNumberOfPeople";
 import Plus from "/public/icons/svg/plus.svg";
 import Minus from "/public/icons/svg/horizontal-rule_9272854.svg";
 import StyledIngredients from "../Styled/StyledIngredients";
@@ -316,12 +316,12 @@ export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
               </div>
             ))}
           <StyledH2>Anleitung</StyledH2>
-          <StyledBigInput
-            type="text"
+          <StyledTextarea
             name="instructions"
             required
             aria-label="add instructions for creating the recipe"
             defaultValue={data?.instructions}
+            rows="6"
           />
           <StyledH2>Video</StyledH2>
           <StyledInput
@@ -371,6 +371,18 @@ const StyledBigInput = styled.input`
   height: 50px;
   width: calc(100% - (2 * var(--gap-out)));
   padding: 0.7rem;
+`;
+
+const StyledTextarea = styled.textarea`
+  background-color: var(--color-background);
+  border: none;
+  border-radius: 10px;
+  resize: vertical;
+  width: calc(100% - (2 * var(--gap-out)));
+  padding: 0.7rem;
+  font-family: unset;
+  font-size: 0.9rem;
+  line-height: 1.15rem;
 `;
 const Spacer = styled.div`
   margin-top: 2rem;
