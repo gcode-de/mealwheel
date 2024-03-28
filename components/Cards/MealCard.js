@@ -11,7 +11,6 @@ import AddToCollection from "../Forms/AddToCollection";
 
 export default function MealCard({
   recipe,
-  mutateRecipes,
   isFavorite,
   onToggleIsFavorite,
   numberOfPeople,

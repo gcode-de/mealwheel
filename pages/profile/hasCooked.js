@@ -4,9 +4,8 @@ import MealCard from "@/components/Cards/MealCard";
 import Header from "@/components/Styled/Header";
 import IconButton from "@/components/Styled/IconButton";
 import { useRouter } from "next/router";
-import StyledH2 from "@/components/Styled/StyledH2";
 import LoadingComponent from "@/components/Loading";
-import { Spacer } from "@/components/Styled/Styled";
+import { Spacer, H2 } from "@/components/Styled/Styled";
 
 export default function HasCooked({
   user,
@@ -48,9 +47,9 @@ export default function HasCooked({
         />
         <Spacer />
         <Header text="Schon gekocht" />
-        <StyledArticle>
+        <article>
           <StyledUl>{`Du hast noch keine Rezepte als "gekocht" markiert.`}</StyledUl>
-        </StyledArticle>
+        </article>
       </>
     );
   }
@@ -64,8 +63,8 @@ export default function HasCooked({
         onClick={() => router.back()}
       />
       <Spacer />
-      <StyledH2>Schon gekocht</StyledH2>
-      <StyledArticle>
+      <H2>Schon gekocht</H2>
+      <article>
         <StyledUl>
           {hasCookedRecipes?.map((recipe) => {
             return (
@@ -80,12 +79,10 @@ export default function HasCooked({
             );
           })}
         </StyledUl>
-      </StyledArticle>
+      </article>
     </>
   );
 }
-
-const StyledArticle = styled.article``;
 
 const StyledUl = styled.ul`
   padding: 10px;

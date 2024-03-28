@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import MenuContainer from "../MenuContainer";
-import { BookUser, Menu, Reload, Trash } from "@/helpers/svg";
+import { Menu, Reload } from "@/helpers/svg";
 import { useState } from "react";
 
 export default function CardSkeleton({
@@ -8,10 +8,7 @@ export default function CardSkeleton({
   $isLoading,
   text,
   $height,
-  numberOfPeople,
-  changeNumberOfPeople,
   reassignRecipe,
-  day,
   weekdays,
   index,
   isDisabled,

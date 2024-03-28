@@ -25,14 +25,14 @@ import {
 //Components
 import StyledH2 from "@/components/Styled/StyledH2";
 import Button from "@/components/Styled/StyledButton";
-import StyledProgress from "@/components/Styled/StyledProgress";
+import StyledProgress from "@/components/StyledProgress";
 import MenuContainer from "@/components/MenuContainer";
 import IconButton from "@/components/Button/IconButton";
 import StyledList from "@/components/Styled/StyledList";
 import ModalComponent from "@/components/Modal";
 import updateCommunityUserInDB from "@/helpers/updateCommunityUserInDB";
 import Profile from "@/components/Profile";
-import ToggleCheckbox from "@/components/Styled/ToggleCheckbox";
+import ToggleCheckbox from "@/components/ToggleCheckbox";
 
 export default function ProfilePage({
   user,

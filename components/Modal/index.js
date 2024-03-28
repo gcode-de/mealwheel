@@ -1,6 +1,5 @@
 import styled from "styled-components";
-import Button from "../Styled/StyledButton";
-import StyledH2 from "../Styled/StyledH2";
+import { Button, H2 } from "@/components/Styled/Styled";
 
 export default function ModalComponent({
   message,
@@ -16,7 +15,7 @@ export default function ModalComponent({
       <Modal>
         {message && (
           <>
-            <StyledH2>{message}</StyledH2>
+            <H2>{message}</H2>
             <ButtonContainer>
               <Button onClick={onConfirm}>{btnConfirmMessage}</Button>
               <Button onClick={toggleModal}>{btnCloseMessage}</Button>

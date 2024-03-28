@@ -1,18 +1,17 @@
-import StyledListItem from "../Styled/StyledListItem";
 import StyledArticle from "../Styled/StyledArticle";
 import IconButton from "../Button/IconButton";
 import StyledList from "../Styled/StyledList";
 import StyledH2 from "../Styled/StyledH2";
 import Button from "../Styled/StyledButton";
 import StyledP from "../Styled/StyledP";
-import AddButton from "../Styled/AddButton";
+import AddButton from "../Button/AddButton";
 import SetNumberOfPeople from "../Cards/SetNumberOfPeople";
-import Plus from "/public/icons/svg/plus.svg";
-import Minus from "/public/icons/svg/horizontal-rule_9272854.svg";
+
+import { Plus, Minus } from "@/helpers/svg";
 import StyledIngredients from "../Styled/StyledIngredients";
 import StyledInput from "../Styled/StyledInput";
 import StyledDropDown from "../Styled/StyledDropDown";
-import StyledProgress from "../Styled/StyledProgress";
+import StyledProgress from "../StyledProgress";
 
 import { filterTags } from "/helpers/filterTags";
 import { ingredientUnits } from "@/helpers/ingredientUnits";
@@ -20,11 +19,10 @@ import handleDeleteImage from "@/helpers/Cloudinary/handleDeleteImage";
 import handlePostImage from "@/helpers/Cloudinary/handlePostImage";
 
 import styled from "styled-components";
-import { notifySuccess, notifyError } from "/helpers/toast";
 import { useState } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
-import ToggleCheckbox from "../Styled/ToggleCheckbox";
+import ToggleCheckbox from "../ToggleCheckbox";
 
 export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
   const [difficulty, setDifficulty] = useState(
@@ -233,10 +231,11 @@ export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
                     handleInputChange(event, index, "quantity")
                   }
                   type="number"
-                  $width={"3rem"}
+                  $width="2rem"
                   required
                   min="0"
                   aria-label="add ingredient quantity for the recipe"
+                  placeholder="Menge"
                 />
                 <StyledDropDown
                   required

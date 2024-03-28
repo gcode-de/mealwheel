@@ -324,10 +324,10 @@ export default function DetailPage({
         <StyledList>
           {ingredients.map((ingredient) => (
             <StyledListItem key={ingredient._id}>
-              <StyledP>{ingredient.name}</StyledP>
               <StyledP>
                 {ingredient.quantity * servings} {ingredient.unit}
               </StyledP>
+              <StyledP>{ingredient.name}</StyledP>
             </StyledListItem>
           ))}
         </StyledList>

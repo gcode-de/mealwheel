@@ -1,7 +1,6 @@
 import styled from "styled-components";
-import Plate from "@/public/icons/svg/plate-and-utensils-top-view-svgrepo-com.svg";
-import IconButton from "../Button/IconButton";
-import Reload from "@/public/icons/svg/arrows-retweet_9253335.svg";
+
+import { Plate } from "@/helpers/svg";
 
 export default function SetNumberOfPeople({
   numberOfPeople,
