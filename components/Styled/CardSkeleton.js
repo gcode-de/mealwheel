@@ -32,9 +32,11 @@ export default function CardSkeleton({
       {Array.from({ length: amount }, (_, ind) => (
         <StyledCardSkeleton key={ind} $isLoading={$isLoading} $height={$height}>
           {weekdays && <StyledDragLine />}
-          <MenuButton onClick={() => toggleMenu(index)}>
-            <StyledMenu width={30} height={30} />
-          </MenuButton>
+          {weekdays && (
+            <MenuButton onClick={() => toggleMenu(index)}>
+              <StyledMenu width={30} height={30} />
+            </MenuButton>
+          )}
           {menuVisible[index] && (
             <MenuContainer
               top="6.5rem"
@@ -81,7 +83,7 @@ const StyledCardSkeleton = styled.li`
       rgba(255, 255, 255, 0.5) 50%,
       rgba(255, 255, 255, 0) 80%
     ),
-    var(--color-lightgrey)`};
+    var(--color-skeleton)`};
   background-repeat: repeat-y;
   background-size: 50px 500px;
   background-position: 0 0;
@@ -105,7 +107,7 @@ const MenuButton = styled.button`
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 0 1rem 0.5rem 0;
+  margin: 0 2.05rem 0.5rem 0;
 `;
 
 const StyledMenu = styled(Menu)`

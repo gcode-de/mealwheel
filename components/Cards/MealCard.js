@@ -106,8 +106,8 @@ export default function MealCard({
             )}
             {menuVisible[index] && (
               <MenuContainer
-                top="6.5rem"
-                right="calc(3 * var(--gap-between) + 20px)"
+                top="7.3rem"
+                right="calc(2 * var(--gap-between) + 18px)"
               >
                 <UnstyledButton
                   onClick={() => {
@@ -228,8 +228,7 @@ const MenuButton = styled.button`
   border-radius: 50px;
   align-self: end;
   padding-bottom: 0;
-  height: 30px;
-  width: 30px;
+  height: 2rem;
   display: flex;
   justify-content: center;
   align-items: center;
