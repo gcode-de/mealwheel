@@ -15,6 +15,7 @@ export default function CardSkeleton({
   day,
   weekdays,
   index,
+  isDisabled,
 }) {
   const [menuVisible, setMenuVisible] = useState(
     weekdays ? new Array(weekdays.length).fill(false) : []
@@ -32,7 +33,7 @@ export default function CardSkeleton({
       {Array.from({ length: amount }, (_, ind) => (
         <StyledCardSkeleton key={ind} $isLoading={$isLoading} $height={$height}>
           {weekdays && <StyledDragLine />}
-          {weekdays && (
+          {weekdays && isDisabled && (
             <StyledMenu
               width={30}
               height={30}
