@@ -410,7 +410,10 @@ export default function Plan({
         {isRandomnessActive && (
           <RandomnessSliderContainer>
             {assignableDays.length > 0 ? (
-              <p>Zufällige Rezepte: {numberOfRandomRecipes}</p>
+              <p>
+                Zufällige Rezepte: {numberOfRandomRecipes} Rezepte, die weder
+                mit einem "Schmecko" noch als schon gekocht markiert wurden
+              </p>
             ) : (
               <p>Alle Tage geplant.</p>
             )}

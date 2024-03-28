@@ -14,6 +14,7 @@ export default function DetailCommunityPage({
   mutateUser,
   toggleIsFavorite,
   getRecipeProperty,
+  mutateAllUsers,
 }) {
   const router = useRouter();
   const { id } = router.query;
@@ -32,7 +33,13 @@ export default function DetailCommunityPage({
         left="var(--gap-out)"
         onClick={() => router.back()}
       />
-      <Profile foundUser={foundUser} name="external-profil" user={user} />
+      <Profile
+        foundUser={foundUser}
+        name="external-profil"
+        user={user}
+        mutateAllUsers={mutateAllUsers}
+        allUsers={allUsers}
+      />
       <H2>Kochbücher</H2>
       <WrapperFlex>
         {!foundUser.collections.length &&

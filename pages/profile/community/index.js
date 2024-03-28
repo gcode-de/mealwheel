@@ -4,7 +4,7 @@ import IconButton from "@/components/Button/IconButton";
 import ProfileCard from "@/components/Cards/ProfileCard";
 import { Spacer, H2 } from "@/components/Styled/Styled";
 
-export default function Community({ user, allUsers }) {
+export default function Community({ user, allUsers, mutateAllUsers }) {
   const router = useRouter();
   if (!user || !allUsers) {
     return;
@@ -31,6 +31,8 @@ export default function Community({ user, allUsers }) {
             (request) => request.senderId === user._id
           )}
           user={user}
+          allUsers={allUsers}
+          mutateAllUsers={mutateAllUsers}
         />
       ))}
     </>
