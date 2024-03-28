@@ -24,7 +24,7 @@ export default function ScrollToTop() {
   return (
     <>
       {backToTopButton && (
-        <IconButtonLarge style={"arrowUp"} bottom="10rem" onClick={scrollUp} />
+        <IconButtonLarge style={"arrowUp"} bottom="9rem" onClick={scrollUp} />
       )}
     </>
   );

@@ -207,7 +207,7 @@ export default function ShoppingList({ user, mutateUser }) {
         </form>
       </StyledList>
       <Spacer />
-      <IconButtonLarge style={"trash"} bottom="6rem" onClick={clearShopping} />
+      <IconButtonLarge style={"trash"} bottom="5rem" onClick={clearShopping} />
     </>
   );
 }
