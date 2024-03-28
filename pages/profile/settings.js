@@ -24,6 +24,8 @@ export default function Settings({
     return <p>kein Benutzer/Haushalt gefunden...</p>;
   }
 
+  console.log(user, household);
+
   const { settings } = household;
   const { weekdaysEnabled } = settings;
 
@@ -125,6 +127,7 @@ export default function Settings({
       <Household
         allUsers={allUsers}
         user={user}
+        household={household}
         mutateAllUsers={mutateAllUsers}
       />
     </>

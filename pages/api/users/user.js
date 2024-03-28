@@ -16,9 +16,9 @@ export default async function handler(request, response) {
   if (request.method === "GET") {
     const user = await User.findById(session.user.id)
       .populate("recipeInteractions.recipe")
-      .populate("collections.recipes");
-    // .populate("households") //wohl hier nicht benötigt, da die IDs ausreichen, un der Haushalt sowieso separat gefetched werden muss um damit persistens zu arbeiten.
-    // .populate("activeHousehold");
+      .populate("collections.recipes")
+      .populate("households");
+    // .populate("activeHousehold");//wohl hier nicht benötigt, da die IDs ausreichen, un der Haushalt sowieso separat gefetched werden muss um damit persistens zu arbeiten.
 
     if (!user) {
       return response.status(404).json({ status: "Not Found" });
