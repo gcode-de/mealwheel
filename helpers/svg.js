@@ -28,6 +28,7 @@ import GenerateIcon from "@/public/icons/svg/pen-swirl_10741646.svg";
 import SaveShoppingIcon from "@/public/icons/svg/cart-arrow-down_9795299.svg";
 import BellIcon from "/public/icons/svg/cowbell_9083627.svg";
 import MenuIcon from "/public/icons/svg/menu.svg";
+import SearchIcon from "@/public/icons/svg/pan_7409478.svg";
 
 export const ArrowUp = ArrowUpIcon;
 export const ArrowLeft = ArrowLeftIcon;
@@ -53,6 +54,7 @@ export const Pot = PotIcon;
 export const Plus = PlusIcon;
 export const Reload = ReloadIcon;
 export const SaveShopping = SaveShoppingIcon;
+export const Search = SearchIcon;
 export const Settings = SettingsIcon;
 export const Trash = TrashIcon;
 export const TriangleLeft = TriangleLeftIcon;
