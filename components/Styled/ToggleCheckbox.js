@@ -83,7 +83,7 @@ const StyledSliderCheckbox = styled.span`
   }
 
   input:checked + & {
-    background-color: var(--color-darkgrey);
+    background-color: var(--color-highlight);
   }
 
   input:checked + &:before {

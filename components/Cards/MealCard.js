@@ -84,25 +84,26 @@ export default function MealCard({
               />
             )}
             {reassignRecipe !== undefined && (
-              <MenuButton>
-                <Reload
-                  width={20}
-                  height={20}
-                  onClick={() => {
-                    reassignRecipe(day);
-                  }}
-                />
-              </MenuButton>
+              <StyledReload
+                width={30}
+                height={30}
+                onClick={() => {
+                  reassignRecipe(day);
+                }}
+              />
             )}
             {weekdays && (
-              <MenuButton onClick={() => toggleMenu(index)}>
-                <StyledMenu width={30} height={30} />
-              </MenuButton>
+              <StyledMenu
+                width={30}
+                height={30}
+                onClick={() => toggleMenu(index)}
+                $rotate={menuVisible[index]}
+              />
             )}
             {menuVisible[index] && (
               <MenuContainer
-                top="6.5rem"
-                right="calc(3 * var(--gap-between) + 20px)"
+                top="7.3rem"
+                right="calc(2 * var(--gap-between) + 18px)"
               >
                 <UnstyledButton
                   onClick={() => {
@@ -216,24 +217,25 @@ const StyledSettingsDiv = styled.div`
   justify-content: space-between;
 `;
 
-const MenuButton = styled.button`
-  background-color: var(--color-background);
-  border: none;
-  z-index: 3;
-  border-radius: 50px;
-  align-self: end;
-  padding-bottom: 0;
-  height: 30px;
-  width: 30px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-
 const StyledMenu = styled(Menu)`
   rotate: 90deg;
   cursor: pointer;
+  background-color: var(--color-background);
+  border-radius: 100%;
   border-radius: var(--border-radius-large);
+  align-self: end;
+  transform: ${(props) => (props.$rotate ? "rotate(90deg)" : "0")};
+  padding: 5px;
+  position: relative;
+`;
+
+const StyledReload = styled(Reload)`
+  cursor: pointer;
+  background-color: var(--color-background);
+  border-radius: 100%;
+  border-radius: var(--border-radius-large);
+  align-self: end;
+  padding: 5px;
 `;
 
 const UnstyledButton = styled.button`
