@@ -179,6 +179,12 @@ export default function ProfilePage({
             <Pen width={15} height={15} />
             Profil bearbeiten
           </UnstyledButton>
+          {user.admin && (
+            <UnstyledButton onClick={() => router.push("/admin")}>
+              <Pen width={15} height={15} />
+              Admin
+            </UnstyledButton>
+          )}
           <UnstyledButton onClick={handleSignOut}>
             <Leave width={15} height={15} />
             Abmelden
