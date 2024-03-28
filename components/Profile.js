@@ -1,7 +1,14 @@
 import styled from "styled-components";
 import Image from "next/image";
 import FollowButton from "./Button/FollowButton";
-export default function Profile({ foundUser, name, user }) {
+
+export default function Profile({
+  foundUser,
+  name,
+  user,
+  allUsers,
+  mutateAllUsers,
+}) {
   return (
     <>
       <WrapperCenter>
@@ -24,7 +31,12 @@ export default function Profile({ foundUser, name, user }) {
           ${foundUser?.userName || foundUser?.firstName || "Gastnutzer"}!`}
         </p>
         {name === "external-profil" && (
-          <FollowButton foundUser={foundUser} user={user} />
+          <FollowButton
+            foundUser={foundUser}
+            user={user}
+            mutateAllUsers={mutateAllUsers}
+            allUsers={allUsers}
+          />
         )}
       </Wrapper>
     </>

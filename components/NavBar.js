@@ -1,13 +1,7 @@
 import Link from "next/link";
 import styled from "styled-components";
 import { useRouter } from "next/router";
-import Pizza from "../public/icons/svg/restaurant_7409576.svg";
-import Calendar from "../public/icons/svg/calendar-days_9795297.svg";
-import Heart from "../public/icons/heart-svgrepo-com.svg";
-import List from "../public/icons/list-check-svgrepo-com.svg";
-import Gear from "../public/icons/settings-svgrepo-com.svg";
-import Profile from "../public/icons/svg/profile.svg";
-import Shopping from "../public/icons/svg/square-u_10457596.svg";
+import { Calendar, Heart, Profile, Shopping, Pizza } from "@/helpers/svg";
 
 export default function NavBar({ user }) {
   const router = useRouter();

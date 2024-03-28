@@ -1,11 +1,10 @@
 import updateUserinDb from "@/helpers/updateUserInDb";
 import styled from "styled-components";
 
-import Plus from "/public/icons/svg/plus.svg";
-import StyledInput from "@/components/Styled/StyledInput";
-import AddButton from "@/components/Styled/AddButton";
+import AddButton from "@/components/Button/AddButton";
 import ModalComponent from "../Modal";
-import StyledH2 from "../Styled/StyledH2";
+import { H2, Input } from "@/components/Styled/Styled";
+import { Plus } from "@/helpers/svg";
 
 export default function NewCollection({ user, mutateUser, setModal }) {
   function addNewCollection(event) {
@@ -26,9 +25,9 @@ export default function NewCollection({ user, mutateUser, setModal }) {
   }
   return (
     <ModalComponent toggleModal={setModal}>
-      <StyledH2>Wie soll dein neues Kochbuch heißen?</StyledH2>
+      <H2>Wie soll dein neues Kochbuch heißen?</H2>
       <StyledForm onSubmit={addNewCollection}>
-        <StyledInput
+        <Input
           name="collectionName"
           placeholder="Kochbuch Name"
           aria-label="collection-name-input"

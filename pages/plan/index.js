@@ -23,11 +23,11 @@ import {
   restrictToParentElement,
 } from "@dnd-kit/modifiers";
 
-import CardSkeleton from "@/components/Styled/CardSkeleton";
+import CardSkeleton from "@/components/Cards/CardSkeleton";
 import Header from "@/components/Styled/Header";
 import MealCard from "@/components/Cards/MealCard";
-import IconButton from "@/components/Styled/IconButton";
-import RandomnessSlider from "@/components/Styled/RandomnessSlider";
+import IconButton from "@/components/Button/IconButton";
+import RandomnessSlider from "@/components/RandomnessSlider";
 
 import generateWeekdays from "@/helpers/generateWeekdays";
 import assignRecipeToCalendarDay from "@/helpers/assignRecipesToCalendarDays";
@@ -35,9 +35,9 @@ import populateEmptyWeekdays from "@/helpers/populateEmptyWeekdays";
 import updateUserinDb from "@/helpers/updateUserInDb";
 import assignRecipesToCalendarDays from "@/helpers/assignRecipesToCalendarDays";
 import LoadingComponent from "@/components/Loading";
-import IconButtonLarge from "@/components/Styled/IconButtonLarge";
+import IconButtonLarge from "@/components/Button/IconButtonLarge";
 import { notifySuccess, notifyError } from "/helpers/toast";
-import ToggleCheckbox from "@/components/Styled/ToggleCheckbox";
+import ToggleCheckbox from "@/components/ToggleCheckbox";
 
 export default function Plan({
   isLoading,
@@ -227,7 +227,7 @@ export default function Plan({
             reassignRecipe={reassignRecipe}
             removeRecipe={removeRecipe}
             day={calendarDay.date}
-            isFavorite={null}
+            $isFavorite={null}
             user={user}
             weekdays={weekdays}
             index={index}
@@ -410,7 +410,11 @@ export default function Plan({
         {isRandomnessActive && (
           <RandomnessSliderContainer>
             {assignableDays.length > 0 ? (
-              <p>Zufällige Rezepte: {numberOfRandomRecipes}</p>
+              <p>
+                Zufällige Rezepte: {numberOfRandomRecipes} Rezepte, die weder
+                mit einem &quot;Schmecko&quot; noch als schon gekocht markiert
+                wurden
+              </p>
             ) : (
               <p>Alle Tage geplant.</p>
             )}
@@ -460,7 +464,7 @@ export default function Plan({
                           toggleDayIsDisabled(weekday.date);
                           removeRecipe(weekday.date);
                         }}
-                        slidersize="1rem"
+                        $sliderSize="1rem"
                         index={index}
                       />
                       {calendarDay?.isDisabled}

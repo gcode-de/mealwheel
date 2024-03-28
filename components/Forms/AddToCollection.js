@@ -1,8 +1,8 @@
-import StyledDropDown from "@/components/Styled/StyledDropDown";
 import updateUserinDb from "@/helpers/updateUserInDb";
 import { notifySuccess, notifyError } from "/helpers/toast";
 import { useState } from "react";
 import styled from "styled-components";
+import { Select } from "@/components/Styled/Styled";
 
 export default function AddToCollection({
   user,
@@ -41,7 +41,7 @@ export default function AddToCollection({
   return (
     <StyledForm onSubmit={handleCollection} $isVisible={isModalCollection}>
       <h3>Dieses Rezept speichern:</h3>
-      <StyledDropDown
+      <Select
         onChange={(event) => setselectedCollection(event.target.value)}
         name="collectionName"
         required
@@ -51,7 +51,7 @@ export default function AddToCollection({
             {col.collectionName}
           </option>
         ))}
-      </StyledDropDown>
+      </Select>
       <button type="submit">speichern</button>
     </StyledForm>
   );

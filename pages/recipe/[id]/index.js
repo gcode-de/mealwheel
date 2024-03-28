@@ -1,32 +1,21 @@
 import Image from "next/image";
-import Link from "next/link";
 import styled from "styled-components";
 import useSWR from "swr";
 import { useState } from "react";
 import { useRouter } from "next/router";
 import { notifySuccess, notifyError } from "/helpers/toast";
-import { Fragment } from "react";
-
 import assignRecipesToCalendarDays from "@/helpers/assignRecipesToCalendarDays";
 import updateUserinDb from "@/helpers/updateUserInDb";
 import { filterTags } from "@/helpers/filterTags";
-
 import SetNumberOfPeople from "@/components/Cards/SetNumberOfPeople";
-import IconButton from "@/components/Styled/IconButton";
-import StyledArticle from "@/components/Styled/StyledArticle";
-import StyledList from "@/components/Styled/StyledList";
-import StyledH2 from "@/components/Styled/StyledH2";
-import StyledP from "@/components/Styled/StyledP";
-import StyledListItem from "@/components/Styled/StyledListItem";
+import IconButton from "@/components/Button/IconButton";
+import { Pen, Book, Calendar } from "@/helpers/svg";
+import { Article, List, H2, P, ListItem } from "@/components/Styled/Styled";
 import LoadingComponent from "@/components/Loading";
-
 import Notes from "@/components/Notes";
 import MenuContainer from "@/components/MenuContainer";
-import Calendar from "@/public/icons/svg/calendar-days_9795297.svg";
-import Pen from "/public/icons/svg/pen-square_10435869.svg";
-import Book from "@/public/icons/svg/notebook-alt_9795395.svg";
-import ModalComponent from "../../../components/Modal";
-import AddToCollection from "../../../components/Forms/AddToCollection";
+import ModalComponent from "@/components/Modal";
+import AddToCollection from "@/components/Forms/AddToCollection";
 
 export default function DetailPage({
   user,
@@ -90,6 +79,7 @@ export default function DetailPage({
 
   difficulty.toUpperCase();
   const userIsAuthor = user && user?._id === author;
+
   function toggleMenu() {
     setIsMenuVisible(!isMenuVisible);
   }
@@ -208,7 +198,7 @@ export default function DetailPage({
         height={400}
         sizes="500px"
       />
-      <StyledArticle>
+      <Article>
         <IconButton
           style="Pot"
           right="calc(2*3rem + var(--gap-out))"
@@ -244,14 +234,18 @@ export default function DetailPage({
           }}
         />
         <IconButton
-          onClick={toggleMenu}
+          onClick={() => setIsMenuVisible(!isMenuVisible)}
           right="var(--gap-out)"
           top="-1.25rem"
           style="Menu"
           rotate={isMenuVisible}
         />
         {isMenuVisible && (
-          <MenuContainer top="2rem" right="var(--gap-out)">
+          <MenuContainer
+            top="2rem"
+            right="var(--gap-out)"
+            toggleMenu={() => setIsMenuVisible(false)}
+          >
             <UnstyledButton onClick={toggleModalCalender}>
               <Calendar width={15} height={15} />
               Rezept im Kalender speichern
@@ -299,31 +293,31 @@ export default function DetailPage({
         )}
 
         <StyledTitle>{title}</StyledTitle>
-        <StyledP>
+        <P>
           {duration} MIN | {difficulty}
           {recipe.likes > 0 &&
             ` |  ${recipe.likes} ${
               recipe.likes > 1 ? "Schmeckos" : "Schmecko"
             }`}
-        </StyledP>
-        <StyledH2>
+        </P>
+        <H2>
           Zutaten{" "}
           <SetNumberOfPeople
             numberOfPeople={servings}
             handleChange={handleSetNumberOfPeople}
             $margin="-0.4rem 0 0 0"
           />
-        </StyledH2>
-        <StyledList>
+        </H2>
+        <List>
           {ingredients.map((ingredient) => (
-            <StyledListItem key={ingredient._id}>
-              <StyledP>{ingredient.name}</StyledP>
-              <StyledP>
+            <ListItem key={ingredient._id}>
+              <P>
                 {ingredient.quantity * servings} {ingredient.unit}
-              </StyledP>
-            </StyledListItem>
+              </P>
+              <P>{ingredient.name}</P>
+            </ListItem>
           ))}
-        </StyledList>
+        </List>
         <StyledCategoriesDiv>
           <div>
             {filterTags
@@ -387,7 +381,7 @@ export default function DetailPage({
             {RenderTextWithBreaks(instructions)}
           </StyledIngredients>
         )}
-        {content === "notes" && (
+        {content === "notes" && user && (
           <Notes
             user={user}
             _id={id}
@@ -395,7 +389,7 @@ export default function DetailPage({
             foundInteractions={foundInteractions}
           />
         )}
-      </StyledArticle>
+      </Article>
     </Wrapper>
   );
 }
@@ -446,7 +440,7 @@ const ImageContainer = styled(Image)`
   height: auto;
 `;
 
-const RestyledH2 = styled(StyledH2)`
+const RestyledH2 = styled(H2)`
   margin-left: 0;
 `;
 

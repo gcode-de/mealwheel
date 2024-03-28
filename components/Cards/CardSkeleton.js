@@ -1,7 +1,6 @@
 import styled from "styled-components";
-import IconButton from "./IconButton";
 import MenuContainer from "../MenuContainer";
-import { BookUser, Menu, Reload, Trash } from "@/helpers/svg";
+import { Menu, Reload } from "@/helpers/svg";
 import { useState } from "react";
 
 export default function CardSkeleton({
@@ -9,10 +8,7 @@ export default function CardSkeleton({
   $isLoading,
   text,
   $height,
-  numberOfPeople,
-  changeNumberOfPeople,
   reassignRecipe,
-  day,
   weekdays,
   index,
   isDisabled,
@@ -45,13 +41,13 @@ export default function CardSkeleton({
             <MenuContainer
               top="7.25rem"
               right="calc(3 * var(--gap-between) + 20px)"
+              toggleMenu={() => toggleMenu(index)}
             >
               <UnstyledButton
                 onClick={() => {
                   reassignRecipe(weekdays[index].date);
                 }}
               >
-                {console.log(weekdays[index].date)}
                 <Reload width={15} height={15} /> Neues Rezept laden
               </UnstyledButton>
             </MenuContainer>
