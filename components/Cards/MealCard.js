@@ -3,11 +3,11 @@ import Image from "next/image";
 import Link from "next/link";
 import IconButton from "../Styled/IconButton";
 import SetNumberOfPeople from "../Styled/SetNumberOfPeople";
-import MenuContainer from "./MenuContainer";
+import MenuContainer from "../MenuContainer";
 import { BookUser, Menu, Reload, Trash } from "@/helpers/svg";
 import { useState } from "react";
-import ModalComponent from "./Modal";
-import AddToCollection from "./Forms/AddToCollection";
+import ModalComponent from "../Modal";
+import AddToCollection from "../Forms/AddToCollection";
 
 export default function MealCard({
   recipe,
