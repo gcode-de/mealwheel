@@ -2,7 +2,7 @@ import Link from "next/link";
 import styled from "styled-components";
 import { useRouter } from "next/router";
 import { Spacer, H2 } from "@/components/Styled/Styled";
-import IconButton from "@/components/Styled/IconButton";
+import IconButton from "@/components/Button/IconButton";
 
 export default function Imprint() {
   const router = useRouter();

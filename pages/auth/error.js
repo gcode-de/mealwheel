@@ -1,6 +1,6 @@
 import Header from "../../components/Styled/Header";
 import GoogleIcon from "/public/icons/svg/google.svg";
-import Button from "../../components/Styled/StyledButton";
+import { Button } from "@/components/Styled/Styled";
 
 import styled from "styled-components";
 import { getProviders, signIn } from "next-auth/react";
