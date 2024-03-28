@@ -17,7 +17,7 @@ export default function NavBar({ user }) {
   const menuItems = [
     { href: "/", label: "Entdecken", Icon: Pizza },
     { href: "/plan", label: "Plan", Icon: Calendar },
-    { href: "/profile/favorites", label: "Favoriten", Icon: Heart },
+    { href: "/profile/favorites", label: "Schmeckos", Icon: Heart },
     { href: "/shopping", label: "Einkauf", Icon: Shopping },
     {
       href: user ? "/profile" : "/auth/signin",

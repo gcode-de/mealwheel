@@ -7,7 +7,7 @@ import styled from "styled-components";
 import IconButton from "@/components/Styled/IconButton";
 import { useRouter } from "next/router";
 import Spacer from "@/components/Styled/Spacer";
-import SetNumberOfPeople from "../../components/Styled/SetNumberOfPeople";
+import SetNumberOfPeople from "../../components/Cards/SetNumberOfPeople";
 
 export default function Settings({ user, mutateUser }) {
   const router = useRouter();

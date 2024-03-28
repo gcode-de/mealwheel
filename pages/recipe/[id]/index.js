@@ -10,7 +10,7 @@ import assignRecipesToCalendarDays from "@/helpers/assignRecipesToCalendarDays";
 import updateUserinDb from "@/helpers/updateUserInDb";
 import { filterTags } from "@/helpers/filterTags";
 
-import SetNumberOfPeople from "@/components/Styled/SetNumberOfPeople";
+import SetNumberOfPeople from "@/components/Cards/SetNumberOfPeople";
 import IconButton from "@/components/Styled/IconButton";
 import StyledArticle from "@/components/Styled/StyledArticle";
 import StyledList from "@/components/Styled/StyledList";
@@ -35,6 +35,7 @@ export default function DetailPage({
   getRecipeProperty,
   toggleIsFavorite,
   toggleHasCooked,
+  mutateRecipes,
 }) {
   const [content, setContent] = useState("instructions");
   const [selectedDate, setSelectedDate] = useState(
@@ -54,7 +55,7 @@ export default function DetailPage({
     data: recipe,
     isLoading: dataIsLoading,
     error: dataError,
-    mutate,
+    mutate: mutateRecipe,
   } = useSWR(id ? `/api/recipes/${id}` : null);
 
   const defaultNumberOfServings = recipe?.defaultNumberOfServings;
@@ -83,6 +84,7 @@ export default function DetailPage({
     duration,
     difficulty,
     author,
+    likes,
   } = recipe;
 
   difficulty.toUpperCase();
@@ -225,7 +227,7 @@ export default function DetailPage({
               notifyError("Bitte zuerst einloggen.");
               return;
             }
-            toggleIsFavorite(_id);
+            toggleIsFavorite(_id, mutateUser, mutateRecipe);
           }}
         />
         <IconButton
@@ -286,6 +288,10 @@ export default function DetailPage({
         <StyledTitle>{title}</StyledTitle>
         <StyledP>
           {duration} MIN | {difficulty}
+          {recipe.likes > 0 &&
+            ` |  ${recipe.likes} ${
+              recipe.likes > 1 ? "Schmeckos" : "Schmecko"
+            }`}
         </StyledP>
         <StyledH2>
           Zutaten{" "}
@@ -310,7 +316,7 @@ export default function DetailPage({
             {filterTags
               .filter(({ type }) => type === "diet")
               .map(({ label, type }) => (
-                <StyledH2 key={type}>{label}</StyledH2>
+                <RestyledH2 key={type}>{label}</RestyledH2>
               ))}
             {diet?.map((tag) => {
               const filterTag = filterTags.find(
@@ -330,7 +336,7 @@ export default function DetailPage({
             {filterTags
               .filter(({ type }) => type === "mealtype")
               .map(({ label, type }) => (
-                <StyledH2 key={type}>{label}</StyledH2>
+                <RestyledH2 key={type}>{label}</RestyledH2>
               ))}
             {mealtype?.map((tag) => {
               const filterTag = filterTags.find(
@@ -351,8 +357,17 @@ export default function DetailPage({
           <StyledLink onClick={() => setContent("instructions")}>
             Zubereitung
           </StyledLink>
-          <StyledLink onClick={() => setContent("notes")}>Notizen</StyledLink>
-          <StyledLink onClick={() => setContent("video")}>Video</StyledLink>
+          <StyledLink
+            onClick={() => {
+              if (!user) {
+                notifyError("Bitte zuerst einloggen.");
+                return;
+              }
+              setContent("notes");
+            }}
+          >
+            Notizen
+          </StyledLink>
         </StyledHyper>
         {content === "instructions" && (
           <StyledIngredients>{instructions}</StyledIngredients>
@@ -364,9 +379,6 @@ export default function DetailPage({
             mutateUser={mutateUser}
             foundInteractions={foundInteractions}
           />
-        )}
-        {content === "video" && (
-          <Link href={youtubeLink}>auf youtube anschauen</Link>
         )}
       </StyledArticle>
     </Wrapper>
@@ -431,11 +443,24 @@ const StyledTitle = styled.h1`
 const StyledCategoriesDiv = styled.div`
   display: flex;
   justify-content: left;
-  gap: 0.5rem;
+  gap: calc(2 * var(--gap-between));
   flex-wrap: wrap;
   width: calc(100% - (2 * var(--gap-out)));
   margin: 0;
   margin-top: 0.25rem;
+  div:first-child {
+    position: relative;
+    margin-right: var(--gap-between);
+  }
+  div:first-child::after {
+    content: "";
+    position: absolute;
+    right: calc(-1 * var(--gap-between));
+    top: 25%;
+    bottom: 25%;
+    width: 1px;
+    background-color: black;
+  }
 `;
 
 const StyledCategoryButton = styled.button`
@@ -462,6 +487,11 @@ const UnstyledButton = styled.button`
     background-color: var(--color-background);
   }
 `;
+
+const RestyledH2 = styled(StyledH2)`
+  margin-left: 0;
+`;
+
 const StyledForm = styled.form`
   display: flex;
   flex-wrap: wrap;

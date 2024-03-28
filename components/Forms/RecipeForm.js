@@ -6,7 +6,7 @@ import StyledH2 from "../Styled/StyledH2";
 import Button from "../Styled/StyledButton";
 import StyledP from "../Styled/StyledP";
 import AddButton from "../Styled/AddButton";
-import SetNumberOfPeople from "../Styled/SetNumberOfPeople";
+import SetNumberOfPeople from "../Cards/SetNumberOfPeople";
 import Plus from "/public/icons/svg/plus.svg";
 import Minus from "/public/icons/svg/horizontal-rule_9272854.svg";
 import StyledIngredients from "../Styled/StyledIngredients";

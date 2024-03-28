@@ -1,8 +1,8 @@
 import styled from "styled-components";
 import Image from "next/image";
 import Link from "next/link";
-import IconButton from "../Styled/IconButton";
-import SetNumberOfPeople from "../Styled/SetNumberOfPeople";
+import SetNumberOfPeople from "./SetNumberOfPeople";
+import LikesDisplay from "./LikesDisplay";
 import MenuContainer from "../MenuContainer";
 import { BookUser, Menu, Reload, Trash } from "@/helpers/svg";
 import { useState } from "react";
@@ -11,6 +11,7 @@ import AddToCollection from "../Forms/AddToCollection";
 
 export default function MealCard({
   recipe,
+  mutateRecipes,
   isFavorite,
   onToggleIsFavorite,
   numberOfPeople,
@@ -21,7 +22,6 @@ export default function MealCard({
   user,
   weekdays,
   index,
-  mutateUser,
 }) {
   const [menuVisible, setMenuVisible] = useState(
     weekdays ? new Array(weekdays.length).fill(false) : []
@@ -38,19 +38,6 @@ export default function MealCard({
 
   return (
     <StyledLi>
-      {isFavorite !== null && (
-        <IconButton
-          style="Heart"
-          right="-0.5rem"
-          top="-0.5rem"
-          fill={
-            isFavorite ? "var(--color-highlight)" : "var(--color-lightgrey)"
-          }
-          onClick={() => {
-            onToggleIsFavorite(recipe._id);
-          }}
-        />
-      )}
       <CardContainer>
         {
           <ImageContainer>
@@ -77,6 +64,14 @@ export default function MealCard({
             {recipe?.duration && `${recipe?.duration} MIN | `}
             {recipe?.difficulty?.toUpperCase()}
           </StyledPDuration>
+          {isFavorite !== null && (
+            <LikesDisplay
+              likes={recipe?.likes}
+              isFavorite={isFavorite}
+              onToggleIsFavorite={onToggleIsFavorite}
+              $margin="0.75rem 0 0 1.5rem"
+            />
+          )}
           {weekdays && <StyledDragLine />}
           <StyledSettingsDiv>
             {numberOfPeople !== undefined && (

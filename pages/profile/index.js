@@ -229,7 +229,7 @@ export default function ProfilePage({
       <Wrapper>
         <StyledCollection onClick={() => router.push("/profile/favorites")}>
           <Heart width={40} height={40} fill="var(--color-highlight)" />
-          <StyledP $color="var(--color-hightlight)">Favoriten</StyledP>
+          <StyledP $color="var(--color-hightlight)">Schmeckos</StyledP>
         </StyledCollection>
         <StyledCollection onClick={() => router.push("/profile/hasCooked")}>
           <Pot width={40} height={40} />

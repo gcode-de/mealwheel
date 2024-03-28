@@ -13,7 +13,9 @@ import Profile from "../../../../components/Profile";
 export default function DetailCommunityPage({
   allUsers,
   recipes,
+  mutateRecipes,
   user,
+  mutateUser,
   toggleIsFavorite,
   getRecipeProperty,
 }) {
@@ -23,7 +25,7 @@ export default function DetailCommunityPage({
     return;
   }
   const foundUser = allUsers.find((user) => user._id === id);
-  const userRecipes = recipes.filter(
+  const userRecipes = recipes?.filter(
     (recipe) => recipe.author === foundUser._id
   );
   return (
@@ -60,7 +62,9 @@ export default function DetailCommunityPage({
                     key={recipe._id}
                     recipe={recipe}
                     isFavorite={getRecipeProperty(recipe._id, "isFavorite")}
-                    onToggleIsFavorite={toggleIsFavorite}
+                    onToggleIsFavorite={() => {
+                      toggleIsFavorite(recipe._id, mutateUser, mutateRecipes);
+                    }}
                   ></MealCard>
                 );
               })
