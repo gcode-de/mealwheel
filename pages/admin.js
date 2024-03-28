@@ -31,36 +31,23 @@ export default function Admin({ user, fetcher, recipes, allUsers }) {
           <Spacer />
           <StyledH2>Feedback</StyledH2>
           <StyledH2>positives Feedback</StyledH2>
-          <StyledList>
+          <ul>
             {feedback.map((item, index) => (
-              <div key={index}>
-                item.positiveFeedback === &quot; &quot; ? ( git kein positives
-                feedback ) : (
-                <>
-                  <li>{item.positiveFeedback}</li>
-                  <button>zu TODO hinzufügen</button>
-                  <button>löschen</button>
-                </>
-                )
-              </div>
+              <li key={index}>{item.positiveFeedback}</li>
             ))}
-          </StyledList>
+          </ul>
           <StyledH2>negatives Feedback</StyledH2>
-          <StyledList>
+          <ul>
             {feedback.map((item, index) => (
-              <div key={index}>
-                <li>{item.negativeFeedback}</li>
-                <button>zu TODO hinzufügen</button>
-                <button>löschen</button>
-              </div>
+              <li key={index}>{item.negativeFeedback}</li>
             ))}
-          </StyledList>
+          </ul>
           <StyledH2>feature Wünsche</StyledH2>
-          <StyledList>
+          <ul>
             {feedback.map((item, index) => (
               <li key={index}>{item.newFeatures}</li>
             ))}
-          </StyledList>
+          </ul>
           <StyledH2>aktuelle Anzahl Rezepte:</StyledH2>
           <p>{recipes.length}</p>
           <StyledH2>aktuelle Anzahl User:</StyledH2>
