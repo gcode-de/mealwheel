@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import updateUserinDb from "@/helpers/updateUserInDb";
 
 import styled from "styled-components";
-import IconButton from "@/components/Styled/IconButton";
+import IconButton from "@/components/Button/IconButton";
 import MealCard from "@/components/Cards/MealCard";
 import StyledUl from "@/components/Styled/StyledUl";
 import StyledH2 from "@/components/Styled/StyledH2";

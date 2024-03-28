@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 
 import Link from "next/link";
 import MealCard from "@/components/Cards/MealCard";
-import IconButton from "@/components/Styled/IconButton";
+import IconButton from "@/components/Button/IconButton";
 import CollectionCard from "@/components/Cards/CollectionCard";
 import StyledH2 from "@/components/Styled/StyledH2";
 import styled from "styled-components";

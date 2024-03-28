@@ -23,10 +23,10 @@ import {
   restrictToParentElement,
 } from "@dnd-kit/modifiers";
 
-import CardSkeleton from "@/components/Styled/CardSkeleton";
+import CardSkeleton from "@/components/Cards/CardSkeleton";
 import Header from "@/components/Styled/Header";
 import MealCard from "@/components/Cards/MealCard";
-import IconButton from "@/components/Styled/IconButton";
+import IconButton from "@/components/Button/IconButton";
 import RandomnessSlider from "@/components/Styled/RandomnessSlider";
 
 import generateWeekdays from "@/helpers/generateWeekdays";
@@ -35,7 +35,7 @@ import populateEmptyWeekdays from "@/helpers/populateEmptyWeekdays";
 import updateUserinDb from "@/helpers/updateUserInDb";
 import assignRecipesToCalendarDays from "@/helpers/assignRecipesToCalendarDays";
 import LoadingComponent from "@/components/Loading";
-import IconButtonLarge from "@/components/Styled/IconButtonLarge";
+import IconButtonLarge from "@/components/Button/IconButtonLarge";
 import { notifySuccess, notifyError } from "/helpers/toast";
 import ToggleCheckbox from "@/components/Styled/ToggleCheckbox";
 

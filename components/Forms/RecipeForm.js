@@ -1,6 +1,6 @@
 import StyledListItem from "../Styled/StyledListItem";
 import StyledArticle from "../Styled/StyledArticle";
-import IconButton from "../Styled/IconButton";
+import IconButton from "../Button/IconButton";
 import StyledList from "../Styled/StyledList";
 import StyledH2 from "../Styled/StyledH2";
 import Button from "../Styled/StyledButton";

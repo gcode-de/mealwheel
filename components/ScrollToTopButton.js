@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import IconButtonLarge from "./Styled/IconButtonLarge";
+import IconButtonLarge from "./Button/IconButtonLarge";
 
 export default function ScrollToTop() {
   const [backToTopButton, setBackToTopButton] = useState(false);

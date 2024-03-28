@@ -2,14 +2,14 @@ import Header from "@/components/Styled/Header";
 
 import MealCard from "@/components/Cards/MealCard";
 
-import StyledUl from "@/components/Styled/StyledUl";
-import IconButtonLarge from "@/components/Styled/IconButtonLarge";
+import IconButtonLarge from "@/components/Button/IconButtonLarge";
 import ScrollToTop from "@/components/ScrollToTopButton";
-import StyledH2 from "@/components/Styled/StyledH2";
-import Filter from "@/public/icons/sliders-v_10435878.svg";
 import Search from "@/public/icons/svg/pan_7409478.svg";
-import IconButton from "@/components/Styled/IconButton";
+import IconButton from "@/components/Button/IconButton";
 import LoadingComponent from "@/components/Loading";
+
+import StyledUl from "@/components/Styled/StyledUl";
+import StyledH2 from "@/components/Styled/StyledH2";
 
 import { sortingMethods } from "@/helpers/sortingMethods";
 import { filterTags } from "@/helpers/filterTags";

@@ -6,7 +6,7 @@ import StyledIngredients from "@/components/Styled/StyledIngredients";
 import StyledInput from "@/components/Styled/StyledInput";
 import StyledDropDown from "@/components/Styled/StyledDropDown";
 import StyledListItem from "@/components/Styled/StyledListItem";
-import IconButtonLarge from "@/components/Styled/IconButtonLarge";
+import IconButtonLarge from "@/components/Button/IconButtonLarge";
 import Button from "@/components/Styled/StyledButton";
 import PlateWheel from "/public/icons/svg/plate-wheel.svg";
 import StyledH2 from "@/components/Styled/StyledH2";

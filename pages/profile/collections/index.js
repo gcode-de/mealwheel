@@ -3,7 +3,7 @@ import { useState } from "react";
 import updateUserinDb from "@/helpers/updateUserInDb";
 
 import styled from "styled-components";
-import IconButton from "@/components/Styled/IconButton";
+import IconButton from "@/components/Button/IconButton";
 import CollectionCard from "@/components/Cards/CollectionCard";
 import StyledH2 from "@/components/Styled/StyledH2";
 import NewCollection from "@/components/Forms/NewCollection";

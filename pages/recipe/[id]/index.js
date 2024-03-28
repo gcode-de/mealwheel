@@ -1,18 +1,17 @@
 import Image from "next/image";
-import Link from "next/link";
+
 import styled from "styled-components";
 import useSWR from "swr";
 import { useState } from "react";
 import { useRouter } from "next/router";
 import { notifySuccess, notifyError } from "/helpers/toast";
-import { Fragment } from "react";
 
 import assignRecipesToCalendarDays from "@/helpers/assignRecipesToCalendarDays";
 import updateUserinDb from "@/helpers/updateUserInDb";
 import { filterTags } from "@/helpers/filterTags";
 
 import SetNumberOfPeople from "@/components/Cards/SetNumberOfPeople";
-import IconButton from "@/components/Styled/IconButton";
+import IconButton from "@/components/Button/IconButton";
 import { Pen, Book, Calendar } from "@/helpers/svg";
 
 import { Article, List, H2, P, ListItem } from "@/components/Styled/Styled";

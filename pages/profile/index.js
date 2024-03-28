@@ -27,7 +27,7 @@ import StyledH2 from "@/components/Styled/StyledH2";
 import Button from "@/components/Styled/StyledButton";
 import StyledProgress from "@/components/Styled/StyledProgress";
 import MenuContainer from "@/components/MenuContainer";
-import IconButton from "@/components/Styled/IconButton";
+import IconButton from "@/components/Button/IconButton";
 import StyledList from "@/components/Styled/StyledList";
 import ModalComponent from "@/components/Modal";
 import updateCommunityUserInDB from "@/helpers/updateCommunityUserInDB";

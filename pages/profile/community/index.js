@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 
 import StyledH2 from "@/components/Styled/StyledH2";
-import IconButton from "@/components/Styled/IconButton";
+import IconButton from "@/components/Button/IconButton";
 import ProfileCard from "@/components/Cards/ProfileCard";
 import { Spacer } from "@/components/Styled/Styled";
 

@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import styled from "styled-components";
 import { Spacer, H2, List, P } from "@/components/Styled/Styled";
 
-import IconButton from "@/components/Styled/IconButton";
+import IconButton from "@/components/Button/IconButton";
 import SetNumberOfPeople from "@/components/Styled/SetNumberOfPeople";
 
 export default function Settings({ user, mutateUser }) {
