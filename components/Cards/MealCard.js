@@ -104,6 +104,7 @@ export default function MealCard({
               <MenuContainer
                 top="7.3rem"
                 right="calc(2 * var(--gap-between) + 18px)"
+                toggleMenu={() => toggleMenu(index)}
               >
                 <UnstyledButton
                   onClick={() => {
