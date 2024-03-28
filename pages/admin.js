@@ -34,8 +34,8 @@ export default function Admin({ user, fetcher, recipes, allUsers }) {
           <StyledList>
             {feedback.map((item, index) => (
               <div key={index}>
-                item.positiveFeedback === &quot; &quot; ? ( "kein positives
-                feedback" ) : (
+                item.positiveFeedback === &quot; &quot; ? ( kein positives
+                feedback ) : (
                 <>
                   <li>{item.positiveFeedback}</li>
                   <button>zu TODO hinzufügen</button>
