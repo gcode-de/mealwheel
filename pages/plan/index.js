@@ -101,7 +101,6 @@ export default function Plan({
         setNumberOfRandomRecipes(countAssignableDays.length);
     }
   }, [weekOffset, user, numberOfRandomRecipes]);
-
   const {
     data: randomRecipes,
     isLoading: randomRecipesIsLoading,
@@ -246,6 +245,12 @@ export default function Plan({
             }
             weekdays={weekdays}
             index={index}
+            isDisabled={
+              calendarDay?.isDisabled ??
+              !checkIfWeekdayIsDefaultEnabled(weekday.date)
+                ? "small"
+                : ""
+            }
           />
         )}
       </article>

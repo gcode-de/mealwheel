@@ -14,6 +14,7 @@ export default function CardSkeleton({
   day,
   weekdays,
   index,
+  isDisabled,
 }) {
   const [menuVisible, setMenuVisible] = useState(
     weekdays ? new Array(weekdays.length).fill(false) : []
@@ -31,12 +32,17 @@ export default function CardSkeleton({
       {Array.from({ length: amount }, (_, ind) => (
         <StyledCardSkeleton key={ind} $isLoading={$isLoading} $height={$height}>
           {weekdays && <StyledDragLine />}
-          <MenuButton onClick={() => toggleMenu(index)}>
-            <StyledMenu width={30} height={30} />
-          </MenuButton>
+          {weekdays && !isDisabled && (
+            <StyledMenu
+              width={30}
+              height={30}
+              onClick={() => toggleMenu(index)}
+              $rotate={menuVisible[index]}
+            />
+          )}
           {menuVisible[index] && (
             <MenuContainer
-              top="6.5rem"
+              top="7.25rem"
               right="calc(3 * var(--gap-between) + 20px)"
             >
               <UnstyledButton
@@ -80,7 +86,7 @@ const StyledCardSkeleton = styled.li`
       rgba(255, 255, 255, 0.5) 50%,
       rgba(255, 255, 255, 0) 80%
     ),
-    var(--color-lightgrey)`};
+    var(--color-skeleton)`};
   background-repeat: repeat-y;
   background-size: 50px 500px;
   background-position: 0 0;
@@ -92,25 +98,15 @@ const StyledCardSkeleton = styled.li`
   }
 `;
 
-const MenuButton = styled.button`
-  background-color: var(--color-background);
-  border: none;
-  z-index: 3;
-  border-radius: 50px;
-  align-self: end;
-  padding-bottom: 0;
-  height: 30px;
-  width: 30px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 0 1rem 0.5rem 0;
-`;
-
 const StyledMenu = styled(Menu)`
   rotate: 90deg;
   cursor: pointer;
-  border-radius: var(--border-radius-large);
+  background-color: var(--color-background);
+  border-radius: 100%;
+  align-self: end;
+  transform: ${(props) => (props.$rotate ? "rotate(90deg)" : "0")};
+  padding: 5px;
+  margin: 0 2.05rem 0.5rem 0;
 `;
 
 const UnstyledButton = styled.button`
