@@ -5,7 +5,7 @@ import {
   List,
   ListItem,
   Spacer,
-} from "@/components//Styled/Styled";
+} from "@/components/Styled/Styled";
 import Input from "../../components/Styled/StyledInput";
 
 import AddButton from "@/components/Button/AddButton";
