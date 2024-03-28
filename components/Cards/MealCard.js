@@ -242,7 +242,6 @@ const StyledMenu = styled(Menu)`
   border-radius: 100%;
   border-radius: var(--border-radius-large);
   align-self: end;
-  padding: 5px;
 `;
 
 const StyledReload = styled(Reload)`
@@ -251,7 +250,6 @@ const StyledReload = styled(Reload)`
   border-radius: 100%;
   border-radius: var(--border-radius-large);
   align-self: end;
-  padding: 5px;
 `;
 
 const UnstyledButton = styled.button`
