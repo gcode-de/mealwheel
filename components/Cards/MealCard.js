@@ -21,6 +21,7 @@ export default function MealCard({
   user,
   weekdays,
   index,
+  mutateUser,
 }) {
   const [menuVisible, setMenuVisible] = useState(
     weekdays ? new Array(weekdays.length).fill(false) : []
