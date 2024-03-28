@@ -462,3 +462,38 @@ const UnstyledButton = styled.button`
     background-color: var(--color-background);
   }
 `;
+const StyledForm = styled.form`
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  justify-content: space-between;
+  transition: opacity 0.3s ease-in-out, margin 0.2s ease-out;
+  overflow: hidden;
+  h3 {
+    flex-basis: 100%;
+    margin: 0;
+  }
+  label {
+  }
+  button {
+    width: 80px;
+    line-height: 1.1rem;
+    padding: 0.4rem 0.5rem;
+    min-height: 2rem;
+    border: none;
+    border-radius: 10px;
+    background-color: var(--color-darkgrey);
+    color: var(--color-background);
+    cursor: pointer;
+    margin-right: auto;
+  }
+  input {
+    padding: 0.25rem 0.5rem;
+    border: none;
+    border-radius: 10px;
+    background-color: var(--color-background);
+    min-height: 2rem;
+  }
+`;
