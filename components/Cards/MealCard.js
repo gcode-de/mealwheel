@@ -90,8 +90,8 @@ export default function MealCard({
             )}
             {reassignRecipe !== undefined && (
               <StyledReload
-                width={25}
-                height={25}
+                width={30}
+                height={30}
                 onClick={() => {
                   reassignRecipe(day);
                 }}
@@ -99,8 +99,8 @@ export default function MealCard({
             )}
             {weekdays && (
               <StyledMenu
-                width={25}
-                height={25}
+                width={30}
+                height={30}
                 onClick={() => toggleMenu(index)}
                 $rotate={menuVisible[index]}
               />
