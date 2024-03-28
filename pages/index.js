@@ -26,6 +26,7 @@ export default function HomePage({
   getRecipeProperty,
   toggleIsFavorite,
   user,
+  mutateUser,
 }) {
   const router = useRouter();
 
@@ -310,7 +311,7 @@ export default function HomePage({
                   recipe={recipe}
                   isFavorite={getRecipeProperty(recipe._id, "isFavorite")}
                   onToggleIsFavorite={() => {
-                    toggleIsFavorite(recipe?._id, mutateRecipes);
+                    toggleIsFavorite(recipe?._id, mutateUser, mutateRecipes);
                   }}
                 />
               );
