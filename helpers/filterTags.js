@@ -33,11 +33,12 @@ export const filterTags = [
     label: "Anlass",
     type: "mealtype",
     options: [
+      { label: "Hauptgericht", value: "main" },
+      { label: "Dessert", value: "dessert" },
       { label: "Frühstück", value: "breakafast" },
       { label: "Snack", value: "snack" },
-      { label: "Dessert", value: "dessert" },
-      { label: "Hauptgericht", value: "main" },
       { label: "Suppe", value: "soup" },
+      { label: "Salat", value: "salad" },
     ],
   },
 ];

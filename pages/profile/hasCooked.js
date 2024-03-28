@@ -14,6 +14,7 @@ export default function HasCooked({
   isLoading,
   getRecipeProperty,
   toggleIsFavorite,
+  mutateUser,
 }) {
   const router = useRouter();
   const hasCookedRecipes = user?.recipeInteractions
@@ -71,8 +72,10 @@ export default function HasCooked({
               <MealCard
                 key={recipe._id}
                 recipe={recipe}
-                isFavorite="null"
-                onToggleIsFavorite={toggleIsFavorite}
+                isFavorite={getRecipeProperty(recipe._id, "isFavorite")}
+                onToggleIsFavorite={() => {
+                  toggleIsFavorite(recipe._id, mutateUser);
+                }}
               ></MealCard>
             );
           })}

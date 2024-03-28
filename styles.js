@@ -27,6 +27,7 @@ export default createGlobalStyle`
     --color-darkgrey: #4D4A4A; 
     --color-lightgrey: #928F8F;
     --color-font: #1E1E1E;
+    --color-skeleton: #b5b0b07f;
 
     --font-header: ${fira_sans.style.fontFamily};
     --gap-out: 0.75rem; 

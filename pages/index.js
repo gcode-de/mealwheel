@@ -26,6 +26,7 @@ export default function HomePage({
   getRecipeProperty,
   toggleIsFavorite,
   user,
+  mutateUser,
 }) {
   const router = useRouter();
 
@@ -200,7 +201,7 @@ export default function HomePage({
     data: recipes,
     error: recipesError,
     isLoading: recipesIsLoading,
-    mutate,
+    mutate: mutateRecipes,
   } = useSWR(apiQuery);
 
   if (error) {
@@ -309,19 +310,13 @@ export default function HomePage({
                   key={recipe._id}
                   recipe={recipe}
                   isFavorite={getRecipeProperty(recipe._id, "isFavorite")}
-                  onToggleIsFavorite={toggleIsFavorite}
+                  onToggleIsFavorite={() => {
+                    toggleIsFavorite(recipe?._id, mutateUser, mutateRecipes);
+                  }}
                 />
               );
             })}
           </StyledUl>
-          <ScrollToTop />
-          {user && (
-            <IconButtonLarge
-              style={"plus"}
-              bottom="6rem"
-              onClick={() => router.push("/addRecipe")}
-            />
-          )}
         </>
       ) : (
         <StyledUl>
@@ -330,6 +325,14 @@ export default function HomePage({
             <Link href="/">alles zurücksetzen</Link>
           </StyledH2>
         </StyledUl>
+      )}
+      <ScrollToTop />
+      {user && (
+        <IconButtonLarge
+          style={"plus"}
+          bottom="5rem"
+          onClick={() => router.push("/addRecipe")}
+        />
       )}
     </>
   );

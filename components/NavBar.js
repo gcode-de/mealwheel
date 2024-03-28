@@ -17,7 +17,7 @@ export default function NavBar({ user }) {
   const menuItems = [
     { href: "/", label: "Entdecken", Icon: Pizza },
     { href: "/plan", label: "Plan", Icon: Calendar },
-    { href: "/profile/favorites", label: "Favoriten", Icon: Heart },
+    { href: "/profile/favorites", label: "Schmeckos", Icon: Heart },
     { href: "/shopping", label: "Einkauf", Icon: Shopping },
     {
       href: user ? "/profile" : "/auth/signin",
@@ -48,7 +48,7 @@ const StyledNav = styled.div`
   padding: 10px 10px;
   background-color: var(--color-background);
   border-top: 1.5px solid var(--color-darkgrey);
-  z-index: 3;
+  z-index: 10;
   display: flex;
   justify-content: space-between;
   gap: 10px;

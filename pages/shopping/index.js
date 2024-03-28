@@ -474,7 +474,7 @@ export default function ShoppingList({ user, mutateUser }) {
         </>
       )}
       <Spacer />
-      <IconButtonLarge style={"trash"} bottom="6rem" onClick={clearShopping} />
+      <IconButtonLarge style={"trash"} bottom="5rem" onClick={clearShopping} />
     </>
   );
 }

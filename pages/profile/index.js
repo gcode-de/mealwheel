@@ -31,6 +31,8 @@ import IconButton from "@/components/Styled/IconButton";
 import StyledList from "@/components/Styled/StyledList";
 import ModalComponent from "../../components/Modal";
 import updateCommunityUserInDB from "../../helpers/updateCommunityUserInDB";
+import Profile from "../../components/Profile";
+import ToggleCheckbox from "../../components/Styled/ToggleCheckbox";
 
 export default function ProfilePage({
   user,
@@ -177,6 +179,12 @@ export default function ProfilePage({
             <Pen width={15} height={15} />
             Profil bearbeiten
           </UnstyledButton>
+          {user.admin && (
+            <UnstyledButton onClick={() => router.push("/admin")}>
+              <Pen width={15} height={15} />
+              Admin
+            </UnstyledButton>
+          )}
           <UnstyledButton onClick={handleSignOut}>
             <Leave width={15} height={15} />
             Abmelden
@@ -209,6 +217,7 @@ export default function ProfilePage({
                 defaultValue={user?.userName}
                 placeholder="Dein Benutzername"
               />
+              <ToggleCheckbox />
               <StyledSaveButton type="submit" disabled={upload}>
                 Speichern
               </StyledSaveButton>
@@ -216,33 +225,11 @@ export default function ProfilePage({
           </StyledList>
         </>
       )}
-      {!editUser && (
-        <>
-          <WrapperCenter>
-            <StyledProfile>
-              {(user?.profilePictureLink && (
-                <StyledProfilePicture
-                  src={user?.profilePictureLink}
-                  alt="Profile Picture"
-                  width={106}
-                  height={106}
-                />
-              )) || <h1>🙋‍♀️</h1>}
-            </StyledProfile>
-          </WrapperCenter>
-          <StyledList>
-            <p>
-              Hallo,{" "}
-              {user?.userName || user?.firstName || user?.email || "Gastnutzer"}
-              !
-            </p>
-          </StyledList>
-        </>
-      )}
+      {!editUser && <Profile foundUser={user} />}
       <Wrapper>
         <StyledCollection onClick={() => router.push("/profile/favorites")}>
           <Heart width={40} height={40} fill="var(--color-highlight)" />
-          <StyledP $color="var(--color-hightlight)">Favoriten</StyledP>
+          <StyledP $color="var(--color-hightlight)">Schmeckos</StyledP>
         </StyledCollection>
         <StyledCollection onClick={() => router.push("/profile/hasCooked")}>
           <Pot width={40} height={40} />
@@ -370,11 +357,6 @@ const StyledImageUploadContainer = styled.label`
 `;
 const StyledImageUpload = styled.input`
   display: none;
-`;
-
-const StyledProfilePicture = styled(Image)`
-  border-radius: 50%;
-  object-fit: cover;
 `;
 
 const StyledForm = styled.form`
