@@ -3,9 +3,9 @@ import updateUserinDb from "@/helpers/updateUserInDb";
 
 import styled from "styled-components";
 import Modal from "../Modal";
-import Button from "../Styled/StyledButton";
 import MenuContainer from "../MenuContainer";
 import { Trash, Pen, Menu } from "@/helpers/svg";
+import { Button } from "@/components/Styled/Styled";
 
 export default function Notes({ user, mutateUser, _id, foundInteractions }) {
   const [menuVisible, setMenuVisible] = useState(

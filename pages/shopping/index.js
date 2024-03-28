@@ -23,6 +23,7 @@ import styled from "styled-components";
 import { useRef, useState } from "react";
 import Link from "next/link";
 import { notifySuccess, notifyError } from "/helpers/toast";
+import Wrapper from "../../components/Styled/Wrapper";
 
 export default function ShoppingList({ user, mutateUser }) {
   const [editingIndex, setEditingIndex] = useState("");

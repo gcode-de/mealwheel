@@ -1,34 +1,21 @@
 import Image from "next/image";
-
 import styled from "styled-components";
 import useSWR from "swr";
 import { useState } from "react";
 import { useRouter } from "next/router";
 import { notifySuccess, notifyError } from "/helpers/toast";
-
 import assignRecipesToCalendarDays from "@/helpers/assignRecipesToCalendarDays";
 import updateUserinDb from "@/helpers/updateUserInDb";
 import { filterTags } from "@/helpers/filterTags";
-
 import SetNumberOfPeople from "@/components/Cards/SetNumberOfPeople";
 import IconButton from "@/components/Button/IconButton";
 import { Pen, Book, Calendar } from "@/helpers/svg";
-
 import { Article, List, H2, P, ListItem } from "@/components/Styled/Styled";
-import StyledArticle from "@/components/Styled/StyledArticle";
-import StyledList from "@/components/Styled/StyledList";
-import StyledH2 from "@/components/Styled/StyledH2";
-import StyledP from "@/components/Styled/StyledP";
-import StyledListItem from "@/components/Styled/StyledListItem";
-
 import LoadingComponent from "@/components/Loading";
-
 import Notes from "@/components/Notes";
 import MenuContainer from "@/components/MenuContainer";
-
 import ModalComponent from "@/components/Modal";
-
-import AddToCollection from "../../../components/Forms/AddToCollection";
+import AddToCollection from "@/components/Forms/AddToCollection";
 
 export default function DetailPage({
   user,
@@ -211,7 +198,7 @@ export default function DetailPage({
         height={400}
         sizes="500px"
       />
-      <StyledArticle>
+      <Article>
         <IconButton
           style="Pot"
           right="calc(2*3rem + var(--gap-out))"
@@ -306,31 +293,31 @@ export default function DetailPage({
         )}
 
         <StyledTitle>{title}</StyledTitle>
-        <StyledP>
+        <P>
           {duration} MIN | {difficulty}
           {recipe.likes > 0 &&
             ` |  ${recipe.likes} ${
               recipe.likes > 1 ? "Schmeckos" : "Schmecko"
             }`}
-        </StyledP>
-        <StyledH2>
+        </P>
+        <H2>
           Zutaten{" "}
           <SetNumberOfPeople
             numberOfPeople={servings}
             handleChange={handleSetNumberOfPeople}
             $margin="-0.4rem 0 0 0"
           />
-        </StyledH2>
-        <StyledList>
+        </H2>
+        <List>
           {ingredients.map((ingredient) => (
-            <StyledListItem key={ingredient._id}>
-              <StyledP>
+            <ListItem key={ingredient._id}>
+              <P>
                 {ingredient.quantity * servings} {ingredient.unit}
-              </StyledP>
-              <StyledP>{ingredient.name}</StyledP>
-            </StyledListItem>
+              </P>
+              <P>{ingredient.name}</P>
+            </ListItem>
           ))}
-        </StyledList>
+        </List>
         <StyledCategoriesDiv>
           <div>
             {filterTags
@@ -402,7 +389,7 @@ export default function DetailPage({
             foundInteractions={foundInteractions}
           />
         )}
-      </StyledArticle>
+      </Article>
     </Wrapper>
   );
 }
@@ -453,7 +440,7 @@ const ImageContainer = styled(Image)`
   height: auto;
 `;
 
-const RestyledH2 = styled(StyledH2)`
+const RestyledH2 = styled(H2)`
   margin-left: 0;
 `;
 

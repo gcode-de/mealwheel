@@ -13,6 +13,7 @@ import FilterIcon from "@/public/icons/sliders-v_10435878.svg";
 
 import ReloadIcon from "@/public/icons/svg/arrows-retweet_9253335.svg";
 import BookUserIcon from "@/public/icons/svg/notebook-alt_9795395.svg";
+import ReloadIcon from "@/public/icons/svg/arrows-retweet_9253335.svg";
 import PeopleIcon from "@/public/icons/svg/employees_14644298.svg";
 import PotIcon from "@/public/icons/svg/pot_7409547.svg";
 import PartyIcon from "@/public/icons/svg/party-horn_10470647.svg";

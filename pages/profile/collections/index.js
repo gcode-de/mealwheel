@@ -5,11 +5,10 @@ import updateUserinDb from "@/helpers/updateUserInDb";
 import styled from "styled-components";
 import IconButton from "@/components/Button/IconButton";
 import CollectionCard from "@/components/Cards/CollectionCard";
-import StyledH2 from "@/components/Styled/StyledH2";
 import NewCollection from "@/components/Forms/NewCollection";
 import MenuContainer from "@/components/MenuContainer";
 
-import { Spacer } from "@/components/Styled/Styled";
+import { Spacer, H2 } from "@/components/Styled/Styled";
 import { Trash, Pen, Check, Plus } from "@/helpers/svg";
 
 export default function Collections({ user, mutateUser }) {
@@ -60,7 +59,7 @@ export default function Collections({ user, mutateUser }) {
   return (
     <>
       <Spacer />
-      <StyledH2>Kochbücher</StyledH2>
+      <H2>Kochbücher</H2>
       <IconButton
         style="ArrowLeft"
         top="var(--gap-out)"

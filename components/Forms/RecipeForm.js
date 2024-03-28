@@ -1,10 +1,13 @@
 import IconButton from "../Button/IconButton";
+
 import AddButton from "../Button/AddButton";
 import SetNumberOfPeople from "../Cards/SetNumberOfPeople";
 import { Plus, Minus } from "@/helpers/svg";
-import ToggleCheckbox from "../ToggleCheckbox";
-import { Input, Select, H2, Button, P, Article, List } from "../Styled/Styled";
+
+import { Select, H2, Button, P, Article, List } from "../Styled/Styled";
+
 import StyledIngredients from "../Styled/StyledIngredients";
+import Input from "../Styled/StyledInput";
 import StyledProgress from "../StyledProgress";
 
 import { filterTags } from "/helpers/filterTags";
@@ -16,6 +19,7 @@ import styled from "styled-components";
 import { useState } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
+import ToggleCheckbox from "../ToggleCheckbox";
 
 export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
   const [difficulty, setDifficulty] = useState(
