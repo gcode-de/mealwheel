@@ -1,10 +1,6 @@
 import styled from "styled-components";
 
-export function Article({ children }) {
-  return <StyledArticle>{children}</StyledArticle>;
-}
-
-const StyledArticle = styled.article`
+export const Article = styled.article`
   background-color: var(--color-component);
   display: flex;
   flex-direction: column;
@@ -18,10 +14,7 @@ const StyledArticle = styled.article`
   padding-bottom: 1rem;
 `;
 
-export function Button({ children }) {
-  return <StyledButton>{children}</StyledButton>;
-}
-const StyledButton = styled.button`
+export const Button = styled.button`
   border: none;
   background-color: var(--color-darkgrey);
   color: var(--color-background);
@@ -33,10 +26,8 @@ const StyledButton = styled.button`
   height: 3rem;
   margin-top: 1rem;
 `;
-export function Select({ children }) {
-  return <StyledDropDown>{children}</StyledDropDown>;
-}
-const StyledDropDown = styled.select`
+
+export const Select = styled.select`
   background-color: transparent;
   border: 1px solid var(--color-lightgrey);
   border-radius: 10px;
@@ -44,10 +35,8 @@ const StyledDropDown = styled.select`
   height: 30px;
   align-items: center;
 `;
-export function H2({ children }) {
-  return <StyledH2>{children}</StyledH2>;
-}
-const StyledH2 = styled.h2`
+
+export const H2 = styled.h2`
   font-size: large;
   text-align: left;
   width: calc(100% - (2 * var(--gap-out)));
@@ -64,11 +53,8 @@ const StyledH2 = styled.h2`
     cursor: pointer;
   }
 `;
-export function Input() {
-  return <StyledInput />;
-}
 
-const StyledInput = styled.input`
+export const StyledInput = styled.input`
   background-color: var(--color-background);
   border: none;
   border-radius: 10px;
@@ -77,10 +63,8 @@ const StyledInput = styled.input`
   flex-grow: ${(props) => props.$flexGrow};
   padding: 0.7rem;
 `;
-export function List({ children }) {
-  return <StyledList>{children}</StyledList>;
-}
-const StyledList = styled.ul`
+
+export const List = styled.ul`
   list-style: none;
   padding-top: var(--gap-between);
   padding-bottom: var(--gap-between);
@@ -96,10 +80,8 @@ const StyledList = styled.ul`
   margin-bottom: var(--gap-between);
   position: relative;
 `;
-export function ListItem({ children }) {
-  return <StyledListItem>{children}</StyledListItem>;
-}
-const StyledListItem = styled.li`
+
+export const ListItem = styled.li`
   display: flex;
   justify-content: space-between;
   align-items: baseline;
@@ -107,18 +89,13 @@ const StyledListItem = styled.li`
   margin-bottom: var(--gap-between);
   margin-top: var(--gap-between);
 `;
-export function P({ children }) {
-  return <StyledP>{children}</StyledP>;
-}
-const StyledP = styled.p`
+
+export const P = styled.p`
   margin: 0;
   margin-bottom: var(--gap-between);
 `;
-export function Spacer({ children }) {
-  return <StyledSpacer>{children}</StyledSpacer>;
-}
 
-const StyledSpacer = styled.div`
+export const Spacer = styled.div`
   height: var(--height-header);
   position: relative;
 `;
