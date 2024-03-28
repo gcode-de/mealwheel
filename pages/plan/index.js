@@ -25,7 +25,7 @@ import {
 
 import CardSkeleton from "@/components/Styled/CardSkeleton";
 import Header from "@/components/Styled/Header";
-import MealCard from "@/components/MealCard";
+import MealCard from "@/components/Cards/MealCard";
 import IconButton from "@/components/Styled/IconButton";
 import RandomnessSlider from "@/components/Styled/RandomnessSlider";
 

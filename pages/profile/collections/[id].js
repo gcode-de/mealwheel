@@ -1,10 +1,10 @@
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import updateUserinDb from "@/helpers/updateUserInDb";
 
 import styled from "styled-components";
 import IconButton from "@/components/Styled/IconButton";
-import MealCard from "@/components/MealCard";
+import MealCard from "@/components/Cards/MealCard";
 import StyledUl from "@/components/Styled/StyledUl";
 import Spacer from "@/components/Styled/Spacer";
 import StyledH2 from "@/components/Styled/StyledH2";
@@ -13,18 +13,39 @@ import Pen from "/public/icons/svg/pen-square_10435869.svg";
 import XSmall from "@/public/icons/XSmall.svg";
 import MenuContainer from "@/components/MenuContainer";
 
-export default function DetailCollection({ recipes, user, mutateUser }) {
+export default function DetailCollection({
+  recipes,
+  user,
+  mutateUser,
+  allUsers,
+}) {
   const [isEditing, setIsEditing] = useState(false);
   const [checkedItems, setCheckedItems] = useState([]);
   const [isMenuVisible, setIsMenuVisible] = useState(false);
+  const [isUser, setIsUser] = useState(false);
+  const [foundCollection, setFoundCollection] = useState(null);
   const router = useRouter();
   const { id } = router.query;
+  useEffect(() => {
+    let foundCollection = user?.collections.find(
+      (collection) => collection._id === id
+    );
+    const foundUser = allUsers?.filter((user) =>
+      user.collections.find((collection) => collection._id === id)
+    );
+    if (!foundCollection) {
+      foundCollection = foundUser[0].collections.find(
+        (collection) => collection._id === id
+      );
+    } else {
+      setIsUser(true);
+    }
+    setFoundCollection(foundCollection);
+  }, [id, user, recipes, allUsers]);
+
   if (!user || !recipes) {
     return;
   }
-  const foundCollection = user.collections.find(
-    (collection) => collection._id === id
-  );
   const foundCollectionIndex = user.collections.findIndex(
     (collection) => collection._id === id
   );
@@ -54,20 +75,22 @@ export default function DetailCollection({ recipes, user, mutateUser }) {
   return (
     <>
       <Spacer />
-      <StyledH2>{foundCollection.collectionName} </StyledH2>
+      <StyledH2>{foundCollection?.collectionName} </StyledH2>
       <IconButton
         onClick={() => router.back()}
         left="var(--gap-out)"
         top="var(--gap-out)"
         style="ArrowLeft"
       />
-      <IconButton
-        onClick={toggleMenu}
-        right="var(--gap-out)"
-        top="var(--gap-out)"
-        style="Menu"
-        rotate={isMenuVisible}
-      />
+      {isUser && (
+        <IconButton
+          onClick={toggleMenu}
+          right="var(--gap-out)"
+          top="var(--gap-out)"
+          style="Menu"
+          rotate={isMenuVisible}
+        />
+      )}
       {isMenuVisible && (
         <MenuContainer top="5rem" right="var(--gap-out)">
           <UnstyledButton onClick={toggleEdit}>
@@ -89,7 +112,7 @@ export default function DetailCollection({ recipes, user, mutateUser }) {
         </ButtonContainer>
       )}
       <StyledUl>
-        {foundCollection.recipes.map((recipe, index) => (
+        {foundCollection?.recipes.map((recipe, index) => (
           <MealCardContainer key={index}>
             {isEditing && (
               <StyledCheckbox

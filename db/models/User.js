@@ -55,6 +55,15 @@ const userSchema = new Schema({
   shoppingList: [shoppingItem],
   collections: [collectionSchema],
   publicId: { type: String },
+  connectionRequests: [
+    {
+      senderId: mongoose.Schema.Types.ObjectId,
+      timestamp: { type: Date, default: Date.now },
+      message: { type: String },
+      type: { type: Number },
+    },
+  ],
+  friends: [{ type: String }],
 });
 
 const User = mongoose.models.User || mongoose.model("User", userSchema);

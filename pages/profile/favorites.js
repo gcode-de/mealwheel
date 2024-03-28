@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import MealCard from "@/components/MealCard";
+import MealCard from "@/components/Cards/MealCard";
 import Header from "@/components/Styled/Header";
 import StyledUl from "@/components/Styled/StyledUl";
 import LoadingComponent from "@/components/Loading";

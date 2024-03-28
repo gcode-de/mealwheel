@@ -1,6 +1,6 @@
 import Header from "@/components/Styled/Header";
 
-import MealCard from "@/components/MealCard";
+import MealCard from "@/components/Cards/MealCard";
 
 import StyledUl from "@/components/Styled/StyledUl";
 import IconButtonLarge from "@/components/Styled/IconButtonLarge";
@@ -314,14 +314,6 @@ export default function HomePage({
               );
             })}
           </StyledUl>
-          <ScrollToTop />
-          {user && (
-            <IconButtonLarge
-              style={"plus"}
-              bottom="6rem"
-              onClick={() => router.push("/addRecipe")}
-            />
-          )}
         </>
       ) : (
         <StyledUl>
@@ -330,6 +322,16 @@ export default function HomePage({
             <Link href="/">alles zurücksetzen</Link>
           </StyledH2>
         </StyledUl>
+      )}
+      <ScrollToTop />
+      {user && (
+        <IconButtonLarge
+          style={"plus"}
+
+          bottom="5rem"
+
+          onClick={() => router.push("/addRecipe")}
+        />
       )}
     </>
   );
