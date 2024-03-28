@@ -18,9 +18,9 @@ const StyledArticle = styled.article`
   padding-bottom: 1rem;
 `;
 export function Button() {
-  return <Button></Button>;
+  return <StyledButton></StyledButton>;
 }
-const Button = styled.button`
+const StyledButton = styled.button`
   border: none;
   background-color: var(--color-darkgrey);
   color: var(--color-background);

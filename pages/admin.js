@@ -12,11 +12,11 @@ export default function Admin({ user, fetcher, recipes, allUsers }) {
     error,
     mutate,
   } = useSWR(`/api/feedback`, fetcher);
+  const router = useRouter();
 
   if (!user || !feedback) {
     return;
   }
-  const router = useRouter();
 
   return (
     <>
@@ -32,32 +32,32 @@ export default function Admin({ user, fetcher, recipes, allUsers }) {
           <StyledH2>Feedback</StyledH2>
           <StyledH2>positives Feedback</StyledH2>
           <StyledList>
-            {feedback.map((item) =>
-              item.positiveFeedback === "" ? (
-                "kein positives feedback"
-              ) : (
+            {feedback.map((item, index) => (
+              <div key={index}>
+                item.positiveFeedback === "" ? ( "kein positives feedback" ) : (
                 <>
                   <li>{item.positiveFeedback}</li>
                   <button>zu TODO hinzufügen</button>
                   <button>löschen</button>
                 </>
-              )
-            )}
+                )
+              </div>
+            ))}
           </StyledList>
           <StyledH2>negatives Feedback</StyledH2>
           <StyledList>
-            {feedback.map((item) => (
-              <>
+            {feedback.map((item, index) => (
+              <div key={index}>
                 <li>{item.negativeFeedback}</li>
                 <button>zu TODO hinzufügen</button>
                 <button>löschen</button>
-              </>
+              </div>
             ))}
           </StyledList>
           <StyledH2>feature Wünsche</StyledH2>
           <StyledList>
-            {feedback.map((item) => (
-              <li>{item.newFeatures}</li>
+            {feedback.map((item, index) => (
+              <li key={index}>{item.newFeatures}</li>
             ))}
           </StyledList>
           <StyledH2>aktuelle Anzahl Rezepte:</StyledH2>
