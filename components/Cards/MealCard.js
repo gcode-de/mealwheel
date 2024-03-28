@@ -228,7 +228,8 @@ const MenuButton = styled.button`
   border-radius: 50px;
   align-self: end;
   padding-bottom: 0;
-  height: 2rem;
+  height: 30px;
+  width: 30px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -248,7 +249,7 @@ const UnstyledButton = styled.button`
   display: flex;
   align-items: center;
   gap: var(--gap-between);
-  height: 1.75rem;
+  height: 2rem;
   color: var(--color-font);
   &:hover {
     background-color: var(--color-background);
