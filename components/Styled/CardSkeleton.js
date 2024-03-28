@@ -33,9 +33,12 @@ export default function CardSkeleton({
         <StyledCardSkeleton key={ind} $isLoading={$isLoading} $height={$height}>
           {weekdays && <StyledDragLine />}
           {weekdays && (
-            <MenuButton onClick={() => toggleMenu(index)}>
-              <StyledMenu width={30} height={30} />
-            </MenuButton>
+            <StyledMenu
+              width={30}
+              height={30}
+              onClick={() => toggleMenu(index)}
+              $rotate={menuVisible[index]}
+            />
           )}
           {menuVisible[index] && (
             <MenuContainer
@@ -95,25 +98,15 @@ const StyledCardSkeleton = styled.li`
   }
 `;
 
-const MenuButton = styled.button`
-  background-color: var(--color-background);
-  border: none;
-  z-index: 3;
-  border-radius: 50px;
-  align-self: end;
-  padding-bottom: 0;
-  height: 30px;
-  width: 30px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 0 2.05rem 0.5rem 0;
-`;
-
 const StyledMenu = styled(Menu)`
   rotate: 90deg;
   cursor: pointer;
-  border-radius: var(--border-radius-large);
+  background-color: var(--color-background);
+  border-radius: 100%;
+  align-self: end;
+  transform: ${(props) => (props.$rotate ? "rotate(90deg)" : "0")};
+  padding: 5px;
+  margin: 0 2.05rem 0.5rem 0;
 `;
 
 const UnstyledButton = styled.button`
