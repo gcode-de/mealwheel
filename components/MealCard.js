@@ -6,6 +6,8 @@ import SetNumberOfPeople from "./Styled/SetNumberOfPeople";
 import MenuContainer from "./MenuContainer";
 import { BookUser, Menu, Reload, Trash } from "@/helpers/svg";
 import { useState } from "react";
+import ModalComponent from "./Modal";
+import AddToCollection from "./Forms/AddToCollection";
 
 export default function MealCard({
   recipe,
@@ -19,10 +21,12 @@ export default function MealCard({
   user,
   weekdays,
   index,
+  mutateUser,
 }) {
   const [menuVisible, setMenuVisible] = useState(
     weekdays ? new Array(weekdays.length).fill(false) : []
   );
+  const [isModalCollection, setIsModalCollection] = useState(false);
 
   function toggleMenu(index) {
     setMenuVisible((prevMenuVisible) => {
@@ -106,9 +110,10 @@ export default function MealCard({
                 right="calc(3 * var(--gap-between) + 20px)"
               >
                 <UnstyledButton
-                // onClick={() => {
-                //   reassignRecipe(weekdays[index].date);
-                // }}
+                  onClick={() => {
+                    setIsModalCollection(true);
+                    toggleMenu(index);
+                  }}
                 >
                   <BookUser width={15} height={15} /> Rezept im Kochbuch
                   speichern
@@ -122,6 +127,17 @@ export default function MealCard({
                   Tag leeren
                 </UnstyledButton>
               </MenuContainer>
+            )}
+            {isModalCollection && (
+              <ModalComponent toggleModal={() => setIsModalCollection(false)}>
+                <AddToCollection
+                  isModalCollection={isModalCollection}
+                  setIsModalCollection={setIsModalCollection}
+                  user={user}
+                  id={recipe._id}
+                  mutateUser={mutateUser}
+                />
+              </ModalComponent>
             )}
           </StyledSettingsDiv>
         </StyledDiv>

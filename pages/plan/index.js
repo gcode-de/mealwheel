@@ -28,9 +28,6 @@ import Header from "@/components/Styled/Header";
 import MealCard from "@/components/MealCard";
 import IconButton from "@/components/Styled/IconButton";
 import RandomnessSlider from "@/components/Styled/RandomnessSlider";
-import PowerIcon from "@/public/icons/power-material-svgrepo-com.svg";
-import Xmark from "@/public/icons/svg/trash-xmark_10741775.svg";
-import Menu from "@/public/icons/svg/menu.svg";
 
 import generateWeekdays from "@/helpers/generateWeekdays";
 import assignRecipeToCalendarDay from "@/helpers/assignRecipesToCalendarDays";
@@ -41,8 +38,6 @@ import LoadingComponent from "@/components/Loading";
 import IconButtonLarge from "@/components/Styled/IconButtonLarge";
 import { notifySuccess, notifyError } from "/helpers/toast";
 import ToggleCheckbox from "@/components/Styled/ToggleCheckbox";
-import MenuContainer from "@/components/MenuContainer";
-import { BookUser } from "@/helpers/svg";
 
 export default function Plan({
   isLoading,
@@ -237,6 +232,7 @@ export default function Plan({
             user={user}
             weekdays={weekdays}
             index={index}
+            mutateUser={mutateUser}
           />
         ) : (
           <CardSkeleton
@@ -358,7 +354,7 @@ export default function Plan({
 
   return (
     <>
-      <StyledHeader>
+      <article>
         <Header text={"Wochenplan"} />
         <CalendarNavigation>
           <IconButton
@@ -413,7 +409,7 @@ export default function Plan({
             )}
           </RandomnessSliderContainer>
         )}
-      </StyledHeader>
+      </article>
 
       <CalendarContainer>
         <DndContext
@@ -468,13 +464,13 @@ export default function Plan({
 
       <IconButtonLarge
         style={"saveShopping"}
-        bottom="10rem"
-        onClick={() => saveToShopping()}
+        bottom="9rem"
+        onClick={saveToShopping}
       />
       {assignableDays.length !== 0 ? (
         <IconButtonLarge
           style={"generate"}
-          bottom="6rem"
+          bottom="5rem"
           onClick={() => {
             populateEmptyWeekdays(
               weekdays,
@@ -489,7 +485,7 @@ export default function Plan({
       ) : (
         <IconButtonLarge
           style={"trash"}
-          bottom="6rem"
+          bottom="5rem"
           onClick={() => {
             removeAllRecipes(weekdays);
           }}
@@ -498,8 +494,6 @@ export default function Plan({
     </>
   );
 }
-
-const StyledHeader = styled.header``;
 
 const CalendarNavigation = styled.div`
   position: relative;
