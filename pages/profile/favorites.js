@@ -13,6 +13,7 @@ export default function Favorites({
   getRecipeProperty,
   toggleIsFavorite,
   mutateUser,
+  mutateRecipes,
 }) {
   if (!user) {
     return (
@@ -71,7 +72,7 @@ export default function Favorites({
                 recipe={recipe}
                 isFavorite={getRecipeProperty(recipe._id, "isFavorite")}
                 onToggleIsFavorite={() => {
-                  toggleIsFavorite(recipe._id, mutateUser);
+                  toggleIsFavorite(recipe._id, mutateUser, mutateRecipes);
                 }}
               />
             );

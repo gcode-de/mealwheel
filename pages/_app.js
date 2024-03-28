@@ -79,7 +79,7 @@ export default function App({
   //   updateUserinDb(user, mutate);
   // }
 
-  async function toggleIsFavorite(_id, mutate) {
+  async function toggleIsFavorite(_id, mutateUser, mutateRecipes) {
     if (!user) {
       notifyError("Bitte zuerst einloggen.");
       return;
@@ -107,11 +107,11 @@ export default function App({
 
     // Aktualisiere den Benutzer in der Datenbank mit den neuen recipeInteractions
     user.recipeInteractions = updatedRecipeInteractions;
-    await updateUserinDb(user, mutate);
+    await updateUserinDb(user, mutateUser);
 
     try {
       // Unabhängig davon, ob es eine neue oder bestehende Interaktion ist, aktualisiere die Likes
-      await updateLikes(_id, likeChange, mutate);
+      await updateLikes(_id, likeChange, mutateRecipes);
     } catch (error) {
       console.error(error);
       notifyError(

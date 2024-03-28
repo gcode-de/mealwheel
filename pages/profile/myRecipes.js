@@ -2,14 +2,14 @@ import CardSkeleton from "@/components/Styled/CardSkeleton";
 import MealCard from "@/components/Cards/MealCard";
 import Header from "@/components/Styled/Header";
 import IconButton from "@/components/Styled/IconButton";
-import { useRouter } from "next/router";
+// import { useRouter } from "next/router";
 import Spacer from "@/components/Styled/Spacer";
 import { useState } from "react";
 import IconButtonLarge from "@/components/Styled/IconButtonLarge";
 
 import StyledH2 from "@/components/Styled/StyledH2";
 
-import useSWR from "swr";
+// import useSWR from "swr";
 import styled from "styled-components";
 
 export default function MyRecipes({
@@ -25,7 +25,7 @@ export default function MyRecipes({
   mutateRecipes,
 }) {
   const [isModalCollection, setIsModalCollection] = useState(false);
-  const router = useRouter();
+  // const router = useRouter();
 
   // const {
   //   data: myRecipes,
@@ -39,6 +39,7 @@ export default function MyRecipes({
   function toggleAddCollection() {
     setIsModalCollection(!isModalCollection);
   }
+
   if (error || recipesError || !myRecipes) {
     return (
       <>
@@ -89,7 +90,7 @@ export default function MyRecipes({
                   recipe={recipe}
                   isFavorite={getRecipeProperty(recipe._id, "isFavorite")}
                   onToggleIsFavorite={() => {
-                    toggleIsFavorite(recipe._id, mutateRecipes);
+                    toggleIsFavorite(recipe._id, mutateUser, mutateRecipes);
                   }}
                 ></MealCard>
               );

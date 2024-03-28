@@ -22,7 +22,7 @@ export default function MealCard({
   user,
   weekdays,
   index,
-  mutateUser,
+  // mutateUser,
 }) {
   const [menuVisible, setMenuVisible] = useState(
     weekdays ? new Array(weekdays.length).fill(false) : []
@@ -65,15 +65,6 @@ export default function MealCard({
             {recipe?.duration && `${recipe?.duration} MIN | `}
             {recipe?.difficulty?.toUpperCase()}
           </StyledPDuration>
-          {numberOfPeople !== undefined && (
-            <SetNumberOfPeople
-              numberOfPeople={numberOfPeople}
-              handleChange={(change) => changeNumberOfPeople(change)}
-              $margin="0.75rem 0 0 1.5rem"
-              reassignRecipe={reassignRecipe}
-              day={day}
-            />
-          )}
           {isFavorite !== null && (
             <LikesDisplay
               likes={recipe?.likes}

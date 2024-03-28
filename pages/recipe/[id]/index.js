@@ -35,6 +35,7 @@ export default function DetailPage({
   getRecipeProperty,
   toggleIsFavorite,
   toggleHasCooked,
+  mutateRecipes,
 }) {
   const [content, setContent] = useState("instructions");
   const [selectedDate, setSelectedDate] = useState(
@@ -226,7 +227,7 @@ export default function DetailPage({
               notifyError("Bitte zuerst einloggen.");
               return;
             }
-            toggleIsFavorite(_id, mutateRecipe);
+            toggleIsFavorite(_id, mutateUser, mutateRecipe);
           }}
         />
         <IconButton
@@ -286,9 +287,11 @@ export default function DetailPage({
 
         <StyledTitle>{title}</StyledTitle>
         <StyledP>
-          {duration} MIN | {difficulty} |{" "}
-          {recipe.likes &&
-            `${recipe.likes} ${recipe.likes > 1 ? "Schmeckos" : "Schmecko"}`}
+          {duration} MIN | {difficulty}
+          {recipe.likes > 0 &&
+            ` |  ${recipe.likes} ${
+              recipe.likes > 1 ? "Schmeckos" : "Schmecko"
+            }`}
         </StyledP>
         <StyledH2>
           Zutaten{" "}

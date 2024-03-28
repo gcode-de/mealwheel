@@ -30,15 +30,7 @@
 export default async function updateLikes(recipeId, likeChange, mutate) {
   try {
     // Optimistisches Update: UI sofort aktualisieren
-    mutate((currentData) => {
-      if (currentData) {
-        return {
-          ...currentData,
-          likes: currentData.likes + likeChange,
-        };
-      }
-      return currentData;
-    }, false);
+    mutate();
 
     // Den Server-Request ausführen
     const response = await fetch(`/api/recipes/${recipeId}/like`, {
