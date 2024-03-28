@@ -18,13 +18,14 @@ import StyledH2 from "@/components/Styled/StyledH2";
 import StyledP from "@/components/Styled/StyledP";
 import StyledListItem from "@/components/Styled/StyledListItem";
 import LoadingComponent from "@/components/Loading";
-import StyledDropDown from "@/components/Styled/StyledDropDown";
+
 import Notes from "@/components/Notes";
 import MenuContainer from "@/components/MenuContainer";
 import Calendar from "@/public/icons/svg/calendar-days_9795297.svg";
 import Pen from "/public/icons/svg/pen-square_10435869.svg";
 import Book from "@/public/icons/svg/notebook-alt_9795395.svg";
 import ModalComponent from "../../../components/Modal";
+import AddToCollection from "../../../components/Forms/AddToCollection";
 
 export default function DetailPage({
   user,
@@ -41,9 +42,7 @@ export default function DetailPage({
   );
   const [calendarFormIsVisible, setCalendarFormIsVisible] = useState(false);
   const [collectionFormIsVisible, setCollectionFormIsVisible] = useState(false);
-  const [selectedCollection, setselectedCollection] = useState(
-    user?.collections?.[0]?.collectionName || ""
-  );
+
   const [isMenuVisible, setIsMenuVisible] = useState(false);
   const [isModalCalendar, setIsModalCalendar] = useState(false);
   const [isModalCollection, setIsModalCollection] = useState(false);
@@ -122,31 +121,6 @@ export default function DetailPage({
       notifyError("Das Rezept konnte nicht eingeplant werden.");
     }
   };
-
-  async function handleCollection(event) {
-    event.preventDefault();
-    const isDuplicate = user.collections
-      .find((col) => col.collectionName === selectedCollection)
-      .recipes.find((recipe) => recipe._id === id);
-    if (isDuplicate) {
-      notifyError("Dieses Rezept ist bereits gespeichert.");
-      return;
-    }
-
-    const updateCollection = user.collections.map((col) =>
-      col.collectionName === selectedCollection
-        ? { ...col, recipes: [...col.recipes, id] }
-        : col
-    );
-    user.collections = updateCollection;
-    try {
-      updateUserinDb(user, mutateUser);
-      setCollectionFormIsVisible(false);
-      notifySuccess(`Das Rezept wurde gespeichert.`);
-    } catch (error) {
-      notifyError("Das Rezept konnte nicht gespeichert werden.");
-    }
-  }
 
   function handleSetNumberOfPeople(change) {
     const newServings = servings + change;
@@ -299,25 +273,13 @@ export default function DetailPage({
         )}
         {isModalCollection && (
           <ModalComponent toggleModal={toggleModalCollection}>
-            <StyledForm
-              onSubmit={handleCollection}
-              $isVisible={collectionFormIsVisible}
-            >
-              <h3>Dieses Rezept speichern:</h3>
-              <StyledDropDown
-                onChange={(event) => setselectedCollection(event.target.value)}
-                name="collectionName"
-                required
-              >
-                {user?.collections.map((col, index) => (
-                  <option key={index} value={col.collectionName}>
-                    {col.collectionName}
-                  </option>
-                ))}
-              </StyledDropDown>
-
-              <button type="submit">speichern</button>
-            </StyledForm>
+            <AddToCollection
+              isModalCollection={isModalCollection}
+              setIsModalCollection={setIsModalCollection}
+              user={user}
+              id={id}
+              mutateUser={mutateUser}
+            />
           </ModalComponent>
         )}
 
@@ -457,41 +419,6 @@ const ImageContainer = styled(Image)`
   height: auto;
 `;
 
-const StyledForm = styled.form`
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 10px;
-  width: 100%;
-  justify-content: space-between;
-  transition: opacity 0.3s ease-in-out, margin 0.2s ease-out;
-  overflow: hidden;
-  h3 {
-    flex-basis: 100%;
-    margin: 0;
-  }
-  label {
-  }
-  button {
-    width: 80px;
-    line-height: 1.1rem;
-    padding: 0.4rem 0.5rem;
-    min-height: 2rem;
-    border: none;
-    border-radius: 10px;
-    background-color: var(--color-darkgrey);
-    color: var(--color-background);
-    cursor: pointer;
-    margin-right: auto;
-  }
-  input {
-    padding: 0.25rem 0.5rem;
-    border: none;
-    border-radius: 10px;
-    background-color: var(--color-background);
-    min-height: 2rem;
-  }
-`;
 const StyledTitle = styled.h1`
   margin-right: var(--gap-out);
   margin-left: var(--gap-out);
@@ -533,5 +460,40 @@ const UnstyledButton = styled.button`
   color: var(--color-font);
   &:hover {
     background-color: var(--color-background);
+  }
+`;
+const StyledForm = styled.form`
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  justify-content: space-between;
+  transition: opacity 0.3s ease-in-out, margin 0.2s ease-out;
+  overflow: hidden;
+  h3 {
+    flex-basis: 100%;
+    margin: 0;
+  }
+  label {
+  }
+  button {
+    width: 80px;
+    line-height: 1.1rem;
+    padding: 0.4rem 0.5rem;
+    min-height: 2rem;
+    border: none;
+    border-radius: 10px;
+    background-color: var(--color-darkgrey);
+    color: var(--color-background);
+    cursor: pointer;
+    margin-right: auto;
+  }
+  input {
+    padding: 0.25rem 0.5rem;
+    border: none;
+    border-radius: 10px;
+    background-color: var(--color-background);
+    min-height: 2rem;
   }
 `;
