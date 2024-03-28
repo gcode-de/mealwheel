@@ -131,6 +131,9 @@ export default function ProfilePage({
     notifyError("Anfrage abgelehnt");
   }
   function addFriendToHousehold(id, index) {
+    //add new member to household members array
+    //add household to users householdsarray
+
     user.household = [{ ...user.household, _id: id, role: admin }];
     //calender + shopping aktivität muss überschrieben werden und die referenz von dem anderen muss gespeichert werden
     // user.calender =
