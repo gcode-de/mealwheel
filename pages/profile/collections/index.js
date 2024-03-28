@@ -75,7 +75,11 @@ export default function Collections({ user, mutateUser }) {
         rotate={isMenuVisible}
       />
       {isMenuVisible && (
-        <MenuContainer top="3.5rem" right="var(--gap-out)">
+        <MenuContainer
+          top="3.5rem"
+          right="var(--gap-out)"
+          toggleMenu={() => setIsMenuVisible(false)}
+        >
           <UnstyledButton onClick={toggleAddCollection}>
             <Plus width={15} height={15} />
             Kochbuch hinzufügen

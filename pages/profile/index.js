@@ -149,7 +149,11 @@ export default function ProfilePage({
       ></IconButton>
       {user.connectionRequests.length >= 1 && <Notification />}
       {isNotificationVisible && (
-        <MenuContainer top="3.5rem" left="var(--gap-out)">
+        <MenuContainer
+          top="3.5rem"
+          left="var(--gap-out)"
+          toggleMenu={() => setIsNotificationVisible(false)}
+        >
           {user.connectionRequests.length >= 1 ? (
             user.connectionRequests.map((request, index) => (
               <div key={request.senderId}>
@@ -170,7 +174,11 @@ export default function ProfilePage({
         </MenuContainer>
       )}
       {isMenuVisible && (
-        <MenuContainer top="3.5rem" right="var(--gap-out)">
+        <MenuContainer
+          top="3.5rem"
+          right="var(--gap-out)"
+          toggleMenu={() => setIsMenuVisible(false)}
+        >
           <UnstyledButton onClick={() => router.push("/profile/settings")}>
             <Settings width={15} height={15} />
             Einstellungen

@@ -26,7 +26,6 @@ import BookIcon from "@/public/icons/svg/notebook-alt_9795395.svg";
 import ArrowUpIcon from "@/public/icons/svg/arrow-alt-up_7434980.svg";
 import GenerateIcon from "@/public/icons/svg/pen-swirl_10741646.svg";
 import SaveShoppingIcon from "@/public/icons/svg/cart-arrow-down_9795299.svg";
-import Calendar from "@/public/icons/svg/calendar-days_9795297.svg";
 import BellIcon from "/public/icons/svg/cowbell_9083627.svg";
 import MenuIcon from "/public/icons/svg/menu.svg";
 

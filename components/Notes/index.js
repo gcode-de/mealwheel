@@ -137,6 +137,7 @@ export default function Notes({ user, mutateUser, _id, foundInteractions }) {
             <MenuContainer
               top="var(--gap-between)"
               right="calc(3 * var(--gap-between) + 20px)"
+              toggleMenu={() => setMenuVisible(false)}
             >
               <UnstyledButton onClick={() => handleEditNote(index)}>
                 <Pen width={15} height={15} />
