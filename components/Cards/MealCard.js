@@ -89,20 +89,20 @@ export default function MealCard({
               />
             )}
             {reassignRecipe !== undefined && (
-              <MenuButton>
-                <Reload
-                  width={20}
-                  height={20}
-                  onClick={() => {
-                    reassignRecipe(day);
-                  }}
-                />
-              </MenuButton>
+              <StyledReload
+                width={30}
+                height={30}
+                onClick={() => {
+                  reassignRecipe(day);
+                }}
+              />
             )}
             {weekdays && (
-              <MenuButton onClick={() => toggleMenu(index)}>
-                <StyledMenu width={30} height={30} />
-              </MenuButton>
+              <StyledMenu
+                width={30}
+                height={30}
+                onClick={() => toggleMenu(index)}
+              />
             )}
             {menuVisible[index] && (
               <MenuContainer
@@ -238,7 +238,20 @@ const MenuButton = styled.button`
 const StyledMenu = styled(Menu)`
   rotate: 90deg;
   cursor: pointer;
+  background-color: var(--color-background);
+  border-radius: 100%;
   border-radius: var(--border-radius-large);
+  align-self: end;
+  padding: 5px;
+`;
+
+const StyledReload = styled(Reload)`
+  cursor: pointer;
+  background-color: var(--color-background);
+  border-radius: 100%;
+  border-radius: var(--border-radius-large);
+  align-self: end;
+  padding: 5px;
 `;
 
 const UnstyledButton = styled.button`
