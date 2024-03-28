@@ -28,8 +28,6 @@ import GenerateIcon from "@/public/icons/svg/pen-swirl_10741646.svg";
 import SaveShoppingIcon from "@/public/icons/svg/cart-arrow-down_9795299.svg";
 import BellIcon from "/public/icons/svg/cowbell_9083627.svg";
 import MenuIcon from "/public/icons/svg/menu.svg";
-import SettingsIcon from "@/public/icons/settings-svgrepo-com.svg";
-import TrashIcon from "@/public/icons/svg/trash-xmark_10741775.svg";
 
 export const ArrowUp = ArrowUpIcon;
 export const ArrowLeft = ArrowLeftIcon;

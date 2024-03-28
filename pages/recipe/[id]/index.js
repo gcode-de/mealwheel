@@ -93,6 +93,7 @@ export default function DetailPage({
 
   difficulty.toUpperCase();
   const userIsAuthor = user && user?._id === author;
+
   function toggleMenu() {
     setIsMenuVisible(!isMenuVisible);
   }
@@ -247,14 +248,18 @@ export default function DetailPage({
           }}
         />
         <IconButton
-          onClick={toggleMenu}
+          onClick={() => setIsMenuVisible(!isMenuVisible)}
           right="var(--gap-out)"
           top="-1.25rem"
           style="Menu"
           rotate={isMenuVisible}
         />
         {isMenuVisible && (
-          <MenuContainer top="2rem" right="var(--gap-out)">
+          <MenuContainer
+            top="2rem"
+            right="var(--gap-out)"
+            toggleMenu={() => setIsMenuVisible(false)}
+          >
             <UnstyledButton onClick={toggleModalCalender}>
               <Calendar width={15} height={15} />
               Rezept im Kalender speichern
@@ -390,7 +395,7 @@ export default function DetailPage({
             {RenderTextWithBreaks(instructions)}
           </StyledIngredients>
         )}
-        {content === "notes" && (
+        {content === "notes" && user && (
           <Notes
             user={user}
             _id={id}
