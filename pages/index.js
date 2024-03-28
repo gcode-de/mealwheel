@@ -26,7 +26,9 @@ export default function HomePage({
   getRecipeProperty,
   toggleIsFavorite,
   user,
+  household,
 }) {
+  console.log(household);
   const router = useRouter();
 
   const [apiQuery, setApiQuery] = useState(`/api/recipes`);
