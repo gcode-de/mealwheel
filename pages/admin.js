@@ -34,7 +34,7 @@ export default function Admin({ user, fetcher, recipes, allUsers }) {
           <StyledList>
             {feedback.map((item, index) => (
               <div key={index}>
-                item.positiveFeedback === &quot; &quot; ? ( kein positives
+                item.positiveFeedback === &quot; &quot; ? ( git kein positives
                 feedback ) : (
                 <>
                   <li>{item.positiveFeedback}</li>
