@@ -14,21 +14,27 @@ import styled from "styled-components";
 
 export default function MyRecipes({
   user,
+  mutateUser,
   error,
   isLoading,
   getRecipeProperty,
   toggleIsFavorite,
-  mutateUser,
+  recipes,
+  recipesIsLoading,
+  recipesError,
+  mutateRecipes,
 }) {
   const [isModalCollection, setIsModalCollection] = useState(false);
   const router = useRouter();
 
-  const {
-    data: myRecipes,
-    error: recipesError,
-    isLoading: recipesIsLoading,
-    mutate: mutateRecipes,
-  } = useSWR(`/api/recipes?author=${user?._id}`);
+  // const {
+  //   data: myRecipes,
+  //   error: recipesError,
+  //   isLoading: recipesIsLoading,
+  //   mutate: mutateRecipes,
+  // } = useSWR(`/api/recipes?author=${user?._id}`);
+
+  const myRecipes = recipes?.filter((recipe) => recipe.author === user?._id);
 
   function toggleAddCollection() {
     setIsModalCollection(!isModalCollection);
@@ -82,7 +88,9 @@ export default function MyRecipes({
                   key={recipe._id}
                   recipe={recipe}
                   isFavorite={getRecipeProperty(recipe._id, "isFavorite")}
-                  onToggleIsFavorite={toggleIsFavorite}
+                  onToggleIsFavorite={() => {
+                    toggleIsFavorite(recipe._id, mutateRecipes);
+                  }}
                 ></MealCard>
               );
             })

@@ -1,18 +1,13 @@
 import styled from "styled-components";
 import Image from "next/image";
 import Link from "next/link";
-import IconButton from "../Styled/IconButton";
-<<<<<<< HEAD
 import SetNumberOfPeople from "./SetNumberOfPeople";
 import LikesDisplay from "./LikesDisplay";
-=======
-import SetNumberOfPeople from "../Styled/SetNumberOfPeople";
 import MenuContainer from "../MenuContainer";
 import { BookUser, Menu, Reload, Trash } from "@/helpers/svg";
 import { useState } from "react";
 import ModalComponent from "../Modal";
 import AddToCollection from "../Forms/AddToCollection";
->>>>>>> main
 
 export default function MealCard({
   recipe,
@@ -44,44 +39,6 @@ export default function MealCard({
 
   return (
     <StyledLi>
-      {/* {isFavorite !== null && (
-        <IconButton
-          style="Heart"
-          right="-0.5rem"
-          top="-0.5rem"
-          fill={
-            isFavorite ? "var(--color-highlight)" : "var(--color-lightgrey)"
-          }
-          onClick={() => {
-            onToggleIsFavorite(recipe._id);
-          }}
-        />
-<<<<<<< HEAD
-      )} */}
-
-      {/* {reassignRecipe !== undefined && (
-        <IconButton
-          style="Reload"
-          right="-1rem"
-          top="1rem"
-          onClick={() => {
-            reassignRecipe(day);
-          }}
-        />
-      )} */}
-      {/* {removeRecipe !== undefined && (
-        <IconButton
-          style="x"
-          right="-1rem"
-          top="4rem"
-          onClick={() => {
-            removeRecipe(day);
-          }}
-        />
-      )} */}
-=======
-      )}
->>>>>>> main
       <CardContainer>
         {
           <ImageContainer>
@@ -108,7 +65,6 @@ export default function MealCard({
             {recipe?.duration && `${recipe?.duration} MIN | `}
             {recipe?.difficulty?.toUpperCase()}
           </StyledPDuration>
-<<<<<<< HEAD
           {numberOfPeople !== undefined && (
             <SetNumberOfPeople
               numberOfPeople={numberOfPeople}
@@ -126,7 +82,6 @@ export default function MealCard({
               $margin="0.75rem 0 0 1.5rem"
             />
           )}
-=======
           {weekdays && <StyledDragLine />}
           <StyledSettingsDiv>
             {numberOfPeople !== undefined && (
@@ -190,7 +145,6 @@ export default function MealCard({
               </ModalComponent>
             )}
           </StyledSettingsDiv>
->>>>>>> main
         </StyledDiv>
       </CardContainer>
     </StyledLi>

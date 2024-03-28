@@ -40,6 +40,7 @@ export default function App({
     data: recipes,
     error: recipesError,
     isLoading: recipesIsLoading,
+    mutate: mutateRecipes,
   } = useSWR(`/api/recipes`, fetcher);
 
   const {
@@ -166,11 +167,12 @@ export default function App({
             <Component
               {...pageProps}
               user={user}
+              mutateUser={mutate}
               getRecipeProperty={getRecipeProperty}
               toggleIsFavorite={toggleIsFavorite}
               toggleHasCooked={toggleHasCooked}
-              mutateUser={mutate}
               recipes={recipes}
+              mutateRecipes={mutateRecipes}
               recipesError={recipesError}
               recipesIsLoading={recipesIsLoading}
               allUsers={allUsers}

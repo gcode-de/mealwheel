@@ -312,7 +312,6 @@ export default function HomePage({
                   onToggleIsFavorite={() => {
                     toggleIsFavorite(recipe?._id, mutateRecipes);
                   }}
-                  mutateRecipes={mutateRecipes}
                 />
               );
             })}
@@ -330,9 +329,7 @@ export default function HomePage({
       {user && (
         <IconButtonLarge
           style={"plus"}
-
           bottom="5rem"
-
           onClick={() => router.push("/addRecipe")}
         />
       )}
