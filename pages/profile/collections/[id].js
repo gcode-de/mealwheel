@@ -16,6 +16,9 @@ export default function DetailCollection({
   user,
   mutateUser,
   allUsers,
+  getRecipeProperty,
+  toggleIsFavorite,
+  mutateRecipes,
 }) {
   const [isEditing, setIsEditing] = useState(false);
   const [checkedItems, setCheckedItems] = useState([]);
@@ -127,7 +130,13 @@ export default function DetailCollection({
                 }
               />
             )}
-            <MealCard recipe={recipe} />
+            <MealCard
+              recipe={recipe}
+              $isFavorite={getRecipeProperty(recipe._id, "isFavorite")}
+              onToggleIsFavorite={() => {
+                toggleIsFavorite(recipe._id, mutateUser, mutateRecipes);
+              }}
+            />
           </MealCardContainer>
         ))}
       </StyledUl>

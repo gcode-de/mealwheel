@@ -1,6 +1,4 @@
 import { useRouter } from "next/router";
-
-import Link from "next/link";
 import MealCard from "@/components/Cards/MealCard";
 import IconButton from "@/components/Button/IconButton";
 import CollectionCard from "@/components/Cards/CollectionCard";

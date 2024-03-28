@@ -41,6 +41,7 @@ export default function CardSkeleton({
             <MenuContainer
               top="7.25rem"
               right="calc(3 * var(--gap-between) + 20px)"
+              toggleMenu={() => toggleMenu(index)}
             >
               <UnstyledButton
                 onClick={() => {
