@@ -222,20 +222,6 @@ const StyledSettingsDiv = styled.div`
   justify-content: space-between;
 `;
 
-const MenuButton = styled.button`
-  background-color: var(--color-background);
-  border: none;
-  z-index: 3;
-  border-radius: 50px;
-  align-self: end;
-  padding-bottom: 0;
-  height: 30px;
-  width: 30px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-
 const StyledMenu = styled(Menu)`
   rotate: 90deg;
   cursor: pointer;
@@ -245,6 +231,7 @@ const StyledMenu = styled(Menu)`
   align-self: end;
   transform: ${(props) => (props.$rotate ? "rotate(90deg)" : "0")};
   padding: 5px;
+  position: relative;
 `;
 
 const StyledReload = styled(Reload)`

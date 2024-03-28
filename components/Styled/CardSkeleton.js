@@ -42,7 +42,7 @@ export default function CardSkeleton({
           )}
           {menuVisible[index] && (
             <MenuContainer
-              top="6.5rem"
+              top="7.25rem"
               right="calc(3 * var(--gap-between) + 20px)"
             >
               <UnstyledButton
