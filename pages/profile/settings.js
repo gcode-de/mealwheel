@@ -1,4 +1,5 @@
 import updateUserinDb from "@/helpers/updateUserInDb";
+import updateHouseholdInDb from "@/helpers/updateHouseholdInDb";
 
 import StyledH2 from "../../components/Styled/StyledH2";
 import StyledList from "@/components/Styled/StyledList";
@@ -13,20 +14,22 @@ import Household from "../../components/Household";
 export default function Settings({
   user,
   mutateUser,
+  household,
+  mutateHousehold,
   allUsers,
   mutateAllUsers,
 }) {
   const router = useRouter();
-  if (!user) {
-    return <p>kein Benutzer gefunden...</p>;
+  if (!household) {
+    return <p>kein Benutzer/Haushalt gefunden...</p>;
   }
 
-  const { settings } = user;
+  const { settings } = household;
   const { weekdaysEnabled } = settings;
 
   if (
-    !user.settings.weekdaysEnabled ||
-    user.settings.weekdaysEnabled.length === 0
+    !household.settings.weekdaysEnabled ||
+    household.settings.weekdaysEnabled.length === 0
   ) {
     const setWeekdays = {
       0: false,
@@ -37,9 +40,9 @@ export default function Settings({
       5: true,
       6: false,
     };
-    user.settings.weekdaysEnabled = { ...setWeekdays };
+    household.settings.weekdaysEnabled = { ...setWeekdays };
 
-    updateUserinDb(user, mutateUser);
+    updateHouseholdInDb(household, mutateHousehold);
   }
 
   const weekdayLabels = {
@@ -56,19 +59,19 @@ export default function Settings({
     const dayString = String(day);
 
     if (
-      user.settings.weekdaysEnabled &&
-      typeof user.settings.weekdaysEnabled === "object"
+      household.settings.weekdaysEnabled &&
+      typeof household.settings.weekdaysEnabled === "object"
     ) {
-      const isEnabled = user.settings.weekdaysEnabled[dayString];
-      user.settings.weekdaysEnabled[dayString] = !isEnabled;
+      const isEnabled = household.settings.weekdaysEnabled[dayString];
+      household.settings.weekdaysEnabled[dayString] = !isEnabled;
     }
 
-    await updateUserinDb(user, mutateUser);
+    await updateHouseholdInDb(household, mutateHousehold);
   }
 
   async function changeDefaultNumberOfPeople(change) {
-    user.settings.defaultNumberOfPeople += change;
-    await updateUserinDb(user, mutateUser);
+    household.settings.defaultNumberOfPeople += change;
+    await updateHouseholdInDb(household, mutateHousehold);
   }
 
   return (
@@ -114,7 +117,7 @@ export default function Settings({
         <StyledP>Standard-Anzahl Portionen:</StyledP>
         <Wrapper>
           <SetNumberOfPeople
-            numberOfPeople={user.settings.defaultNumberOfPeople}
+            numberOfPeople={household.settings.defaultNumberOfPeople}
             handleChange={changeDefaultNumberOfPeople}
           />
         </Wrapper>

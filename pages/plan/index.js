@@ -34,6 +34,7 @@ import generateWeekdays from "@/helpers/generateWeekdays";
 import assignRecipeToCalendarDay from "@/helpers/assignRecipesToCalendarDays";
 import populateEmptyWeekdays from "@/helpers/populateEmptyWeekdays";
 import updateUserinDb from "@/helpers/updateUserInDb";
+import updateHouseholdInDb from "@/helpers/updateHouseholdInDb";
 import assignRecipesToCalendarDays from "@/helpers/assignRecipesToCalendarDays";
 import LoadingComponent from "@/components/Loading";
 import IconButtonLarge from "@/components/Styled/IconButtonLarge";
@@ -48,6 +49,10 @@ export default function Plan({
   toggleIsFavorite,
   mutateUser,
   recipes,
+  household,
+  householdIsLoading,
+  householdError,
+  mutateHousehold,
 }) {
   const router = useRouter();
   const weekOffset = Number(router.query.week) || 0;
@@ -64,7 +69,7 @@ export default function Plan({
   useEffect(() => {
     const generatedWeekdays = generateWeekdays(weekOffset);
 
-    if (user && generatedWeekdays) {
+    if (household && generatedWeekdays) {
       setWeekdays(generatedWeekdays);
 
       let countAssignableDays = [];
@@ -73,7 +78,7 @@ export default function Plan({
       //that are not disabled by default and also not manually enabled,
       //and that don't have a reference to a recipe
       generatedWeekdays.forEach((weekday) => {
-        const calendarDay = user.calendar.find(
+        const calendarDay = household.calendar.find(
           (day) => day.date === weekday.date
         );
         const dayOfWeek = new Date(weekday.date).getDay();
@@ -88,7 +93,7 @@ export default function Plan({
           isDayActive = !isDayManuallyDisabled;
         } else {
           // fallback to default setting
-          isDayActive = user?.settings?.weekdaysEnabled?.[dayOfWeek];
+          isDayActive = household?.settings?.weekdaysEnabled?.[dayOfWeek];
         }
 
         if (isDayActive && !calendarDay?.recipe) {
@@ -101,7 +106,7 @@ export default function Plan({
       numberOfRandomRecipes > countAssignableDays.length &&
         setNumberOfRandomRecipes(countAssignableDays.length);
     }
-  }, [weekOffset, user, numberOfRandomRecipes]);
+  }, [weekOffset, household, numberOfRandomRecipes]);
 
   const {
     data: randomRecipes,
@@ -116,7 +121,7 @@ export default function Plan({
   }
 
   function getCalendarDayFromDb(date) {
-    return user.calendar.find((calendarDay) => calendarDay.date === date);
+    return household.calendar.find((calendarDay) => calendarDay.date === date);
   }
 
   const handleSliderChange = (event) => {
@@ -125,23 +130,23 @@ export default function Plan({
 
   const toggleDayIsDisabled = async (day) => {
     await createUserCalenderIfMissing();
-    if (user.calendar.some((calendarDay) => calendarDay.date === day)) {
-      user.calendar = user.calendar.map((calendarDay) =>
+    if (household.calendar.some((calendarDay) => calendarDay.date === day)) {
+      household.calendar = household.calendar.map((calendarDay) =>
         calendarDay.date === day
           ? { ...calendarDay, isDisabled: !calendarDay.isDisabled }
           : calendarDay
       );
     } else {
-      user.calendar.push({
+      household.calendar.push({
         date: day,
         isDisabled: checkIfWeekdayIsDefaultEnabled(day),
       });
     }
-    await updateUserinDb(user, mutateUser);
+    await updateHouseholdInDb(household, mutateHousehold);
   };
 
   const changeNumberOfPeople = async (day, change) => {
-    user.calendar = user.calendar.map((calendarDay) =>
+    household.calendar = household.calendar.map((calendarDay) =>
       calendarDay.date === day
         ? {
             ...calendarDay,
@@ -149,13 +154,13 @@ export default function Plan({
           }
         : calendarDay
     );
-    await updateUserinDb(user, mutateUser);
+    await updateHouseholdInDb(household, mutateHousehold);
   };
 
   const createUserCalenderIfMissing = async () => {
-    if (!user.calendar) {
-      user.calendar = [];
-      await updateUserinDb();
+    if (!household.calendar) {
+      household.calendar = [];
+      await updateHouseholdInDb(household, mutateHousehold);
     }
   };
 
@@ -163,13 +168,17 @@ export default function Plan({
     const randomRecipe = await getRandomRecipe();
     assignRecipeToCalendarDay(
       [{ date: day, recipe: randomRecipe[0] }],
-      user,
-      mutateUser
+      household,
+      mutateHousehold
     );
   };
 
   const removeRecipe = (day) => {
-    assignRecipeToCalendarDay([{ date: day, recipe: null }], user, mutateUser);
+    assignRecipeToCalendarDay(
+      [{ date: day, recipe: null }],
+      household,
+      mutateHousehold
+    );
   };
 
   const removeAllRecipes = (weekdays) => {
@@ -179,11 +188,11 @@ export default function Plan({
       recipe: null,
     }));
 
-    assignRecipesToCalendarDays(assignments, user, mutateUser);
+    assignRecipesToCalendarDays(assignments, household, mutateHousehold);
   };
 
   const checkIfWeekdayIsDefaultEnabled = (date) => {
-    return user.settings.weekdaysEnabled[new Date(date).getDay()];
+    return household.settings.weekdaysEnabled[new Date(date).getDay()];
   };
 
   const mouseSensor = useSensor(MouseSensor, {
@@ -221,7 +230,7 @@ export default function Plan({
               calendarDay.numberOfPeople !== undefined &&
               calendarDay.numberOfPeople !== null
                 ? Number(calendarDay.numberOfPeople)
-                : user.settings.defaultNumberOfPeople
+                : household.settings.defaultNumberOfPeople
             }
             changeNumberOfPeople={(change) =>
               changeNumberOfPeople(calendarDay.date, change)
@@ -277,17 +286,17 @@ export default function Plan({
       };
     });
 
-    assignRecipesToCalendarDays(resultArray, user, mutateUser);
+    assignRecipesToCalendarDays(resultArray, household, mutateHousehold);
   }
 
-  if (error || randomRecipesError) {
+  if (error || randomRecipesError || householdError) {
     <div>
       <Header text={"Wochenplan"} />
       Daten konnten nicht geladen werden...
     </div>;
   }
 
-  if (isLoading || randomRecipesIsLoading) {
+  if (isLoading || randomRecipesIsLoading || householdIsLoading) {
     return (
       <>
         <Header text={"Wochenplan"} />
@@ -296,7 +305,7 @@ export default function Plan({
     );
   }
 
-  if (!user) {
+  if (!user || !household) {
     return (
       <StyledHeader>
         <Header text={"Wochenplan"} />
@@ -337,14 +346,14 @@ export default function Plan({
       (acc, curr) => acc.concat(curr),
       []
     );
-    user.shoppingList.push(
+    household.shoppingList.push(
       ...combinedIngredients.map((ingredient) => ({
         ...ingredient,
         isChecked: false,
       }))
     );
 
-    updateUserinDb(user, mutateUser);
+    updateHouseholdInDb(household, mutateHousehold);
     notifySuccess("Einkaufsliste aktualisiert");
   }
 
@@ -482,7 +491,8 @@ export default function Plan({
               randomRecipes,
               numberOfRandomRecipes,
               user,
-              mutateUser
+              household,
+              mutateHousehold
             );
           }}
         />

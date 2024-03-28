@@ -10,13 +10,19 @@ import StyledListItem from "@/components/Styled/StyledListItem";
 import IconButtonLarge from "@/components/Styled/IconButtonLarge";
 
 import updateUserinDb from "@/helpers/updateUserInDb";
+import updateHouseholdInDb from "@/helpers/updateHouseholdInDb";
 import { ingredientUnits } from "@/helpers/ingredientUnits";
 
 import styled from "styled-components";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
-export default function ShoppingList({ user, mutateUser }) {
+export default function ShoppingList({
+  user,
+  mutateUser,
+  household,
+  mutateHousehold,
+}) {
   const [editingIndex, setEditingIndex] = useState(null);
   const editFormRef = useRef(null);
 
@@ -36,20 +42,21 @@ export default function ShoppingList({ user, mutateUser }) {
   }
 
   function handleItemEdit(event, index) {
+    console.log("edit");
     event.preventDefault();
     const formData = new FormData(event.target);
     const data = Object.fromEntries(formData);
     data.quantity = Number(data.quantity);
 
-    const updatedList = [...user.shoppingList];
+    const updatedList = [...household.shoppingList];
     updatedList[index] = { ...data, isChecked: updatedList[index].isChecked };
 
-    user.shoppingList = updatedList;
-    updateUserinDb(user, mutateUser);
+    household.shoppingList = updatedList;
+    updateUserinDb(household, mutateHousehold);
     setEditingIndex(null);
   }
 
-  if (!user) {
+  if (!user || !household) {
     return (
       <>
         <Header text="Einkaufsliste" />
@@ -60,8 +67,8 @@ export default function ShoppingList({ user, mutateUser }) {
       </>
     );
   }
-  user.shoppingList = Array.from(
-    user.shoppingList
+  household.shoppingList = Array.from(
+    household.shoppingList
       .reduce((map, obj) => {
         const { id, name, quantity, unit, isChecked } = obj;
         const existingObj = map.get(name + unit);
@@ -80,17 +87,17 @@ export default function ShoppingList({ user, mutateUser }) {
     const formData = new FormData(event.target);
     const data = Object.fromEntries(formData);
     data.quantity = Number(data.quantity);
-    if (!user.shoppingList) {
-      user.shoppingList = [];
+    if (!household.shoppingList) {
+      household.shoppingList = [];
     }
-    user.shoppingList.push({ ...data, isChecked: false });
+    household.shoppingList.push({ ...data, isChecked: false });
 
-    await updateUserinDb(user, mutateUser);
+    await updateHouseholdInDb(household, mutateHousehold);
     event.target.reset();
   }
 
-  function handleCheckboxChange(ind) {
-    const toggleChecked = user.shoppingList.map((item, index) =>
+  async function handleCheckboxChange(ind) {
+    const toggleChecked = household.shoppingList.map((item, index) =>
       index === ind ? { ...item, isChecked: !item.isChecked } : item
     );
     toggleChecked.sort((a, b) => {
@@ -99,31 +106,33 @@ export default function ShoppingList({ user, mutateUser }) {
       }
       return a.isChecked ? 1 : -1;
     });
-    user.shoppingList = toggleChecked;
+    household.shoppingList = toggleChecked;
 
-    updateUserinDb(user, mutateUser);
+    await updateHouseholdInDb(household, mutateHousehold);
 
     setTimeout(() => {
-      const deleteChecked = user.shoppingList.filter((item) => !item.isChecked);
-      user.shoppingList = deleteChecked;
-      updateUserinDb(user, mutateUser);
+      const deleteChecked = household.shoppingList.filter(
+        (item) => !item.isChecked
+      );
+      household.shoppingList = deleteChecked;
+      updateHouseholdInDb(household, mutateHousehold);
     }, 10000);
   }
 
-  function clearShopping() {
-    user.shoppingList = [];
-    updateUserinDb(user, mutateUser);
+  async function clearShopping() {
+    household.shoppingList = [];
+    await updateHouseholdInDb(household, mutateHousehold);
   }
   return (
     <>
       <Header text="Einkaufsliste" />
       <StyledList>
-        {user.shoppingList.length === 0 ? (
+        {household.shoppingList.length === 0 ? (
           <StyledListItem>
             <StyledCheck>nichts zu erledigen</StyledCheck>
           </StyledListItem>
         ) : (
-          user.shoppingList.map((item, index) => (
+          household.shoppingList.map((item, index) => (
             <StyledListItem key={index} onClick={() => handleItemClick(index)}>
               {editingIndex === index ? (
                 <StyledEditForm

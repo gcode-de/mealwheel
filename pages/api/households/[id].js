@@ -25,7 +25,7 @@ export default async function handler(request, response) {
     response.status(200).json(household);
   }
 
-  if (request.method === "PATCH") {
+  if (request.method === "PUT") {
     try {
       const household = await Household.findById(id);
 

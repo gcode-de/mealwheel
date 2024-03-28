@@ -6,6 +6,7 @@ import useSWR, { SWRConfig } from "swr";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import updateUserinDb from "@/helpers/updateUserInDb";
+import updateHouseholdInDb from "@/helpers/updateHouseholdInDb";
 import { notifySuccess, notifyError } from "/helpers/toast";
 
 const fetcher = async (url) => {
@@ -33,14 +34,12 @@ export default function App({
     mutate,
   } = useSWR(`/api/users/user`, fetcher);
 
-  console.log(user);
-
   const {
     data: household,
     isLoading: householdIsLoading,
-    error: householdIsError,
+    error: householdError,
     mutate: mutateHousehold,
-  } = useSWR(`/api/users/household/${user?.activeHousehold}`, fetcher);
+  } = useSWR(`/api/households/${user?.activeHousehold}`, fetcher);
 
   const {
     data: recipes,
@@ -131,6 +130,9 @@ export default function App({
               {...pageProps}
               user={user}
               household={household}
+              householdIsLoading={householdIsLoading}
+              householdError={householdError}
+              mutateHousehold={mutateHousehold}
               getRecipeProperty={getRecipeProperty}
               toggleIsFavorite={toggleIsFavorite}
               toggleHasCooked={toggleHasCooked}

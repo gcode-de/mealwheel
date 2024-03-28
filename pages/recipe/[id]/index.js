@@ -29,6 +29,8 @@ import ModalComponent from "../../../components/Modal";
 export default function DetailPage({
   user,
   mutateUser,
+  household,
+  mutateHousehold,
   error,
   isLoading,
   getRecipeProperty,
@@ -107,8 +109,8 @@ export default function DetailPage({
         },
       ];
 
-      await assignRecipesToCalendarDays(assignment, user, mutateUser);
-
+      await assignRecipesToCalendarDays(assignment, household, mutateHousehold);
+      console.log("after assign");
       const localDate = new Date(dbDate).toLocaleDateString("de-DE", {
         weekday: "long",
         year: "numeric",

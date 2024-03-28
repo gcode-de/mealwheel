@@ -6,11 +6,12 @@ export default async function populateEmptyWeekdays(
   randomRecipes,
   numberOfRandomRecipes,
   user,
-  mutateUser
+  household,
+  mutateHousehold
 ) {
   // Erstellen der Kalendereigenschaft im Benutzerobjekt, falls sie fehlt
-  if (!user.calendar) {
-    user.calendar = [];
+  if (!household.calendar) {
+    household.calendar = [];
   }
 
   const hasCookedRecipes = user?.recipeInteractions
@@ -20,7 +21,7 @@ export default async function populateEmptyWeekdays(
   //find all recipes that all already planned for the week to avoid them
   let recipesInWeek = weekdays
     .filter((weekday) => {
-      const calendarDay = user.calendar.find(
+      const calendarDay = household.calendar.find(
         (day) => day.date === weekday.date
       );
       return (
@@ -31,13 +32,13 @@ export default async function populateEmptyWeekdays(
     })
     .map(
       (weekday) =>
-        user.calendar.find((day) => day.date === weekday.date).recipe._id
+        household.calendar.find((day) => day.date === weekday.date).recipe._id
     );
 
-  //create an Array "mixedRecipes" that includes recipes from "randomRecipes" and "userRecipes".
+  //create an Array "mixedRecipes" that includes recipes from "randomRecipes" and "householdRecipes".
   //The final length of the array should be equal to "assignableDays.length".
-  //It should contain "numberOfRandomRecipes" random recipes and the rest should be picked from "userRecipes".
-  //If there are not enough userRecipes, use mor random recipes.
+  //It should contain "numberOfRandomRecipes" random recipes and the rest should be picked from "householdRecipes".
+  //If there are not enough householdRecipes, use mor random recipes.
   //When adding each recipe to the array, check if the recipe is already contained in "recipesInWeek". If that's the case, chose the next rcipe from the array you are currently picking from, to avoid having the same recipe more then once in one week.
 
   // Mischung aus zufälligen Rezepten und Rezepten, die vom Benutzer gekocht wurden
@@ -80,7 +81,7 @@ export default async function populateEmptyWeekdays(
     recipe: recipe._id,
   }));
 
-  assignRecipesToCalendarDays(recipeAssignments, user, mutateUser);
+  assignRecipesToCalendarDays(recipeAssignments, household, mutateHousehold);
 }
 
 function shuffleArray(array) {

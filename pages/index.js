@@ -28,7 +28,6 @@ export default function HomePage({
   user,
   household,
 }) {
-  console.log(household);
   const router = useRouter();
 
   const [apiQuery, setApiQuery] = useState(`/api/recipes`);
