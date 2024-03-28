@@ -341,12 +341,24 @@ export default function Plan({
       (acc, curr) => acc.concat(curr),
       []
     );
-    user.shoppingList.push(
+
+    const newIngredients = [
       ...combinedIngredients.map((ingredient) => ({
         ...ingredient,
         isChecked: false,
-      }))
+      })),
+    ];
+
+    const uncategorizedIndex = user.shoppingList.findIndex(
+      (category) => category.category === "Unsortiert"
     );
+
+    uncategorizedIndex === -1
+      ? user.shoppingList.push({
+          category: "Unsortiert",
+          items: [...newIngredients],
+        })
+      : user.shoppingList[uncategorizedIndex].items.push(...newIngredients);
 
     updateUserinDb(user, mutateUser);
     notifySuccess("Einkaufsliste aktualisiert");
@@ -443,7 +455,7 @@ export default function Plan({
                           toggleDayIsDisabled(weekday.date);
                           removeRecipe(weekday.date);
                         }}
-                        sliderSize="1rem"
+                        slidersize="1rem"
                         index={index}
                       />
                       {calendarDay?.isDisabled}

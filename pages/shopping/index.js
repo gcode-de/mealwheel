@@ -8,45 +8,52 @@ import StyledInput from "@/components/Styled/StyledInput";
 import StyledDropDown from "@/components/Styled/StyledDropDown";
 import StyledListItem from "@/components/Styled/StyledListItem";
 import IconButtonLarge from "@/components/Styled/IconButtonLarge";
+import Button from "@/components/Styled/StyledButton";
+import PlateWheel from "/public/icons/svg/plate-wheel.svg";
+import StyledH2 from "@/components/Styled/StyledH2";
 
-import updateUserinDb from "@/helpers/updateUserInDb";
 import { ingredientUnits } from "@/helpers/ingredientUnits";
+import fetchCategorizedIngredients from "@/helpers/OpenAI/CategorizeIngredients";
+import validateShoppinglistItems from "@/helpers/OpenAI/validateShoppinglistItems";
+import updateUserInDb from "@/helpers/updateUserInDb";
 
 import styled from "styled-components";
+import { useRef, useState } from "react";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { notifySuccess, notifyError } from "/helpers/toast";
 
 export default function ShoppingList({ user, mutateUser }) {
-  const [editingIndex, setEditingIndex] = useState(null);
+  const [editingIndex, setEditingIndex] = useState("");
+  const [isAiGenerating, setIsAiGenerating] = useState(false);
+  const [durationAiGenerating, setDurationAiGenerating] = useState(0);
   const editFormRef = useRef(null);
 
-  useEffect(() => {
-    function handleClickOutside(event) {
-      if (editFormRef.current && !editFormRef.current.contains(event.target)) {
-        setEditingIndex(null);
-      }
-    }
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
-  function handleItemClick(index) {
-    setEditingIndex(index);
+  function handleItemClick(category, index) {
+    setEditingIndex(`${category},${index}`);
   }
 
-  function handleItemEdit(event, index) {
-    event.preventDefault();
-    const formData = new FormData(event.target);
+  function handleItemEdit(eventTarget, categoryName, itemIndex) {
+    const formData = new FormData(eventTarget);
     const data = Object.fromEntries(formData);
     data.quantity = Number(data.quantity);
 
-    const updatedList = [...user.shoppingList];
-    updatedList[index] = { ...data, isChecked: updatedList[index].isChecked };
+    const category = user.shoppingList.find(
+      (cat) => cat.category === categoryName
+    );
 
-    user.shoppingList = updatedList;
-    updateUserinDb(user, mutateUser);
-    setEditingIndex(null);
+    if (category) {
+      const updatedItem = {
+        ...category.items[itemIndex],
+        ...data,
+      };
+
+      category.items[itemIndex] = updatedItem;
+
+      updateUserInDb(user, mutateUser);
+      setEditingIndex("");
+    } else {
+      console.log("Kategorie nicht gefunden.");
+    }
   }
 
   if (!user) {
@@ -60,20 +67,62 @@ export default function ShoppingList({ user, mutateUser }) {
       </>
     );
   }
-  user.shoppingList = Array.from(
-    user.shoppingList
-      .reduce((map, obj) => {
-        const { id, name, quantity, unit, isChecked } = obj;
-        const existingObj = map.get(name + unit);
-        if (existingObj) {
-          existingObj.quantity += quantity;
+
+  function consolidateShoppingListItems(userShoppingList) {
+    if (!validateShoppinglistItems(userShoppingList)) {
+      console.error("Shoppingliste enthält ungültige Daten.");
+      return;
+    }
+
+    const allItems = new Map();
+
+    // Sammle alle Items über alle Kategorien hinweg
+    userShoppingList.forEach((category) => {
+      category.items.forEach((item) => {
+        const key = `${item.name}-${item.unit}`;
+        if (allItems.has(key)) {
+          const existingItem = allItems.get(key);
+          existingItem.quantity += item.quantity;
         } else {
-          map.set(name + unit, { id, name, quantity, unit, isChecked });
+          allItems.set(key, { ...item, categories: [category.category] });
         }
-        return map;
-      }, new Map())
-      .values()
-  );
+      });
+    });
+
+    // Leere die ursprüngliche Liste und füge konsolidierte Items hinzu
+    userShoppingList.splice(0, userShoppingList.length); // Leert das Array, behält aber die Referenz bei
+
+    allItems.forEach((item, key) => {
+      const [name, unit] = key.split("-");
+      const categoryNames = item.categories;
+
+      categoryNames.forEach((categoryName) => {
+        // Finde oder erstelle die Kategorie
+        let category = userShoppingList.find(
+          (c) => c.category === categoryName
+        );
+        if (!category) {
+          category = { category: categoryName, items: [] };
+          userShoppingList.push(category);
+        }
+
+        category.items.push({
+          name,
+          quantity: item.quantity,
+          unit,
+          isChecked: item.isChecked,
+        });
+      });
+    });
+
+    //Entferne leere Kategorien,
+    const nonEmptyCategories = userShoppingList.filter(
+      (category) => category.items.length > 0
+    );
+    userShoppingList.splice(0, userShoppingList.length, ...nonEmptyCategories);
+  }
+
+  consolidateShoppingListItems(user.shoppingList);
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -83,99 +132,303 @@ export default function ShoppingList({ user, mutateUser }) {
     if (!user.shoppingList) {
       user.shoppingList = [];
     }
-    user.shoppingList.push({ ...data, isChecked: false });
 
-    await updateUserinDb(user, mutateUser);
+    const unsortedIndex = user.shoppingList.findIndex(
+      (category) => category.category === "Unsortiert"
+    );
+
+    if (unsortedIndex !== -1) {
+      user.shoppingList[unsortedIndex].items.push({
+        ...data,
+        isChecked: false,
+      });
+    } else {
+      user.shoppingList.push({
+        name: "Unsortiert",
+        items: [{ ...data, isChecked: false }],
+      });
+    }
+
+    await updateUserInDb(user, mutateUser);
     event.target.reset();
   }
 
-  function handleCheckboxChange(ind) {
-    const toggleChecked = user.shoppingList.map((item, index) =>
-      index === ind ? { ...item, isChecked: !item.isChecked } : item
+  function handleCheckboxChange(categoryName, itemIndex) {
+    const categoryIndex = user.shoppingList.findIndex(
+      (c) => c.category === categoryName
     );
-    toggleChecked.sort((a, b) => {
-      if (a.isChecked === b.isChecked) {
-        return a.index - b.index;
+    if (categoryIndex === -1) {
+      console.error("Kategorie nicht gefunden");
+      return;
+    }
+
+    const newUserShoppingList = [...user.shoppingList];
+    newUserShoppingList[categoryIndex].items[itemIndex].isChecked =
+      !newUserShoppingList[categoryIndex].items[itemIndex].isChecked;
+
+    updateUserInDb(user, mutateUser);
+
+    setTimeout(async () => {
+      const updatedCategories = [...user.shoppingList];
+      const updatedItems = updatedCategories[categoryIndex].items.filter(
+        (item) => !item.isChecked
+      );
+
+      if (updatedItems.length > 0) {
+        updatedCategories[categoryIndex].items = updatedItems;
+      } else {
+        // Entferne die Kategorie, wenn alle Items gecheckt sind
+        updatedCategories.splice(categoryIndex, 1);
       }
-      return a.isChecked ? 1 : -1;
-    });
-    user.shoppingList = toggleChecked;
+      user.shoppingList = updatedCategories;
 
-    updateUserinDb(user, mutateUser);
-
-    setTimeout(() => {
-      const deleteChecked = user.shoppingList.filter((item) => !item.isChecked);
-      user.shoppingList = deleteChecked;
-      updateUserinDb(user, mutateUser);
+      updateUserInDb(user, mutateUser);
     }, 10000);
   }
 
   function clearShopping() {
     user.shoppingList = [];
-    updateUserinDb(user, mutateUser);
+    updateUserInDb(user, mutateUser);
   }
+
+  async function setCategories() {
+    if (user.shoppingList.length === 0) {
+      notifyError("Bitte befülle zuerst deine Einkaufsliste.");
+      return;
+    }
+    setIsAiGenerating(true);
+    setDurationAiGenerating(45);
+
+    const countdownInterval = setInterval(() => {
+      setDurationAiGenerating((prevDuration) => {
+        if (prevDuration > 1) return prevDuration - 1;
+        clearInterval(countdownInterval); // Stoppe Countdown, wenn Dauer auf 0 ist
+        return 0;
+      });
+    }, 1000);
+
+    try {
+      const dataFromAPI = await fetchCategorizedIngredients(
+        JSON.stringify(user.shoppingList)
+      );
+      const parsedData = JSON.parse(dataFromAPI);
+
+      if (!validateShoppinglistItems(parsedData)) {
+        console.error(
+          "Erhaltene KI-Daten entsprechen nicht dem erwarteten Schema."
+        );
+        return;
+      }
+
+      user.shoppingList = await parsedData;
+      notifySuccess("Einkaufsliste wurde sortiert.");
+    } catch (error) {
+      console.error("Fehler beim Abrufen der Daten:", error);
+      if (error.message.startsWith("504")) {
+        notifyError("KI ist überlastet. Bitte später versuchen!");
+      } else {
+        notifyError("Sortieren fehlgeschlagen.");
+      }
+    }
+    setIsAiGenerating(false);
+    setDurationAiGenerating(0);
+    updateUserInDb(user, mutateUser);
+  }
+
+  // async function setCategories() {
+  //   if (user.shoppingList.length === 0) {
+  //     notifyError("Bitte befülle zuerst deine Einkaufsliste.");
+  //     return;
+  //   }
+
+  //   setIsAiGenerating(true);
+  //   setDurationAiGenerating(25); // Beginne mit der Countdown-Zeit
+
+  //   try {
+  //     // Starte die asynchrone Verarbeitung und speichere die ID für späteres Polling
+  //     await startCategorization(JSON.stringify(user.shoppingList));
+
+  //     // Funktion zum Polling des Verarbeitungsergebnisses
+  //     async function pollCategorizationResult() {
+  //       try {
+  //         const result = await getCategorizationResult();
+  //         if (result) {
+  //           // Wenn ein Ergebnis verfügbar ist, aktualisiere den State und das UI
+  //           if (!validateShoppinglistItems(result)) {
+  //             throw new Error(
+  //               "Erhaltene KI-Daten entsprechen nicht dem erwarteten Schema."
+  //             );
+  //           }
+  //           user.shoppingList = result;
+  //           notifySuccess("Einkaufsliste wurde sortiert.");
+  //           setIsAiGenerating(false);
+  //           setDurationAiGenerating(0);
+  //           updateUserInDb(user, mutateUser);
+  //         } else {
+  //           // Wenn kein Ergebnis verfügbar ist, versuche es erneut
+  //           setTimeout(pollCategorizationResult, 2000); // Warte 2 Sekunden vor dem nächsten Polling-Versuch
+  //         }
+  //       } catch (error) {
+  //         console.error(
+  //           "Fehler beim Abrufen der Kategorisierungsergebnisse:",
+  //           error
+  //         );
+  //         notifyError("Fehler beim Abrufen der Ergebnisse.");
+  //         setIsAiGenerating(false);
+  //         setDurationAiGenerating(0);
+  //       }
+  //     }
+
+  //     // Beginne mit dem Polling des Ergebnisses
+  //     pollCategorizationResult();
+  //   } catch (error) {
+  //     console.error("Fehler beim Starten der Kategorisierung:", error);
+  //     notifyError("Fehler beim Starten der Kategorisierung.");
+  //     setIsAiGenerating(false);
+  //     setDurationAiGenerating(0);
+  //   }
+  // }
+
+  // async function startCategorization(shoppingListJson) {
+  //   try {
+  //     const response = await fetch(`/api/ai/start-categorization`, {
+  //       method: "POST",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: shoppingListJson,
+  //     });
+  //     const data = await response.json();
+  //     if (!response.ok) {
+  //       throw new Error(
+  //         data.message || "Start der Kategorisierung fehlgeschlagen."
+  //       );
+  //     }
+  //     // Speichere die ID/Token für späteres Polling, falls notwendig
+  //     sessionStorage.setItem("categorizationToken", data.token);
+  //   } catch (error) {
+  //     console.error("Fehler beim Starten der Kategorisierung:", error);
+  //     throw error; // Weitergeben des Fehlers zum Fehler-Handling im aufrufenden Code
+  //   }
+  // }
+
+  // async function getCategorizationResult() {
+  //   const token = sessionStorage.getItem("categorizationToken");
+  //   try {
+  //     const response = await fetch(
+  //       `/api/ai/get-categorization-result?token=${token}`
+  //     );
+  //     const data = await response.json();
+  //     if (!response.ok) {
+  //       throw new Error(
+  //         data.message ||
+  //           "Abrufen des Kategorisierungsergebnisses fehlgeschlagen."
+  //       );
+  //     }
+  //     // Prüfe, ob ein Ergebnis verfügbar ist
+  //     if (data.status === "completed") {
+  //       return data.result; // Das tatsächliche Ergebnis
+  //     }
+  //     // Kein Ergebnis verfügbar, continue Polling
+  //     return null;
+  //   } catch (error) {
+  //     console.error(
+  //       "Fehler beim Abrufen der Kategorisierungsergebnisse:",
+  //       error
+  //     );
+  //     throw error;
+  //   }
+  // }
+
   return (
     <>
       <Header text="Einkaufsliste" />
       <StyledList>
-        {user.shoppingList.length === 0 ? (
+        {user.shoppingList.length === 0 && (
           <StyledListItem>
             <StyledCheck>nichts zu erledigen</StyledCheck>
           </StyledListItem>
-        ) : (
-          user.shoppingList.map((item, index) => (
-            <StyledListItem key={index} onClick={() => handleItemClick(index)}>
-              {editingIndex === index ? (
-                <StyledEditForm
-                  ref={editFormRef}
-                  onSubmit={(event) => handleItemEdit(event, index)}
+        )}
+        {user.shoppingList.map(({ category, items }) =>
+          items?.length ? (
+            <div key={category}>
+              <RestyledH2>{category}</RestyledH2>
+              {items.map((item, index) => (
+                <RestyledListItem
+                  key={index}
+                  onClick={() => handleItemClick(category, index)}
+                  onBlur={(event) =>
+                    handleItemEdit(event.target.parentElement, category, index)
+                  }
                 >
-                  <StyledInput
-                    type="number"
-                    defaultValue={item.quantity}
-                    min="0"
-                    aria-label="edit ingredient quantity for the recipe"
-                    name="quantity"
-                  />
-                  <StyledDropDown name="unit" defaultValue={item.unit}>
-                    {ingredientUnits.map((unit) => (
-                      <option key={unit} value={unit}>
-                        {unit}
-                      </option>
-                    ))}
-                  </StyledDropDown>
-                  <StyledInput
-                    type="text"
-                    defaultValue={item.name}
-                    aria-label="edit ingredient name for the recipe"
-                    name="name"
-                    required
-                  />
-                </StyledEditForm>
-              ) : (
-                <>
-                  <StyledCheck>
-                    <StyledNumberUnit>
-                      <StyledCheckItem $text={item.isChecked} $flex={0.1}>
-                        {item.quantity || "1"}
-                      </StyledCheckItem>
-                      <StyledCheckItem $text={item.isChecked} $flex={1}>
-                        {item.unit}
-                      </StyledCheckItem>
-                    </StyledNumberUnit>
-                    <StyledCheckItem $text={item.isChecked} $flex={2}>
-                      {item.name}
-                    </StyledCheckItem>
-                  </StyledCheck>
-                  <StyledCheckbox
-                    type="checkbox"
-                    checked={item.isChecked}
-                    onChange={() => handleCheckboxChange(index)}
-                  ></StyledCheckbox>
-                </>
-              )}
-            </StyledListItem>
-          ))
+                  {editingIndex === `${category},${index}` ? (
+                    <StyledEditForm
+                      ref={editFormRef}
+                      onSubmit={(event) =>
+                        handleItemEdit(event.target, category, index)
+                      }
+                    >
+                      <StyledInput
+                        type="number"
+                        defaultValue={item.quantity}
+                        min="0"
+                        aria-label="edit ingredient quantity for the recipe"
+                        name="quantity"
+                      />
+                      <StyledDropDown name="unit" defaultValue={item.unit}>
+                        <option value="">-</option>
+                        {ingredientUnits.map((unit) => (
+                          <option key={unit} value={unit}>
+                            {unit}
+                          </option>
+                        ))}
+                      </StyledDropDown>
+                      <StyledInput
+                        type="text"
+                        defaultValue={item.name}
+                        aria-label="edit ingredient name for the recipe"
+                        name="name"
+                        required
+                      />
+                      <AddButton type="submit" $color="var(--color-background)">
+                        <Check width={20} height={20} />
+                      </AddButton>
+                    </StyledEditForm>
+                  ) : (
+                    <>
+                      <StyledCheck>
+                        <StyledNumberUnit>
+                          <StyledCheckItem $text={item.isChecked} $flex={0.1}>
+                            {item.quantity}
+                          </StyledCheckItem>
+                          <StyledCheckItem $text={item.isChecked} $flex={0.5}>
+                            {item.unit}
+                          </StyledCheckItem>
+                        </StyledNumberUnit>
+                        <StyledCheckItem $text={item.isChecked} $flex={2}>
+                          {item.name}
+                        </StyledCheckItem>
+                      </StyledCheck>
+                      <StyledCheckbox
+                        type="checkbox"
+                        checked={item.isChecked}
+                        onChange={(event) => {
+                          handleCheckboxChange(category, index);
+                          event.stopPropagation();
+                        }}
+                        onClick={(event) => {
+                          event.stopPropagation();
+                        }}
+                        onBlur={(event) => {
+                          event.stopPropagation();
+                        }}
+                      ></StyledCheckbox>
+                    </>
+                  )}
+                </RestyledListItem>
+              ))}
+            </div>
+          ) : (
+            ""
+          )
         )}
         <form onSubmit={handleSubmit}>
           <StyledIngredients>
@@ -187,6 +440,7 @@ export default function ShoppingList({ user, mutateUser }) {
               name="quantity"
             />
             <StyledDropDown name="unit">
+              <option value="">-</option>
               {ingredientUnits.map((unit) => (
                 <option key={unit} value={unit}>
                   {unit}
@@ -206,6 +460,19 @@ export default function ShoppingList({ user, mutateUser }) {
           </StyledIngredients>
         </form>
       </StyledList>
+      {user.shoppingList.length > 0 && (
+        <>
+          <StyledButton
+            onClick={setCategories}
+            aria-label="trigger AI-based sorting and grouping of items (this takes a moment)"
+          >
+            <RotatingSVG $rotate={isAiGenerating} />
+            {!isAiGenerating
+              ? "Sortieren"
+              : `bitte warten... (${durationAiGenerating})`}
+          </StyledButton>
+        </>
+      )}
       <Spacer />
       <IconButtonLarge style={"trash"} bottom="5rem" onClick={clearShopping} />
     </>
@@ -231,7 +498,8 @@ const StyledCheckbox = styled.input`
   background-color: var(--color-background);
   margin: 0;
   width: 37px;
-  height: 20px;
+  height: 30px;
+  z-index: 2;
 `;
 const StyledNumberUnit = styled.div`
   width: 40%;
@@ -244,6 +512,41 @@ const Spacer = styled.div`
 
 const StyledEditForm = styled.form`
   display: flex;
-  width: 277px;
+  width: 100%;
   gap: 0.25rem;
+`;
+
+const RotatingSVG = styled(PlateWheel)`
+  width: 1.5rem;
+  animation: ${(props) =>
+    props.$rotate ? "rotate 2s linear infinite" : "none"};
+  fill: var(--color-component);
+
+  @keyframes rotate {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+`;
+
+const StyledButton = styled(Button)`
+  padding: 8px 15px;
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  width: max-content;
+  margin-right: var(--gap-out);
+  margin-left: auto;
+`;
+
+const RestyledH2 = styled(StyledH2)`
+  font-size: 1rem;
+  margin: 1rem 0 0 0;
+`;
+
+const RestyledListItem = styled(StyledListItem)`
+  align-items: center;
 `;

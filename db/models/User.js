@@ -30,11 +30,15 @@ const collectionSchema = new Schema({
   ],
   collectionName: { type: String },
 });
-const shoppingItem = new Schema({
+const shoppingItemSchema = new Schema({
   name: { type: String, required: true },
   quantity: { type: Number },
   unit: { type: String },
-  isChecked: Boolean,
+  isChecked: { type: Boolean },
+});
+const shoppingCategorySchema = new Schema({
+  category: { type: String, required: true },
+  items: [shoppingItemSchema],
 });
 
 const userSchema = new Schema({
@@ -52,7 +56,7 @@ const userSchema = new Schema({
   },
   recipeInteractions: [recipeInteractionSchema],
   calendar: [calendarEntrySchema],
-  shoppingList: [shoppingItem],
+  shoppingList: [shoppingCategorySchema],
   collections: [collectionSchema],
   publicId: { type: String },
   connectionRequests: [

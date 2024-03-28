@@ -5,6 +5,7 @@ import useSWR from "swr";
 import { useState } from "react";
 import { useRouter } from "next/router";
 import { notifySuccess, notifyError } from "/helpers/toast";
+import { Fragment } from "react";
 
 import assignRecipesToCalendarDays from "@/helpers/assignRecipesToCalendarDays";
 import updateUserinDb from "@/helpers/updateUserInDb";
@@ -92,6 +93,18 @@ export default function DetailPage({
   function toggleMenu() {
     setIsMenuVisible(!isMenuVisible);
   }
+
+  function RenderTextWithBreaks(text) {
+    const textParts = text.split("\n").map((part, index) => (
+      <StyledInstructionsP key={index}>
+        {part}
+        <br />
+      </StyledInstructionsP>
+    ));
+
+    return <div>{textParts}</div>;
+  }
+
   const handleAssignRecipeToCalendar = async (event) => {
     event.preventDefault();
 
@@ -370,7 +383,9 @@ export default function DetailPage({
           </StyledLink>
         </StyledHyper>
         {content === "instructions" && (
-          <StyledIngredients>{instructions}</StyledIngredients>
+          <StyledIngredients>
+            {RenderTextWithBreaks(instructions)}
+          </StyledIngredients>
         )}
         {content === "notes" && (
           <Notes
@@ -431,13 +446,44 @@ const ImageContainer = styled(Image)`
   height: auto;
 `;
 
-const StyledTitle = styled.h1`
-  margin-right: var(--gap-out);
-  margin-left: var(--gap-out);
-  margin-top: 2rem;
-  margin-bottom: 1rem;
-  width: calc(100% - (2 * var(--gap-out)));
-  text-align: center;
+const RestyledH2 = styled(StyledH2)`
+  margin-left: 0;
+`;
+
+const StyledForm = styled.form`
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  justify-content: space-between;
+  transition: opacity 0.3s ease-in-out, margin 0.2s ease-out;
+  overflow: hidden;
+  h3 {
+    flex-basis: 100%;
+    margin: 0;
+  }
+  label {
+  }
+  button {
+    width: 80px;
+    line-height: 1.1rem;
+    padding: 0.4rem 0.5rem;
+    min-height: 2rem;
+    border: none;
+    border-radius: 10px;
+    background-color: var(--color-darkgrey);
+    color: var(--color-background);
+    cursor: pointer;
+    margin-right: auto;
+  }
+  input {
+    padding: 0.25rem 0.5rem;
+    border: none;
+    border-radius: 10px;
+    background-color: var(--color-background);
+    min-height: 2rem;
+  }
 `;
 
 const StyledCategoriesDiv = styled.div`
@@ -488,42 +534,15 @@ const UnstyledButton = styled.button`
   }
 `;
 
-const RestyledH2 = styled(StyledH2)`
-  margin-left: 0;
+const StyledTitle = styled.h1`
+  margin-right: var(--gap-out);
+  margin-left: var(--gap-out);
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  width: calc(100% - (2 * var(--gap-out)));
+  text-align: center;
 `;
 
-const StyledForm = styled.form`
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 10px;
-  width: 100%;
-  justify-content: space-between;
-  transition: opacity 0.3s ease-in-out, margin 0.2s ease-out;
-  overflow: hidden;
-  h3 {
-    flex-basis: 100%;
-    margin: 0;
-  }
-  label {
-  }
-  button {
-    width: 80px;
-    line-height: 1.1rem;
-    padding: 0.4rem 0.5rem;
-    min-height: 2rem;
-    border: none;
-    border-radius: 10px;
-    background-color: var(--color-darkgrey);
-    color: var(--color-background);
-    cursor: pointer;
-    margin-right: auto;
-  }
-  input {
-    padding: 0.25rem 0.5rem;
-    border: none;
-    border-radius: 10px;
-    background-color: var(--color-background);
-    min-height: 2rem;
-  }
+const StyledInstructionsP = styled.p`
+  margin: 0 0 var(--gap-between) 0;
 `;

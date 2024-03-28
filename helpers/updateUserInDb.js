@@ -1,6 +1,5 @@
 export default async function updateUserInDb(user, mutateUser) {
   if (!user) return;
-
   const currentUser = user;
   await mutateUser((prevUser) => ({ ...prevUser, ...user }), false);
 

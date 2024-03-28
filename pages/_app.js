@@ -9,7 +9,7 @@ import useSWR, { SWRConfig } from "swr";
 
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { notifySuccess, notifyError } from "/helpers/toast";
+import { notifyError } from "/helpers/toast";
 
 const fetcher = async (url) => {
   const res = await fetch(url);

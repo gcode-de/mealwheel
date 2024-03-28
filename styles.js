@@ -38,6 +38,17 @@ export default createGlobalStyle`
     --border-radius-small: 10px;
     --border-radius-medium: 20px;
     --border-radius-large: 40px; 
+
+    --toastify-color-light: #fff;
+    --toastify-color-dark: var(--color-font);
+    --toastify-color-info: #1721A6;
+    --toastify-color-success: #23C800;
+    --toastify-color-warning: var(--color-highlight);
+    --toastify-color-error: #E80016;
+    --toastify-icon-color-info: var(--toastify-color-info);
+    --toastify-icon-color-success: var(--toastify-color-success);
+    --toastify-icon-color-warning: var(--toastify-color-warning);
+    --toastify-icon-color-error: var(--toastify-color-error);
   }
   body {
     margin: auto;
