@@ -5,7 +5,7 @@ import styled from "styled-components";
 import { Spacer, H2, List, P } from "@/components/Styled/Styled";
 
 import IconButton from "@/components/Button/IconButton";
-import SetNumberOfPeople from "@/components/Styled/SetNumberOfPeople";
+import SetNumberOfPeople from "@/components/Cards/SetNumberOfPeople";
 
 export default function Settings({ user, mutateUser }) {
   const router = useRouter();

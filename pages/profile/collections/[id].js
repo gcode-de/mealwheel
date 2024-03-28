@@ -6,10 +6,9 @@ import styled from "styled-components";
 import IconButton from "@/components/Button/IconButton";
 import MealCard from "@/components/Cards/MealCard";
 import StyledUl from "@/components/Styled/StyledUl";
-import StyledH2 from "@/components/Styled/StyledH2";
 import MenuContainer from "@/components/MenuContainer";
 
-import { Spacer } from "@/components/Styled/Styled";
+import { Spacer, H2 } from "@/components/Styled/Styled";
 import { Trash, Pen, XSmall } from "@/helpers/svg";
 
 export default function DetailCollection({
@@ -67,7 +66,7 @@ export default function DetailCollection({
   return (
     <>
       <Spacer />
-      <StyledH2>{foundCollection?.collectionName} </StyledH2>
+      <H2>{foundCollection?.collectionName} </H2>
       <IconButton
         onClick={() => router.back()}
         left="var(--gap-out)"

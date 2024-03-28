@@ -1,16 +1,10 @@
 import { useRouter } from "next/router";
 
-import StyledH2 from "@/components/Styled/StyledH2";
 import IconButton from "@/components/Button/IconButton";
 import ProfileCard from "@/components/Cards/ProfileCard";
-import { Spacer } from "@/components/Styled/Styled";
+import { Spacer, H2 } from "@/components/Styled/Styled";
 
-export default function Community({
-  user,
-  mutateUser,
-  allUsers,
-  mutateAllUsers,
-}) {
+export default function Community({ user, allUsers }) {
   const router = useRouter();
   if (!user || !allUsers) {
     return;
@@ -21,7 +15,7 @@ export default function Community({
   return (
     <>
       <Spacer />
-      <StyledH2>Community</StyledH2>
+      <H2>Community</H2>
       <IconButton
         style="ArrowLeft"
         top="var(--gap-out)"

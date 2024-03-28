@@ -1,14 +1,12 @@
-import CardSkeleton from "@/components/Styled/CardSkeleton";
+import CardSkeleton from "@/components/Cards/CardSkeleton";
 import MealCard from "@/components/Cards/MealCard";
 import Header from "@/components/Styled/Header";
-import IconButton from "@/components/Styled/IconButton";
+import IconButton from "@/components/Button/IconButton";
 import { useState } from "react";
-import IconButtonLarge from "@/components/Styled/IconButtonLarge";
-
-import { Spacer } from "@/components/Styled/Styled";
-import StyledH2 from "@/components/Styled/StyledH2";
-
+import IconButtonLarge from "@/components/Button/IconButtonLarge";
+import { Spacer, H2 } from "@/components/Styled/Styled";
 import styled from "styled-components";
+import { useRouter } from "next/router";
 
 export default function MyRecipes({
   user,
@@ -23,7 +21,7 @@ export default function MyRecipes({
   mutateRecipes,
 }) {
   const [isModalCollection, setIsModalCollection] = useState(false);
-
+  const router = useRouter();
   const myRecipes = recipes?.filter((recipe) => recipe.author === user?._id);
 
   function toggleAddCollection() {
@@ -53,7 +51,7 @@ export default function MyRecipes({
         <Header text="Meine Rezepte" />
 
         <StyledUl>
-          <h2>Lade Rezepte...</h2>
+          <H2>Lade Rezepte...</H2>
           <CardSkeleton amount={5} $isLoading />
         </StyledUl>
       </>
@@ -69,7 +67,7 @@ export default function MyRecipes({
         onClick={() => router.back()}
       />
       <Spacer />
-      <StyledH2>Meine Rezepte</StyledH2>
+      <H2>Meine Rezepte</H2>
 
       <StyledUl>
         {myRecipes.length
@@ -78,7 +76,7 @@ export default function MyRecipes({
                 <MealCard
                   key={recipe._id}
                   recipe={recipe}
-                  isFavorite={getRecipeProperty(recipe._id, "isFavorite")}
+                  $isFavorite={getRecipeProperty(recipe._id, "isFavorite")}
                   onToggleIsFavorite={() => {
                     toggleIsFavorite(recipe._id, mutateUser, mutateRecipes);
                   }}

@@ -47,7 +47,6 @@ export default function CardSkeleton({
                   reassignRecipe(weekdays[index].date);
                 }}
               >
-                {console.log(weekdays[index].date)}
                 <Reload width={15} height={15} /> Neues Rezept laden
               </UnstyledButton>
             </MenuContainer>

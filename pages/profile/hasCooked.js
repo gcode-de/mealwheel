@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 import MealCard from "@/components/Cards/MealCard";
 import Header from "@/components/Styled/Header";
-import IconButton from "@/components/Styled/IconButton";
+import IconButton from "@/components/Button/IconButton";
 import { useRouter } from "next/router";
 import LoadingComponent from "@/components/Loading";
 import { Spacer, H2 } from "@/components/Styled/Styled";

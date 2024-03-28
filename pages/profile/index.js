@@ -23,12 +23,10 @@ import {
 } from "@/helpers/svg.js";
 
 //Components
-import StyledH2 from "@/components/Styled/StyledH2";
-import Button from "@/components/Styled/StyledButton";
+import { Button, H2, List } from "@/components/Styled/Styled";
 import StyledProgress from "@/components/StyledProgress";
 import MenuContainer from "@/components/MenuContainer";
 import IconButton from "@/components/Button/IconButton";
-import StyledList from "@/components/Styled/StyledList";
 import ModalComponent from "@/components/Modal";
 import updateCommunityUserInDB from "@/helpers/updateCommunityUserInDB";
 import Profile from "@/components/Profile";
@@ -218,7 +216,7 @@ export default function ProfilePage({
               </StyledImageUploadContainer>
             </StyledProfile>
           </WrapperCenter>
-          <StyledList>
+          <List>
             <StyledUsernameForm onSubmit={updateUsername}>
               <input
                 name="username"
@@ -230,7 +228,7 @@ export default function ProfilePage({
                 Speichern
               </StyledSaveButton>
             </StyledUsernameForm>
-          </StyledList>
+          </List>
         </>
       )}
       {!editUser && <Profile foundUser={user} />}
@@ -267,7 +265,7 @@ export default function ProfilePage({
         <ModalComponent
           toggleModal={() => setFeedbackVisible(!feedbackVisible)}
         >
-          <StyledH2>Gib uns Feedback</StyledH2>
+          <H2>Gib uns Feedback</H2>
           <StyledForm onSubmit={handleFeedback}>
             <StyledInput
               name="negativeFeedback"
