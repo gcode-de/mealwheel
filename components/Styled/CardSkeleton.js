@@ -33,7 +33,7 @@ export default function CardSkeleton({
       {Array.from({ length: amount }, (_, ind) => (
         <StyledCardSkeleton key={ind} $isLoading={$isLoading} $height={$height}>
           {weekdays && <StyledDragLine />}
-          {weekdays && isDisabled && (
+          {weekdays && !isDisabled && (
             <StyledMenu
               width={30}
               height={30}
