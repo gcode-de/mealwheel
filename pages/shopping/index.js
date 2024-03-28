@@ -1,5 +1,4 @@
 import {
-  Input,
   Select,
   H2,
   Button,
@@ -7,6 +6,7 @@ import {
   ListItem,
   Spacer,
 } from "@/components//Styled/Styled";
+import Input from "../../components/Styled/StyledInput";
 
 import AddButton from "@/components/Button/AddButton";
 import Header from "@/components/Styled/Header";
@@ -361,7 +361,7 @@ export default function ShoppingList({ user, mutateUser }) {
       </List>
       {user.shoppingList.length > 0 && (
         <>
-          <Button
+          <StyledButton
             onClick={setCategories}
             aria-label="trigger AI-based sorting and grouping of items (this takes a moment)"
           >
@@ -369,7 +369,7 @@ export default function ShoppingList({ user, mutateUser }) {
             {!isAiGenerating
               ? "Sortieren"
               : `bitte warten... (${durationAiGenerating})`}
-          </Button>
+          </StyledButton>
         </>
       )}
       <Spacer />
@@ -427,15 +427,15 @@ const RotatingSVG = styled(PlateWheel)`
   }
 `;
 
-// const StyledButton = styled(Button)`
-//   padding: 8px 15px;
-//   display: flex;
-//   gap: 0.5rem;
-//   align-items: center;
-//   width: max-content;
-//   margin-right: var(--gap-out);
-//   margin-left: auto;
-// `;
+const StyledButton = styled(Button)`
+  padding: 8px 15px;
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  width: max-content;
+  margin-right: var(--gap-out);
+  margin-left: auto;
+`;
 
 const RestyledH2 = styled(H2)`
   font-size: 1rem;

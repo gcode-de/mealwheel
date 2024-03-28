@@ -227,7 +227,7 @@ export default function Plan({
             reassignRecipe={reassignRecipe}
             removeRecipe={removeRecipe}
             day={calendarDay.date}
-            isFavorite={null}
+            $isFavorite={null}
             user={user}
             weekdays={weekdays}
             index={index}
@@ -460,7 +460,7 @@ export default function Plan({
                           toggleDayIsDisabled(weekday.date);
                           removeRecipe(weekday.date);
                         }}
-                        slidersize="1rem"
+                        $sliderSize="1rem"
                         index={index}
                       />
                       {calendarDay?.isDisabled}
