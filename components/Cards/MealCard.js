@@ -11,8 +11,7 @@ import AddToCollection from "../Forms/AddToCollection";
 
 export default function MealCard({
   recipe,
-  mutateRecipes,
-  isFavorite,
+  $isFavorite,
   onToggleIsFavorite,
   numberOfPeople,
   changeNumberOfPeople,
@@ -22,6 +21,7 @@ export default function MealCard({
   user,
   weekdays,
   index,
+  mutateUser,
 }) {
   const [menuVisible, setMenuVisible] = useState(
     weekdays ? new Array(weekdays.length).fill(false) : []
@@ -64,10 +64,10 @@ export default function MealCard({
             {recipe?.duration && `${recipe?.duration} MIN | `}
             {recipe?.difficulty?.toUpperCase()}
           </StyledPDuration>
-          {isFavorite !== null && (
+          {$isFavorite !== null && (
             <LikesDisplay
               likes={recipe?.likes}
-              isFavorite={isFavorite}
+              $isFavorite={$isFavorite}
               onToggleIsFavorite={onToggleIsFavorite}
               $margin="0.75rem 0 0 1.5rem"
             />
@@ -104,6 +104,7 @@ export default function MealCard({
               <MenuContainer
                 top="7.3rem"
                 right="calc(2 * var(--gap-between) + 18px)"
+                toggleMenu={() => toggleMenu(index)}
               >
                 <UnstyledButton
                   onClick={() => {

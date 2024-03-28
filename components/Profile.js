@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import Image from "next/image";
 import FollowButton from "./Button/FollowButton";
+
 export default function Profile({ foundUser, name, user }) {
   return (
     <>

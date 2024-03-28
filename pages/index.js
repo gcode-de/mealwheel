@@ -2,14 +2,14 @@ import Header from "@/components/Styled/Header";
 
 import MealCard from "@/components/Cards/MealCard";
 
-import StyledUl from "@/components/Styled/StyledUl";
-import IconButtonLarge from "@/components/Styled/IconButtonLarge";
+import IconButtonLarge from "@/components/Button/IconButtonLarge";
 import ScrollToTop from "@/components/ScrollToTopButton";
-import StyledH2 from "@/components/Styled/StyledH2";
-import Filter from "@/public/icons/sliders-v_10435878.svg";
-import Search from "@/public/icons/svg/pan_7409478.svg";
-import IconButton from "@/components/Styled/IconButton";
+import IconButton from "@/components/Button/IconButton";
 import LoadingComponent from "@/components/Loading";
+
+import { Search } from "@/helpers/svg";
+import { H2 } from "@/components/Styled/Styled";
+import StyledUl from "@/components/Styled/StyledUl";
 
 import { sortingMethods } from "@/helpers/sortingMethods";
 import { filterTags } from "@/helpers/filterTags";
@@ -261,7 +261,7 @@ export default function HomePage({
           </StyledResetButton>
           {filterTags.map(({ label, type, options }) => (
             <div key={type}>
-              <StyledH2>{label}</StyledH2>
+              <H2>{label}</H2>
               <StyledCategoriesDiv>
                 {options.map((option) => (
                   <StyledCategoryButton
@@ -275,7 +275,7 @@ export default function HomePage({
               </StyledCategoriesDiv>
             </div>
           ))}
-          <StyledH2>Sortierung</StyledH2>
+          <H2>Sortierung</H2>
           <StyledCategoriesDiv>
             {sortingMethods.map((option) => (
               <StyledCategoryButton
@@ -298,18 +298,18 @@ export default function HomePage({
 
       {recipes.length > 0 ? (
         <>
-          <StyledH2>
+          <H2>
             {recipes.length === 1
               ? `Ein Rezept gefunden:`
               : `${recipes.length} Rezepte gefunden:`}
-          </StyledH2>
+          </H2>
           <StyledUl>
             {recipes?.map((recipe) => {
               return (
                 <MealCard
                   key={recipe._id}
                   recipe={recipe}
-                  isFavorite={getRecipeProperty(recipe._id, "isFavorite")}
+                  $isFavorite={getRecipeProperty(recipe._id, "isFavorite")}
                   onToggleIsFavorite={() => {
                     toggleIsFavorite(recipe?._id, mutateUser, mutateRecipes);
                   }}
@@ -320,10 +320,10 @@ export default function HomePage({
         </>
       ) : (
         <StyledUl>
-          <StyledH2>Keine passenden Rezepte gefunden...</StyledH2>
-          <StyledH2>
+          <H2>Keine passenden Rezepte gefunden...</H2>
+          <H2>
             <Link href="/">alles zurücksetzen</Link>
-          </StyledH2>
+          </H2>
         </StyledUl>
       )}
       <ScrollToTop />
@@ -337,15 +337,6 @@ export default function HomePage({
     </>
   );
 }
-
-const StyledFilterButton = styled.button`
-  background: none;
-  border: none;
-  position: absolute;
-  top: 1rem;
-  right: 2rem;
-  cursor: pointer;
-`;
 
 const StyledResetButton = styled.button`
   background-color: transparent;

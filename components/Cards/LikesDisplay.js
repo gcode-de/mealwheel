@@ -3,7 +3,7 @@ import { Heart } from "@/helpers/svg";
 
 export default function LikesDisplay({
   likes,
-  isFavorite,
+  $isFavorite,
   onToggleIsFavorite,
   $margin,
 }) {
@@ -16,7 +16,7 @@ export default function LikesDisplay({
           onToggleIsFavorite();
         }}
       >
-        <StyledHeart isFavorite={isFavorite} />
+        <StyledHeart $isFavorite={$isFavorite} />
       </button>
     </LikesDisplayContainer>
   );
@@ -49,6 +49,6 @@ const LikesDisplayContainer = styled.div`
 const StyledHeart = styled(Heart)`
   height: 1rem;
   width: 1rem;
-  fill: ${({ isFavorite }) =>
-    isFavorite ? "var(--color-highlight)" : "var(--color-lightgrey)"};
+  fill: ${({ $isFavorite }) =>
+    $isFavorite ? "var(--color-highlight)" : "var(--color-lightgrey)"};
 `;

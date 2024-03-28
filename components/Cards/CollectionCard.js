@@ -1,6 +1,6 @@
-import Book from "/public/icons/svg/notebook-alt_9795395.svg";
 import styled from "styled-components";
 import { useRouter } from "next/router";
+import { Book } from "@/helpers/svg";
 
 export default function CollectionCard({
   collection,

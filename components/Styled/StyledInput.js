@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-const StyledInput = styled.input`
+const Input = styled.input`
   background-color: var(--color-background);
   border: none;
   border-radius: 10px;
@@ -9,4 +9,4 @@ const StyledInput = styled.input`
   flex-grow: ${(props) => props.$flexGrow};
   padding: 0.7rem;
 `;
-export default StyledInput;
+export default Input;

@@ -1,9 +1,7 @@
-import StyledH2 from "../components/Styled/StyledH2";
 import useSWR from "swr";
-import StyledList from "../components/Styled/StyledList";
-import IconButton from "@/components/Styled/IconButton";
+import IconButton from "@/components/Button/IconButton";
 import { useRouter } from "next/router";
-import Spacer from "@/components/Styled/Spacer";
+import { Spacer, H2 } from "@/components/Styled/Styled";
 
 export default function Admin({ user, fetcher, recipes, allUsers }) {
   const {
@@ -29,28 +27,28 @@ export default function Admin({ user, fetcher, recipes, allUsers }) {
       {user.admin && (
         <>
           <Spacer />
-          <StyledH2>Feedback</StyledH2>
-          <StyledH2>positives Feedback</StyledH2>
+          <H2>Feedback</H2>
+          <H2>positives Feedback</H2>
           <ul>
             {feedback.map((item, index) => (
               <li key={index}>{item.positiveFeedback}</li>
             ))}
           </ul>
-          <StyledH2>negatives Feedback</StyledH2>
+          <H2>negatives Feedback</H2>
           <ul>
             {feedback.map((item, index) => (
               <li key={index}>{item.negativeFeedback}</li>
             ))}
           </ul>
-          <StyledH2>feature Wünsche</StyledH2>
+          <H2>feature Wünsche</H2>
           <ul>
             {feedback.map((item, index) => (
               <li key={index}>{item.newFeatures}</li>
             ))}
           </ul>
-          <StyledH2>aktuelle Anzahl Rezepte:</StyledH2>
+          <H2>aktuelle Anzahl Rezepte:</H2>
           <p>{recipes.length}</p>
-          <StyledH2>aktuelle Anzahl User:</StyledH2>
+          <H2>aktuelle Anzahl User:</H2>
           <p>{allUsers.length}</p>
         </>
       )}
