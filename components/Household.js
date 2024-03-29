@@ -28,16 +28,16 @@ export default function Household({
     setSelectedHouseholdId(user.activeHousehold);
   }, [user.activeHousehold]);
 
-  const handleHouseholdChange = (event) => {
+  const handleHouseholdChange = async (event) => {
     const newHouseholdId = event.target.value;
     const newHousehold = user.households.find(
       (household) => household._id === newHouseholdId
     );
     setSelectedHouseholdId(newHousehold);
-    onChangeHousehold(newHousehold._id);
+    // onChangeHousehold(newHousehold._id);
     user.activeHousehold = newHousehold._id;
-    updateUserInDb(user, mutateUser);
-    notifySuccess(`${newHousehold.userName} ausgewählt.`);
+    await updateUserInDb(user, mutateUser);
+    notifySuccess(`"${newHousehold.name}" ausgewählt.`);
   };
 
   function openModal(friendId) {
@@ -46,8 +46,6 @@ export default function Household({
   }
 
   async function addMemberToHousehold(id) {
-    console.log("add", id);
-
     household.members.push({ _id: user._id, role: "canWrite" });
     await updateHouseholdInDb(household, mutateHousehold);
   }

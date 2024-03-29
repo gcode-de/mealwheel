@@ -13,7 +13,6 @@ export default async function handler(request, response) {
   await dbConnect();
 
   const { id } = request.query;
-  console.log(request.query);
 
   if (request.method === "GET") {
     const household = await Household.findById(id).populate("calendar.recipe");

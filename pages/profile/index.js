@@ -1,4 +1,4 @@
-import updateUserinDb from "@/helpers/updateUserInDb";
+import updateUserInDb from "@/helpers/updateUserInDb";
 import Link from "next/link";
 import styled from "styled-components";
 import Image from "next/image";
@@ -81,7 +81,7 @@ export default function ProfilePage({
       profilePictureLink: imageUrl.imageUrl,
       publicId: imageUrl.publicId,
     };
-    updateUserinDb(user, mutateUser);
+    updateUserInDb(user, mutateUser);
     setEditUser(false);
   };
   function handleEditProfile() {
@@ -112,7 +112,7 @@ export default function ProfilePage({
       (request, ind) => ind !== index
     );
     user.connectionRequests = updatedRequests;
-    updateUserinDb(user, mutateUser);
+    updateUserInDb(user, mutateUser);
     let foundUser = allUsers.find((user) => user._id === id);
 
     foundUser = {
@@ -126,21 +126,30 @@ export default function ProfilePage({
 
   function rejectFriendRequest(index) {
     const updatedRequests = user.connectionRequests.filter(
-      (request, ind) => ind !== index
+      (_, ind) => ind !== index
     );
     user.connectionRequests = updatedRequests;
-    updateUserinDb(user, mutateUser);
+    updateUserInDb(user, mutateUser);
 
     notifyError("Anfrage abgelehnt");
   }
 
   async function acceptNewHousehold(householdId, index) {
-    console.log("accept", householdId);
     //add household to users households array
-    // user.households.push(householdId);
-    // await updateUserinDb(user, mutateUser);
+    if (user.households.find((household) => household._id === householdId)) {
+      notifyError(`Di bist bereits Mitglied dieses Haushalts.`);
+      return;
+    }
+    user.households.push(householdId);
+    await updateUserInDb(user, mutateUser);
 
-    //add new member to household members array -> moved to sender side
+    //clear requests
+    const updatedRequests = user.connectionRequests.filter(
+      (_, ind) => ind !== index
+    );
+    user.connectionRequests = updatedRequests;
+    updateUserInDb(user, mutateUser);
+
     notifySuccess(`Neuer Haushalt hinzugefügt`);
   }
 

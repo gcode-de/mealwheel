@@ -126,10 +126,11 @@ export default function Settings({
       </StyledList>
       <Household
         allUsers={allUsers}
+        mutateAllUsers={mutateAllUsers}
         user={user}
+        mutateUser={mutateUser}
         household={household}
         mutateHousehold={mutateHousehold}
-        mutateAllUsers={mutateAllUsers}
       />
     </>
   );
