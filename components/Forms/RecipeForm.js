@@ -1,18 +1,14 @@
-import StyledListItem from "../Styled/StyledListItem";
-import StyledArticle from "../Styled/StyledArticle";
-import IconButton from "../Styled/IconButton";
-import StyledList from "../Styled/StyledList";
-import StyledH2 from "../Styled/StyledH2";
-import Button from "../Styled/StyledButton";
-import StyledP from "../Styled/StyledP";
-import AddButton from "../Styled/AddButton";
-import SetNumberOfPeople from "../Styled/SetNumberOfPeople";
-import Plus from "/public/icons/svg/plus.svg";
-import Minus from "/public/icons/svg/horizontal-rule_9272854.svg";
+import IconButton from "../Button/IconButton";
+
+import AddButton from "../Button/AddButton";
+import SetNumberOfPeople from "../Cards/SetNumberOfPeople";
+import { Plus, Minus } from "@/helpers/svg";
+
+import { Select, H2, Button, P, Article, List } from "../Styled/Styled";
+
 import StyledIngredients from "../Styled/StyledIngredients";
-import StyledInput from "../Styled/StyledInput";
-import StyledDropDown from "../Styled/StyledDropDown";
-import StyledProgress from "../Styled/StyledProgress";
+import Input from "../Styled/StyledInput";
+import StyledProgress from "../StyledProgress";
 
 import { filterTags } from "/helpers/filterTags";
 import { ingredientUnits } from "@/helpers/ingredientUnits";
@@ -20,11 +16,10 @@ import handleDeleteImage from "@/helpers/Cloudinary/handleDeleteImage";
 import handlePostImage from "@/helpers/Cloudinary/handlePostImage";
 
 import styled from "styled-components";
-import { notifySuccess, notifyError } from "/helpers/toast";
 import { useState } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
-import ToggleCheckbox from "../Styled/ToggleCheckbox";
+import ToggleCheckbox from "../ToggleCheckbox";
 
 export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
   const [difficulty, setDifficulty] = useState(
@@ -183,7 +178,7 @@ export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
         </StyledImageUploadContainer>
       </StyledTop>
       <form onSubmit={handleSubmit}>
-        <StyledArticle>
+        <Article>
           <Spacer />
           <StyledBigInput
             type="text"
@@ -193,8 +188,8 @@ export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
             aria-label="add titel of the recipe"
             defaultValue={data?.title}
           />
-          <StyledListItem>
-            <StyledInput
+          <StyledSmallArticle>
+            <Input
               type="number"
               name="duration"
               placeholder="Dauer"
@@ -204,9 +199,9 @@ export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
               aria-label="add duration to cook for the recipe"
               defaultValue={data?.duration}
             />
-            <StyledP>min</StyledP>
+            <P>min</P>
 
-            <StyledDropDown
+            <Select
               onChange={(event) => setDifficulty(event.target.value)}
               value={difficulty}
               name="difficulty"
@@ -215,30 +210,31 @@ export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
               <option value="easy">Anfänger</option>
               <option value="medium">Fortgeschritten</option>
               <option value="hard">Profi</option>
-            </StyledDropDown>
-          </StyledListItem>
-          <StyledH2>
+            </Select>
+          </StyledSmallArticle>
+          <H2>
             Zutaten
             <SetNumberOfPeople
               numberOfPeople={servings}
               handleChange={handleSetNumberOfPeople}
             />
-          </StyledH2>
-          <StyledList>
+          </H2>
+          <List>
             {ingredients.map((ingredient, index) => (
               <StyledIngredients key={index}>
-                <StyledInput
+                <Input
                   value={ingredient.quantity}
                   onChange={(event) =>
                     handleInputChange(event, index, "quantity")
                   }
                   type="number"
-                  $width={"3rem"}
+                  $width="2rem"
                   required
                   min="0"
                   aria-label="add ingredient quantity for the recipe"
+                  placeholder="Menge"
                 />
-                <StyledDropDown
+                <Select
                   required
                   name="unit"
                   onChange={(event) => handleInputChange(event, index, "unit")}
@@ -249,8 +245,8 @@ export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
                       {unit}
                     </option>
                   ))}
-                </StyledDropDown>
-                <StyledInput
+                </Select>
+                <Input
                   value={ingredient.name}
                   onChange={(event) => handleInputChange(event, index, "name")}
                   type="text"
@@ -276,12 +272,12 @@ export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
                 <Minus width={20} height={20} />
               </AddButton>
             </Wrapper>
-          </StyledList>
+          </List>
           {filterTags
             .filter(({ type }) => type === "diet")
             .map(({ label, type, options }) => (
               <div key={type}>
-                <StyledH2>{label}</StyledH2>
+                <H2>{label}</H2>
                 <StyledCategoriesDiv>
                   {options.map((option) => (
                     <StyledCategoryButton
@@ -300,7 +296,7 @@ export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
             .filter(({ type }) => type === "mealtype")
             .map(({ label, type, options }) => (
               <div key={type}>
-                <StyledH2>{label}</StyledH2>
+                <H2>{label}</H2>
                 <StyledCategoriesDiv>
                   {options.map((option) => (
                     <StyledCategoryButton
@@ -315,27 +311,22 @@ export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
                 </StyledCategoriesDiv>
               </div>
             ))}
-          <StyledH2>Anleitung</StyledH2>
-          <StyledBigInput
-            type="text"
+          <H2>Anleitung</H2>
+          <StyledTextarea
             name="instructions"
             required
+            placeholder="Anleitung"
             aria-label="add instructions for creating the recipe"
             defaultValue={data?.instructions}
-          />
-          <StyledH2>Video</StyledH2>
-          <StyledInput
-            type="link"
-            name="youtubeLink"
-            defaultValue={data?.youtubeLink}
+            rows="6"
           />
           <ToggleCheckbox
             label="Öffentlich sichtbar"
             name="public"
             defaultChecked={data ? data.public : true}
-            sliderSize="2rem"
-            marginTop={"1rem"}
-            marginLeft={"1rem"}
+            $sliderSize="2rem"
+            $marginTop="1rem"
+            $marginLeft="1rem"
           />
           <ButtonContainer>
             <Button type="submit">speichern</Button>
@@ -345,7 +336,7 @@ export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
               </Button>
             )}
           </ButtonContainer>
-        </StyledArticle>
+        </Article>
       </form>
     </>
   );
@@ -371,6 +362,18 @@ const StyledBigInput = styled.input`
   height: 50px;
   width: calc(100% - (2 * var(--gap-out)));
   padding: 0.7rem;
+`;
+
+const StyledTextarea = styled.textarea`
+  background-color: var(--color-background);
+  border: none;
+  border-radius: 10px;
+  resize: vertical;
+  width: calc(100% - (2 * var(--gap-out)));
+  padding: 0.7rem;
+  font-family: unset;
+  font-size: 0.9rem;
+  line-height: 1.15rem;
 `;
 const Spacer = styled.div`
   margin-top: 2rem;
@@ -421,6 +424,17 @@ const StyledImageUploadContainer = styled.label`
 const HiddenInput = styled.input`
   display: none;
 `;
+
+const StyledSmallArticle = styled.article`
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.5rem;
+  width: calc(100% - (2 * var(--gap-out)));
+  margin-bottom: var(--gap-between);
+  margin-top: var(--gap-between);
+`;
+
 const Wrapper = styled.div`
   display: flex;
   justify-content: space-between;

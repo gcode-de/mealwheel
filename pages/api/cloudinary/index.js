@@ -16,7 +16,7 @@ export const config = {
 export default async function handler(request, response) {
   if (request.method === "POST") {
     const form = formidable({ multiples: true });
-    const [fields, files] = await form.parse(request); //fields nicht löschen, wird für irgendwas gebraucht
+    const [fields, files] = await form.parse(request);
 
     if (!files) {
       return response.status(400).json({ error: "No file uploaded" });

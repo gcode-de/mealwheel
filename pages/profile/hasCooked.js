@@ -2,11 +2,10 @@ import styled from "styled-components";
 
 import MealCard from "@/components/Cards/MealCard";
 import Header from "@/components/Styled/Header";
-import IconButton from "@/components/Styled/IconButton";
+import IconButton from "@/components/Button/IconButton";
 import { useRouter } from "next/router";
-import StyledH2 from "@/components/Styled/StyledH2";
-import Spacer from "@/components/Styled/Spacer";
 import LoadingComponent from "@/components/Loading";
+import { Spacer, H2 } from "@/components/Styled/Styled";
 
 export default function HasCooked({
   user,
@@ -14,6 +13,7 @@ export default function HasCooked({
   isLoading,
   getRecipeProperty,
   toggleIsFavorite,
+  mutateUser,
 }) {
   const router = useRouter();
   const hasCookedRecipes = user?.recipeInteractions
@@ -47,9 +47,9 @@ export default function HasCooked({
         />
         <Spacer />
         <Header text="Schon gekocht" />
-        <StyledArticle>
+        <article>
           <StyledUl>{`Du hast noch keine Rezepte als "gekocht" markiert.`}</StyledUl>
-        </StyledArticle>
+        </article>
       </>
     );
   }
@@ -63,26 +63,26 @@ export default function HasCooked({
         onClick={() => router.back()}
       />
       <Spacer />
-      <StyledH2>Schon gekocht</StyledH2>
-      <StyledArticle>
+      <H2>Schon gekocht</H2>
+      <article>
         <StyledUl>
           {hasCookedRecipes?.map((recipe) => {
             return (
               <MealCard
                 key={recipe._id}
                 recipe={recipe}
-                isFavorite="null"
-                onToggleIsFavorite={toggleIsFavorite}
+                $isFavorite={getRecipeProperty(recipe._id, "isFavorite")}
+                onToggleIsFavorite={() => {
+                  toggleIsFavorite(recipe._id, mutateUser);
+                }}
               ></MealCard>
             );
           })}
         </StyledUl>
-      </StyledArticle>
+      </article>
     </>
   );
 }
-
-const StyledArticle = styled.article``;
 
 const StyledUl = styled.ul`
   padding: 10px;

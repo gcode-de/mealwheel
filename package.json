@@ -26,6 +26,7 @@
     "next-auth": "^4.24.6",
     "next-cloudinary": "^6.3.0",
     "nextjs-progressbar": "^0.0.16",
+    "openai": "^4.29.2",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-toastify": "^10.0.4",

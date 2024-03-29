@@ -3,15 +3,13 @@ import { useState } from "react";
 import updateUserinDb from "@/helpers/updateUserInDb";
 
 import styled from "styled-components";
-import IconButton from "@/components/Styled/IconButton";
-import Plus from "@/public/icons/svg/plus.svg";
+import IconButton from "@/components/Button/IconButton";
 import CollectionCard from "@/components/Cards/CollectionCard";
-import StyledH2 from "@/components/Styled/StyledH2";
-import NewCollection from "../../../components/Forms/NewCollection";
+import NewCollection from "@/components/Forms/NewCollection";
 import MenuContainer from "@/components/MenuContainer";
-import Pen from "/public/icons/svg/pen-square_10435869.svg";
-import Trash from "/public/icons/svg/trash-xmark_10741775.svg";
-import Check from "@/public/icons/svg/check-circle_10470513.svg";
+
+import { Spacer, H2 } from "@/components/Styled/Styled";
+import { Trash, Pen, Check, Plus } from "@/helpers/svg";
 
 export default function Collections({ user, mutateUser }) {
   const [addCollection, setAddCollection] = useState(false);
@@ -61,7 +59,7 @@ export default function Collections({ user, mutateUser }) {
   return (
     <>
       <Spacer />
-      <StyledH2>Kochbücher</StyledH2>
+      <H2>Kochbücher</H2>
       <IconButton
         style="ArrowLeft"
         top="var(--gap-out)"
@@ -76,7 +74,11 @@ export default function Collections({ user, mutateUser }) {
         rotate={isMenuVisible}
       />
       {isMenuVisible && (
-        <MenuContainer top="3.5rem" right="var(--gap-out)">
+        <MenuContainer
+          top="3.5rem"
+          right="var(--gap-out)"
+          toggleMenu={() => setIsMenuVisible(false)}
+        >
           <UnstyledButton onClick={toggleAddCollection}>
             <Plus width={15} height={15} />
             Kochbuch hinzufügen
@@ -89,14 +91,14 @@ export default function Collections({ user, mutateUser }) {
       )}
       {isEditing && (
         <ButtonContainer>
-          <DeleteButton onClick={handleDeleteCollection}>
+          <button type="button" onClick={handleDeleteCollection}>
             <Trash width={15} height={15} />
             entfernen
-          </DeleteButton>
-          <DeleteButton onClick={toggleEdit}>
+          </button>
+          <button type="button" onClick={toggleEdit}>
             <Check width={15} height={15} />
             speichern
-          </DeleteButton>
+          </button>
         </ButtonContainer>
       )}
 
@@ -107,8 +109,12 @@ export default function Collections({ user, mutateUser }) {
           setModal={toggleAddCollection}
         />
       )}
+      {!user.collections.length && (
+        <NoRecipesMessage>
+          Du hast noch keine Kochbücher angelegt.
+        </NoRecipesMessage>
+      )}
       <CollectionWrapper>
-        {!user.collections.length && "Du hast noch keine Kochbücher angelegt."}
         {user.collections.map((collection, index) => (
           <CollectionContainer key={index}>
             {isEditing && (
@@ -141,9 +147,6 @@ const CollectionWrapper = styled.div`
   position: relative;
 `;
 
-const Spacer = styled.div`
-  height: 5rem;
-`;
 const UnstyledButton = styled.button`
   background-color: transparent;
   border: none;
@@ -164,22 +167,24 @@ const ButtonContainer = styled.div`
   display: flex;
   justify-content: space-between;
   margin-bottom: var(--gap-between);
-`;
-const DeleteButton = styled.button`
-  background-color: var(--color-component);
-  border: none;
-  text-align: start;
-  border-radius: var(--border-radius-small);
-  display: flex;
-  align-items: center;
-  gap: var(--gap-between);
-  height: 2rem;
-  color: var(--color-font);
-  cursor: pointer;
-  &:hover {
-    background-color: var(--color-background);
+
+  .button {
+    background-color: var(--color-component);
+    border: none;
+    text-align: start;
+    border-radius: var(--border-radius-small);
+    display: flex;
+    align-items: center;
+    gap: var(--gap-between);
+    height: 2rem;
+    color: var(--color-font);
+    cursor: pointer;
+    &:hover {
+      background-color: var(--color-background);
+    }
   }
 `;
+
 const StyledCheckbox = styled.input`
   position: absolute;
   z-index: 5;
@@ -192,4 +197,8 @@ const StyledCheckbox = styled.input`
 `;
 const CollectionContainer = styled.div`
   position: relative;
+`;
+const NoRecipesMessage = styled.p`
+  width: calc(100% - (2 * var(--gap-out)));
+  margin: auto;
 `;

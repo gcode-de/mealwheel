@@ -1,21 +1,26 @@
 import { useRouter } from "next/router";
-import { useState } from "react";
-import useSWR from "swr";
-
-import Link from "next/link";
 import MealCard from "@/components/Cards/MealCard";
-import IconButton from "@/components/Styled/IconButton";
+import IconButton from "@/components/Button/IconButton";
 import CollectionCard from "@/components/Cards/CollectionCard";
-import StyledH2 from "@/components/Styled/StyledH2";
 import styled from "styled-components";
-import Profile from "../../../../components/Profile";
+import Profile from "@/components/Profile";
+import { H2 } from "@/components/Styled/Styled";
 
 export default function DetailCommunityPage({
   allUsers,
   recipes,
+<<<<<<< HEAD
   user,
   getRecipeProperty,
   toggleIsFavorite,
+=======
+  mutateRecipes,
+  user,
+  mutateUser,
+  toggleIsFavorite,
+  getRecipeProperty,
+  mutateAllUsers,
+>>>>>>> main
 }) {
   const router = useRouter();
   const { id } = router.query;
@@ -23,7 +28,7 @@ export default function DetailCommunityPage({
     return;
   }
   const foundUser = allUsers.find((user) => user._id === id);
-  const userRecipes = recipes.filter(
+  const userRecipes = recipes?.filter(
     (recipe) => recipe.author === foundUser._id
   );
   return (
@@ -34,53 +39,52 @@ export default function DetailCommunityPage({
         left="var(--gap-out)"
         onClick={() => router.back()}
       />
-      <Profile foundUser={foundUser} name="external-profil" user={user} />
-      <StyledH2>
-        <div>Kochbücher</div>
-      </StyledH2>
+      <Profile
+        foundUser={foundUser}
+        name="external-profil"
+        user={user}
+        mutateAllUsers={mutateAllUsers}
+        allUsers={allUsers}
+      />
+      <H2>Kochbücher</H2>
+      <WrapperFlex>
+        {!foundUser.collections.length &&
+          `${foundUser.userName} hat noch keine Kochbücher angelegt.`}
+      </WrapperFlex>
       <Wrapper>
-        {foundUser.collections.length
-          ? foundUser.collections.map((collection, index) => (
-              <CollectionCard key={index} collection={collection} />
-            ))
-          : `${foundUser.userName} hat noch keine Kochbücher angelegt.`}
+        {foundUser.collections &&
+          foundUser.collections.map((collection, index) => (
+            <CollectionCard key={index} collection={collection} />
+          ))}
       </Wrapper>
-      <StyledH2>
-        <div> Rezepte</div>
-      </StyledH2>
-      <StyledArticle>
-        <StyledUl>
-          {userRecipes.length
-            ? userRecipes?.map((recipe) => {
-                return (
-                  <MealCard
-                    key={recipe._id}
-                    recipe={recipe}
-                    isFavorite={getRecipeProperty(recipe._id, "isFavorite")}
-                    onToggleIsFavorite={toggleIsFavorite}
-                  ></MealCard>
-                );
-              })
-            : `${foundUser.userName} hat noch keine eigenen Rezepte erstellt.`}
-        </StyledUl>
-      </StyledArticle>
+      <H2>Rezepte</H2>
+
+      <StyledUl>
+        {userRecipes.length
+          ? userRecipes?.map((recipe) => {
+              return (
+                <MealCard
+                  key={recipe._id}
+                  recipe={recipe}
+                  $isFavorite={getRecipeProperty(recipe._id, "isFavorite")}
+                  onToggleIsFavorite={() => {
+                    toggleIsFavorite(recipe._id, mutateUser, mutateRecipes);
+                  }}
+                ></MealCard>
+              );
+            })
+          : `${foundUser.userName} hat noch keine eigenen Rezepte erstellt.`}
+      </StyledUl>
     </>
   );
 }
 
-const StyledArticle = styled.article``;
-
 const StyledUl = styled.ul`
-  padding: 10px;
+  padding: 0;
   max-width: 350px;
   margin: 0 auto;
 `;
 
-const StyledLink = styled(Link)`
-  color: var(--color-darkgrey);
-  text-decoration: none;
-  font-size: medium;
-`;
 const Wrapper = styled.div`
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -89,32 +93,8 @@ const Wrapper = styled.div`
   margin-bottom: 2rem;
   width: calc(100% - (2 * var(--gap-out)));
 `;
-const StyledCollection = styled.button`
-  background-color: transparent;
-  border: none;
-  color: var(--color-font);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  fill: var(--color-lightgrey);
-  color: var(--color-lightgrey);
-  justify-content: center;
-  cursor: pointer;
-  margin-top: 0;
-  margin-bottom: 0;
-  height: 6.5rem;
-  max-width: 6rem;
-  &:hover {
-    fill: var(--color-highlight);
-    color: var(--color-highlight);
-  }
-`;
-const StyledParagraph = styled.p`
-  text-align: center;
-  max-width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  margin: 0;
-  margin-top: var(--gap-between);
-  height: 2.5;
+
+const WrapperFlex = styled.div`
+  width: calc(100% - (2 * var(--gap-out)));
+  margin: auto;
 `;

@@ -1,12 +1,15 @@
 import styled from "styled-components";
-import ArrowLeft from "@/public/icons/ArrowSmall.svg";
-import ChevronSmall from "@/public/icons/ChevronSmall.svg";
-import Plus from "@/public/icons/svg/plus.svg";
-import XSmall from "@/public/icons/XSmall.svg";
-import ArrowUp from "@/public/icons/svg/arrow-alt-up_7434980.svg";
-import SaveShopping from "@/public/icons/svg/cart-arrow-down_9795299.svg";
-import Generate from "@/public/icons/svg/pen-swirl_10741646.svg";
-import Trash from "@/public/icons/svg/trash-xmark_10741775.svg";
+
+import {
+  Trash,
+  XSmall,
+  Plus,
+  ArrowLeft,
+  ChevronSmall,
+  ArrowUp,
+  SaveShopping,
+  Generate,
+} from "@/helpers/svg";
 
 export default function IconButtonLarge({ onClick, style, bottom }) {
   const buttonStyles = {

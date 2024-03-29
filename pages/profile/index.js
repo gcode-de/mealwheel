@@ -23,17 +23,15 @@ import {
 } from "@/helpers/svg.js";
 
 //Components
-import StyledH2 from "@/components/Styled/StyledH2";
-import Button from "@/components/Styled/StyledButton";
-import StyledProgress from "@/components/Styled/StyledProgress";
+import { Button, H2, List } from "@/components/Styled/Styled";
+import StyledProgress from "@/components/StyledProgress";
 import MenuContainer from "@/components/MenuContainer";
-import IconButton from "@/components/Styled/IconButton";
-import StyledList from "@/components/Styled/StyledList";
-import ModalComponent from "../../components/Modal";
-import updateCommunityUserInDB from "../../helpers/updateCommunityUserInDB";
-import Profile from "../../components/Profile";
-import ToggleCheckbox from "../../components/Styled/ToggleCheckbox";
 import updateHouseholdInDb from "@/helpers/updateHouseholdInDb";
+import IconButton from "@/components/Button/IconButton";
+import ModalComponent from "@/components/Modal";
+import updateCommunityUserInDB from "@/helpers/updateCommunityUserInDB";
+import Profile from "@/components/Profile";
+import ToggleCheckbox from "@/components/ToggleCheckbox";
 
 export default function ProfilePage({
   user,
@@ -222,7 +220,11 @@ export default function ProfilePage({
         //     <p>Du bist auf dem neuesten Stand!</p>
         //   )}
         // </MenuContainer>
-        <MenuContainer top="3.5rem" left="var(--gap-out)">
+        <MenuContainer
+          top="3.5rem"
+          left="var(--gap-out)"
+          toggleMenu={() => setIsNotificationVisible(false)}
+        >
           {user.connectionRequests.length >= 1 ? (
             user.connectionRequests.map((request, index) => {
               if (request.type === 1)
@@ -270,7 +272,11 @@ export default function ProfilePage({
         </MenuContainer>
       )}
       {isMenuVisible && (
-        <MenuContainer top="3.5rem" right="var(--gap-out)">
+        <MenuContainer
+          top="3.5rem"
+          right="var(--gap-out)"
+          toggleMenu={() => setIsMenuVisible(false)}
+        >
           <UnstyledButton onClick={() => router.push("/profile/settings")}>
             <Settings width={15} height={15} />
             Einstellungen
@@ -279,6 +285,12 @@ export default function ProfilePage({
             <Pen width={15} height={15} />
             Profil bearbeiten
           </UnstyledButton>
+          {user.admin && (
+            <UnstyledButton onClick={() => router.push("/admin")}>
+              <Pen width={15} height={15} />
+              Admin
+            </UnstyledButton>
+          )}
           <UnstyledButton onClick={handleSignOut}>
             <Leave width={15} height={15} />
             Abmelden
@@ -304,7 +316,7 @@ export default function ProfilePage({
               </StyledImageUploadContainer>
             </StyledProfile>
           </WrapperCenter>
-          <StyledList>
+          <List>
             <StyledUsernameForm onSubmit={updateUsername}>
               <input
                 name="username"
@@ -316,14 +328,14 @@ export default function ProfilePage({
                 Speichern
               </StyledSaveButton>
             </StyledUsernameForm>
-          </StyledList>
+          </List>
         </>
       )}
       {!editUser && <Profile foundUser={user} />}
       <Wrapper>
         <StyledCollection onClick={() => router.push("/profile/favorites")}>
           <Heart width={40} height={40} fill="var(--color-highlight)" />
-          <StyledP $color="var(--color-hightlight)">Favoriten</StyledP>
+          <StyledP $color="var(--color-hightlight)">Schmeckos</StyledP>
         </StyledCollection>
         <StyledCollection onClick={() => router.push("/profile/hasCooked")}>
           <Pot width={40} height={40} />
@@ -353,7 +365,7 @@ export default function ProfilePage({
         <ModalComponent
           toggleModal={() => setFeedbackVisible(!feedbackVisible)}
         >
-          <StyledH2>Gib uns Feedback</StyledH2>
+          <H2>Gib uns Feedback</H2>
           <StyledForm onSubmit={handleFeedback}>
             <StyledInput
               name="negativeFeedback"

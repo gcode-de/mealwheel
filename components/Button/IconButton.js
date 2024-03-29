@@ -1,24 +1,26 @@
 import styled from "styled-components";
 
-import ArrowLeft from "@/public/icons/svg/chevron-left-svgrepo-com.svg";
-import ChevronSmall from "@/public/icons/ChevronSmall.svg";
-import Plus from "@/public/icons/svg/plus.svg";
-import XSmall from "@/public/icons/XSmall.svg";
-import Reload from "@/public/icons/reload-svgrepo-com.svg";
-import TriangleLeft from "@/public/icons/arrow-left-3-svgrepo-com.svg";
-import TriangleRight from "@/public/icons/arrow-right-2-svgrepo-com.svg";
-import Heart from "@/public/icons/heart-svgrepo-com.svg";
-import Pot from "@/public/icons/cooking-pot-fill-svgrepo-com.svg";
-import Calendar from "@/public/icons/svg/calendar-days_9795297.svg";
-import Edit from "@/public/icons/edit-3-svgrepo-com (2).svg";
-import Settings from "@/public/icons/settings-svgrepo-com.svg";
-import Book from "@/public/icons/svg/notebook-alt_9795395.svg";
-import Leave from "@/public/icons/svg/arrow-left-from-line_9253329.svg";
-import Menu from "/public/icons/svg/menu.svg";
-import Bell from "/public/icons/svg/cowbell_9083627.svg";
-import ArrowSmallLeft from "@/public/icons/arrow-small-left_10513360.svg";
-import ArrowSmallRight from "@/public/icons/arrow-small-right_10513361.svg";
-import Filter from "@/public/icons/sliders-v_10435878.svg";
+import {
+  XSmall,
+  Plus,
+  ArrowLeft,
+  ChevronSmall,
+  Book,
+  Reload,
+  TriangleLeft,
+  TriangleRight,
+  Heart,
+  Pot,
+  Calendar,
+  Edit,
+  Settings,
+  Leave,
+  Menu,
+  Bell,
+  ArrowSmallLeft,
+  ArrowSmallRight,
+  Filter,
+} from "@/helpers/svg";
 
 export default function IconButton({
   onClick,

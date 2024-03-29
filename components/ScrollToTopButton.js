@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import IconButtonLarge from "./Styled/IconButtonLarge";
+import IconButtonLarge from "./Button/IconButtonLarge";
 
 export default function ScrollToTop() {
   const [backToTopButton, setBackToTopButton] = useState(false);
@@ -24,7 +24,7 @@ export default function ScrollToTop() {
   return (
     <>
       {backToTopButton && (
-        <IconButtonLarge style={"arrowUp"} bottom="10rem" onClick={scrollUp} />
+        <IconButtonLarge style={"arrowUp"} bottom="9rem" onClick={scrollUp} />
       )}
     </>
   );

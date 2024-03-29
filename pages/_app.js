@@ -1,12 +1,15 @@
-import GlobalStyle from "../styles";
+import updateUserinDb from "@/helpers/updateUserInDb";
+import updateHouseholdInDb from "@/helpers/updateHouseholdInDb";
+import updateLikes from "@/helpers/updateLikes";
+
 import Layout from "../components/Layout";
+import GlobalStyle from "../styles";
 
 import { SessionProvider } from "next-auth/react";
 import useSWR, { SWRConfig } from "swr";
+
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import updateUserinDb from "@/helpers/updateUserInDb";
-import updateHouseholdInDb from "@/helpers/updateHouseholdInDb";
 import { notifySuccess, notifyError } from "/helpers/toast";
 
 const fetcher = async (url) => {
@@ -26,7 +29,6 @@ export default function App({
   Component,
   pageProps: { session, ...pageProps },
 }) {
-  //fetcher
   const {
     data: user,
     isLoading,
@@ -45,6 +47,7 @@ export default function App({
     data: recipes,
     error: recipesError,
     isLoading: recipesIsLoading,
+    mutate: mutateRecipes,
   } = useSWR(`/api/recipes`, fetcher);
 
   const {
@@ -54,7 +57,6 @@ export default function App({
     mutate: mutateAllUsers,
   } = useSWR(`/api/users`, fetcher);
 
-  //recipe Interaction
   function getRecipeProperty(_id, property) {
     const recipeInteraction = user?.recipeInteractions.find(
       (interaction) => interaction.recipe._id === _id
@@ -62,25 +64,41 @@ export default function App({
     return recipeInteraction?.[property];
   }
 
-  async function toggleIsFavorite(_id) {
+  async function toggleIsFavorite(_id, mutateUser, mutateRecipes) {
     if (!user) {
       notifyError("Bitte zuerst einloggen.");
       return;
     }
-    if (
-      user.recipeInteractions.find(
-        (interaction) => interaction.recipe._id === _id
-      )
-    ) {
-      user.recipeInteractions = user.recipeInteractions.map((interaction) =>
-        interaction.recipe._id === _id
-          ? { ...interaction, isFavorite: !interaction.isFavorite }
-          : interaction
-      );
-    } else {
-      user.recipeInteractions.push({ isFavorite: true, recipe: _id });
+
+    let likeChange = 0;
+
+    const updatedRecipeInteractions = user.recipeInteractions.map(
+      (interaction) => {
+        if (interaction.recipe._id === _id) {
+          likeChange = interaction.isFavorite ? -1 : 1;
+          return { ...interaction, isFavorite: !interaction.isFavorite };
+        }
+        return interaction;
+      }
+    );
+
+    if (likeChange === 0) {
+      updatedRecipeInteractions.push({ recipe: { _id }, isFavorite: true });
+      likeChange = 1;
     }
-    updateUserinDb(user, mutate);
+
+    user.recipeInteractions = updatedRecipeInteractions;
+    await updateUserinDb(user, mutateUser);
+
+    try {
+      await updateLikes(_id, likeChange, mutateRecipes);
+    } catch (error) {
+      console.error(error);
+      notifyError(
+        "Ein Fehler ist aufgetreten beim Aktualisieren der Likes. Bitte versuche es später erneut."
+      );
+      return;
+    }
   }
 
   async function toggleHasCooked(_id) {
@@ -133,11 +151,12 @@ export default function App({
               householdIsLoading={householdIsLoading}
               householdError={householdError}
               mutateHousehold={mutateHousehold}
+              mutateUser={mutate}
               getRecipeProperty={getRecipeProperty}
               toggleIsFavorite={toggleIsFavorite}
               toggleHasCooked={toggleHasCooked}
-              mutateUser={mutate}
               recipes={recipes}
+              mutateRecipes={mutateRecipes}
               recipesError={recipesError}
               recipesIsLoading={recipesIsLoading}
               allUsers={allUsers}

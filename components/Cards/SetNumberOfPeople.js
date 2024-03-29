@@ -1,14 +1,11 @@
 import styled from "styled-components";
-import Plate from "@/public/icons/svg/plate-and-utensils-top-view-svgrepo-com.svg";
-import IconButton from "./IconButton";
-import Reload from "@/public/icons/svg/arrows-retweet_9253335.svg";
+
+import { Plate } from "@/helpers/svg";
 
 export default function SetNumberOfPeople({
   numberOfPeople,
   handleChange,
   $margin,
-  reassignRecipe,
-  day,
 }) {
   return (
     <NumberOfPeopleContainer $margin={$margin}>
@@ -30,17 +27,6 @@ export default function SetNumberOfPeople({
         +
       </button>
       <Plate width="1.2em" height="1.2em" />
-      {/* <StyledReloadButton> */}
-      {reassignRecipe !== undefined && (
-        <Reload
-          width="1.2em"
-          height="1.2em"
-          onClick={() => {
-            reassignRecipe(day);
-          }}
-        />
-      )}
-      {/* </StyledReloadButton> */}
     </NumberOfPeopleContainer>
   );
 }
@@ -67,7 +53,3 @@ const NumberOfPeopleContainer = styled.div`
     padding: 0;
   }
 `;
-
-// const StyledReloadButton = styled.button`
-//   cursor: pointer;
-// `;
