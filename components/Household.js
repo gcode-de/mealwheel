@@ -45,6 +45,11 @@ export default function Household({
   }
 
   async function addMemberToHousehold(id) {
+    if (household.members.some((member) => member._id === id)) {
+      notifyError("Nutzer ist bereits Mitglied in diesem Haushalt.");
+
+      return;
+    }
     household.members.push({ _id: user._id, role: "canWrite" });
     await updateHouseholdInDb(household, mutateHousehold);
   }
@@ -65,6 +70,7 @@ export default function Household({
 
   async function changeHouseholdName(event) {
     event.preventDefault();
+    console.log("change");
     const data = new FormData(event.target);
     const newName = data.get("newName");
     household.name = newName;
@@ -153,11 +159,14 @@ export default function Household({
                 <input
                   type="text"
                   placeholder="neuer Haushalts-Name"
+                  defaultValue={household.name}
                   name="newName"
                   aria-label="neuer Name für den Haushalt"
                   required
                 ></input>
-                <button>speichern</button>
+                <button type="submit" onClick={(e) => e.stopPropagation()}>
+                  speichern
+                </button>
               </form>
             </>
           )}
@@ -207,7 +216,6 @@ export default function Household({
         </div>
         <div>
           <p>Haushaltsmitglied hinzufügen:</p>
-          {/* Dropdown Menu um alle Freunde zu rendern, die noch kein Mitglied sind. Wenn jemand ausgewählt wird, wird das Modal zur Bestätigung sichtbar. */}
           <Select onChange={(e) => openModal(e.target.value)}>
             <option value="">Wähle einen Freund aus...</option>
             {friends
