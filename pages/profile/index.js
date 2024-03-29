@@ -33,12 +33,14 @@ import ModalComponent from "../../components/Modal";
 import updateCommunityUserInDB from "../../helpers/updateCommunityUserInDB";
 import Profile from "../../components/Profile";
 import ToggleCheckbox from "../../components/Styled/ToggleCheckbox";
+import updateHouseholdInDb from "@/helpers/updateHouseholdInDb";
 
 export default function ProfilePage({
   user,
   mutateUser,
   allUsers,
   mutateAllUsers,
+  mutateHousehold,
 }) {
   const router = useRouter();
   const { data: session, status } = useSession();
@@ -128,33 +130,22 @@ export default function ProfilePage({
     );
     user.connectionRequests = updatedRequests;
     updateUserinDb(user, mutateUser);
+
+    //Remove User from household members
+    //TODO
+
     notifyError("Anfrage abgelehnt");
   }
-  function addFriendToHousehold(id, index) {
-    //add new member to household members array
-    //add household to users householdsarray
 
-    user.household = [{ ...user.household, _id: id, role: admin }];
-    //calender + shopping aktivität muss überschrieben werden und die referenz von dem anderen muss gespeichert werden
-    // user.calender =
-    // user.shopping =
-    const updatedRequests = user.connectionRequests.filter(
-      (request, ind) => ind !== index
-    );
-    user.connectionRequests = updatedRequests;
-    // updateUserinDb(user, mutateUser);
+  async function acceptNewHousehold(householdId, index) {
+    //add household to users households array
+    user.households.push(householdId);
+    await updateUserinDb(user, mutateUser);
 
-    //update requested user
-    let foundUser = allUsers.find((user) => user._id === id);
-
-    foundUser = {
-      ...foundUser,
-      household: [{ ...foundUser.household, id: user._id, role: owner }],
-    };
-
-    // updateCommunityUserInDB(foundUser, mutateAllUsers);
-    notifySuccess(`${foundUser.userName} zum Haushalt hinzugefügt`);
+    //add new member to household members array -> moved to sender side
+    notifySuccess(`${newHousehold.name} hinzugefügt`);
   }
+
   return (
     <>
       <IconButton
@@ -197,7 +188,7 @@ export default function ProfilePage({
                   <div>
                     <button
                       onClick={() =>
-                        addFriendToHousehold(request.senderId, index)
+                        acceptNewHousehold(request.senderId, index)
                       }
                     >
                       bestätigen

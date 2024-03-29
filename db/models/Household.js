@@ -20,10 +20,6 @@ const shoppingItem = new Schema({
 
 const householdSchema = new Schema({
   name: String,
-  owner: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-  },
   members: [
     {
       id: {

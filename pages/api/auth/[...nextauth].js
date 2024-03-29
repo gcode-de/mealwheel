@@ -33,7 +33,7 @@ export const authOptions = {
       } else {
         const newHousehold = await Household.create({
           name: `Haushalt von ${user.name}`,
-          owner: user._id,
+          members: [{ _id: user._id, role: "owner" }],
           calendar: [],
           shoppingList: [],
           settings: {

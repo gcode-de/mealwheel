@@ -128,6 +128,7 @@ export default function Settings({
         allUsers={allUsers}
         user={user}
         household={household}
+        mutateHousehold={mutateHousehold}
         mutateAllUsers={mutateAllUsers}
       />
     </>

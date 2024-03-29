@@ -4,6 +4,7 @@ import StyledH2 from "./Styled/StyledH2";
 import StyledList from "./Styled/StyledList";
 import StyledDropDown from "./Styled/StyledDropDown";
 import updateUserInDb from "@/helpers/updateUserInDb";
+import updateHouseholdInDb from "@/helpers/updateHouseholdInDb";
 import updateCommunityUserInDB from "@/helpers/updateCommunityUserInDB";
 import { notifySuccess, notifyError } from "@/helpers/toast";
 
@@ -13,6 +14,7 @@ export default function Household({
   user,
   mutateUser,
   household,
+  mutateHousehold,
 }) {
   const [isModal, setIsModal] = useState(false);
   const [selectedFriend, setSelectedFriend] = useState(null);
@@ -42,6 +44,14 @@ export default function Household({
     setSelectedFriend(friendId);
     setIsModal(true);
   }
+
+  async function addMemberToHousehold(id) {
+    console.log("add", id);
+
+    household.members.push({ _id: user._id, role: "canWrite" });
+    await updateHouseholdInDb(household, mutateHousehold);
+  }
+
   function sendRequest() {
     let requestedFriend = friends.find(
       (friend) => friend._id === selectedFriend
@@ -51,9 +61,9 @@ export default function Household({
       connectionRequests: [
         ...requestedFriend.connectionRequests,
         {
-          senderId: user._id,
+          senderId: household._id,
           timestamp: Date(),
-          message: `${user.userName} möchte sich den Haushalt mit dir teilen, wenn du die Anfrage annimmst, wird dein Planer überschrieben`,
+          message: `${user.userName} lädt dich zum Haushalt "${household.name}" ein.`,
           type: 3,
         },
       ],
@@ -102,7 +112,14 @@ export default function Household({
             {friends.find((friend) => friend._id === selectedFriend)?.userName}{" "}
             zu deinem Haushalt hinzufügen?
           </StyledH2>
-          <button onClick={sendRequest}>Anfrage versenden</button>
+          <button
+            onClick={() => {
+              addMemberToHousehold(selectedFriend);
+              // sendRequest();
+            }}
+          >
+            Anfrage versenden
+          </button>
           <button onClick={() => setIsModal(false)}>abbrechen</button>
         </ModalComponent>
       )}
