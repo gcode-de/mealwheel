@@ -49,6 +49,21 @@ export default function Household({
     await updateHouseholdInDb(household, mutateHousehold);
   }
 
+  async function removeMemberFromHousehold(id) {
+    household.members = household.members.filter((member) => member._id !== id);
+    await updateHouseholdInDb(household, mutateHousehold);
+  }
+
+  async function changeMemberRole(id, newRole) {
+    console.log(id, "before", household.members);
+    household.members.map((member) =>
+      member._id === id ? { ...member, role: newRole } : member
+    );
+    console.log("after", household.members);
+    await updateHouseholdInDb(household, mutateHousehold);
+    mutateUser();
+  }
+
   async function changeHouseholdName(event) {
     event.preventDefault();
     const data = new FormData(event.target);
@@ -97,6 +112,8 @@ export default function Household({
   function getUserById(id) {
     return allUsers.find((user) => user._id === id);
   }
+
+  console.log(allUsers);
   return (
     <>
       <H2>Haushalt</H2>
@@ -119,13 +136,13 @@ export default function Household({
               ) : (
                 <span>{user.households[0]?.name || "Nicht festgelegt"}</span>
               )}
-              <Button
+              <button
                 onClick={() => {
                   setIsChangeHouseholdName(true);
                 }}
               >
                 Haushalt umbenennen
-              </Button>
+              </button>
             </>
           ) : (
             <>
@@ -142,7 +159,7 @@ export default function Household({
                   aria-label="neuer Name für den Haushalt"
                   required
                 ></input>
-                <button type="submit">speichern</button>
+                <button>speichern</button>
               </form>
             </>
           )}
@@ -155,6 +172,37 @@ export default function Household({
                 <ListItem key={member._id}>
                   {getUserById(member._id)?.userName} (
                   {getLabelForMemberRole(member.role)})
+                  {member.role !== "owner" && (
+                    <>
+                      {member.role === "canWrite" ? (
+                        <button
+                          onClick={(e) => {
+                            e.preventDefault();
+                            changeMemberRole(member._id, "canRead");
+                          }}
+                        >
+                          zum Zuschauer machen
+                        </button>
+                      ) : (
+                        <button
+                          onClick={(e) => {
+                            e.preventDefault();
+                            changeMemberRole(member._id, "canWrite");
+                          }}
+                        >
+                          zum Admin machen
+                        </button>
+                      )}
+                      <button
+                        onClick={(e) => {
+                          e.preventDefault();
+                          removeMemberFromHousehold(member._id);
+                        }}
+                      >
+                        entfernen
+                      </button>
+                    </>
+                  )}
                 </ListItem>
               ))}
           </List>
