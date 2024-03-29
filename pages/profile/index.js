@@ -131,19 +131,24 @@ export default function ProfilePage({
     user.connectionRequests = updatedRequests;
     updateUserinDb(user, mutateUser);
 
-    //Remove User from household members
-    //TODO
-
     notifyError("Anfrage abgelehnt");
   }
 
   async function acceptNewHousehold(householdId, index) {
+    console.log("accept", householdId);
     //add household to users households array
-    user.households.push(householdId);
-    await updateUserinDb(user, mutateUser);
+    // user.households.push(householdId);
+    // await updateUserinDb(user, mutateUser);
 
     //add new member to household members array -> moved to sender side
-    notifySuccess(`${newHousehold.name} hinzugefügt`);
+    notifySuccess(`Neuer Haushalt hinzugefügt`);
+  }
+
+  async function rejectNewHousehold(householdId, index) {
+    //remove new member from household members array
+    //TODO
+
+    notifySuccess(`Anfrage abgelehnt.`);
   }
 
   return (
@@ -165,40 +170,91 @@ export default function ProfilePage({
       ></IconButton>
       {user.connectionRequests.length >= 1 && <Notification />}
       {isNotificationVisible && (
+        // <MenuContainer top="3.5rem" left="var(--gap-out)">
+        //   {user.connectionRequests.length >= 1 ? (
+        //     (user.connectionRequests.type === 1 &&
+        //       user.connectionRequests.map((request, index) => (
+        //         <div key={request.senderId}>
+        //           <p>{request.message}</p>
+        //           <div>
+        //             <button onClick={() => addFriend(request.senderId, index)}>
+        //               bestätigen
+        //             </button>
+        //             <button onClick={() => rejectFriendRequest(index)}>
+        //               ablehnen
+        //             </button>
+        //           </div>
+        //         </div>
+        //       ))) ||
+        //     (user.connectionRequests.type === 3 &&
+        //       user.connectionRequests.map((request, index) => (
+        //         <div key={request.senderId}>
+        //           <p>{Object.entries(quest)}</p>
+        //           <p>{request.message}</p>
+        //           <div>
+        //             <button
+        //               onClick={() =>
+        //                 acceptNewHousehold(request.senderId, index)
+        //               }
+        //             >
+        //               bestätigen
+        //             </button>
+        //             <button
+        //               onClick={() =>
+        //                 rejectNewHousehold(request.senderId, index)
+        //               }
+        //             >
+        //               ablehnen
+        //             </button>
+        //           </div>
+        //         </div>
+        //       )))
+        //   ) : (
+        //     <p>Du bist auf dem neuesten Stand!</p>
+        //   )}
+        // </MenuContainer>
         <MenuContainer top="3.5rem" left="var(--gap-out)">
           {user.connectionRequests.length >= 1 ? (
-            (user.connectionRequests.type === 1 &&
-              user.connectionRequests.map((request, index) => (
-                <div key={request.senderId}>
-                  <p>{request.message}</p>
-                  <div>
-                    <button onClick={() => addFriend(request.senderId, index)}>
-                      bestätigen
-                    </button>
-                    <button onClick={() => rejectFriendRequest(index)}>
-                      ablehnen
-                    </button>
+            user.connectionRequests.map((request, index) => {
+              if (request.type === 1)
+                return (
+                  <div key={request.senderId}>
+                    <p>{request.message}</p>
+                    <div>
+                      <button
+                        onClick={() => addFriend(request.senderId, index)}
+                      >
+                        bestätigen
+                      </button>
+                      <button onClick={() => rejectFriendRequest(index)}>
+                        ablehnen
+                      </button>
+                    </div>
                   </div>
-                </div>
-              ))) ||
-            (user.connectionRequests.type === 3 &&
-              user.connectionRequests.map((request, index) => (
-                <div key={request.senderId}>
-                  <p>{request.message}</p>
-                  <div>
-                    <button
-                      onClick={() =>
-                        acceptNewHousehold(request.senderId, index)
-                      }
-                    >
-                      bestätigen
-                    </button>
-                    <button onClick={() => rejectFriendRequest(index)}>
-                      ablehnen
-                    </button>
+                );
+              if (request.type === 3)
+                return (
+                  <div key={request.senderId}>
+                    <p>{request.message}</p>
+                    <div>
+                      <button
+                        onClick={() =>
+                          acceptNewHousehold(request.senderId, index)
+                        }
+                      >
+                        bestätigen
+                      </button>
+                      <button
+                        onClick={() =>
+                          rejectNewHousehold(request.senderId, index)
+                        }
+                      >
+                        ablehnen
+                      </button>
+                    </div>
                   </div>
-                </div>
-              )))
+                );
+            })
           ) : (
             <p>Du bist auf dem neuesten Stand!</p>
           )}

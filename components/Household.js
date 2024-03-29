@@ -115,7 +115,7 @@ export default function Household({
           <button
             onClick={() => {
               addMemberToHousehold(selectedFriend);
-              // sendRequest();
+              sendRequest();
             }}
           >
             Anfrage versenden
