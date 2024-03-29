@@ -9,18 +9,12 @@ import { H2 } from "@/components/Styled/Styled";
 export default function DetailCommunityPage({
   allUsers,
   recipes,
-<<<<<<< HEAD
-  user,
-  getRecipeProperty,
-  toggleIsFavorite,
-=======
   mutateRecipes,
   user,
   mutateUser,
   toggleIsFavorite,
   getRecipeProperty,
   mutateAllUsers,
->>>>>>> main
 }) {
   const router = useRouter();
   const { id } = router.query;

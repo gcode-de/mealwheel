@@ -4,7 +4,12 @@ import IconButton from "@/components/Button/IconButton";
 import ProfileCard from "@/components/Cards/ProfileCard";
 import { Spacer, H2 } from "@/components/Styled/Styled";
 
-export default function Community({ user, allUsers, mutateAllUsers }) {
+export default function Community({
+  user,
+  mutateUser,
+  allUsers,
+  mutateAllUsers,
+}) {
   const router = useRouter();
   if (!user || !allUsers) {
     return;

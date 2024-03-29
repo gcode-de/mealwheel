@@ -113,7 +113,6 @@ export default function Household({
     return allUsers.find((user) => user._id === id);
   }
 
-  console.log(allUsers);
   return (
     <>
       <H2>Haushalt</H2>

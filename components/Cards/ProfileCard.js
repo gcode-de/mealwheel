@@ -8,10 +8,7 @@ export default function ProfileCard({
   user,
   allUsers,
   mutateAllUsers,
-<<<<<<< HEAD
   mutateUser,
-=======
->>>>>>> main
 }) {
   return (
     <ProfileWrapper>
@@ -36,10 +33,7 @@ export default function ProfileCard({
           user={user}
           allUsers={allUsers}
           mutateAllUsers={mutateAllUsers}
-<<<<<<< HEAD
           mutateUser={mutateUser}
-=======
->>>>>>> main
         />
       </StyledProfiletext>
     </ProfileWrapper>

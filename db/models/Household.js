@@ -11,11 +11,15 @@ const calendarEntrySchema = new Schema({
   isDisabled: Boolean,
 });
 
-const shoppingItem = new Schema({
+const shoppingItemSchema = new Schema({
   name: { type: String, required: true },
   quantity: { type: Number },
   unit: { type: String },
-  isChecked: Boolean,
+  isChecked: { type: Boolean },
+});
+const shoppingCategorySchema = new Schema({
+  category: { type: String, required: true },
+  items: [shoppingItemSchema],
 });
 
 const householdSchema = new Schema({
@@ -41,7 +45,7 @@ const householdSchema = new Schema({
     numberOfRandomMeals: Number,
   },
   calendar: [calendarEntrySchema],
-  shoppingList: [shoppingItem],
+  shoppingList: [shoppingCategorySchema],
 });
 
 const Household =
