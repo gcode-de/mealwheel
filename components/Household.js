@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import ModalComponent from "./Modal";
-import { Button, StyledH2, StyledList, StyledDropDown } from "./Styled/Styled";
+import { Button, H2, List, Select, ListItem } from "./Styled/Styled";
 import updateUserInDb from "@/helpers/updateUserInDb";
 import updateHouseholdInDb from "@/helpers/updateHouseholdInDb";
 import updateCommunityUserInDB from "@/helpers/updateCommunityUserInDB";
@@ -84,16 +84,29 @@ export default function Household({
     notifySuccess("Anfrage versendet");
     setIsModal(false);
   }
+
+  function getLabelForMemberRole(role) {
+    const Labels = {
+      owner: "Inhaber",
+      canWrite: "Schreibzugriff",
+      canRead: "Lesezugriff",
+    };
+    return Labels[role];
+  }
+
+  function getUserById(id) {
+    return allUsers.find((user) => user._id === id);
+  }
   return (
     <>
-      <StyledH2>Haushalt</StyledH2>
-      <StyledList>
+      <H2>Haushalt</H2>
+      <List>
         <div>
           {!isChangeHouseholdName ? (
             <>
               <p>Aktueller Haushalt: </p>
               {user.households.length > 0 ? ( //CHANGE TO 1 LATER
-                <StyledDropDown
+                <Select
                   value={selectedHouseholdId}
                   onChange={handleHouseholdChange}
                 >
@@ -102,7 +115,7 @@ export default function Household({
                       {household.name}
                     </option>
                   ))}
-                </StyledDropDown>
+                </Select>
               ) : (
                 <span>{user.households[0]?.name || "Nicht festgelegt"}</span>
               )}
@@ -135,9 +148,21 @@ export default function Household({
           )}
         </div>
         <div>
+          <p>Haushaltsmitglieder</p>
+          <List>
+            {household.members.length > 1 &&
+              household.members.map((member) => (
+                <ListItem key={member._id}>
+                  {getUserById(member._id)?.userName} (
+                  {getLabelForMemberRole(member.role)})
+                </ListItem>
+              ))}
+          </List>
+        </div>
+        <div>
           <p>Haushaltsmitglied hinzufügen:</p>
           {/* Dropdown Menu um alle Freunde zu rendern, die noch kein Mitglied sind. Wenn jemand ausgewählt wird, wird das Modal zur Bestätigung sichtbar. */}
-          <StyledDropDown onChange={(e) => openModal(e.target.value)}>
+          <Select onChange={(e) => openModal(e.target.value)}>
             <option value="">Wähle einen Freund aus...</option>
             {friends
               .filter(
@@ -149,17 +174,17 @@ export default function Household({
                   {friend.userName}
                 </option>
               ))}
-          </StyledDropDown>
+          </Select>
         </div>
         <p>Anfrage versendet:</p>
-      </StyledList>
+      </List>
       {isModal && (
         <ModalComponent toggleModal={() => setIsModal(false)}>
-          <StyledH2>
+          <H2>
             möchtest du{" "}
             {friends.find((friend) => friend._id === selectedFriend)?.userName}{" "}
             zu deinem Haushalt hinzufügen?
-          </StyledH2>
+          </H2>
           <button
             onClick={() => {
               addMemberToHousehold(selectedFriend);
