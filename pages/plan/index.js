@@ -364,18 +364,20 @@ export default function Plan({
       })),
     ];
 
-    const uncategorizedIndex = user.shoppingList.findIndex(
+    const uncategorizedIndex = household.shoppingList.findIndex(
       (category) => category.category === "Unsortiert"
     );
 
     uncategorizedIndex === -1
-      ? user.shoppingList.push({
+      ? household.shoppingList.push({
           category: "Unsortiert",
           items: [...newIngredients],
         })
-      : user.shoppingList[uncategorizedIndex].items.push(...newIngredients);
+      : household.shoppingList[uncategorizedIndex].items.push(
+          ...newIngredients
+        );
 
-    updateUserinDb(user, mutateUser);
+    updateHouseholdInDb(household, mutateHousehold);
     notifySuccess("Einkaufsliste aktualisiert");
   }
 

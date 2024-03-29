@@ -46,7 +46,7 @@ export default function ShoppingList({
     const data = Object.fromEntries(formData);
     data.quantity = Number(data.quantity);
 
-    const category = user.shoppingList.find(
+    const category = household.shoppingList.find(
       (cat) => cat.category === categoryName
     );
 
@@ -58,7 +58,7 @@ export default function ShoppingList({
 
       category.items[itemIndex] = updatedItem;
 
-      updateUserInDb(user, mutateUser);
+      updateHouseholdInDb(household, mutateHousehold);
       setEditingIndex("");
     } else {
       console.log("Kategorie nicht gefunden.");
@@ -131,7 +131,7 @@ export default function ShoppingList({
     userShoppingList.splice(0, userShoppingList.length, ...nonEmptyCategories);
   }
 
-  consolidateShoppingListItems(user.shoppingList);
+  consolidateShoppingListItems(household.shoppingList);
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -142,28 +142,28 @@ export default function ShoppingList({
       household.shoppingList = [];
     }
 
-    const unsortedIndex = user.shoppingList.findIndex(
+    const unsortedIndex = household.shoppingList.findIndex(
       (category) => category.category === "Unsortiert"
     );
 
     if (unsortedIndex !== -1) {
-      user.shoppingList[unsortedIndex].items.push({
+      household.shoppingList[unsortedIndex].items.push({
         ...data,
         isChecked: false,
       });
     } else {
-      user.shoppingList.push({
+      household.shoppingList.push({
         name: "Unsortiert",
         items: [{ ...data, isChecked: false }],
       });
     }
 
-    await updateUserInDb(user, mutateUser);
+    updateHouseholdInDb(household, mutateHousehold);
     event.target.reset();
   }
 
   function handleCheckboxChange(categoryName, itemIndex) {
-    const categoryIndex = user.shoppingList.findIndex(
+    const categoryIndex = household.shoppingList.findIndex(
       (c) => c.category === categoryName
     );
     if (categoryIndex === -1) {
@@ -171,14 +171,14 @@ export default function ShoppingList({
       return;
     }
 
-    const newUserShoppingList = [...user.shoppingList];
+    const newUserShoppingList = [...household.shoppingList];
     newUserShoppingList[categoryIndex].items[itemIndex].isChecked =
       !newUserShoppingList[categoryIndex].items[itemIndex].isChecked;
 
-    updateUserInDb(user, mutateUser);
+    updateHouseholdInDb(household, mutateHousehold);
 
     setTimeout(async () => {
-      const updatedCategories = [...user.shoppingList];
+      const updatedCategories = [...household.shoppingList];
       const updatedItems = updatedCategories[categoryIndex].items.filter(
         (item) => !item.isChecked
       );
@@ -189,19 +189,19 @@ export default function ShoppingList({
         // Entferne die Kategorie, wenn alle Items gecheckt sind
         updatedCategories.splice(categoryIndex, 1);
       }
-      user.shoppingList = updatedCategories;
+      household.shoppingList = updatedCategories;
 
-      updateUserInDb(user, mutateUser);
+      updateHouseholdInDb(household, mutateHousehold);
     }, 10000);
   }
 
   function clearShopping() {
-    user.shoppingList = [];
-    updateUserInDb(user, mutateUser);
+    household.shoppingList = [];
+    updateHouseholdInDb(household, mutateHousehold);
   }
 
   async function setCategories() {
-    if (user.shoppingList.length === 0) {
+    if (household.shoppingList.length === 0) {
       notifyError("Bitte befülle zuerst deine Einkaufsliste.");
       return;
     }
@@ -218,7 +218,7 @@ export default function ShoppingList({
 
     try {
       const dataFromAPI = await fetchCategorizedIngredients(
-        JSON.stringify(user.shoppingList)
+        JSON.stringify(household.shoppingList)
       );
       const parsedData = JSON.parse(dataFromAPI);
 
@@ -229,7 +229,7 @@ export default function ShoppingList({
         return;
       }
 
-      user.shoppingList = await parsedData;
+      household.shoppingList = await parsedData;
       notifySuccess("Einkaufsliste wurde sortiert.");
     } catch (error) {
       console.error("Fehler beim Abrufen der Daten:", error);
@@ -241,19 +241,19 @@ export default function ShoppingList({
     }
     setIsAiGenerating(false);
     setDurationAiGenerating(0);
-    updateUserInDb(user, mutateUser);
+    updateHouseholdInDb(household, mutateHousehold);
   }
 
   return (
     <>
       <Header text="Einkaufsliste" />
       <List>
-        {user.shoppingList.length === 0 && (
+        {household.shoppingList.length === 0 && (
           <ListItem>
             <StyledCheck>nichts zu erledigen</StyledCheck>
           </ListItem>
         )}
-        {user.shoppingList.map(({ category, items }) =>
+        {household.shoppingList.map(({ category, items }) =>
           items?.length ? (
             <div key={category}>
               <RestyledH2>{category}</RestyledH2>
@@ -366,7 +366,7 @@ export default function ShoppingList({
           </StyledIngredients>
         </form>
       </List>
-      {user.shoppingList.length > 0 && (
+      {household.shoppingList.length > 0 && (
         <>
           <StyledButton
             onClick={setCategories}

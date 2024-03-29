@@ -1,9 +1,6 @@
 import { useState, useEffect } from "react";
 import ModalComponent from "./Modal";
-import Button from "./Styled/StyledButton";
-import StyledH2 from "./Styled/StyledH2";
-import StyledList from "./Styled/StyledList";
-import StyledDropDown from "./Styled/StyledDropDown";
+import { Button, StyledH2, StyledList, StyledDropDown } from "./Styled/Styled";
 import updateUserInDb from "@/helpers/updateUserInDb";
 import updateHouseholdInDb from "@/helpers/updateHouseholdInDb";
 import updateCommunityUserInDB from "@/helpers/updateCommunityUserInDB";
