@@ -41,7 +41,10 @@ export default function App({
     isLoading: householdIsLoading,
     error: householdError,
     mutate: mutateHousehold,
-  } = useSWR(`/api/households/${user?.activeHousehold}`, fetcher);
+  } = useSWR(
+    user?.activeHousehold ? `/api/households/${user.activeHousehold}` : null,
+    fetcher
+  );
 
   const {
     data: recipes,
@@ -122,7 +125,7 @@ export default function App({
     updateUserinDb(user, mutate);
   }
 
-  if (isLoading) {
+  if (isLoading || householdIsLoading || recipesIsLoading) {
     return (
       <>
         <GlobalStyle />
@@ -130,6 +133,21 @@ export default function App({
           <Layout>
             <SWRConfig value={{ fetcher }}>
               <Component {...pageProps} isLoading />
+            </SWRConfig>
+          </Layout>
+        </SessionProvider>
+      </>
+    );
+  }
+
+  if (recipesError) {
+    return (
+      <>
+        <GlobalStyle />
+        <SessionProvider session={session}>
+          <Layout>
+            <SWRConfig value={{ fetcher }}>
+              <Component {...pageProps} recipesError />
             </SWRConfig>
           </Layout>
         </SessionProvider>

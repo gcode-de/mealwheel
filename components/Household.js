@@ -55,11 +55,10 @@ export default function Household({
   }
 
   async function changeMemberRole(id, newRole) {
-    console.log(id, "before", household.members);
-    household.members.map((member) =>
+    const updatedMembers = household.members.map((member) =>
       member._id === id ? { ...member, role: newRole } : member
     );
-    console.log("after", household.members);
+    household.members = updatedMembers;
     await updateHouseholdInDb(household, mutateHousehold);
     mutateUser();
   }
@@ -180,7 +179,7 @@ export default function Household({
                             changeMemberRole(member._id, "canRead");
                           }}
                         >
-                          zum Zuschauer machen
+                          Schreibzugriff entfernen
                         </button>
                       ) : (
                         <button
@@ -189,7 +188,7 @@ export default function Household({
                             changeMemberRole(member._id, "canWrite");
                           }}
                         >
-                          zum Admin machen
+                          Schreibzugriff geben
                         </button>
                       )}
                       <button
@@ -198,7 +197,7 @@ export default function Household({
                           removeMemberFromHousehold(member._id);
                         }}
                       >
-                        entfernen
+                        aus Haushalt entfernen
                       </button>
                     </>
                   )}

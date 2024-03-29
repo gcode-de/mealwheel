@@ -22,8 +22,6 @@ export default function Settings({
     return <p>kein Benutzer/Haushalt gefunden...</p>;
   }
 
-  console.log(user, household);
-
   const { settings } = household;
   const { weekdaysEnabled } = settings;
 

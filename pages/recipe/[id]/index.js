@@ -33,8 +33,6 @@ export default function DetailPage({
   const [selectedDate, setSelectedDate] = useState(
     new Date().toISOString().split("T")[0]
   );
-  const [calendarFormIsVisible, setCalendarFormIsVisible] = useState(false);
-  const [collectionFormIsVisible, setCollectionFormIsVisible] = useState(false);
 
   const [isMenuVisible, setIsMenuVisible] = useState(false);
   const [isModalCalendar, setIsModalCalendar] = useState(false);
@@ -122,8 +120,8 @@ export default function DetailPage({
         day: "numeric",
       });
 
-      setCalendarFormIsVisible(false);
       notifySuccess(`Das Rezept wurde für ${localDate} eingeplant.`);
+      setIsModalCalendar(false);
     } catch (error) {
       notifyError("Das Rezept konnte nicht eingeplant werden.");
     }

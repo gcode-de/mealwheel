@@ -81,6 +81,7 @@ export default function ProfilePage({
     };
     updateUserInDb(user, mutateUser);
     setEditUser(false);
+    setIsMenuVisible(false);
   };
   function handleEditProfile() {
     setEditUser(true);
