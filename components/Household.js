@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import ModalComponent from "./Modal";
+import Button from "./Styled/StyledButton";
 import StyledH2 from "./Styled/StyledH2";
 import StyledList from "./Styled/StyledList";
 import StyledDropDown from "./Styled/StyledDropDown";
@@ -17,6 +18,7 @@ export default function Household({
   mutateHousehold,
 }) {
   const [isModal, setIsModal] = useState(false);
+  const [isChangeHouseholdName, setIsChangeHouseholdName] = useState(false);
   const [selectedFriend, setSelectedFriend] = useState(null);
   const friends = allUsers.filter((human) => user.friends.includes(human._id));
 
@@ -50,6 +52,21 @@ export default function Household({
     await updateHouseholdInDb(household, mutateHousehold);
   }
 
+  async function changeHouseholdName(event) {
+    event.preventDefault();
+    const data = new FormData(event.target);
+    const newName = data.get("newName");
+    household.name = newName;
+    try {
+      await updateHouseholdInDb(household, mutateHousehold);
+      mutateUser();
+      notifySuccess("Haushalt umbenannt.");
+      setIsChangeHouseholdName(false);
+    } catch {
+      notifyError("Umbenennen fehlgeschlagen.");
+    }
+  }
+
   function sendRequest() {
     let requestedFriend = friends.find(
       (friend) => friend._id === selectedFriend
@@ -75,33 +92,69 @@ export default function Household({
       <StyledH2>Haushalt</StyledH2>
       <StyledList>
         <div>
-          <span>Aktueller Haushalt: </span>
-          {user.households.length > 0 ? ( //CHANGE TO 1 LATER
-            <StyledDropDown
-              value={selectedHouseholdId}
-              onChange={handleHouseholdChange}
-            >
-              {user.households.map((household) => (
-                <option key={household._id} value={household._id}>
-                  {household.name}
-                </option>
-              ))}
-            </StyledDropDown>
+          {!isChangeHouseholdName ? (
+            <>
+              <p>Aktueller Haushalt: </p>
+              {user.households.length > 0 ? ( //CHANGE TO 1 LATER
+                <StyledDropDown
+                  value={selectedHouseholdId}
+                  onChange={handleHouseholdChange}
+                >
+                  {user.households.map((household) => (
+                    <option key={household._id} value={household._id}>
+                      {household.name}
+                    </option>
+                  ))}
+                </StyledDropDown>
+              ) : (
+                <span>{user.households[0]?.name || "Nicht festgelegt"}</span>
+              )}
+              <Button
+                onClick={() => {
+                  setIsChangeHouseholdName(true);
+                }}
+              >
+                Haushalt umbenennen
+              </Button>
+            </>
           ) : (
-            <span>{user.households[0]?.name || "Nicht festgelegt"}</span>
+            <>
+              <form
+                onSubmit={changeHouseholdName}
+                onBlur={() => {
+                  setIsChangeHouseholdName(false);
+                }}
+              >
+                <input
+                  type="text"
+                  placeholder="neuer Haushalts-Name"
+                  name="newName"
+                  aria-label="neuer Name für den Haushalt"
+                  required
+                ></input>
+                <button type="submit">speichern</button>
+              </form>
+            </>
           )}
         </div>
+        <div>
+          <p>Haushaltsmitglied hinzufügen:</p>
+          {/* Dropdown Menu um alle Freunde zu rendern, die noch kein Mitglied sind. Wenn jemand ausgewählt wird, wird das Modal zur Bestätigung sichtbar. */}
+          <StyledDropDown onChange={(e) => openModal(e.target.value)}>
+            <option value="">Wähle einen Freund aus...</option>
+            {friends
+              .filter(
+                (friend) =>
+                  !household.members.some((member) => member._id === friend._id)
+              )
+              .map((friend) => (
+                <option key={friend._id} value={friend._id}>
+                  {friend.userName}
+                </option>
+              ))}
+          </StyledDropDown>
+        </div>
         <p>Anfrage versendet:</p>
-        <p>Freunde zu deinem Haushalt hinzufügen:</p>
-        {/* Dropdown Menu um alle Freunde zu rendern, wenn jemand ausgewählt wird, wird das Modal sichtbar mit der Frage, welcher Plan  */}
-        <StyledDropDown onChange={(e) => openModal(e.target.value)}>
-          <option value="">Wähle einen Freund aus...</option>
-          {friends.map((friend) => (
-            <option key={friend._id} value={friend._id}>
-              {friend.userName}
-            </option>
-          ))}
-        </StyledDropDown>
       </StyledList>
       {isModal && (
         <ModalComponent toggleModal={() => setIsModal(false)}>
