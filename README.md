@@ -4,8 +4,7 @@
 
 ## Description
 
-MealWheel is a revolutionary platform designed to simplify food and grocery planning for the week. Featuring a recipe database as well as the oppurtunity to create your own recipes, Mealwheel provides a sophisticated automatic week planner as well as a shopping list that you can populate with the ingredients for the meals of the whole week by just one click!
-Organize your recipes in collections, share filtered views with your friends and so much more.
+MealWheel streamlines food and grocery planning for your week. With a database of recipes and the option to add your own, it offers an automatic weekly planner and a shopping list that can be easily filled with ingredients for your weekly meals with just one click. You can organize recipes into collections, share your planning and shopping list with friends, and explore many more features designed for convenience.
 
 ## Features
 
@@ -14,6 +13,7 @@ Organize your recipes in collections, share filtered views with your friends and
 - **Efficient Grocery Shopping:** Automatically generate shopping lists based on your weekly meal plan to save time and reduce waste.
 - **Meal Preparation Guides:** Step-by-step guides to assist you in preparing your meals with ease.
 - **Community Sharing:** Share your favorite recipes with the MealWheel community and discover new favorites from other users.
+- **Household based planning:** Add Friedns to your household to let them see or even participate in planning your meals
 
 **Tech Stack:**
 
@@ -49,6 +49,7 @@ During the time working on the app we faced some really tricky challenges:
   - Orchestrating all the data fetching, filter logic and API routes accessing MongoDB
   - Drag and Drop functionality to assign recipes to a different day in the planner
   - using the OpenAI API to categorize ingredients on the fly
+  - separating household data from a user data at a rather late stage of the app development in order to provide some helpful community features 
 - **Creating an app people actually want to use:**
   Some of our excitement for this project came from us actually wanting to use it once it would be finished.
   We actively asked friends and family for their input on how to streamline the UX and on what features to include (or maybe delete again).
