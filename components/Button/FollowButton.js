@@ -2,6 +2,8 @@ import styled from "styled-components";
 import updateCommunityUserInDB from "@/helpers/updateCommunityUserInDB";
 import { notifySuccess, notifyError } from "@/helpers/toast";
 import updateUserinDb from "@/helpers/updateUserInDb";
+import sendRequestToUser from "@/helpers/sendRequestToUser";
+import unfriendUser from "@/helpers/unfriendUser";
 
 export default function FollowButton({
   user,
@@ -19,32 +21,16 @@ export default function FollowButton({
     if (communityUser.friends.includes(id)) {
       notifyError("Ihr seid schon Freunde");
     }
-    communityUser = {
-      ...communityUser,
-      connectionRequests: [
-        ...communityUser.connectionRequests,
-        {
-          senderId: user._id,
-          timestamp: Date(),
-          message: `${user.userName} möchte mit dir befreundet sein`,
-          type: 1,
-        },
-      ],
+    const newRequest = {
+      senderId: user._id,
+      timestamp: Date(),
+      message: `${user.userName} möchte mit dir befreundet sein`,
+      type: 1,
     };
-    updateCommunityUserInDB(communityUser, mutateAllUsers);
+    sendRequestToUser(id, newRequest, mutateAllUsers);
     notifySuccess("Freundschaftsanfrage versendet");
   }
-  function handleUnfollowPeople(id) {
-    const updateUser = user.friends.filter((friend) => friend !== id);
-    user.friends = updateUser;
-    updateUserinDb(user, mutateUser);
-    const foundUser = allUsers.find((human) => human._id === id);
-    const updateFoundUser = foundUser.friends.filter(
-      (friend) => friend !== user._id
-    );
-    foundUser.friends = updateFoundUser;
-    updateCommunityUserInDB(foundUser, mutateAllUsers);
-  }
+
   const isFriend = user?.friends.includes(foundUser._id);
   const isRequested = foundUser.connectionRequests.some(
     (request) => request.senderId === user._id
@@ -52,7 +38,7 @@ export default function FollowButton({
   return (
     <>
       {isFriend ? (
-        <Button onClick={() => handleUnfollowPeople(foundUser._id)}>
+        <Button onClick={() => unfriendUser(foundUser._id, mutateAllUsers)}>
           Freundschaft beenden
         </Button>
       ) : (
