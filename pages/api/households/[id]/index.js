@@ -32,11 +32,11 @@ export default async function handler(request, response) {
         return response.status(404).json({ status: "Household not found." });
       }
 
-      if (
-        !oldHousehold.members.find((member) => String(member._id) === userId)
-          .role === "owner" ||
-        "canWrite"
-      ) {
+      const member = oldHousehold.members.find(
+        (member) => String(member._id) === userId
+      );
+
+      if (!member || (member.role !== "owner" && member.role !== "canWrite")) {
         return response.status(403).json({ error: "unauthenticated" });
       }
 
