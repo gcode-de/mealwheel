@@ -46,6 +46,11 @@ export default function App({
     fetcher
   );
 
+  const userIsHouseholdAdmin = household.members.some(
+    (member) =>
+      member._id === user._id && member.role === ("owner" || "canWrite")
+  );
+
   const {
     data: recipes,
     error: recipesError,
@@ -165,11 +170,12 @@ export default function App({
             <Component
               {...pageProps}
               user={user}
+              userIsHouseholdAdmin={userIsHouseholdAdmin}
+              mutateUser={mutate}
               household={household}
               householdIsLoading={householdIsLoading}
               householdError={householdError}
               mutateHousehold={mutateHousehold}
-              mutateUser={mutate}
               getRecipeProperty={getRecipeProperty}
               toggleIsFavorite={toggleIsFavorite}
               toggleHasCooked={toggleHasCooked}

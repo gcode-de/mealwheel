@@ -246,10 +246,12 @@ export default function DetailPage({
             right="var(--gap-out)"
             toggleMenu={() => setIsMenuVisible(false)}
           >
-            <UnstyledButton onClick={toggleModalCalender}>
-              <Calendar width={15} height={15} />
-              Rezept im Kalender speichern
-            </UnstyledButton>
+            {userIsHouseholdAdmin && (
+              <UnstyledButton onClick={toggleModalCalender}>
+                <Calendar width={15} height={15} />
+                Rezept im Kalender speichern
+              </UnstyledButton>
+            )}
             <UnstyledButton onClick={toggleModalCollection}>
               <Book width={15} height={15} />
               Rezept im Kochbuch speichern
