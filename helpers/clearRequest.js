@@ -1,12 +1,13 @@
-export default async function unfriendUser(userId, mutateUser) {
-  if (!userId) return;
+export default async function clearRequest(user, senderId, mutateUser) {
+  if (!user) return;
 
   try {
-    const response = await fetch(`/api/users/${userId}/unfriend`, {
+    const response = await fetch(`/api/users/${senderId}/sendRequest`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
       },
+      body: JSON.stringify(null),
     });
 
     if (!response.ok) {

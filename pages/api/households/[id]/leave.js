@@ -14,17 +14,7 @@ export default async function handler(request, response) {
   const userId = await session.user.id;
   const { id } = request.query;
 
-  if (request.method === "GET") {
-    const household = await Household.findById(id).populate("calendar.recipe");
-
-    if (!household) {
-      return response.status(404).json({ status: "Not Found" });
-    }
-
-    response.status(200).json(household);
-  }
-
-  if (request.method === "PUT") {
+  if (request.method === "PATCH") {
     try {
       const oldHousehold = await Household.findById(id);
 
@@ -32,16 +22,12 @@ export default async function handler(request, response) {
         return response.status(404).json({ status: "Household not found." });
       }
 
-      if (
-        !oldHousehold.members.find((member) => member._id === userId).role ===
-          "owner" ||
-        "canWrite"
-      ) {
-        return response.status(403).json({ error: "unauthenticated" });
+      if (oldHousehold.members.find((member) => member._id === userId)) {
+        await Household.findByIdAndUpdate(id, {
+          $pull: { members: { _id: id } },
+        });
+        return response.status(200).json({ error: "unauthenticated" });
       }
-
-      await Household.findByIdAndUpdate(id, request.body);
-      return response.status(200).json({ status: `Household ${id} updated!` });
     } catch (error) {
       console.error(error);
       return response.status(400).json({ error: error.message });

@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import updateCommunityUserInDB from "@/helpers/updateCommunityUserInDB";
 import { notifySuccess, notifyError } from "@/helpers/toast";
-import updateUserinDb from "@/helpers/updateUserInDb";
+import updateUserInDb from "@/helpers/updateUserInDb";
 import sendRequestToUser from "@/helpers/sendRequestToUser";
 import unfriendUser from "@/helpers/unfriendUser";
 
@@ -21,6 +21,9 @@ export default function FollowButton({
     if (communityUser.friends.includes(id)) {
       notifyError("Ihr seid schon Freunde");
     }
+    user.friends = [...user.friends, id];
+    updateUserInDb(user, mutateUser);
+
     const newRequest = {
       senderId: user._id,
       timestamp: Date(),
@@ -37,16 +40,15 @@ export default function FollowButton({
   );
   return (
     <>
-      {isFriend ? (
-        <Button onClick={() => unfriendUser(foundUser._id, mutateAllUsers)}>
+      {isRequested ? (
+        <Button disabled={true}>Freundschaft angefragt</Button>
+      ) : isFriend ? (
+        <Button onClick={() => unfriendUser(foundUser._id, mutateUser)}>
           Freundschaft beenden
         </Button>
       ) : (
-        <Button
-          onClick={() => handleAddPeople(foundUser._id)}
-          disabled={isRequested}
-        >
-          {isRequested ? "Freundschaft angefragt" : "Freundschaft anfragen"}
+        <Button onClick={() => handleAddPeople(foundUser._id)} disabled={false}>
+          Freundschaft anfragen
         </Button>
       )}
     </>
@@ -55,6 +57,7 @@ export default function FollowButton({
 const Button = styled.button`
   background-color: ${(props) =>
     props.disabled ? "var(--color-darkgrey)" : "var(--color-background)"};
+  cursor: ${(props) => (props.disabled ? "" : "pointer")};
   color: ${(props) =>
     props.disabled ? "var(--color-background)" : "var(--color-font)"};
   border: none;

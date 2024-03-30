@@ -1,4 +1,7 @@
 import updateUserInDb from "@/helpers/updateUserInDb";
+import leaveHousehold from "@/helpers/leaveHousehold";
+import clearRequest from "@/helpers/clearRequest";
+import unfriendUser from "@/helpers/unfriendUser";
 import Link from "next/link";
 import styled from "styled-components";
 import Image from "next/image";
@@ -105,34 +108,35 @@ export default function ProfilePage({
     await signOut({ callbackUrl: "/", redirect: true });
     notifySuccess("Du hast dich erfolgreich abgemeldet");
   }
-  function addFriend(id, index) {
+  function acceptFriendRequest(id, index) {
     user.friends = [...user.friends, id];
-    const updatedRequests = user.connectionRequests.filter(
-      (request, ind) => ind !== index
-    );
-    user.connectionRequests = updatedRequests;
+    // const updatedRequests = user.connectionRequests.filter(
+    //   (request, ind) => ind !== index
+    // );
+    // user.connectionRequests = updatedRequests;
     updateUserInDb(user, mutateUser);
-    let foundUser = allUsers.find((user) => user._id === id);
+    const foundUser = allUsers.find((user) => user._id === id);
 
-    foundUser = {
-      ...foundUser,
-      friends: [...foundUser.friends, user._id],
-    };
+    // foundUser = {
+    //   ...foundUser,
+    //   friends: [...foundUser.friends, user._id],
+    // };
 
-    updateCommunityUserInDB(foundUser, mutateAllUsers);
+    // updateCommunityUserInDB(foundUser, mutateAllUsers);
+
+    //clear requests
+    clearRequest(user, id, mutateUser);
     notifySuccess(`${foundUser.userName} als Freund hinzugefügt`);
   }
 
-  function rejectFriendRequest(index) {
-    const updatedRequests = user.connectionRequests.filter(
-      (_, ind) => ind !== index
-    );
-    user.connectionRequests = updatedRequests;
-    updateUserInDb(user, mutateUser);
+  function rejectFriendRequest(id, index) {
+    unfriendUser(id, mutateAllUsers);
+    //clear requests
+    clearRequest(user, id, mutateUser);
     notifyError("Anfrage abgelehnt");
   }
 
-  async function acceptNewHousehold(householdId, index) {
+  async function acceptNewHousehold(householdId) {
     //add household to users households array
     if (user.households.find((household) => household._id === householdId)) {
       notifyError(`Du bist bereits Mitglied dieses Haushalts.`);
@@ -142,24 +146,18 @@ export default function ProfilePage({
     await updateUserInDb(user, mutateUser);
 
     //clear requests
-    const updatedRequests = user.connectionRequests.filter(
-      (_, ind) => ind !== index
-    );
-    user.connectionRequests = updatedRequests;
-    updateUserInDb(user, mutateUser);
+    clearRequest(user, householdId, mutateUser);
 
     notifySuccess(`Neuer Haushalt hinzugefügt`);
     setIsNotificationVisible(false);
   }
 
-  async function rejectNewHousehold(householdId, index) {
-    //TODO: remove new member from household members array
+  async function rejectNewHousehold(householdId) {
+    //remove new member from household members array
+    leaveHousehold(householdId);
+
     //clear requests
-    const updatedRequests = user.connectionRequests.filter(
-      (_, ind) => ind !== index
-    );
-    user.connectionRequests = updatedRequests;
-    updateUserInDb(user, mutateUser);
+    clearRequest(user, householdId, mutateUser);
 
     notifySuccess(`Anfrage abgelehnt.`);
     setIsNotificationVisible(false);
@@ -184,49 +182,6 @@ export default function ProfilePage({
       ></IconButton>
       {user.connectionRequests.length >= 1 && <Notification />}
       {isNotificationVisible && (
-        // <MenuContainer top="3.5rem" left="var(--gap-out)">
-        //   {user.connectionRequests.length >= 1 ? (
-        //     (user.connectionRequests.type === 1 &&
-        //       user.connectionRequests.map((request, index) => (
-        //         <div key={request.senderId}>
-        //           <p>{request.message}</p>
-        //           <div>
-        //             <button onClick={() => addFriend(request.senderId, index)}>
-        //               bestätigen
-        //             </button>
-        //             <button onClick={() => rejectFriendRequest(index)}>
-        //               ablehnen
-        //             </button>
-        //           </div>
-        //         </div>
-        //       ))) ||
-        //     (user.connectionRequests.type === 3 &&
-        //       user.connectionRequests.map((request, index) => (
-        //         <div key={request.senderId}>
-        //           <p>{Object.entries(quest)}</p>
-        //           <p>{request.message}</p>
-        //           <div>
-        //             <button
-        //               onClick={() =>
-        //                 acceptNewHousehold(request.senderId, index)
-        //               }
-        //             >
-        //               bestätigen
-        //             </button>
-        //             <button
-        //               onClick={() =>
-        //                 rejectNewHousehold(request.senderId, index)
-        //               }
-        //             >
-        //               ablehnen
-        //             </button>
-        //           </div>
-        //         </div>
-        //       )))
-        //   ) : (
-        //     <p>Du bist auf dem neuesten Stand!</p>
-        //   )}
-        // </MenuContainer>
         <MenuContainer
           top="3.5rem"
           left="var(--gap-out)"
@@ -240,11 +195,17 @@ export default function ProfilePage({
                     <p>{request.message}</p>
                     <div>
                       <button
-                        onClick={() => addFriend(request.senderId, index)}
+                        onClick={() =>
+                          acceptFriendRequest(request.senderId, index)
+                        }
                       >
                         bestätigen
                       </button>
-                      <button onClick={() => rejectFriendRequest(index)}>
+                      <button
+                        onClick={() =>
+                          rejectFriendRequest(request.senderId, index)
+                        }
+                      >
                         ablehnen
                       </button>
                     </div>
@@ -256,16 +217,12 @@ export default function ProfilePage({
                     <p>{request.message}</p>
                     <div>
                       <button
-                        onClick={() =>
-                          acceptNewHousehold(request.senderId, index)
-                        }
+                        onClick={() => acceptNewHousehold(request.senderId)}
                       >
                         bestätigen
                       </button>
                       <button
-                        onClick={() =>
-                          rejectNewHousehold(request.senderId, index)
-                        }
+                        onClick={() => rejectNewHousehold(request.senderId)}
                       >
                         ablehnen
                       </button>
