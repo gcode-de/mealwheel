@@ -42,7 +42,9 @@ export default function App({
     error: householdError,
     mutate: mutateHousehold,
   } = useSWR(
-    user?.activeHousehold ? `/api/households/${user.activeHousehold}` : null,
+    user
+      ? `/api/households/${user.activeHousehold || user.households[0]}`
+      : null,
     fetcher
   );
 
