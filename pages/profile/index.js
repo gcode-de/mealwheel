@@ -130,7 +130,7 @@ export default function ProfilePage({
   }
 
   function rejectFriendRequest(id, index) {
-    unfriendUser(id, mutateAllUsers);
+    unfriendUser(id, user, mutateAllUsers);
     //clear requests
     clearRequest(user, id, mutateUser);
     notifyError("Anfrage abgelehnt");

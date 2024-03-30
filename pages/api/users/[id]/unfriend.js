@@ -12,7 +12,6 @@ export default async function handler(request, response) {
   await dbConnect();
 
   const userId = session.user.id;
-
   const { id } = request.query;
   if (request.method === "PATCH") {
     try {
@@ -22,8 +21,8 @@ export default async function handler(request, response) {
         return response.status(404).json({ status: "User not found." });
       }
 
-      await User.findByIdAndUpdate(userId, {
-        $pull: { friends: id },
+      await User.findByIdAndUpdate(id, {
+        $pull: { friends: userId },
       });
 
       return response

@@ -43,7 +43,7 @@ export default function FollowButton({
       {isRequested ? (
         <Button disabled={true}>Freundschaft angefragt</Button>
       ) : isFriend ? (
-        <Button onClick={() => unfriendUser(foundUser._id, mutateUser)}>
+        <Button onClick={() => unfriendUser(foundUser._id, user, mutateUser)}>
           Freundschaft beenden
         </Button>
       ) : (
