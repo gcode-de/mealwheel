@@ -13,7 +13,7 @@ import SetNumberOfPeople from "@/components/Cards/SetNumberOfPeople";
 export default function Settings({
   user,
   mutateUser,
-  userIsHouseholdAdmin
+  userIsHouseholdAdmin,
   household,
   mutateHousehold,
   allUsers,
@@ -26,7 +26,6 @@ export default function Settings({
 
   const { settings } = household;
   const { weekdaysEnabled } = settings;
- 
 
   if (
     !household.settings.weekdaysEnabled ||

@@ -46,7 +46,7 @@ export default function App({
     fetcher
   );
 
-  const userIsHouseholdAdmin = household.members.some(
+  const userIsHouseholdAdmin = household?.members.some(
     (member) =>
       member._id === user._id && member.role === ("owner" || "canWrite")
   );
