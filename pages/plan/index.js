@@ -44,9 +44,10 @@ export default function Plan({
   isLoading,
   error,
   user,
+  mutateUser,
+  userIsHouseholdAdmin,
   getRecipeProperty,
   toggleIsFavorite,
-  mutateUser,
   recipes,
   household,
   householdIsLoading,
@@ -239,9 +240,10 @@ export default function Plan({
             day={calendarDay.date}
             $isFavorite={null}
             user={user}
+            mutateUser={mutateUser}
+            userIsHouseholdAdmin={userIsHouseholdAdmin}
             weekdays={weekdays}
             index={index}
-            mutateUser={mutateUser}
           />
         ) : (
           <CardSkeleton
@@ -410,15 +412,17 @@ export default function Plan({
           />
         </CalendarNavigation>
 
-        <IconButton
-          right="var(--gap-out)"
-          top="0.25rem"
-          style="Menu"
-          rotate={isRandomnessActive}
-          onClick={toggleRandomness}
-        >
-          Anzahl der zufälligen Gerichte
-        </IconButton>
+        {userIsHouseholdAdmin && (
+          <IconButton
+            right="var(--gap-out)"
+            top="0.25rem"
+            style="Menu"
+            rotate={isRandomnessActive}
+            onClick={toggleRandomness}
+          >
+            Anzahl der zufälligen Gerichte
+          </IconButton>
+        )}
         {isRandomnessActive && (
           <RandomnessSliderContainer>
             {assignableDays.length > 0 ? (
@@ -466,19 +470,21 @@ export default function Plan({
                         !checkIfWeekdayIsDefaultEnabled(weekday.date)
                       }
                     >
-                      <ToggleCheckbox
-                        defaultChecked={
-                          calendarDay?.hasOwnProperty("isDisabled")
-                            ? !calendarDay?.isDisabled
-                            : checkIfWeekdayIsDefaultEnabled(weekday.date)
-                        }
-                        onChange={() => {
-                          toggleDayIsDisabled(weekday.date);
-                          removeRecipe(weekday.date);
-                        }}
-                        $sliderSize="1rem"
-                        index={index}
-                      />
+                      {userIsHouseholdAdmin && (
+                        <ToggleCheckbox
+                          defaultChecked={
+                            calendarDay?.hasOwnProperty("isDisabled")
+                              ? !calendarDay?.isDisabled
+                              : checkIfWeekdayIsDefaultEnabled(weekday.date)
+                          }
+                          onChange={() => {
+                            toggleDayIsDisabled(weekday.date);
+                            removeRecipe(weekday.date);
+                          }}
+                          $sliderSize="1rem"
+                          index={index}
+                        />
+                      )}
                       {calendarDay?.isDisabled}
                       {weekday.readableDate}
                     </StyledH2>
@@ -495,36 +501,39 @@ export default function Plan({
         </DndContext>
       </CalendarContainer>
 
-      <IconButtonLarge
-        style={"saveShopping"}
-        bottom="9rem"
-        onClick={saveToShopping}
-      />
-      {assignableDays.length !== 0 ? (
+      {userIsHouseholdAdmin && (
         <IconButtonLarge
-          style={"generate"}
-          bottom="5rem"
-          onClick={() => {
-            populateEmptyWeekdays(
-              weekdays,
-              assignableDays,
-              randomRecipes,
-              numberOfRandomRecipes,
-              user,
-              household,
-              mutateHousehold
-            );
-          }}
-        />
-      ) : (
-        <IconButtonLarge
-          style={"trash"}
-          bottom="5rem"
-          onClick={() => {
-            removeAllRecipes(weekdays);
-          }}
+          style={"saveShopping"}
+          bottom="9rem"
+          onClick={saveToShopping}
         />
       )}
+      {userIsHouseholdAdmin &&
+        (assignableDays.length !== 0 ? (
+          <IconButtonLarge
+            style={"generate"}
+            bottom="5rem"
+            onClick={() => {
+              populateEmptyWeekdays(
+                weekdays,
+                assignableDays,
+                randomRecipes,
+                numberOfRandomRecipes,
+                user,
+                household,
+                mutateHousehold
+              );
+            }}
+          />
+        ) : (
+          <IconButtonLarge
+            style={"trash"}
+            bottom="5rem"
+            onClick={() => {
+              removeAllRecipes(weekdays);
+            }}
+          />
+        ))}
     </>
   );
 }

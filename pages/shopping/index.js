@@ -29,6 +29,7 @@ import { notifySuccess, notifyError } from "/helpers/toast";
 export default function ShoppingList({
   user,
   mutateUser,
+  userIsHouseholdAdmin,
   household,
   mutateHousehold,
 }) {
@@ -42,6 +43,10 @@ export default function ShoppingList({
   }
 
   function handleItemEdit(eventTarget, categoryName, itemIndex) {
+    if (!userIsHouseholdAdmin) {
+      notifyError("Du besitzt keine Schreibrechte für diesen Haushalt.");
+      return;
+    }
     const formData = new FormData(eventTarget);
     const data = Object.fromEntries(formData);
     data.quantity = Number(data.quantity);
@@ -163,6 +168,11 @@ export default function ShoppingList({
   }
 
   function handleCheckboxChange(categoryName, itemIndex) {
+    if (!userIsHouseholdAdmin) {
+      notifyError("Du besitzt keine Schreibrechte für diesen Haushalt.");
+      return;
+    }
+
     const categoryIndex = household.shoppingList.findIndex(
       (c) => c.category === categoryName
     );
@@ -336,37 +346,39 @@ export default function ShoppingList({
             ""
           )
         )}
-        <form onSubmit={handleSubmit}>
-          <StyledIngredients>
-            <Input
-              type="number"
-              $width={"3rem"}
-              min="0"
-              aria-label="add ingredient quantity for the recipe"
-              name="quantity"
-            />
-            <Select name="unit">
-              <option value="">-</option>
-              {ingredientUnits.map((unit) => (
-                <option key={unit} value={unit}>
-                  {unit}
-                </option>
-              ))}
-            </Select>
-            <Input
-              type="text"
-              name="name"
-              placeholder="neue Zutat"
-              aria-label="add igredient name for the recipe"
-              required
-            />
-            <AddButton type="submit" $color="var(--color-background)">
-              <Plus width={20} height={20} />
-            </AddButton>
-          </StyledIngredients>
-        </form>
+        {userIsHouseholdAdmin && (
+          <form onSubmit={handleSubmit}>
+            <StyledIngredients>
+              <Input
+                type="number"
+                $width={"3rem"}
+                min="0"
+                aria-label="add ingredient quantity for the recipe"
+                name="quantity"
+              />
+              <Select name="unit">
+                <option value="">-</option>
+                {ingredientUnits.map((unit) => (
+                  <option key={unit} value={unit}>
+                    {unit}
+                  </option>
+                ))}
+              </Select>
+              <Input
+                type="text"
+                name="name"
+                placeholder="neue Zutat"
+                aria-label="add igredient name for the recipe"
+                required
+              />
+              <AddButton type="submit" $color="var(--color-background)">
+                <Plus width={20} height={20} />
+              </AddButton>
+            </StyledIngredients>
+          </form>
+        )}
       </List>
-      {household.shoppingList.length > 0 && (
+      {household.shoppingList.length > 0 && userIsHouseholdAdmin && (
         <>
           <StyledButton
             onClick={setCategories}
@@ -380,7 +392,13 @@ export default function ShoppingList({
         </>
       )}
       <Spacer />
-      <IconButtonLarge style={"trash"} bottom="5rem" onClick={clearShopping} />
+      {userIsHouseholdAdmin && (
+        <IconButtonLarge
+          style={"trash"}
+          bottom="5rem"
+          onClick={clearShopping}
+        />
+      )}
     </>
   );
 }

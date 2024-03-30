@@ -19,9 +19,10 @@ export default function MealCard({
   removeRecipe,
   day,
   user,
+  mutateUser,
+  userIsHouseholdAdmin,
   weekdays,
   index,
-  mutateUser,
 }) {
   const [menuVisible, setMenuVisible] = useState(
     weekdays ? new Array(weekdays.length).fill(false) : []
@@ -73,70 +74,72 @@ export default function MealCard({
             />
           )}
           {weekdays && <StyledDragLine />}
-          <StyledSettingsDiv>
-            {numberOfPeople !== undefined && (
-              <SetNumberOfPeople
-                numberOfPeople={numberOfPeople}
-                handleChange={(change) => changeNumberOfPeople(change)}
-                $margin="0.75rem 0 0 1.5rem"
-                reassignRecipe={reassignRecipe}
-                day={day}
-              />
-            )}
-            {reassignRecipe !== undefined && (
-              <StyledReload
-                width={30}
-                height={30}
-                onClick={() => {
-                  reassignRecipe(day);
-                }}
-              />
-            )}
-            {weekdays && (
-              <StyledMenu
-                width={30}
-                height={30}
-                onClick={() => toggleMenu(index)}
-                $rotate={menuVisible[index]}
-              />
-            )}
-            {menuVisible[index] && (
-              <MenuContainer
-                top="7.3rem"
-                right="calc(2 * var(--gap-between) + 18px)"
-                toggleMenu={() => toggleMenu(index)}
-              >
-                <UnstyledButton
-                  onClick={() => {
-                    setIsModalCollection(true);
-                    toggleMenu(index);
-                  }}
-                >
-                  <BookUser width={15} height={15} /> Rezept im Kochbuch
-                  speichern
-                </UnstyledButton>
-                <UnstyledButton
-                  onClick={() => {
-                    removeRecipe(weekdays[index].date);
-                  }}
-                >
-                  <Trash width={15} height={15} />
-                  Tag leeren
-                </UnstyledButton>
-              </MenuContainer>
-            )}
-            {isModalCollection && (
-              <ModalComponent toggleModal={() => setIsModalCollection(false)}>
-                <AddToCollection
-                  isModalCollection={isModalCollection}
-                  setIsModalCollection={setIsModalCollection}
-                  user={user}
-                  id={recipe._id}
-                  mutateUser={mutateUser}
+          {!userIsHouseholdAdmin === false && (
+            <StyledSettingsDiv>
+              {numberOfPeople !== undefined && (
+                <SetNumberOfPeople
+                  numberOfPeople={numberOfPeople}
+                  handleChange={(change) => changeNumberOfPeople(change)}
+                  $margin="0.75rem 0 0 1.5rem"
+                  reassignRecipe={reassignRecipe}
+                  day={day}
                 />
-              </ModalComponent>
-            )}
-          </StyledSettingsDiv>
+              )}
+              {reassignRecipe !== undefined && (
+                <StyledReload
+                  width={30}
+                  height={30}
+                  onClick={() => {
+                    reassignRecipe(day);
+                  }}
+                />
+              )}
+              {weekdays && (
+                <StyledMenu
+                  width={30}
+                  height={30}
+                  onClick={() => toggleMenu(index)}
+                  $rotate={menuVisible[index]}
+                />
+              )}
+              {menuVisible[index] && (
+                <MenuContainer
+                  top="7.3rem"
+                  right="calc(2 * var(--gap-between) + 18px)"
+                  toggleMenu={() => toggleMenu(index)}
+                >
+                  <UnstyledButton
+                    onClick={() => {
+                      setIsModalCollection(true);
+                      toggleMenu(index);
+                    }}
+                  >
+                    <BookUser width={15} height={15} /> Rezept im Kochbuch
+                    speichern
+                  </UnstyledButton>
+                  <UnstyledButton
+                    onClick={() => {
+                      removeRecipe(weekdays[index].date);
+                    }}
+                  >
+                    <Trash width={15} height={15} />
+                    Tag leeren
+                  </UnstyledButton>
+                </MenuContainer>
+              )}
+              {isModalCollection && (
+                <ModalComponent toggleModal={() => setIsModalCollection(false)}>
+                  <AddToCollection
+                    isModalCollection={isModalCollection}
+                    setIsModalCollection={setIsModalCollection}
+                    user={user}
+                    id={recipe._id}
+                    mutateUser={mutateUser}
+                  />
+                </ModalComponent>
+              )}
+            </StyledSettingsDiv>
+          )}
         </StyledDiv>
       </CardContainer>
     </StyledLi>
