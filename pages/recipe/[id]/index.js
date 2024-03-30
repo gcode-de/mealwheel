@@ -16,10 +16,12 @@ import Notes from "@/components/Notes";
 import MenuContainer from "@/components/MenuContainer";
 import ModalComponent from "@/components/Modal";
 import AddToCollection from "@/components/Forms/AddToCollection";
+import Link from "next/link";
 
 export default function DetailPage({
   user,
   mutateUser,
+  allUsers,
   household,
   mutateHousehold,
   error,
@@ -293,7 +295,6 @@ export default function DetailPage({
             />
           </ModalComponent>
         )}
-
         <StyledTitle>{title}</StyledTitle>
         <P>
           {duration} MIN | {difficulty}
@@ -391,6 +392,9 @@ export default function DetailPage({
             foundInteractions={foundInteractions}
           />
         )}
+        <Link href={`/profile/community/${author}`}>
+          Erstellt von: {allUsers.find((user) => user._id === author).userName}
+        </Link>
       </Article>
     </Wrapper>
   );
