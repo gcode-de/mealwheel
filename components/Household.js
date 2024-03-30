@@ -154,12 +154,7 @@ export default function Household({
             </>
           ) : (
             <>
-              <form
-                onSubmit={changeHouseholdName}
-                onBlur={() => {
-                  setIsChangeHouseholdName(false);
-                }}
-              >
+              <form onSubmit={changeHouseholdName}>
                 <input
                   type="text"
                   placeholder="neuer Haushalts-Name"
@@ -168,21 +163,21 @@ export default function Household({
                   aria-label="neuer Name für den Haushalt"
                   required
                 ></input>
-                <button type="submit" onClick={(e) => e.stopPropagation()}>
-                  speichern
-                </button>
+                <button type="submit">speichern</button>
               </form>
             </>
           )}
         </div>
-        <div>
-          <p>Haushaltsmitglieder</p>
-          <List>
-            {household.members.length > 1 &&
-              household.members.map((member) => (
+        {household.members.length > 1 && (
+          <div>
+            <p>Haushaltsmitglieder</p>
+            <List>
+              {household.members.map((member) => (
                 <ListItem key={member._id}>
-                  {getUserById(member._id)?.userName} (
-                  {getLabelForMemberRole(member.role)})
+                  {member._id === user._id
+                    ? "Du"
+                    : getUserById(member._id)?.userName}{" "}
+                  ({getLabelForMemberRole(member.role)})
                   {userIsHouseholdAdmin && member.role !== "owner" && (
                     <>
                       {member.role === "canWrite" ? (
@@ -216,8 +211,9 @@ export default function Household({
                   )}
                 </ListItem>
               ))}
-          </List>
-        </div>
+            </List>
+          </div>
+        )}
         {userIsHouseholdAdmin && (
           <div>
             <p>Haushaltsmitglied hinzufügen:</p>
