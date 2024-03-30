@@ -1,5 +1,6 @@
 import updateUserinDb from "@/helpers/updateUserInDb";
 import { useRouter } from "next/router";
+import { notifySuccess, notifyError } from "@/helpers/toast";
 
 import styled from "styled-components";
 import { Spacer, H2, List, P } from "@/components/Styled/Styled";
@@ -24,6 +25,10 @@ export default function Settings({
 
   const { settings } = household;
   const { weekdaysEnabled } = settings;
+  const userIsHouseholdAdmin = household.members.some(
+    (member) =>
+      member._id === user._id && member.role === ("owner" || "canWrite")
+  );
 
   if (
     !household.settings.weekdaysEnabled ||
@@ -102,7 +107,13 @@ export default function Settings({
               .map(([day, isEnabled]) => (
                 <WeekdayButton
                   key={day}
-                  onClick={() => toggleWeekdays(day)}
+                  onClick={() =>
+                    userIsHouseholdAdmin
+                      ? toggleWeekdays(day)
+                      : notifyError(
+                          "Du besitzt keine Schreibrechte für diesen Haushalt."
+                        )
+                  }
                   $enabled={isEnabled}
                 >
                   {weekdayLabels[day]}
@@ -116,7 +127,13 @@ export default function Settings({
         <Wrapper>
           <SetNumberOfPeople
             numberOfPeople={household.settings.defaultNumberOfPeople}
-            handleChange={changeDefaultNumberOfPeople}
+            handleChange={(e) =>
+              userIsHouseholdAdmin
+                ? changeDefaultNumberOfPeople(e)
+                : notifyError(
+                    "Du besitzt keine Schreibrechte für diesen Haushalt."
+                  )
+            }
           />
         </Wrapper>
       </List>
@@ -127,6 +144,7 @@ export default function Settings({
         mutateUser={mutateUser}
         household={household}
         mutateHousehold={mutateHousehold}
+        userIsHouseholdAdmin={userIsHouseholdAdmin}
       />
     </>
   );

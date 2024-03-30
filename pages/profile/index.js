@@ -129,14 +129,13 @@ export default function ProfilePage({
     );
     user.connectionRequests = updatedRequests;
     updateUserInDb(user, mutateUser);
-
     notifyError("Anfrage abgelehnt");
   }
 
   async function acceptNewHousehold(householdId, index) {
     //add household to users households array
     if (user.households.find((household) => household._id === householdId)) {
-      notifyError(`Di bist bereits Mitglied dieses Haushalts.`);
+      notifyError(`Du bist bereits Mitglied dieses Haushalts.`);
       return;
     }
     user.households.push(householdId);
@@ -150,13 +149,20 @@ export default function ProfilePage({
     updateUserInDb(user, mutateUser);
 
     notifySuccess(`Neuer Haushalt hinzugefügt`);
+    setIsNotificationVisible(false);
   }
 
   async function rejectNewHousehold(householdId, index) {
-    //remove new member from household members array
-    //TODO
+    //TODO: remove new member from household members array
+    //clear requests
+    const updatedRequests = user.connectionRequests.filter(
+      (_, ind) => ind !== index
+    );
+    user.connectionRequests = updatedRequests;
+    updateUserInDb(user, mutateUser);
 
     notifySuccess(`Anfrage abgelehnt.`);
+    setIsNotificationVisible(false);
   }
 
   return (

@@ -11,6 +11,7 @@ export default function Household({
   mutateAllUsers,
   user,
   mutateUser,
+  userIsHouseholdAdmin,
   household,
   mutateHousehold,
 }) {
@@ -33,7 +34,6 @@ export default function Household({
       (household) => household._id === newHouseholdId
     );
     setSelectedHouseholdId(newHousehold);
-    // onChangeHousehold(newHousehold._id);
     user.activeHousehold = newHousehold._id;
     await updateUserInDb(user, mutateUser);
     notifySuccess(`"${newHousehold.name}" ausgewählt.`);
@@ -55,8 +55,10 @@ export default function Household({
   }
 
   async function removeMemberFromHousehold(id) {
+    //TODO: display modal to confirm removal
     household.members = household.members.filter((member) => member._id !== id);
     await updateHouseholdInDb(household, mutateHousehold);
+    //TODO: what happens then on user side? household should be removed from his households array and activeHoushold should be set to some other household.
   }
 
   async function changeMemberRole(id, newRole) {
@@ -140,13 +142,15 @@ export default function Household({
               ) : (
                 <span>{user.households[0]?.name || "Nicht festgelegt"}</span>
               )}
-              <button
-                onClick={() => {
-                  setIsChangeHouseholdName(true);
-                }}
-              >
-                Haushalt umbenennen
-              </button>
+              {userIsHouseholdAdmin && (
+                <button
+                  onClick={() => {
+                    setIsChangeHouseholdName(true);
+                  }}
+                >
+                  Haushalt umbenennen
+                </button>
+              )}
             </>
           ) : (
             <>
@@ -179,7 +183,7 @@ export default function Household({
                 <ListItem key={member._id}>
                   {getUserById(member._id)?.userName} (
                   {getLabelForMemberRole(member.role)})
-                  {member.role !== "owner" && (
+                  {userIsHouseholdAdmin && member.role !== "owner" && (
                     <>
                       {member.role === "canWrite" ? (
                         <button
@@ -214,23 +218,27 @@ export default function Household({
               ))}
           </List>
         </div>
-        <div>
-          <p>Haushaltsmitglied hinzufügen:</p>
-          <Select onChange={(e) => openModal(e.target.value)}>
-            <option value="">Wähle einen Freund aus...</option>
-            {friends
-              .filter(
-                (friend) =>
-                  !household.members.some((member) => member._id === friend._id)
-              )
-              .map((friend) => (
-                <option key={friend._id} value={friend._id}>
-                  {friend.userName}
-                </option>
-              ))}
-          </Select>
-        </div>
-        <p>Anfrage versendet:</p>
+        {userIsHouseholdAdmin && (
+          <div>
+            <p>Haushaltsmitglied hinzufügen:</p>
+            <Select onChange={(e) => openModal(e.target.value)}>
+              <option value="">Wähle einen Freund aus...</option>
+              {friends
+                .filter(
+                  (friend) =>
+                    !household.members.some(
+                      (member) => member._id === friend._id
+                    )
+                )
+                .map((friend) => (
+                  <option key={friend._id} value={friend._id}>
+                    {friend.userName}
+                  </option>
+                ))}
+            </Select>
+          </div>
+        )}
+        {userIsHouseholdAdmin && <p>Anfrage versendet:</p>}
       </List>
       {isModal && (
         <ModalComponent toggleModal={() => setIsModal(false)}>
