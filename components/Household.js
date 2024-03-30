@@ -3,6 +3,7 @@ import ModalComponent from "./Modal";
 import { Button, H2, List, Select, ListItem } from "./Styled/Styled";
 import updateUserInDb from "@/helpers/updateUserInDb";
 import updateHouseholdInDb from "@/helpers/updateHouseholdInDb";
+import sendRequestToUser from "@/helpers/sendRequestToUser";
 import updateCommunityUserInDB from "@/helpers/updateCommunityUserInDB";
 import { notifySuccess, notifyError } from "@/helpers/toast";
 
@@ -18,7 +19,9 @@ export default function Household({
   const [isModal, setIsModal] = useState(false);
   const [isChangeHouseholdName, setIsChangeHouseholdName] = useState(false);
   const [selectedFriend, setSelectedFriend] = useState(null);
-  const friends = allUsers.filter((human) => user.friends.includes(human._id));
+  const friends = allUsers?.filter((person) =>
+    user.friends.includes(person._id)
+  );
 
   const [selectedHouseholdId, setSelectedHouseholdId] = useState(
     user.activeHousehold
@@ -50,7 +53,7 @@ export default function Household({
 
       return;
     }
-    household.members.push({ _id: user._id, role: "canWrite" });
+    household.members.push({ _id: id, role: "canWrite" });
     await updateHouseholdInDb(household, mutateHousehold);
   }
 
@@ -87,22 +90,29 @@ export default function Household({
   }
 
   function sendRequest() {
-    let requestedFriend = friends.find(
-      (friend) => friend._id === selectedFriend
-    );
-    requestedFriend = {
-      ...requestedFriend,
-      connectionRequests: [
-        ...requestedFriend.connectionRequests,
-        {
-          senderId: household._id,
-          timestamp: Date(),
-          message: `${user.userName} lädt dich zum Haushalt "${household.name}" ein.`,
-          type: 3,
-        },
-      ],
+    // let requestedFriend = friends.find(
+    //   (friend) => friend._id === selectedFriend
+    // );
+    // requestedFriend = {
+    //   ...requestedFriend,
+    //   connectionRequests: [
+    //     ...requestedFriend.connectionRequests,
+    //     {
+    //       senderId: household._id,
+    //       timestamp: Date(),
+    //       message: `${user.userName} lädt dich zum Haushalt "${household.name}" ein.`,
+    //       type: 3,
+    //     },
+    //   ],
+    // };
+
+    const newRequest = {
+      senderId: household._id,
+      timestamp: Date(),
+      message: `${user.userName} lädt dich zum Haushalt "${household.name}" ein.`,
+      type: 3,
     };
-    updateCommunityUserInDB(requestedFriend, mutateAllUsers);
+    sendRequestToUser(selectedFriend, newRequest, mutateAllUsers);
     notifySuccess("Anfrage versendet");
     setIsModal(false);
   }

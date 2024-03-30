@@ -30,6 +30,13 @@ export default function App({
   pageProps: { session, ...pageProps },
 }) {
   const {
+    data: allUsers,
+    isLoading: allUsersAreLoading,
+    error: allUsersError,
+    mutate: mutateAllUsers,
+  } = useSWR(`/api/users`, fetcher);
+
+  const {
     data: user,
     isLoading,
     error,
@@ -41,12 +48,7 @@ export default function App({
     isLoading: householdIsLoading,
     error: householdError,
     mutate: mutateHousehold,
-  } = useSWR(
-    user
-      ? `/api/households/${user.activeHousehold || user.households[0]}`
-      : null,
-    fetcher
-  );
+  } = useSWR(user ? `/api/households/${user.activeHousehold}` : null, fetcher);
 
   const userIsHouseholdAdmin = household?.members.some(
     (member) =>
@@ -59,13 +61,6 @@ export default function App({
     isLoading: recipesIsLoading,
     mutate: mutateRecipes,
   } = useSWR(`/api/recipes`, fetcher);
-
-  const {
-    data: allUsers,
-    isLoading: allUsersAreLoading,
-    error: allUsersError,
-    mutate: mutateAllUsers,
-  } = useSWR(`/api/users`, fetcher);
 
   function getRecipeProperty(_id, property) {
     const recipeInteraction = user?.recipeInteractions.find(
