@@ -53,6 +53,10 @@ During the time working on the app we faced some really tricky challenges:
   Some of our excitement for this project came from us actually wanting to use it once it would be finished.
   We actively asked friends and family for their input on how to streamline the UX and on what features to include (or maybe delete again).
 
+## Considerations
+
+The emphasis of this app, as well as the web development bootcamp where the three of us met, was on enhancing and showcasing our frontend development skills. Therefore, we prioritized design and functionality over backend architecture and security concerns. While we did invest effort in developing a thoughtfully designed and secure backend, there likely remains significant potential for enhancement in those areas.
+
 ## Acknowledgments
 
 A big thank you to all the great coaches teaching us, as well as our fellow students from the "canoe" cohort of frontend web dev.
