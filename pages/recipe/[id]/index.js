@@ -21,6 +21,7 @@ import Link from "next/link";
 export default function DetailPage({
   user,
   mutateUser,
+  userIsHouseholdAdmin,
   allUsers,
   household,
   mutateHousehold,
