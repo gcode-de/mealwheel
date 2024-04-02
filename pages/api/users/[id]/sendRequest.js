@@ -27,9 +27,9 @@ export default async function handler(request, response) {
         });
         return response
           .status(200)
-          .json({ status: `Request for ${id} added!` });
+          .json({ status: `Request for ${id} removed!` });
       } else if (
-        //request from this is alrwady exists
+        //request from this is already exists
         user.connectionRequests.some(
           (req) => String(req.senderId) === String(request.body.senderId)
         )

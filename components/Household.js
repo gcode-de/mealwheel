@@ -49,6 +49,7 @@ export default function Household({
   }
 
   async function addMemberToHousehold(id) {
+    //add user as member to household object
     if (household.members.some((member) => member._id === id)) {
       notifyError("Nutzer ist bereits Mitglied in diesem Haushalt.");
 
@@ -56,6 +57,19 @@ export default function Household({
     }
     household.members.push({ _id: id, role: "canWrite" });
     await updateHouseholdInDb(household, mutateHousehold);
+
+    //send request to user
+    const newRequest = {
+      senderId: user._id,
+      timestamp: Date(),
+      message: `${user.userName} lädt dich zum Haushalt "${household.name}" ein.`,
+      type: 3,
+      householdId: household._id,
+    };
+    sendRequestToUser(selectedFriend, newRequest, mutateAllUsers);
+
+    notifySuccess("Anfrage versendet");
+    setIsModal(false);
   }
 
   async function removeMemberFromHousehold(id) {
@@ -106,16 +120,6 @@ export default function Household({
     //     },
     //   ],
     // };
-
-    const newRequest = {
-      senderId: `${user._id},${household._id}`,
-      timestamp: Date(),
-      message: `${user.userName} lädt dich zum Haushalt "${household.name}" ein.`,
-      type: 3,
-    };
-    sendRequestToUser(selectedFriend, newRequest, mutateAllUsers);
-    notifySuccess("Anfrage versendet");
-    setIsModal(false);
   }
 
   function getLabelForMemberRole(role) {
@@ -264,7 +268,6 @@ export default function Household({
           <button
             onClick={() => {
               addMemberToHousehold(selectedFriend);
-              sendRequest();
             }}
           >
             Anfrage versenden

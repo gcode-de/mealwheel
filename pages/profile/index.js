@@ -137,6 +137,7 @@ export default function ProfilePage({
   }
 
   async function acceptNewHousehold(userId, householdId) {
+    console.log(householdId);
     //add household to users households array
     if (user.households.find((household) => household._id === householdId)) {
       notifyError(`Du bist bereits Mitglied dieses Haushalts.`);
@@ -154,7 +155,7 @@ export default function ProfilePage({
 
   async function rejectNewHousehold(userId, householdId) {
     //remove new member from household members array
-    leaveHousehold(householdId);
+    leaveHousehold(householdId, user._id);
 
     //clear requests
     clearRequest(user, userId, mutateUser);
@@ -218,14 +219,20 @@ export default function ProfilePage({
                     <div>
                       <button
                         onClick={() =>
-                          acceptNewHousehold(request.senderId.split(","))
+                          acceptNewHousehold(
+                            request.senderId,
+                            request.householdId
+                          )
                         }
                       >
                         bestätigen
                       </button>
                       <button
                         onClick={() =>
-                          rejectNewHousehold(request.senderId.split(","))
+                          rejectNewHousehold(
+                            request.senderId,
+                            request.householdId
+                          )
                         }
                       >
                         ablehnen

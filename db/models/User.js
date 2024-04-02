@@ -37,6 +37,7 @@ const userSchema = new Schema({
       timestamp: { type: Date, default: Date.now },
       message: { type: String },
       type: { type: Number },
+      householdId: mongoose.Schema.Types.ObjectId,
     },
   ],
   friends: [{ type: String }],

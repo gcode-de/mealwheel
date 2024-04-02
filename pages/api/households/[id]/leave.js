@@ -11,10 +11,8 @@ export default async function handler(request, response) {
 
   await dbConnect();
   const sessionUserId = await session.user.id;
-  const { householdId } = request.query;
+  const { id: householdId } = request.query;
   const { userId } = request.body;
-
-  console.log("session, household, user", sessionUserId, householdId, userId);
 
   if (request.method === "PATCH") {
     try {
