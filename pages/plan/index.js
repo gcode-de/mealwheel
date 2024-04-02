@@ -353,11 +353,9 @@ export default function Plan({
         isChecked: false,
       })),
     ];
-
     const uncategorizedIndex = user.shoppingList.findIndex(
       (category) => category.category === "Unsortiert"
     );
-
     uncategorizedIndex === -1
       ? user.shoppingList.push({
           category: "Unsortiert",
@@ -368,7 +366,6 @@ export default function Plan({
     updateUserinDb(user, mutateUser);
     notifySuccess("Einkaufsliste aktualisiert");
   }
-
   return (
     <>
       <article>
