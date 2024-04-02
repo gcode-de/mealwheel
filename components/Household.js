@@ -107,30 +107,42 @@ export default function Household({
     <>
       <H2>{household?.name}</H2>
       <List>
-        {userIsHouseholdAdmin && (
-          <StyledMenu
-            width={20}
-            height={20}
-            onClick={() => setMenuVisible(!menuVisible)}
-            $rotate={menuVisible}
-          />
-        )}
+        <StyledMenu
+          width={20}
+          height={20}
+          onClick={() => setMenuVisible(!menuVisible)}
+          $rotate={menuVisible}
+        />
+
         {menuVisible && (
           <MenuContainer
             toggleMenu={() => setMenuVisible(!menuVisible)}
             right="1rem"
             top="3rem"
           >
-            <UnstyledButton
-              onClick={() => {
-                setIsChangeHouseholdName(true);
-                setIsEditingHousehold(true);
-                setMenuVisible(!menuVisible);
-              }}
-            >
-              <Pen width={15} height={15} />
-              Haushalt bearbeiten
-            </UnstyledButton>
+            {userIsHouseholdAdmin && (
+              <>
+                <UnstyledButton
+                  onClick={() => {
+                    setIsChangeHouseholdName(true);
+                    setIsEditingHousehold(true);
+                    setMenuVisible(!menuVisible);
+                  }}
+                >
+                  <Pen width={15} height={15} />
+                  Haushalt bearbeiten
+                </UnstyledButton>
+                <UnstyledButton
+                  onClick={() => {
+                    setIsAddToHousehold(true);
+                    setMenuVisible(false);
+                  }}
+                >
+                  <Plus width={15} height={15} />
+                  Mitglied hinzufügen
+                </UnstyledButton>
+              </>
+            )}
             <UnstyledButton
               onClick={() => {
                 setIsChangeHousehold(!isChangeHousehold);
@@ -139,15 +151,6 @@ export default function Household({
             >
               <Reload width={15} height={15} />
               Haushalt wechseln
-            </UnstyledButton>
-            <UnstyledButton
-              onClick={() => {
-                setIsAddToHousehold(true);
-                setMenuVisible(false);
-              }}
-            >
-              <Plus width={15} height={15} />
-              Mitglied hinzufügen
             </UnstyledButton>
           </MenuContainer>
         )}
@@ -196,7 +199,6 @@ export default function Household({
             </Button>
           </form>
         )}
-
         <p>Mitglieder: </p>
         {household.members.map((member) => (
           <ProfileCard
