@@ -5,6 +5,7 @@ import { H2, List, Select, UnstyledButton, Button } from "./Styled/Styled";
 import updateUserInDb from "@/helpers/updateUserInDb";
 import updateHouseholdInDb from "@/helpers/updateHouseholdInDb";
 import sendRequestToUser from "@/helpers/sendRequestToUser";
+import leaveHousehold from "@/helpers/leaveHousehold";
 
 import { notifySuccess, notifyError } from "@/helpers/toast";
 import styled from "styled-components";
@@ -37,9 +38,6 @@ export default function Household({
     setSelectedHouseholdId(user?.activeHousehold);
   }, [user?.activeHousehold]);
 
-  if (!household) {
-    return;
-  }
   const handleHouseholdChange = async (event) => {
     const newHouseholdId = event.target.value;
     const newHousehold = user.households.find(
@@ -105,7 +103,7 @@ export default function Household({
 
   return (
     <>
-      <H2>{household?.name}</H2>
+      <H2>{household?.name || "-unbekannter Haushalt-"}</H2>
       <List>
         <StyledMenu
           width={20}
@@ -200,11 +198,12 @@ export default function Household({
           </form>
         )}
         <p>Mitglieder: </p>
-        {household.members.map((member) => (
+        {household?.members.map((member) => (
           <ProfileCard
             key={member._id}
             foundUser={getUserById(member._id)}
             user={user}
+            mutateUser={mutateUser}
             followButton={false}
             isHousehold={true}
             isEditingHousehold={isEditingHousehold}

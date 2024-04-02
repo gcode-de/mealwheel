@@ -7,11 +7,12 @@ import { authOptions } from "../../auth/[...nextauth]";
 export default async function handler(request, response) {
   const session = await getServerSession(request, response, authOptions);
   if (!session) return response.status(403).json({ error: "unauthenticated" });
+
   await dbConnect();
 
   const userId = session.user.id;
-
   const { id } = request.query;
+
   if (request.method === "PATCH") {
     try {
       const user = await User.findById(id);
@@ -22,12 +23,12 @@ export default async function handler(request, response) {
 
       if (request.body === null) {
         //delete requests from user
-        await User.findByIdAndUpdate(userId, {
-          $pull: { connectionRequests: { senderId: id } },
+        await User.findByIdAndUpdate(id, {
+          $pull: { connectionRequests: { senderId: userId } },
         });
         return response
           .status(200)
-          .json({ status: `Request for ${id} removed!` });
+          .json({ status: `Requests from ${userId} to ${id} removed!` });
       } else if (
         //request from this is already exists
         user.connectionRequests.some(

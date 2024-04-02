@@ -4,6 +4,8 @@ import Link from "next/link";
 import FollowButton from "../Button/FollowButton";
 import { Button, P } from "../Styled/Styled";
 import leaveHousehold from "@/helpers/leaveHousehold";
+import clearRequest from "@/helpers/clearRequest";
+import { notifySuccess, notifyError } from "@/helpers/toast";
 
 export default function ProfileCard({
   foundUser,
@@ -93,6 +95,7 @@ export default function ProfileCard({
                 event.preventDefault();
                 await leaveHousehold(household._id, member._id);
                 await mutateHousehold();
+                await clearRequest(user, member._id, mutateUser);
                 setIsEditingHousehold(false);
                 notifySuccess("Nutzer aus Haushalt entfernt.");
               }}
