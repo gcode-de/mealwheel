@@ -5,7 +5,6 @@ import {
   XSmall,
   Plus,
   ArrowLeft,
-  ChevronSmall,
   ArrowUp,
   SaveShopping,
   Generate,
@@ -14,7 +13,6 @@ import {
 export default function IconButtonLarge({ onClick, style, bottom }) {
   const buttonStyles = {
     arrowLeft: <ArrowLeft width={30} height={30} />,
-    chevrondown: <ChevronSmall width={30} height={30} />,
     plus: <Plus width={30} height={30} />,
     x: <XSmall width={30} height={30} />,
     arrowUp: <ArrowUp width={30} height={30} />,

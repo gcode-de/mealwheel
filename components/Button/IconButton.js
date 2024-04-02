@@ -4,7 +4,6 @@ import {
   XSmall,
   Plus,
   ArrowLeft,
-  ChevronSmall,
   Book,
   Reload,
   TriangleLeft,
@@ -32,7 +31,6 @@ export default function IconButton({
   rotate,
 }) {
   const buttonStyles = {
-    chevrondown: <ChevronSmall width={30} height={30} />,
     plus: <Plus width={30} height={30} />,
     x: <XSmall width={30} height={30} />,
     ArrowLeft: <ArrowLeft width={30} height={30} />,

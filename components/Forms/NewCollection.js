@@ -1,8 +1,7 @@
 import updateUserinDb from "@/helpers/updateUserInDb";
 import styled from "styled-components";
-
 import AddButton from "@/components/Button/AddButton";
-import ModalComponent from "../Modal";
+import ModalComponent from "@/components/Modal";
 import { H2, Input } from "@/components/Styled/Styled";
 import { Plus } from "@/helpers/svg";
 
