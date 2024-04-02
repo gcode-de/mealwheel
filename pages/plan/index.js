@@ -358,7 +358,6 @@ export default function Plan({
       notifyError("Keine Zutaten zur Einkaufsliste hinzugefügt");
       return;
     }
-
     const uncategorizedIndex = user.shoppingList.findIndex(
       (category) => category.category === "Unsortiert"
     );
