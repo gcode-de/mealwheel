@@ -59,7 +59,7 @@ export const H2 = styled.h2`
   }
 `;
 
-export const StyledInput = styled.input`
+export const Input = styled.input`
   background-color: var(--color-background);
   border: none;
   border-radius: 10px;
