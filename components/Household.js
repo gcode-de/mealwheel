@@ -33,7 +33,6 @@ export default function Household({
   const [selectedHouseholdId, setSelectedHouseholdId] = useState(
     user?.activeHousehold
   );
-
   useEffect(() => {
     setSelectedHouseholdId(user?.activeHousehold);
   }, [user?.activeHousehold]);
@@ -198,26 +197,22 @@ export default function Household({
           </form>
         )}
 
-        {household?.members.length > 1 && (
-          <>
-            <p>Mitglieder: </p>
-            {household.members.map((member) => (
-              <ProfileCard
-                key={member._id}
-                foundUser={getUserById(member._id)}
-                user={user}
-                followButton={false}
-                isHousehold={true}
-                isEditingHousehold={isEditingHousehold}
-                member={member}
-                household={household}
-                changeMemberRole={changeMemberRole}
-                mutateHousehold={mutateHousehold}
-                setIsEditingHousehold={setIsEditingHousehold}
-              />
-            ))}
-          </>
-        )}
+        <p>Mitglieder: </p>
+        {household.members.map((member) => (
+          <ProfileCard
+            key={member._id}
+            foundUser={getUserById(member._id)}
+            user={user}
+            followButton={false}
+            isHousehold={true}
+            isEditingHousehold={isEditingHousehold}
+            member={member}
+            household={household}
+            changeMemberRole={changeMemberRole}
+            mutateHousehold={mutateHousehold}
+            setIsEditingHousehold={setIsEditingHousehold}
+          />
+        ))}
       </List>
       {isAddToHousehold && (
         <ModalComponent toggleModal={() => setIsAddToHousehold(false)}>
