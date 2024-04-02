@@ -72,13 +72,6 @@ export default function Household({
     setIsModal(false);
   }
 
-  async function removeMemberFromHousehold(id) {
-    //TODO: display modal to confirm removal
-    household.members = household.members.filter((member) => member._id !== id);
-    await updateHouseholdInDb(household, mutateHousehold);
-    //TODO: what happens then on user side? household should be removed from his households array and activeHoushold should be set to some other household.
-  }
-
   async function changeMemberRole(id, newRole) {
     const updatedMembers = household.members.map((member) =>
       member._id === id ? { ...member, role: newRole } : member
@@ -102,24 +95,6 @@ export default function Household({
     } catch {
       notifyError("Umbenennen fehlgeschlagen.");
     }
-  }
-
-  function sendRequest() {
-    // let requestedFriend = friends.find(
-    //   (friend) => friend._id === selectedFriend
-    // );
-    // requestedFriend = {
-    //   ...requestedFriend,
-    //   connectionRequests: [
-    //     ...requestedFriend.connectionRequests,
-    //     {
-    //       senderId: household._id,
-    //       timestamp: Date(),
-    //       message: `${user.userName} lädt dich zum Haushalt "${household.name}" ein.`,
-    //       type: 3,
-    //     },
-    //   ],
-    // };
   }
 
   function getLabelForMemberRole(role) {
@@ -166,13 +141,18 @@ export default function Household({
                   Haushalt umbenennen
                 </button>
               )}
-              <button
-                onClick={() => {
-                  leaveHousehold(selectedHouseholdId, user._id);
-                }}
-              >
-                Haushalt verlassen
-              </button>
+              {household?.members.find((member) => member._id === user._id)
+                .role !== "owner" && (
+                <button
+                  onClick={async () => {
+                    await leaveHousehold(selectedHouseholdId, user._id);
+                    await mutateUser();
+                    notifySuccess("Haushalt verlassen.");
+                  }}
+                >
+                  Haushalt verlassen
+                </button>
+              )}
             </>
           ) : (
             <>
@@ -222,9 +202,11 @@ export default function Household({
                         </button>
                       )}
                       <button
-                        onClick={(e) => {
+                        onClick={async (e) => {
                           e.preventDefault();
-                          leaveHousehold(household._id, member._id);
+                          await leaveHousehold(household._id, member._id);
+                          await mutateHousehold();
+                          notifySuccess("Nutzer aus Haushalt entfernt.");
                         }}
                       >
                         aus Haushalt entfernen

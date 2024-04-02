@@ -144,12 +144,13 @@ export default function ProfilePage({
       return;
     }
     user.households.push(householdId);
+    user.activeHousehold = householdId;
     await updateUserInDb(user, mutateUser);
 
     //clear requests
     clearRequest(user, userId, mutateUser);
 
-    notifySuccess(`Neuer Haushalt hinzugefügt`);
+    notifySuccess(`Neuer Haushalt als Standard hinzugefügt`);
     setIsNotificationVisible(false);
   }
 
