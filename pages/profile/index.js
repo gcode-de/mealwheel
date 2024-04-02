@@ -88,10 +88,13 @@ export default function ProfilePage({
     event.preventDefault();
     const formData = new FormData(event.target);
     const data = Object.fromEntries(formData);
+    const filteredData = Object.fromEntries(
+      Object.entries(data).filter(([key, value]) => value.trim() !== "")
+    );
     const response = await fetch("/api/feedback", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
+      body: JSON.stringify(filteredData),
     });
     if (response.ok) {
       setFeedbackVisible(false);
