@@ -16,6 +16,7 @@ import Notes from "@/components/Notes";
 import MenuContainer from "@/components/MenuContainer";
 import ModalComponent from "@/components/Modal";
 import AddToCollection from "@/components/Forms/AddToCollection";
+import NewCollection from "../../../components/Forms/NewCollection";
 
 export default function DetailPage({
   user,
@@ -37,6 +38,7 @@ export default function DetailPage({
   const [isMenuVisible, setIsMenuVisible] = useState(false);
   const [isModalCalendar, setIsModalCalendar] = useState(false);
   const [isModalCollection, setIsModalCollection] = useState(false);
+  const [isNewCollection, setIsNewCollection] = useState(false);
 
   const router = useRouter();
   const { id } = router.query;
@@ -180,6 +182,10 @@ export default function DetailPage({
     setIsModalCollection(!isModalCollection);
     setIsMenuVisible(false);
   }
+  function toggleNewCollection() {
+    setIsNewCollection(!isNewCollection);
+    setIsModalCollection(!isModalCollection);
+  }
 
   return (
     <Wrapper>
@@ -288,6 +294,16 @@ export default function DetailPage({
               user={user}
               id={id}
               mutateUser={mutateUser}
+              toggleNewCollection={toggleNewCollection}
+            />
+          </ModalComponent>
+        )}
+        {isNewCollection && (
+          <ModalComponent toggleModal={toggleNewCollection}>
+            <NewCollection
+              user={user}
+              mutateUser={mutateUser}
+              setModal={toggleNewCollection}
             />
           </ModalComponent>
         )}
