@@ -243,7 +243,7 @@ export default function ShoppingList({
       const dataFromAPI = await fetchCategorizedIngredients(
         JSON.stringify(household.shoppingList)
       );
-      const parsedData = JSON.parse(dataFromAPI);
+      const parsedData = await JSON.parse(dataFromAPI);
 
       if (!validateShoppinglistItems(parsedData)) {
         console.error(
@@ -405,7 +405,7 @@ export default function ShoppingList({
         </>
       )}
       <Spacer />
-      {userIsHouseholdAdmin && (
+      {household.shoppingList.length > 0 && userIsHouseholdAdmin && (
         <IconButtonLarge
           style={"trash"}
           bottom="5rem"
