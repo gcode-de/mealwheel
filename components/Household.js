@@ -220,7 +220,7 @@ export default function Household({
                       <button
                         onClick={(e) => {
                           e.preventDefault();
-                          removeMemberFromHousehold(member._id);
+                          leaveHousehold(household._id, member._id);
                         }}
                       >
                         aus Haushalt entfernen

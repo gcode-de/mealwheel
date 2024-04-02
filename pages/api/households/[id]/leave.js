@@ -14,19 +14,23 @@ export default async function handler(request, response) {
   const { householdId } = request.query;
   const { userId } = request.body;
 
+  console.log("session, household, user", sessionUserId, householdId, userId);
+
   if (request.method === "PATCH") {
     try {
-      const oldHousehold = await Household.findById(id);
+      const oldHousehold = await Household.findById(householdId);
 
       if (!oldHousehold) {
         return response.status(404).json({ status: "Household not found." });
       }
 
+      const memberRole = oldHousehold.members.find(
+        (member) => member._id.toString() === sessionUserId
+      )?.role;
       const actionIsAuthorized =
-        sessionUserId ===
-        (userId ||
-          oldHousehold.members.find((member) => member._id === sessionUserId)
-            .role === ("owner" || "canWrite"));
+        sessionUserId === userId ||
+        memberRole === "owner" ||
+        memberRole === "canWrite";
 
       if (!actionIsAuthorized) {
         return response
