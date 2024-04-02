@@ -326,7 +326,7 @@ export default function HomePage({
           </H2>
         </StyledUl>
       )}
-      <ScrollToTop />
+      <ScrollToTop user={user} />
       {user && (
         <IconButtonLarge
           style={"plus"}
