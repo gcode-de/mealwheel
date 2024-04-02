@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import Link from "next/link";
 import ModalComponent from "./Modal";
 import { Button, H2, List, Select, ListItem } from "./Styled/Styled";
 import updateUserInDb from "@/helpers/updateUserInDb";
@@ -176,9 +177,17 @@ export default function Household({
             <List>
               {household.members.map((member) => (
                 <ListItem key={member._id}>
-                  {member._id === user._id
-                    ? "Du"
-                    : getUserById(member._id)?.userName}{" "}
+                  {member._id === user._id ? (
+                    "Du"
+                  ) : (
+                    <Link
+                      href={`/profile/community/${
+                        getUserById(member._id)?._id
+                      }`}
+                    >
+                      {getUserById(member._id)?.userName}{" "}
+                    </Link>
+                  )}
                   ({getLabelForMemberRole(member.role)})
                   {userIsHouseholdAdmin && member.role !== "owner" && (
                     <>
