@@ -354,6 +354,11 @@ export default function Plan({
       })),
     ];
 
+    if (newIngredients.length === 0) {
+      notifyError("Keine Zutaten zur Einkaufsliste hinzugefügt");
+      return;
+    }
+
     const uncategorizedIndex = user.shoppingList.findIndex(
       (category) => category.category === "Unsortiert"
     );
