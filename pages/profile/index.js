@@ -136,7 +136,7 @@ export default function ProfilePage({
     notifyError("Anfrage abgelehnt");
   }
 
-  async function acceptNewHousehold(householdId) {
+  async function acceptNewHousehold(userId, householdId) {
     //add household to users households array
     if (user.households.find((household) => household._id === householdId)) {
       notifyError(`Du bist bereits Mitglied dieses Haushalts.`);
@@ -146,18 +146,18 @@ export default function ProfilePage({
     await updateUserInDb(user, mutateUser);
 
     //clear requests
-    clearRequest(user, householdId, mutateUser);
+    clearRequest(user, userId, mutateUser);
 
     notifySuccess(`Neuer Haushalt hinzugefügt`);
     setIsNotificationVisible(false);
   }
 
-  async function rejectNewHousehold(householdId) {
+  async function rejectNewHousehold(userId, householdId) {
     //remove new member from household members array
     leaveHousehold(householdId);
 
     //clear requests
-    clearRequest(user, householdId, mutateUser);
+    clearRequest(user, userId, mutateUser);
 
     notifySuccess(`Anfrage abgelehnt.`);
     setIsNotificationVisible(false);
@@ -217,12 +217,16 @@ export default function ProfilePage({
                     <p>{request.message}</p>
                     <div>
                       <button
-                        onClick={() => acceptNewHousehold(request.senderId)}
+                        onClick={() =>
+                          acceptNewHousehold(request.senderId.split(","))
+                        }
                       >
                         bestätigen
                       </button>
                       <button
-                        onClick={() => rejectNewHousehold(request.senderId)}
+                        onClick={() =>
+                          rejectNewHousehold(request.senderId.split(","))
+                        }
                       >
                         ablehnen
                       </button>

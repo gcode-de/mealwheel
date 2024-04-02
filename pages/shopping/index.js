@@ -70,13 +70,26 @@ export default function ShoppingList({
     }
   }
 
-  if (!user || !household) {
+  if (!user) {
     return (
       <>
         <Header text="Einkaufsliste" />
         <List>
           Bitte <Link href="/api/auth/signin">einloggen</Link>, um die
           Einkaufsliste zu verwenden.
+        </List>
+      </>
+    );
+  }
+
+  if (!household) {
+    return (
+      <>
+        <Header text={"Einkaufsliste"} />
+        <List>
+          Der Haushalt konnte nicht geladen werden. Bitte wähle in den{" "}
+          <Link href="/profile/settings">Einstellungen</Link> einen gültigen
+          Haushalt aus, auf den du Zugriff hast.
         </List>
       </>
     );

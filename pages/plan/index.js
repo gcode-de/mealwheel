@@ -317,13 +317,27 @@ export default function Plan({
     );
   }
 
-  if (!user || !household) {
+  if (!user) {
     return (
       <>
         <Header text={"Wochenplan"} />
         <CalendarContainer>
           Bitte <Link href="/api/auth/signin">einloggen</Link>, um den
           Wochenplaner zu nutzen.
+          <CardSkeleton amount={3} />
+        </CalendarContainer>
+      </>
+    );
+  }
+
+  if (!household) {
+    return (
+      <>
+        <Header text={"Wochenplan"} />
+        <CalendarContainer>
+          Der Haushalt konnte nicht geladen werden. Bitte wähle in den{" "}
+          <Link href="/profile/settings">Einstellungen</Link> einen gültigen
+          Haushalt aus, auf den du Zugriff hast.
           <CardSkeleton amount={3} />
         </CalendarContainer>
       </>

@@ -21,6 +21,14 @@ export default async function handler(request, response) {
       return response.status(404).json({ status: "Not Found" });
     }
 
+    const member = household.members.find(
+      (member) => String(member._id) === userId
+    );
+
+    if (!member) {
+      return response.status(403).json({ error: "unauthenticated" });
+    }
+
     response.status(200).json(household);
   }
 

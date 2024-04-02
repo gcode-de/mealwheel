@@ -5,6 +5,7 @@ import updateUserInDb from "@/helpers/updateUserInDb";
 import updateHouseholdInDb from "@/helpers/updateHouseholdInDb";
 import sendRequestToUser from "@/helpers/sendRequestToUser";
 import updateCommunityUserInDB from "@/helpers/updateCommunityUserInDB";
+import leaveHousehold from "@/helpers/leaveHousehold";
 import { notifySuccess, notifyError } from "@/helpers/toast";
 
 export default function Household({
@@ -24,12 +25,12 @@ export default function Household({
   );
 
   const [selectedHouseholdId, setSelectedHouseholdId] = useState(
-    user.activeHousehold
+    user?.activeHousehold
   );
 
   useEffect(() => {
-    setSelectedHouseholdId(user.activeHousehold);
-  }, [user.activeHousehold]);
+    setSelectedHouseholdId(user?.activeHousehold);
+  }, [user?.activeHousehold]);
 
   const handleHouseholdChange = async (event) => {
     const newHouseholdId = event.target.value;
@@ -107,7 +108,7 @@ export default function Household({
     // };
 
     const newRequest = {
-      senderId: household._id,
+      senderId: `${user._id},${household._id}`,
       timestamp: Date(),
       message: `${user.userName} lädt dich zum Haushalt "${household.name}" ein.`,
       type: 3,
@@ -138,19 +139,19 @@ export default function Household({
           {!isChangeHouseholdName ? (
             <>
               <p>Aktueller Haushalt: </p>
-              {user.households.length > 0 ? ( //CHANGE TO 1 LATER
+              {user?.households.length > 1 ? ( //CHANGE TO 1 LATER
                 <Select
                   value={selectedHouseholdId}
                   onChange={handleHouseholdChange}
                 >
-                  {user.households.map((household) => (
+                  {user?.households.map((household) => (
                     <option key={household._id} value={household._id}>
                       {household.name}
                     </option>
                   ))}
                 </Select>
               ) : (
-                <span>{user.households[0]?.name || "Nicht festgelegt"}</span>
+                <span>{user?.households[0]?.name || "Nicht festgelegt"}</span>
               )}
               {userIsHouseholdAdmin && (
                 <button
@@ -161,6 +162,13 @@ export default function Household({
                   Haushalt umbenennen
                 </button>
               )}
+              <button
+                onClick={() => {
+                  leaveHousehold(selectedHouseholdId, user._id);
+                }}
+              >
+                Haushalt verlassen
+              </button>
             </>
           ) : (
             <>
@@ -178,7 +186,7 @@ export default function Household({
             </>
           )}
         </div>
-        {household.members.length > 1 && (
+        {household?.members.length > 1 && (
           <div>
             <p>Haushaltsmitglieder</p>
             <List>
