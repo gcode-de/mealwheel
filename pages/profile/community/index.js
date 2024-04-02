@@ -35,6 +35,7 @@ export default function Community({
           allUsers={allUsers}
           mutateAllUsers={mutateAllUsers}
           mutateUser={mutateUser}
+          followButton={true}
         />
       ))}
     </>

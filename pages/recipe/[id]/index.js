@@ -10,7 +10,14 @@ import { filterTags } from "@/helpers/filterTags";
 import SetNumberOfPeople from "@/components/Cards/SetNumberOfPeople";
 import IconButton from "@/components/Button/IconButton";
 import { Pen, Book, Calendar } from "@/helpers/svg";
-import { Article, List, H2, P, ListItem } from "@/components/Styled/Styled";
+import {
+  Article,
+  List,
+  H2,
+  P,
+  ListItem,
+  UnstyledButton,
+} from "@/components/Styled/Styled";
 import LoadingComponent from "@/components/Loading";
 import Notes from "@/components/Notes";
 import MenuContainer from "@/components/MenuContainer";
@@ -519,20 +526,6 @@ const StyledCategoryButton = styled.button`
   height: 1.75rem;
   margin-bottom: 0.5rem;
   padding: 0.25rem;
-`;
-const UnstyledButton = styled.button`
-  background-color: transparent;
-  border: none;
-  text-align: start;
-  border-radius: var(--border-radius-small);
-  display: flex;
-  align-items: center;
-  gap: var(--gap-between);
-  height: 2rem;
-  color: var(--color-font);
-  &:hover {
-    background-color: var(--color-background);
-  }
 `;
 
 const StyledTitle = styled.h1`

@@ -1,13 +1,16 @@
 import { useState, useEffect } from "react";
-import Link from "next/link";
+
 import ModalComponent from "./Modal";
-import { Button, H2, List, Select, ListItem } from "./Styled/Styled";
+import { H2, List, Select, UnstyledButton, Button } from "./Styled/Styled";
 import updateUserInDb from "@/helpers/updateUserInDb";
 import updateHouseholdInDb from "@/helpers/updateHouseholdInDb";
 import sendRequestToUser from "@/helpers/sendRequestToUser";
-import updateCommunityUserInDB from "@/helpers/updateCommunityUserInDB";
-import leaveHousehold from "@/helpers/leaveHousehold";
+
 import { notifySuccess, notifyError } from "@/helpers/toast";
+import styled from "styled-components";
+import { Menu, Pen, Plus, Reload } from "@/helpers/svg";
+import MenuContainer from "./MenuContainer";
+import ProfileCard from "@/components/Cards/ProfileCard";
 
 export default function Household({
   allUsers,
@@ -18,13 +21,18 @@ export default function Household({
   household,
   mutateHousehold,
 }) {
-  const [isModal, setIsModal] = useState(false);
+  const [isAddToHousehold, setIsAddToHousehold] = useState(false);
   const [isChangeHouseholdName, setIsChangeHouseholdName] = useState(false);
   const [selectedFriend, setSelectedFriend] = useState(null);
+  const [menuVisible, setMenuVisible] = useState(false);
+  const [isEditingHousehold, setIsEditingHousehold] = useState(false);
+  const [isChangeHousehold, setIsChangeHousehold] = useState(false);
   const friends = allUsers?.filter((person) =>
     user.friends.includes(person._id)
   );
-
+  if (!household) {
+    return;
+  }
   const [selectedHouseholdId, setSelectedHouseholdId] = useState(
     user?.activeHousehold
   );
@@ -44,18 +52,13 @@ export default function Household({
     notifySuccess(`"${newHousehold.name}" ausgewählt.`);
   };
 
-  function openModal(friendId) {
-    setSelectedFriend(friendId);
-    setIsModal(true);
-  }
-
   async function addMemberToHousehold(id) {
     //add user as member to household object
     if (household.members.some((member) => member._id === id)) {
       notifyError("Nutzer ist bereits Mitglied in diesem Haushalt.");
-
       return;
     }
+
     household.members.push({ _id: id, role: "canWrite" });
     await updateHouseholdInDb(household, mutateHousehold);
 
@@ -70,7 +73,7 @@ export default function Household({
     sendRequestToUser(selectedFriend, newRequest, mutateAllUsers);
 
     notifySuccess("Anfrage versendet");
-    setIsModal(false);
+    setIsChangeHousehold(false);
   }
 
   async function changeMemberRole(id, newRole) {
@@ -84,7 +87,6 @@ export default function Household({
 
   async function changeHouseholdName(event) {
     event.preventDefault();
-    console.log("change");
     const data = new FormData(event.target);
     const newName = data.get("newName");
     household.name = newName;
@@ -98,28 +100,62 @@ export default function Household({
     }
   }
 
-  function getLabelForMemberRole(role) {
-    const Labels = {
-      owner: "Inhaber",
-      canWrite: "Schreibzugriff",
-      canRead: "Lesezugriff",
-    };
-    return Labels[role];
-  }
-
   function getUserById(id) {
     return allUsers.find((user) => user._id === id);
   }
 
   return (
     <>
-      <H2>Haushalt</H2>
+      <H2>{household?.name}</H2>
       <List>
-        <div>
-          {!isChangeHouseholdName ? (
-            <>
-              <p>Aktueller Haushalt: </p>
-              {user?.households.length > 1 ? ( //CHANGE TO 1 LATER
+        {userIsHouseholdAdmin && (
+          <StyledMenu
+            width={20}
+            height={20}
+            onClick={() => setMenuVisible(!menuVisible)}
+            $rotate={menuVisible}
+          />
+        )}
+        {menuVisible && (
+          <MenuContainer
+            toggleMenu={() => setMenuVisible(!menuVisible)}
+            right="1rem"
+            top="3rem"
+          >
+            <UnstyledButton
+              onClick={() => {
+                setIsChangeHouseholdName(true);
+                setIsEditingHousehold(true);
+                setMenuVisible(!menuVisible);
+              }}
+            >
+              <Pen width={15} height={15} />
+              Haushalt bearbeiten
+            </UnstyledButton>
+            <UnstyledButton
+              onClick={() => {
+                setIsChangeHousehold(!isChangeHousehold);
+                setMenuVisible(false);
+              }}
+            >
+              <Reload width={15} height={15} />
+              Haushalt wechseln
+            </UnstyledButton>
+            <UnstyledButton
+              onClick={() => {
+                setIsAddToHousehold(true);
+                setMenuVisible(false);
+              }}
+            >
+              <Plus width={15} height={15} />
+              Mitglied hinzufügen
+            </UnstyledButton>
+          </MenuContainer>
+        )}
+        {!isChangeHouseholdName ? (
+          <>
+            {isChangeHousehold && (
+              <ModalComponent toggleModal={() => setIsChangeHousehold(false)}>
                 <Select
                   value={selectedHouseholdId}
                   onChange={handleHouseholdChange}
@@ -130,142 +166,98 @@ export default function Household({
                     </option>
                   ))}
                 </Select>
-              ) : (
-                <span>{user?.households[0]?.name || "Nicht festgelegt"}</span>
-              )}
-              {userIsHouseholdAdmin && (
-                <button
-                  onClick={() => {
-                    setIsChangeHouseholdName(true);
-                  }}
-                >
-                  Haushalt umbenennen
-                </button>
-              )}
-              {household?.members.find((member) => member._id === user._id)
-                .role !== "owner" && (
-                <button
-                  onClick={async () => {
-                    await leaveHousehold(selectedHouseholdId, user._id);
-                    await mutateUser();
-                    notifySuccess("Haushalt verlassen.");
-                  }}
-                >
-                  Haushalt verlassen
-                </button>
-              )}
-            </>
-          ) : (
-            <>
-              <form onSubmit={changeHouseholdName}>
-                <input
-                  type="text"
-                  placeholder="neuer Haushalts-Name"
-                  defaultValue={household.name}
-                  name="newName"
-                  aria-label="neuer Name für den Haushalt"
-                  required
-                ></input>
-                <button type="submit">speichern</button>
-              </form>
-            </>
-          )}
-        </div>
+              </ModalComponent>
+            )}
+
+            {household?.members.find((member) => member._id === user._id)
+              .role !== "owner" && (
+              <button
+                onClick={async () => {
+                  await leaveHousehold(selectedHouseholdId, user._id);
+                  await mutateUser();
+                  notifySuccess("Haushalt verlassen.");
+                }}
+              >
+                Haushalt verlassen
+              </button>
+            )}
+          </>
+        ) : (
+          <form onSubmit={changeHouseholdName}>
+            <input
+              type="text"
+              placeholder="neuer Haushalts-Name"
+              defaultValue={household.name}
+              name="newName"
+              aria-label="neuer Name für den Haushalt"
+              required
+            ></input>
+            <Button type="submit" onClick={() => setIsEditingHousehold(false)}>
+              speichern
+            </Button>
+          </form>
+        )}
+
         {household?.members.length > 1 && (
-          <div>
-            <p>Haushaltsmitglieder</p>
-            <List>
-              {household.members.map((member) => (
-                <ListItem key={member._id}>
-                  {member._id === user._id ? (
-                    "Du"
-                  ) : (
-                    <Link
-                      href={`/profile/community/${
-                        getUserById(member._id)?._id
-                      }`}
-                    >
-                      {getUserById(member._id)?.userName}{" "}
-                    </Link>
-                  )}
-                  ({getLabelForMemberRole(member.role)})
-                  {userIsHouseholdAdmin && member.role !== "owner" && (
-                    <>
-                      {member.role === "canWrite" ? (
-                        <button
-                          onClick={(e) => {
-                            e.preventDefault();
-                            changeMemberRole(member._id, "canRead");
-                          }}
-                        >
-                          Schreibzugriff entfernen
-                        </button>
-                      ) : (
-                        <button
-                          onClick={(e) => {
-                            e.preventDefault();
-                            changeMemberRole(member._id, "canWrite");
-                          }}
-                        >
-                          Schreibzugriff geben
-                        </button>
-                      )}
-                      <button
-                        onClick={async (e) => {
-                          e.preventDefault();
-                          await leaveHousehold(household._id, member._id);
-                          await mutateHousehold();
-                          notifySuccess("Nutzer aus Haushalt entfernt.");
-                        }}
-                      >
-                        aus Haushalt entfernen
-                      </button>
-                    </>
-                  )}
-                </ListItem>
-              ))}
-            </List>
-          </div>
+          <>
+            <p>Mitglieder: </p>
+            {household.members.map((member) => (
+              <ProfileCard
+                key={member._id}
+                foundUser={getUserById(member._id)}
+                user={user}
+                followButton={false}
+                isHousehold={true}
+                isEditingHousehold={isEditingHousehold}
+                member={member}
+                household={household}
+                changeMemberRole={changeMemberRole}
+                mutateHousehold={mutateHousehold}
+                setIsEditingHousehold={setIsEditingHousehold}
+              />
+            ))}
+          </>
         )}
-        {userIsHouseholdAdmin && (
-          <div>
-            <p>Haushaltsmitglied hinzufügen:</p>
-            <Select onChange={(e) => openModal(e.target.value)}>
-              <option value="">Wähle einen Freund aus...</option>
-              {friends
-                .filter(
-                  (friend) =>
-                    !household.members.some(
-                      (member) => member._id === friend._id
-                    )
-                )
-                .map((friend) => (
-                  <option key={friend._id} value={friend._id}>
-                    {friend.userName}
-                  </option>
-                ))}
-            </Select>
-          </div>
-        )}
-        {userIsHouseholdAdmin && <p>Anfrage versendet:</p>}
       </List>
-      {isModal && (
-        <ModalComponent toggleModal={() => setIsModal(false)}>
-          <H2>
-            möchtest du{" "}
-            {friends.find((friend) => friend._id === selectedFriend)?.userName}{" "}
-            zu deinem Haushalt hinzufügen?
-          </H2>
-          <button
-            onClick={() => {
-              addMemberToHousehold(selectedFriend);
-            }}
-          >
-            Anfrage versenden
-          </button>
-          <button onClick={() => setIsModal(false)}>abbrechen</button>
+      {isAddToHousehold && (
+        <ModalComponent toggleModal={() => setIsAddToHousehold(false)}>
+          <p>Haushaltsmitglied hinzufügen:</p>
+          <Select onChange={(event) => setSelectedFriend(event.target.value)}>
+            <option value="">Wähle einen Freund aus...</option>
+            {friends
+              .filter(
+                (friend) =>
+                  !household.members.some((member) => member._id === friend._id)
+              )
+              .map((friend) => (
+                <option key={friend._id} value={friend._id}>
+                  {friend.userName}
+                </option>
+              ))}
+          </Select>
+          <div>
+            <Button
+              onClick={() => {
+                addMemberToHousehold(selectedFriend);
+              }}
+            >
+              Anfrage versenden
+            </Button>
+            <Button onClick={() => setIsAddToHousehold(false)}>
+              abbrechen
+            </Button>
+          </div>
         </ModalComponent>
       )}
     </>
   );
 }
+const StyledMenu = styled(Menu)`
+  background-color: var(--color-background);
+  border-radius: 100%;
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  transform: ${(props) => (props.$rotate ? "rotate(90deg)" : "0")};
+  cursor: pointer;
+`;

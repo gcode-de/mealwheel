@@ -2,6 +2,8 @@ import styled from "styled-components";
 import Image from "next/image";
 import Link from "next/link";
 import FollowButton from "../Button/FollowButton";
+import { Button, P } from "../Styled/Styled";
+import leaveHousehold from "@/helpers/leaveHousehold";
 
 export default function ProfileCard({
   foundUser,
@@ -9,7 +11,23 @@ export default function ProfileCard({
   allUsers,
   mutateAllUsers,
   mutateUser,
+  followButton,
+  isHousehold,
+  isEditingHousehold,
+  member,
+  household,
+  changeMemberRole,
+  mutateHousehold,
+  setIsEditingHousehold,
 }) {
+  function getLabelForMemberRole(role) {
+    const Labels = {
+      owner: "Inhaber",
+      canWrite: "Schreibzugriff",
+      canRead: "Lesezugriff",
+    };
+    return Labels[role];
+  }
   return (
     <ProfileWrapper>
       <WrapperCenter href={`/profile/community/${foundUser._id}`}>
@@ -28,20 +46,67 @@ export default function ProfileCard({
         <StyledLink href={`/profile/community/${foundUser._id}`}>
           {foundUser?.userName || foundUser?.firstName}
         </StyledLink>
-        <FollowButton
-          foundUser={foundUser}
-          user={user}
-          allUsers={allUsers}
-          mutateAllUsers={mutateAllUsers}
-          mutateUser={mutateUser}
-        />
+        {followButton && (
+          <FollowButton
+            foundUser={foundUser}
+            user={user}
+            allUsers={allUsers}
+            mutateAllUsers={mutateAllUsers}
+            mutateUser={mutateUser}
+          />
+        )}
+        {isHousehold && !isEditingHousehold && (
+          <P>({getLabelForMemberRole(member.role)})</P>
+        )}
+        {isEditingHousehold && member.role !== "owner" && (
+          <Wrapper>
+            {" "}
+            {member.role === "canWrite" ? (
+              <Button
+                $height
+                $top
+                onClick={(event) => {
+                  event.preventDefault();
+                  changeMemberRole(member._id, "canRead");
+                  setIsEditingHousehold(false);
+                }}
+              >
+                Schreibzugriff entfernen
+              </Button>
+            ) : (
+              <Button
+                $height
+                $top
+                onClick={(event) => {
+                  event.preventDefault();
+                  changeMemberRole(member._id, "canWrite");
+                  setIsEditingHousehold(false);
+                }}
+              >
+                Schreibzugriff geben
+              </Button>
+            )}
+            <Button
+              $height
+              $top
+              onClick={async (event) => {
+                event.preventDefault();
+                await leaveHousehold(household._id, member._id);
+                await mutateHousehold();
+                setIsEditingHousehold(false);
+                notifySuccess("Nutzer aus Haushalt entfernt.");
+              }}
+            >
+              aus Haushalt entfernen
+            </Button>
+          </Wrapper>
+        )}
       </StyledProfiletext>
     </ProfileWrapper>
   );
 }
 const WrapperCenter = styled(Link)`
   display: flex;
-
   position: absolute;
 `;
 const StyledProfile = styled.div`
@@ -86,4 +151,9 @@ const StyledProfiletext = styled.div`
 `;
 const StyledLink = styled(Link)`
   text-decoration: none;
+`;
+const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
 `;
