@@ -30,9 +30,6 @@ export default function Household({
   const friends = allUsers?.filter((person) =>
     user.friends.includes(person._id)
   );
-  if (!household) {
-    return;
-  }
   const [selectedHouseholdId, setSelectedHouseholdId] = useState(
     user?.activeHousehold
   );
@@ -41,6 +38,9 @@ export default function Household({
     setSelectedHouseholdId(user?.activeHousehold);
   }, [user?.activeHousehold]);
 
+  if (!household) {
+    return;
+  }
   const handleHouseholdChange = async (event) => {
     const newHouseholdId = event.target.value;
     const newHousehold = user.households.find(
