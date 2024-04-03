@@ -70,7 +70,7 @@ export default function Household({
     sendRequestToUser(selectedFriend, newRequest, mutateAllUsers);
 
     notifySuccess("Anfrage versendet");
-    setIsChangeHousehold(false);
+    setIsAddToHousehold(false);
   }
 
   async function changeMemberRole(id, newRole) {
@@ -141,15 +141,19 @@ export default function Household({
                 </UnstyledButton>
               </>
             )}
-            <UnstyledButton
-              onClick={() => {
-                setIsChangeHousehold(!isChangeHousehold);
-                setMenuVisible(false);
-              }}
-            >
-              <Reload width={15} height={15} />
-              Haushalt wechseln
-            </UnstyledButton>
+            {user.households.length > 1 && (
+              <UnstyledButton
+                onClick={() => {
+                  setIsEditingHousehold(false);
+                  setIsChangeHouseholdName(false);
+                  setMenuVisible(false);
+                  setIsChangeHousehold(!isChangeHousehold);
+                }}
+              >
+                <Reload width={15} height={15} />
+                Haushalt wechseln
+              </UnstyledButton>
+            )}
           </MenuContainer>
         )}
         {!isChangeHouseholdName ? (
