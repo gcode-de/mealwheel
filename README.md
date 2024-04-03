@@ -17,7 +17,7 @@ MealWheel streamlines food and grocery planning for your week. With a database o
 
 **Tech Stack:**
 
-- NextJS | MongoDB | NextAuth | Cloudinary | Github | Vercel
+- NextJS | MongoDB | NextAuth | Cloudinary | Github | Vercel | OpenAI
 - Dnd-Kit | SWR | Toastify | Mongoose | Styled components
 
 ## The Team
