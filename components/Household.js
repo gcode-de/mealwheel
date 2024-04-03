@@ -195,7 +195,7 @@ export default function Household({
               name="newName"
               aria-label="neuer Name für den Haushalt"
               required
-            ></input>
+            />
             <Button type="submit" onClick={() => setIsEditingHousehold(false)}>
               speichern
             </Button>
