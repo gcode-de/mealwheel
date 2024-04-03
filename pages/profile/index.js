@@ -1,6 +1,6 @@
 import updateUserInDb from "@/helpers/updateUserInDb";
 import leaveHousehold from "@/helpers/leaveHousehold";
-import clearRequest from "@/helpers/clearRequest";
+import clearRequests from "@/helpers/clearRequests";
 import unfriendUser from "@/helpers/unfriendUser";
 import Link from "next/link";
 import styled from "styled-components";
@@ -94,10 +94,13 @@ export default function ProfilePage({
     event.preventDefault();
     const formData = new FormData(event.target);
     const data = Object.fromEntries(formData);
+    const filteredData = Object.fromEntries(
+      Object.entries(data).filter(([key, value]) => value.trim() !== "")
+    );
     const response = await fetch("/api/feedback", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
+      body: JSON.stringify(filteredData),
     });
     if (response.ok) {
       setFeedbackVisible(false);
@@ -108,7 +111,8 @@ export default function ProfilePage({
     await signOut({ callbackUrl: "/", redirect: true });
     notifySuccess("Du hast dich erfolgreich abgemeldet");
   }
-  function acceptFriendRequest(id, index) {
+
+  async function acceptFriendRequest(id, index) {
     user.friends = [...user.friends, id];
     // const updatedRequests = user.connectionRequests.filter(
     //   (request, ind) => ind !== index
@@ -125,22 +129,26 @@ export default function ProfilePage({
     // updateCommunityUserInDB(foundUser, mutateAllUsers);
 
     //clear requests
-    clearRequest(user, id, mutateUser);
+    await clearRequests(user._id, id, mutateUser);
+
     notifySuccess(`${foundUser.userName} als Freund hinzugefügt`);
   }
 
-  function rejectFriendRequest(id, index) {
+  async function rejectFriendRequest(id, index) {
     unfriendUser(id, user, mutateAllUsers);
     //clear requests
-    clearRequest(user, id, mutateUser);
+    await clearRequests(user._id, id, mutateUser);
+
     notifyError("Anfrage abgelehnt");
   }
 
-  async function acceptNewHousehold(userId, householdId) {
+  async function acceptNewHousehold(senderId, householdId) {
     console.log(householdId);
     //add household to users households array
     if (user.households.find((household) => household._id === householdId)) {
       notifyError(`Du bist bereits Mitglied dieses Haushalts.`);
+      await clearRequests(user._id, senderId, mutateUser);
+
       return;
     }
     user.households.push(householdId);
@@ -148,18 +156,18 @@ export default function ProfilePage({
     await updateUserInDb(user, mutateUser);
 
     //clear requests
-    clearRequest(user, userId, mutateUser);
+    await clearRequests(user._id, senderId, mutateUser);
 
     notifySuccess(`Neuer Haushalt als Standard hinzugefügt`);
     setIsNotificationVisible(false);
   }
 
-  async function rejectNewHousehold(userId, householdId) {
+  async function rejectNewHousehold(senderId, householdId) {
     //remove new member from household members array
     leaveHousehold(householdId, user._id);
 
     //clear requests
-    clearRequest(user, userId, mutateUser);
+    await clearRequests(user._id, senderId, mutateUser);
 
     notifySuccess(`Anfrage abgelehnt.`);
     setIsNotificationVisible(false);

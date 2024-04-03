@@ -7,11 +7,12 @@ import { authOptions } from "../../auth/[...nextauth]";
 export default async function handler(request, response) {
   const session = await getServerSession(request, response, authOptions);
   if (!session) return response.status(403).json({ error: "unauthenticated" });
+
   await dbConnect();
 
   const userId = session.user.id;
-
   const { id } = request.query;
+
   if (request.method === "PATCH") {
     try {
       const user = await User.findById(id);
@@ -20,16 +21,17 @@ export default async function handler(request, response) {
         return response.status(404).json({ status: "User not found." });
       }
 
-      if (request.body === null) {
-        //delete requests from user
-        await User.findByIdAndUpdate(userId, {
-          $pull: { connectionRequests: { senderId: id } },
+      //delete requests from user
+      if (request.body.type === null) {
+        await User.findByIdAndUpdate(id, {
+          $pull: { connectionRequests: { senderId: request.body.senderId } },
         });
         return response
           .status(200)
-          .json({ status: `Request for ${id} removed!` });
-      } else if (
+          .json({ status: `Requests from ${userId} to ${id} removed!` });
+
         //request from this is already exists
+      } else if (
         user.connectionRequests.some(
           (req) => String(req.senderId) === String(request.body.senderId)
         )
@@ -37,8 +39,8 @@ export default async function handler(request, response) {
         return response.status(403).json({ status: "No spam allowed!" });
       }
 
+      //add request to user
       await User.findByIdAndUpdate(id, {
-        //add request to user
         $push: { connectionRequests: request.body },
       });
       return response.status(200).json({ status: `Request for ${id} added!` });

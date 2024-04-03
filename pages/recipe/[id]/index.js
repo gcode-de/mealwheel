@@ -10,13 +10,21 @@ import { filterTags } from "@/helpers/filterTags";
 import SetNumberOfPeople from "@/components/Cards/SetNumberOfPeople";
 import IconButton from "@/components/Button/IconButton";
 import { Pen, Book, Calendar } from "@/helpers/svg";
-import { Article, List, H2, P, ListItem } from "@/components/Styled/Styled";
+import {
+  Article,
+  List,
+  H2,
+  P,
+  ListItem,
+  UnstyledButton,
+} from "@/components/Styled/Styled";
 import LoadingComponent from "@/components/Loading";
 import Notes from "@/components/Notes";
 import MenuContainer from "@/components/MenuContainer";
 import ModalComponent from "@/components/Modal";
 import AddToCollection from "@/components/Forms/AddToCollection";
 import Link from "next/link";
+import NewCollection from "../../../components/Forms/NewCollection";
 
 export default function DetailPage({
   user,
@@ -40,6 +48,7 @@ export default function DetailPage({
   const [isMenuVisible, setIsMenuVisible] = useState(false);
   const [isModalCalendar, setIsModalCalendar] = useState(false);
   const [isModalCollection, setIsModalCollection] = useState(false);
+  const [isNewCollection, setIsNewCollection] = useState(false);
 
   const router = useRouter();
   const { id } = router.query;
@@ -183,6 +192,10 @@ export default function DetailPage({
     setIsModalCollection(!isModalCollection);
     setIsMenuVisible(false);
   }
+  function toggleNewCollection() {
+    setIsNewCollection(!isNewCollection);
+    setIsModalCollection(!isModalCollection);
+  }
 
   return (
     <Wrapper>
@@ -293,6 +306,16 @@ export default function DetailPage({
               user={user}
               id={id}
               mutateUser={mutateUser}
+              toggleNewCollection={toggleNewCollection}
+            />
+          </ModalComponent>
+        )}
+        {isNewCollection && (
+          <ModalComponent toggleModal={toggleNewCollection}>
+            <NewCollection
+              user={user}
+              mutateUser={mutateUser}
+              setModal={toggleNewCollection}
             />
           </ModalComponent>
         )}
@@ -519,20 +542,6 @@ const StyledCategoryButton = styled.button`
   height: 1.75rem;
   margin-bottom: 0.5rem;
   padding: 0.25rem;
-`;
-const UnstyledButton = styled.button`
-  background-color: transparent;
-  border: none;
-  text-align: start;
-  border-radius: var(--border-radius-small);
-  display: flex;
-  align-items: center;
-  gap: var(--gap-between);
-  height: 2rem;
-  color: var(--color-font);
-  &:hover {
-    background-color: var(--color-background);
-  }
 `;
 
 const StyledTitle = styled.h1`

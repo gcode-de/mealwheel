@@ -10,6 +10,7 @@ export default function AddToCollection({
   mutateUser,
   setIsModalCollection,
   isModalCollection,
+  toggleNewCollection,
 }) {
   const [selectedCollection, setselectedCollection] = useState(
     user?.collections?.[0]?.collectionName || ""
@@ -46,13 +47,24 @@ export default function AddToCollection({
         name="collectionName"
         required
       >
-        {user?.collections.map((col, index) => (
-          <option key={index} value={col.collectionName}>
-            {col.collectionName}
-          </option>
-        ))}
+        {user?.collections.length === 0 ? (
+          <option>Du hast noch keine Kochbücher angelegt</option>
+        ) : (
+          user?.collections.map((col, index) => (
+            <option key={index} value={col.collectionName}>
+              {col.collectionName}
+            </option>
+          ))
+        )}
       </Select>
-      <button type="submit">speichern</button>
+      <div>
+        <button type="submit" disabled={user.collections.length === 0}>
+          speichern
+        </button>
+        <button type="button" onClick={toggleNewCollection}>
+          Kochbuch hinzufügen
+        </button>
+      </div>
     </StyledForm>
   );
 }
@@ -71,8 +83,11 @@ const StyledForm = styled.form`
   }
   label {
   }
+  div {
+    display: flex;
+    gap: var(--gap-between);
+  }
   button {
-    width: 80px;
     line-height: 1.1rem;
     padding: 0.4rem 0.5rem;
     min-height: 2rem;
@@ -81,7 +96,6 @@ const StyledForm = styled.form`
     background-color: var(--color-darkgrey);
     color: var(--color-background);
     cursor: pointer;
-    margin-right: auto;
   }
   input {
     padding: 0.25rem 0.5rem;

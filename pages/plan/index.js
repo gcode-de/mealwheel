@@ -372,18 +372,20 @@ export default function Plan({
       (acc, curr) => acc.concat(curr),
       []
     );
-
     const newIngredients = [
       ...combinedIngredients.map((ingredient) => ({
         ...ingredient,
         isChecked: false,
       })),
     ];
+    if (newIngredients.length === 0) {
+      notifyError("Keine Zutaten zur Einkaufsliste hinzugefügt");
+      return;
+    }
 
     const uncategorizedIndex = household.shoppingList.findIndex(
       (category) => category.category === "Unsortiert"
     );
-
     uncategorizedIndex === -1
       ? household.shoppingList.push({
           category: "Unsortiert",
@@ -396,7 +398,6 @@ export default function Plan({
     updateHouseholdInDb(household, mutateHousehold);
     notifySuccess("Einkaufsliste aktualisiert");
   }
-
   return (
     <>
       <article>

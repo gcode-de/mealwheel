@@ -19,11 +19,13 @@ export default async function handler(request, response) {
   }
 
   try {
+    //find household
     const oldHousehold = await Household.findById(householdId);
     if (!oldHousehold) {
       return response.status(404).json({ status: "Household not found." });
     }
 
+    //check authorization
     const memberRole = oldHousehold.members.find(
       (member) => member._id.toString() === sessionUserId
     )?.role;
@@ -37,6 +39,30 @@ export default async function handler(request, response) {
         .status(403)
         .json({ error: "Not authorized to modify this household." });
     }
+
+    // find and update user
+    const member = await User.findById(userId);
+    if (!member) {
+      return response.status(404).json({ status: "Member not found." });
+    }
+
+    // Haushalt aus der Liste der Haushalte des Nutzers entfernen
+    member.households = member.households.filter(
+      (id) => id.toString() !== householdId
+    );
+
+    // Falls der zu entfernende Haushalt der aktive Haushalt ist, wählen wir einen neuen aktiven Haushalt, falls möglich
+    if (
+      member.activeHousehold &&
+      member.activeHousehold.toString() === householdId
+    ) {
+      member.activeHousehold = member.households[0] || null;
+    }
+
+    await member.save();
+
+    //remove member from household
+
     if (
       oldHousehold.members.find((member) => member._id.toString() === userId)
     ) {
@@ -44,28 +70,6 @@ export default async function handler(request, response) {
         $pull: { members: { _id: userId } },
       });
 
-      // User finden und Haushaltsinformationen aktualisieren
-      const member = await User.findById(userId);
-      if (!member) {
-        return response.status(404).json({ status: "Member not found." });
-      }
-
-      // Haushalt aus der Liste der Haushalte des Nutzers entfernen
-      member.households = member.households.filter(
-        (id) => id.toString() !== householdId
-      );
-
-      // Falls der zu entfernende Haushalt der aktive Haushalt ist, wählen wir einen neuen aktiven Haushalt, falls möglich
-      if (
-        member.activeHousehold &&
-        member.activeHousehold.toString() === householdId
-      ) {
-        member.activeHousehold = member.households[0] || null; // Ersten verbleibenden Haushalt wählen oder null setzen, falls keine weiteren Haushalte vorhanden sind
-      }
-
-      console.log("saving member...");
-      await member.save(); // Nutzerdaten speichern
-      console.log("saved member, now return");
       return response.status(200).json({
         message: `User ${userId} was removed from household ${householdId}`,
       });

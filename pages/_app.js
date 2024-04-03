@@ -50,10 +50,12 @@ export default function App({
     mutate: mutateHousehold,
   } = useSWR(user ? `/api/households/${user.activeHousehold}` : null, fetcher);
 
-  const userIsHouseholdAdmin = household?.members.some(
-    (member) =>
-      member._id === user._id && member.role === ("owner" || "canWrite")
-  );
+  const userIsHouseholdAdmin = household?.members.some((member) => {
+    return (
+      member._id === user._id &&
+      (member.role === "owner" || member.role === "canWrite")
+    );
+  });
 
   const {
     data: recipes,
@@ -189,3 +191,4 @@ export default function App({
     </>
   );
 }
+//trigger redeployment
