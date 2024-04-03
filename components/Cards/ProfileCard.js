@@ -63,30 +63,17 @@ export default function ProfileCard({
         {isEditingHousehold && member.role !== "owner" && (
           <Wrapper>
             {" "}
-            {member.role === "canWrite" ? (
-              <Button
-                $height
-                $top
-                onClick={(event) => {
-                  event.preventDefault();
-                  changeMemberRole(member._id, "canRead");
-                  setIsEditingHousehold(false);
-                }}
-              >
-                Schreibzugriff entfernen
-              </Button>
-            ) : (
-              <Button
-                $height
-                $top
-                onClick={(event) => {
-                  event.preventDefault();
-                  changeMemberRole(member._id, "canWrite");
-                  setIsEditingHousehold(false);
-                }}
-              >
-                Schreibzugriff geben
-              </Button>
+<Button
+  $height
+  $top
+  onClick={event => {
+    event.preventDefault();
+    changeMemberRole(member._id, member.role === "canWrite" ? "canRead" : "canWrite");
+    setIsEditingHousehold(false);
+  }}
+>
+  {member.role === "canWrite" ? "Schreibzugriff entfernen" : "Schreibzugriff geben"}
+</Button>
             )}
             <Button
               $height
