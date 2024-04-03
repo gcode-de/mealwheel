@@ -114,19 +114,8 @@ export default function ProfilePage({
 
   async function acceptFriendRequest(id, index) {
     user.friends = [...user.friends, id];
-    // const updatedRequests = user.connectionRequests.filter(
-    //   (request, ind) => ind !== index
-    // );
-    // user.connectionRequests = updatedRequests;
     updateUserInDb(user, mutateUser);
     const foundUser = allUsers.find((user) => user._id === id);
-
-    // foundUser = {
-    //   ...foundUser,
-    //   friends: [...foundUser.friends, user._id],
-    // };
-
-    // updateCommunityUserInDB(foundUser, mutateAllUsers);
 
     //clear requests
     await clearRequests(user._id, id, mutateUser);
@@ -143,7 +132,6 @@ export default function ProfilePage({
   }
 
   async function acceptNewHousehold(senderId, householdId) {
-    console.log(householdId);
     //add household to users households array
     if (user.households.find((household) => household._id === householdId)) {
       notifyError(`Du bist bereits Mitglied dieses Haushalts.`);

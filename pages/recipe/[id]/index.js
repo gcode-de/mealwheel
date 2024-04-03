@@ -124,7 +124,6 @@ export default function DetailPage({
       ];
 
       await assignRecipesToCalendarDays(assignment, household, mutateHousehold);
-      console.log("after assign");
       const localDate = new Date(dbDate).toLocaleDateString("de-DE", {
         weekday: "long",
         year: "numeric",

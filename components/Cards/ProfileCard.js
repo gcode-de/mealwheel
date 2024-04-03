@@ -2,34 +2,13 @@ import styled from "styled-components";
 import Image from "next/image";
 import Link from "next/link";
 import FollowButton from "../Button/FollowButton";
-import { Button, P } from "../Styled/Styled";
-import leaveHousehold from "@/helpers/leaveHousehold";
-import clearRequests from "@/helpers/clearRequests";
-import { notifySuccess, notifyError } from "@/helpers/toast";
 
 export default function ProfileCard({
   foundUser,
   user,
   allUsers,
   mutateAllUsers,
-  mutateUser,
-  followButton,
-  isHousehold,
-  isEditingHousehold,
-  member,
-  household,
-  changeMemberRole,
-  mutateHousehold,
-  setIsEditingHousehold,
 }) {
-  function getLabelForMemberRole(role) {
-    const Labels = {
-      owner: "Inhaber",
-      canWrite: "Schreibzugriff",
-      canRead: "Lesezugriff",
-    };
-    return Labels[role];
-  }
   return (
     <ProfileWrapper>
       <WrapperCenter href={`/profile/community/${foundUser._id}`}>
@@ -48,55 +27,19 @@ export default function ProfileCard({
         <StyledLink href={`/profile/community/${foundUser._id}`}>
           {foundUser?.userName || foundUser?.firstName}
         </StyledLink>
-        {followButton && (
-          <FollowButton
-            foundUser={foundUser}
-            user={user}
-            allUsers={allUsers}
-            mutateAllUsers={mutateAllUsers}
-            mutateUser={mutateUser}
-          />
-        )}
-        {isHousehold && !isEditingHousehold && (
-          <P>({getLabelForMemberRole(member.role)})</P>
-        )}
-        {isEditingHousehold && member.role !== "owner" && (
-          <Wrapper>
-            {" "}
-<Button
-  $height
-  $top
-  onClick={event => {
-    event.preventDefault();
-    changeMemberRole(member._id, member.role === "canWrite" ? "canRead" : "canWrite");
-    setIsEditingHousehold(false);
-  }}
->
-  {member.role === "canWrite" ? "Schreibzugriff entfernen" : "Schreibzugriff geben"}
-</Button>
-            )}
-            <Button
-              $height
-              $top
-              onClick={async (event) => {
-                event.preventDefault();
-                await leaveHousehold(household._id, member._id);
-                await mutateHousehold();
-                await clearRequests(user._id, member._id, mutateUser);
-                setIsEditingHousehold(false);
-                notifySuccess("Nutzer aus Haushalt entfernt.");
-              }}
-            >
-              aus Haushalt entfernen
-            </Button>
-          </Wrapper>
-        )}
+        <FollowButton
+          foundUser={foundUser}
+          user={user}
+          allUsers={allUsers}
+          mutateAllUsers={mutateAllUsers}
+        />
       </StyledProfiletext>
     </ProfileWrapper>
   );
 }
 const WrapperCenter = styled(Link)`
   display: flex;
+
   position: absolute;
 `;
 const StyledProfile = styled.div`
@@ -141,9 +84,4 @@ const StyledProfiletext = styled.div`
 `;
 const StyledLink = styled(Link)`
   text-decoration: none;
-`;
-const Wrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  flex-wrap: nowrap;
 `;
