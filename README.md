@@ -70,6 +70,6 @@ Your feedback is valuable to us! If you have any suggestions for improvement or 
 
 ## Running this app
 
-- clone this reop
+- clone this repo
 - install dependencies
 - set up your instances and accounts of MongoDB, Cloudinary, Google OAuth and NextJS and provide the keys, IDs and secrets as seen in the .env.example
