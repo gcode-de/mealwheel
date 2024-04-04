@@ -11,15 +11,15 @@ export default function Error({ providers }) {
 
   const { data: session, status } = useSession();
 
-  if (status === "loading") return (
-    <>
-      <Header text={"Meal Wheel"} />
-      <StyledWrapper>
-        Wir überprüfen dein Login. Gleich geht es weiter!
-      </StyledWrapper>
-    </>
-  );
-}
+  if (status === "loading")
+    return (
+      <>
+        <Header text={"Meal Wheel"} />
+        <StyledWrapper>
+          Wir überprüfen dein Login. Gleich geht es weiter!
+        </StyledWrapper>
+      </>
+    );
 
   if (status === "authenticated") {
     router.push("/");
