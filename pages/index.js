@@ -2,9 +2,9 @@ import Header from "@/components/Styled/Header";
 
 import MealCard from "@/components/Cards/MealCard";
 
-import IconButtonLarge from "@/components/Button/IconButtonLarge";
 import ScrollToTop from "@/components/ScrollToTopButton";
 import IconButton from "@/components/Button/IconButton";
+import IconButtonLarge from "@/components/Button/IconButtonLarge";
 import LoadingComponent from "@/components/Loading";
 
 import { Search } from "@/helpers/svg";
@@ -26,6 +26,7 @@ export default function HomePage({
   getRecipeProperty,
   toggleIsFavorite,
   user,
+  household,
   mutateUser,
 }) {
   const router = useRouter();

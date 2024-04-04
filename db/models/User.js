@@ -12,15 +12,6 @@ const recipeInteractionSchema = new Schema({
   notes: [{ comment: String, date: Date }],
 });
 
-const calendarEntrySchema = new Schema({
-  recipe: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Recipe",
-  },
-  date: String,
-  numberOfPeople: Number,
-  isDisabled: Boolean,
-});
 const collectionSchema = new Schema({
   recipes: [
     {
@@ -30,16 +21,6 @@ const collectionSchema = new Schema({
   ],
   collectionName: { type: String },
 });
-const shoppingItemSchema = new Schema({
-  name: { type: String, required: true },
-  quantity: { type: Number },
-  unit: { type: String },
-  isChecked: { type: Boolean },
-});
-const shoppingCategorySchema = new Schema({
-  category: { type: String, required: true },
-  items: [shoppingItemSchema],
-});
 
 const userSchema = new Schema({
   firstName: String,
@@ -47,16 +28,7 @@ const userSchema = new Schema({
   userName: String,
   email: String,
   profilePictureLink: { type: String },
-  settings: {
-    weekdaysEnabled: {},
-    mealsPerDay: Number,
-    defaultNumberOfPeople: Number,
-    defaultDiet: [String],
-    numberOfRandomMeals: Number,
-  },
   recipeInteractions: [recipeInteractionSchema],
-  calendar: [calendarEntrySchema],
-  shoppingList: [shoppingCategorySchema],
   collections: [collectionSchema],
   publicId: { type: String },
   connectionRequests: [
@@ -65,9 +37,20 @@ const userSchema = new Schema({
       timestamp: { type: Date, default: Date.now },
       message: { type: String },
       type: { type: Number },
+      householdId: mongoose.Schema.Types.ObjectId,
     },
   ],
   friends: [{ type: String }],
+  households: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Household",
+    },
+  ],
+  activeHousehold: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Household",
+  },
 });
 
 const User = mongoose.models.User || mongoose.model("User", userSchema);

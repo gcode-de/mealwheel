@@ -14,6 +14,8 @@ import { Plus, PlateWheel, Check } from "@/helpers/svg";
 import StyledIngredients from "@/components/Styled/StyledIngredients";
 import IconButtonLarge from "@/components/Button/IconButtonLarge";
 
+import updateUserinDb from "@/helpers/updateUserInDb";
+import updateHouseholdInDb from "@/helpers/updateHouseholdInDb";
 import { ingredientUnits } from "@/helpers/ingredientUnits";
 import fetchCategorizedIngredients from "@/helpers/OpenAI/CategorizeIngredients";
 import validateShoppinglistItems from "@/helpers/OpenAI/validateShoppinglistItems";
@@ -24,22 +26,32 @@ import { useRef, useState } from "react";
 import Link from "next/link";
 import { notifySuccess, notifyError } from "/helpers/toast";
 
-export default function ShoppingList({ user, mutateUser }) {
-  const [editingIndex, setEditingIndex] = useState("");
+export default function ShoppingList({
+  user,
+  mutateUser,
+  userIsHouseholdAdmin,
+  household,
+  mutateHousehold,
+}) {
   const [isAiGenerating, setIsAiGenerating] = useState(false);
   const [durationAiGenerating, setDurationAiGenerating] = useState(0);
   const editFormRef = useRef(null);
+  const [editingIndex, setEditingIndex] = useState(null);
 
   function handleItemClick(category, index) {
     setEditingIndex(`${category},${index}`);
   }
 
   function handleItemEdit(eventTarget, categoryName, itemIndex) {
+    if (!userIsHouseholdAdmin) {
+      notifyError("Du besitzt keine Schreibrechte für diesen Haushalt.");
+      return;
+    }
     const formData = new FormData(eventTarget);
     const data = Object.fromEntries(formData);
     data.quantity = Number(data.quantity);
 
-    const category = user.shoppingList.find(
+    const category = household.shoppingList.find(
       (cat) => cat.category === categoryName
     );
 
@@ -51,7 +63,7 @@ export default function ShoppingList({ user, mutateUser }) {
 
       category.items[itemIndex] = updatedItem;
 
-      updateUserInDb(user, mutateUser);
+      updateHouseholdInDb(household, mutateHousehold);
       setEditingIndex("");
     } else {
       console.log("Kategorie nicht gefunden.");
@@ -65,6 +77,19 @@ export default function ShoppingList({ user, mutateUser }) {
         <List>
           Bitte <Link href="/api/auth/signin">einloggen</Link>, um die
           Einkaufsliste zu verwenden.
+        </List>
+      </>
+    );
+  }
+
+  if (!household) {
+    return (
+      <>
+        <Header text={"Einkaufsliste"} />
+        <List>
+          Der Haushalt konnte nicht geladen werden. Bitte wähle in den{" "}
+          <Link href="/profile/settings">Einstellungen</Link> einen gültigen
+          Haushalt aus, auf den du Zugriff hast.
         </List>
       </>
     );
@@ -124,39 +149,44 @@ export default function ShoppingList({ user, mutateUser }) {
     userShoppingList.splice(0, userShoppingList.length, ...nonEmptyCategories);
   }
 
-  consolidateShoppingListItems(user.shoppingList);
+  consolidateShoppingListItems(household.shoppingList);
 
   async function handleSubmit(event) {
     event.preventDefault();
     const formData = new FormData(event.target);
     const data = Object.fromEntries(formData);
     data.quantity = Number(data.quantity);
-    if (!user.shoppingList) {
-      user.shoppingList = [];
+    if (!household.shoppingList) {
+      household.shoppingList = [];
     }
 
-    const unsortedIndex = user.shoppingList.findIndex(
+    const unsortedIndex = household.shoppingList.findIndex(
       (category) => category.category === "Unsortiert"
     );
 
     if (unsortedIndex !== -1) {
-      user.shoppingList[unsortedIndex].items.push({
+      household.shoppingList[unsortedIndex].items.push({
         ...data,
         isChecked: false,
       });
     } else {
-      user.shoppingList.push({
+      household.shoppingList.push({
         name: "Unsortiert",
         items: [{ ...data, isChecked: false }],
       });
     }
 
-    await updateUserInDb(user, mutateUser);
+    updateHouseholdInDb(household, mutateHousehold);
     event.target.reset();
   }
 
   function handleCheckboxChange(categoryName, itemIndex) {
-    const categoryIndex = user.shoppingList.findIndex(
+    if (!userIsHouseholdAdmin) {
+      notifyError("Du besitzt keine Schreibrechte für diesen Haushalt.");
+      return;
+    }
+
+    const categoryIndex = household.shoppingList.findIndex(
       (c) => c.category === categoryName
     );
     if (categoryIndex === -1) {
@@ -164,14 +194,14 @@ export default function ShoppingList({ user, mutateUser }) {
       return;
     }
 
-    const newUserShoppingList = [...user.shoppingList];
+    const newUserShoppingList = [...household.shoppingList];
     newUserShoppingList[categoryIndex].items[itemIndex].isChecked =
       !newUserShoppingList[categoryIndex].items[itemIndex].isChecked;
 
-    updateUserInDb(user, mutateUser);
+    updateHouseholdInDb(household, mutateHousehold);
 
     setTimeout(async () => {
-      const updatedCategories = [...user.shoppingList];
+      const updatedCategories = [...household.shoppingList];
       const updatedItems = updatedCategories[categoryIndex].items.filter(
         (item) => !item.isChecked
       );
@@ -182,19 +212,19 @@ export default function ShoppingList({ user, mutateUser }) {
         // Entferne die Kategorie, wenn alle Items gecheckt sind
         updatedCategories.splice(categoryIndex, 1);
       }
-      user.shoppingList = updatedCategories;
+      household.shoppingList = updatedCategories;
 
-      updateUserInDb(user, mutateUser);
+      updateHouseholdInDb(household, mutateHousehold);
     }, 10000);
   }
 
   function clearShopping() {
-    user.shoppingList = [];
-    updateUserInDb(user, mutateUser);
+    household.shoppingList = [];
+    updateHouseholdInDb(household, mutateHousehold);
   }
 
   async function setCategories() {
-    if (user.shoppingList.length === 0) {
+    if (household.shoppingList.length === 0) {
       notifyError("Bitte befülle zuerst deine Einkaufsliste.");
       return;
     }
@@ -211,7 +241,7 @@ export default function ShoppingList({ user, mutateUser }) {
 
     try {
       const dataFromAPI = await fetchCategorizedIngredients(
-        JSON.stringify(user.shoppingList)
+        JSON.stringify(household.shoppingList)
       );
       const parsedData = JSON.parse(dataFromAPI);
 
@@ -222,7 +252,7 @@ export default function ShoppingList({ user, mutateUser }) {
         return;
       }
 
-      user.shoppingList = await parsedData;
+      household.shoppingList = await parsedData;
       notifySuccess("Einkaufsliste wurde sortiert.");
     } catch (error) {
       console.error("Fehler beim Abrufen der Daten:", error);
@@ -234,19 +264,19 @@ export default function ShoppingList({ user, mutateUser }) {
     }
     setIsAiGenerating(false);
     setDurationAiGenerating(0);
-    updateUserInDb(user, mutateUser);
+    updateHouseholdInDb(household, mutateHousehold);
   }
 
   return (
     <>
       <Header text="Einkaufsliste" />
       <List>
-        {user.shoppingList.length === 0 && (
+        {household.shoppingList.length === 0 && (
           <ListItem>
             <StyledCheck>nichts zu erledigen</StyledCheck>
           </ListItem>
         )}
-        {user.shoppingList.map(({ category, items }) =>
+        {household.shoppingList.map(({ category, items }) =>
           items?.length ? (
             <div key={category}>
               <RestyledH2>{category}</RestyledH2>
@@ -329,37 +359,39 @@ export default function ShoppingList({ user, mutateUser }) {
             ""
           )
         )}
-        <form onSubmit={handleSubmit}>
-          <StyledIngredients>
-            <Input
-              type="number"
-              $width={"3rem"}
-              min="0"
-              aria-label="add ingredient quantity for the recipe"
-              name="quantity"
-            />
-            <Select name="unit">
-              <option value="">-</option>
-              {ingredientUnits.map((unit) => (
-                <option key={unit} value={unit}>
-                  {unit}
-                </option>
-              ))}
-            </Select>
-            <Input
-              type="text"
-              name="name"
-              placeholder="neue Zutat"
-              aria-label="add igredient name for the recipe"
-              required
-            />
-            <AddButton type="submit" $color="var(--color-background)">
-              <Plus width={20} height={20} />
-            </AddButton>
-          </StyledIngredients>
-        </form>
+        {userIsHouseholdAdmin && (
+          <form onSubmit={handleSubmit}>
+            <StyledIngredients>
+              <Input
+                type="number"
+                $width={"3rem"}
+                min="0"
+                aria-label="add ingredient quantity for the recipe"
+                name="quantity"
+              />
+              <Select name="unit">
+                <option value="">-</option>
+                {ingredientUnits.map((unit) => (
+                  <option key={unit} value={unit}>
+                    {unit}
+                  </option>
+                ))}
+              </Select>
+              <Input
+                type="text"
+                name="name"
+                placeholder="neue Zutat"
+                aria-label="add igredient name for the recipe"
+                required
+              />
+              <AddButton type="submit" $color="var(--color-background)">
+                <Plus width={20} height={20} />
+              </AddButton>
+            </StyledIngredients>
+          </form>
+        )}
       </List>
-      {user.shoppingList.length > 0 && (
+      {household.shoppingList.length > 0 && userIsHouseholdAdmin && (
         <>
           <StyledButton
             onClick={setCategories}
@@ -373,7 +405,13 @@ export default function ShoppingList({ user, mutateUser }) {
         </>
       )}
       <Spacer />
-      <IconButtonLarge style={"trash"} bottom="5rem" onClick={clearShopping} />
+      {userIsHouseholdAdmin && (
+        <IconButtonLarge
+          style={"trash"}
+          bottom="5rem"
+          onClick={clearShopping}
+        />
+      )}
     </>
   );
 }

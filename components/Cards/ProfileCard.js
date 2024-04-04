@@ -2,13 +2,34 @@ import styled from "styled-components";
 import Image from "next/image";
 import Link from "next/link";
 import FollowButton from "../Button/FollowButton";
+import { Button, P } from "../Styled/Styled";
+import leaveHousehold from "@/helpers/leaveHousehold";
+import { notifySuccess, notifyError } from "@/helpers/toast";
+import clearRequests from "@/helpers/clearRequests";
 
 export default function ProfileCard({
   foundUser,
   user,
   allUsers,
   mutateAllUsers,
+  mutateUser,
+  followButton,
+  isHousehold,
+  isEditingHousehold,
+  member,
+  household,
+  changeMemberRole,
+  mutateHousehold,
+  setIsEditingHousehold,
 }) {
+  function getLabelForMemberRole(role) {
+    const Labels = {
+      owner: "Inhaber",
+      canWrite: "Schreibzugriff",
+      canRead: "Lesezugriff",
+    };
+    return Labels[role];
+  }
   return (
     <ProfileWrapper>
       <WrapperCenter href={`/profile/community/${foundUser._id}`}>
@@ -27,16 +48,112 @@ export default function ProfileCard({
         <StyledLink href={`/profile/community/${foundUser._id}`}>
           {foundUser?.userName || foundUser?.firstName}
         </StyledLink>
-        <FollowButton
-          foundUser={foundUser}
-          user={user}
-          allUsers={allUsers}
-          mutateAllUsers={mutateAllUsers}
-        />
+        {followButton && (
+          <FollowButton
+            foundUser={foundUser}
+            user={user}
+            allUsers={allUsers}
+            mutateAllUsers={mutateAllUsers}
+            mutateUser={mutateUser}
+          />
+        )}
+        {isHousehold && !isEditingHousehold && (
+          <P>({getLabelForMemberRole(member.role)})</P>
+        )}
+        {isEditingHousehold && member.role !== "owner" && (
+          <Wrapper>
+            {" "}
+            {member.role === "canWrite" ? (
+              <Button
+                $height
+                $top
+                onClick={(event) => {
+                  event.preventDefault();
+                  changeMemberRole(member._id, "canRead");
+                  setIsEditingHousehold(false);
+                }}
+              >
+                Schreibzugriff entfernen
+              </Button>
+            ) : (
+              <Button
+                $height
+                $top
+                onClick={(event) => {
+                  event.preventDefault();
+                  changeMemberRole(member._id, "canWrite");
+                  setIsEditingHousehold(false);
+                }}
+              >
+                Schreibzugriff geben
+              </Button>
+            )}
+            <Button
+              $height
+              $top
+              onClick={async (event) => {
+                event.preventDefault();
+                await leaveHousehold(household._id, member._id);
+                await mutateHousehold();
+                await clearRequests(user._id, member._id, mutateUser);
+                setIsEditingHousehold(false);
+                notifySuccess("Nutzer aus Haushalt entfernt.");
+              }}
+            >
+              aus Haushalt entfernen
+            </Button>
+          </Wrapper>
+        )}
       </StyledProfiletext>
     </ProfileWrapper>
   );
 }
+const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+`;
+// import styled from "styled-components";
+// import Image from "next/image";
+// import Link from "next/link";
+// import FollowButton from "../Button/FollowButton";
+
+// export default function ProfileCard({
+//   foundUser,
+//   user,
+//   mutateUser,
+//   allUsers,
+//   mutateAllUsers,
+// }) {
+//   return (
+//     <ProfileWrapper>
+//       <WrapperCenter href={`/profile/community/${foundUser._id}`}>
+//         <StyledProfile>
+//           {(foundUser?.profilePictureLink && (
+//             <StyledProfilePicture
+//               src={foundUser?.profilePictureLink}
+//               alt="Profile Picture"
+//               width={106}
+//               height={106}
+//             />
+//           )) || <h1>🙋‍♀️</h1>}
+//         </StyledProfile>
+//       </WrapperCenter>
+//       <StyledProfiletext>
+//         <StyledLink href={`/profile/community/${foundUser._id}`}>
+//           {foundUser?.userName || foundUser?.firstName}
+//         </StyledLink>
+//         <FollowButton
+//           foundUser={foundUser}
+//           user={user}
+//           mutateUser={mutateUser}
+//           allUsers={allUsers}
+//           mutateAllUsers={mutateAllUsers}
+//         />
+//       </StyledProfiletext>
+//     </ProfileWrapper>
+//   );
+// }
 const WrapperCenter = styled(Link)`
   display: flex;
 

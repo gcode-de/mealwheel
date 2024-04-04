@@ -22,7 +22,9 @@ export default function IconButtonLarge({ onClick, style, bottom }) {
   };
   return (
     <StyledBox $bottom={bottom}>
-      <StyledLinkSvg onClick={onClick}>{buttonStyles[style]}</StyledLinkSvg>
+      <StyledLinkSvg onClick={onClick}>
+        {buttonStyles[style] || <div>Icon not found</div>}
+      </StyledLinkSvg>
     </StyledBox>
   );
 }

@@ -1,24 +1,33 @@
 import updateUserinDb from "@/helpers/updateUserInDb";
 import { useRouter } from "next/router";
+import { notifySuccess, notifyError } from "@/helpers/toast";
 
 import styled from "styled-components";
 import { Spacer, H2, List, P } from "@/components/Styled/Styled";
 
+import updateHouseholdInDb from "@/helpers/updateHouseholdInDb";
+import Household from "../../components/Household";
 import IconButton from "@/components/Button/IconButton";
 import SetNumberOfPeople from "@/components/Cards/SetNumberOfPeople";
 
-export default function Settings({ user, mutateUser }) {
+export default function Settings({
+  user,
+  mutateUser,
+  userIsHouseholdAdmin,
+  household,
+  mutateHousehold,
+  allUsers,
+  mutateAllUsers,
+}) {
   const router = useRouter();
-  if (!user) {
-    return <p>kein Benutzer gefunden...</p>;
-  }
 
-  const { settings } = user;
-  const { weekdaysEnabled } = settings;
+  const settings = household?.settings || {};
+  const weekdaysEnabled = settings?.weekdaysEnabled || {};
 
   if (
-    !user.settings.weekdaysEnabled ||
-    user.settings.weekdaysEnabled.length === 0
+    household &&
+    (!household.settings.weekdaysEnabled ||
+      household.settings.weekdaysEnabled.length === 0)
   ) {
     const setWeekdays = {
       0: false,
@@ -29,9 +38,9 @@ export default function Settings({ user, mutateUser }) {
       5: true,
       6: false,
     };
-    user.settings.weekdaysEnabled = { ...setWeekdays };
+    household.settings.weekdaysEnabled = { ...setWeekdays };
 
-    updateUserinDb(user, mutateUser);
+    updateHouseholdInDb(household, mutateHousehold);
   }
 
   const weekdayLabels = {
@@ -48,19 +57,19 @@ export default function Settings({ user, mutateUser }) {
     const dayString = String(day);
 
     if (
-      user.settings.weekdaysEnabled &&
-      typeof user.settings.weekdaysEnabled === "object"
+      household.settings.weekdaysEnabled &&
+      typeof household.settings.weekdaysEnabled === "object"
     ) {
-      const isEnabled = user.settings.weekdaysEnabled[dayString];
-      user.settings.weekdaysEnabled[dayString] = !isEnabled;
+      const isEnabled = household.settings.weekdaysEnabled[dayString];
+      household.settings.weekdaysEnabled[dayString] = !isEnabled;
     }
 
-    await updateUserinDb(user, mutateUser);
+    await updateHouseholdInDb(household, mutateHousehold);
   }
 
   async function changeDefaultNumberOfPeople(change) {
-    user.settings.defaultNumberOfPeople += change;
-    await updateUserinDb(user, mutateUser);
+    household.settings.defaultNumberOfPeople += change;
+    await updateHouseholdInDb(household, mutateHousehold);
   }
 
   return (
@@ -72,45 +81,78 @@ export default function Settings({ user, mutateUser }) {
         top={"var(--gap-out)"}
       />
       <Spacer />
-      <H2>Anpassung Menü-Planer</H2>
-      <List>
-        <P>Tage, für die geplant werden soll:</P>
-        <Wrapper>
-          {
-            // Konvertieren der Objekt-Einträge in ein Array und Sortierung
-            Object.entries(weekdaysEnabled)
-              // Sortierung, sodass Sonntag (0) am Ende der Liste steht
-              .sort(([day1], [day2]) => {
-                // Beide Schlüssel in Zahlen umwandeln
-                const dayNum1 = parseInt(day1, 10);
-                const dayNum2 = parseInt(day2, 10);
+      {!household && (
+        <H2>
+          Fehler: Gewählter Haushalt nicht gefunden oder keine Zugriffsrechte...
+        </H2>
+      )}
 
-                // Sonntag (0) wird als größer behandelt, um ihn ans Ende zu verschieben
-                if (dayNum1 === 0) return 1;
-                if (dayNum2 === 0) return -1;
-                return dayNum1 - dayNum2;
-              })
-              .map(([day, isEnabled]) => (
-                <WeekdayButton
-                  key={day}
-                  onClick={() => toggleWeekdays(day)}
-                  $enabled={isEnabled}
-                >
-                  {weekdayLabels[day]}
-                </WeekdayButton>
-              ))
-          }
-        </Wrapper>
-      </List>
-      <List>
-        <P>Standard-Anzahl Portionen:</P>
-        <Wrapper>
-          <SetNumberOfPeople
-            numberOfPeople={user.settings.defaultNumberOfPeople}
-            handleChange={changeDefaultNumberOfPeople}
-          />
-        </Wrapper>
-      </List>
+      {household && (
+        <>
+          <H2>Anpassung Menü-Planer</H2>
+          <List>
+            <P>Tage, für die geplant werden soll:</P>
+            <Wrapper>
+              {
+                // Konvertieren der Objekt-Einträge in ein Array und Sortierung
+                Object.entries(weekdaysEnabled)
+                  // Sortierung, sodass Sonntag (0) am Ende der Liste steht
+                  .sort(([day1], [day2]) => {
+                    // Beide Schlüssel in Zahlen umwandeln
+                    const dayNum1 = parseInt(day1, 10);
+                    const dayNum2 = parseInt(day2, 10);
+
+                    // Sonntag (0) wird als größer behandelt, um ihn ans Ende zu verschieben
+                    if (dayNum1 === 0) return 1;
+                    if (dayNum2 === 0) return -1;
+                    return dayNum1 - dayNum2;
+                  })
+                  .map(([day, isEnabled]) => (
+                    <WeekdayButton
+                      key={day}
+                      onClick={() =>
+                        userIsHouseholdAdmin
+                          ? toggleWeekdays(day)
+                          : notifyError(
+                              "Du besitzt keine Schreibrechte für diesen Haushalt."
+                            )
+                      }
+                      $enabled={isEnabled}
+                    >
+                      {weekdayLabels[day]}
+                    </WeekdayButton>
+                  ))
+              }
+            </Wrapper>
+          </List>
+        </>
+      )}
+      {household && (
+        <List>
+          <P>Standard-Anzahl Portionen:</P>
+          <Wrapper>
+            <SetNumberOfPeople
+              numberOfPeople={household.settings.defaultNumberOfPeople}
+              handleChange={(e) =>
+                userIsHouseholdAdmin
+                  ? changeDefaultNumberOfPeople(e)
+                  : notifyError(
+                      "Du besitzt keine Schreibrechte für diesen Haushalt."
+                    )
+              }
+            />
+          </Wrapper>
+        </List>
+      )}
+      <Household
+        allUsers={allUsers}
+        mutateAllUsers={mutateAllUsers}
+        user={user}
+        mutateUser={mutateUser}
+        household={household}
+        mutateHousehold={mutateHousehold}
+        userIsHouseholdAdmin={userIsHouseholdAdmin}
+      />
     </>
   );
 }

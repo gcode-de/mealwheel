@@ -3,9 +3,17 @@ import GoogleIcon from "/public/icons/svg/google.svg";
 import { Button } from "@/components/Styled/Styled";
 
 import styled from "styled-components";
-import { getProviders, signIn } from "next-auth/react";
+import { useSession, getProviders, signIn } from "next-auth/react";
+import { useRouter } from "next/router";
 
 export default function Error({ providers }) {
+  const router = useRouter();
+
+  const { data: session, status } = useSession();
+  if (status === "authenticated") {
+    router.push("/");
+  }
+
   return (
     <>
       <Header text={"Meal Wheel"} />

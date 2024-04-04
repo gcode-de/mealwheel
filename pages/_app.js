@@ -1,4 +1,5 @@
 import updateUserinDb from "@/helpers/updateUserInDb";
+import updateHouseholdInDb from "@/helpers/updateHouseholdInDb";
 import updateLikes from "@/helpers/updateLikes";
 
 import Layout from "../components/Layout";
@@ -9,7 +10,7 @@ import useSWR, { SWRConfig } from "swr";
 
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { notifyError } from "/helpers/toast";
+import { notifySuccess, notifyError } from "/helpers/toast";
 
 const fetcher = async (url) => {
   const res = await fetch(url);
@@ -29,6 +30,13 @@ export default function App({
   pageProps: { session, ...pageProps },
 }) {
   const {
+    data: allUsers,
+    isLoading: allUsersAreLoading,
+    error: allUsersError,
+    mutate: mutateAllUsers,
+  } = useSWR(`/api/users`, fetcher);
+
+  const {
     data: user,
     isLoading,
     error,
@@ -36,18 +44,25 @@ export default function App({
   } = useSWR(`/api/users/user`, fetcher);
 
   const {
+    data: household,
+    isLoading: householdIsLoading,
+    error: householdError,
+    mutate: mutateHousehold,
+  } = useSWR(user ? `/api/households/${user.activeHousehold}` : null, fetcher);
+
+  const userIsHouseholdAdmin = household?.members.some((member) => {
+    return (
+      member._id === user._id &&
+      (member.role === "owner" || member.role === "canWrite")
+    );
+  });
+
+  const {
     data: recipes,
     error: recipesError,
     isLoading: recipesIsLoading,
     mutate: mutateRecipes,
   } = useSWR(`/api/recipes`, fetcher);
-
-  const {
-    data: allUsers,
-    isLoading: allUsersAreLoading,
-    error: allUsersError,
-    mutate: mutateAllUsers,
-  } = useSWR(`/api/users`, fetcher);
 
   function getRecipeProperty(_id, property) {
     const recipeInteraction = user?.recipeInteractions.find(
@@ -114,7 +129,7 @@ export default function App({
     updateUserinDb(user, mutate);
   }
 
-  if (isLoading) {
+  if (isLoading || householdIsLoading || recipesIsLoading) {
     return (
       <>
         <GlobalStyle />
@@ -122,6 +137,21 @@ export default function App({
           <Layout>
             <SWRConfig value={{ fetcher }}>
               <Component {...pageProps} isLoading />
+            </SWRConfig>
+          </Layout>
+        </SessionProvider>
+      </>
+    );
+  }
+
+  if (recipesError) {
+    return (
+      <>
+        <GlobalStyle />
+        <SessionProvider session={session}>
+          <Layout>
+            <SWRConfig value={{ fetcher }}>
+              <Component {...pageProps} recipesError />
             </SWRConfig>
           </Layout>
         </SessionProvider>
@@ -139,7 +169,12 @@ export default function App({
             <Component
               {...pageProps}
               user={user}
+              userIsHouseholdAdmin={userIsHouseholdAdmin}
               mutateUser={mutate}
+              household={household}
+              householdIsLoading={householdIsLoading}
+              householdError={householdError}
+              mutateHousehold={mutateHousehold}
               getRecipeProperty={getRecipeProperty}
               toggleIsFavorite={toggleIsFavorite}
               toggleHasCooked={toggleHasCooked}

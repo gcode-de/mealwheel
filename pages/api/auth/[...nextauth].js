@@ -1,5 +1,6 @@
 import connect from "@/db/connect";
 import User from "@/db/models/User";
+import Household from "@/db/models/Household";
 
 import clientPromise from "@/db/mongodb";
 import { MongoDBAdapter } from "@auth/mongodb-adapter";
@@ -30,13 +31,10 @@ export const authOptions = {
       if (existingUser) {
         return true;
       } else {
-        const newUser = await User.create({
-          email,
-          userName: user.name,
-          profilePictureLink: user.image,
-          recipeInteractions: [],
+        const newHousehold = await Household.create({
+          name: `Haushalt von ${user.name}`,
+          members: [{ _id: user._id, role: "owner" }],
           calendar: [],
-          collections: [],
           shoppingList: [],
           settings: {
             weekdaysEnabled: {
@@ -53,10 +51,19 @@ export const authOptions = {
             defaultNumberOfPeople: 1,
           },
         });
-        if (newUser) {
+        const newUser = await User.create({
+          email,
+          userName: user.name,
+          profilePictureLink: user.image,
+          recipeInteractions: [],
+          collections: [],
+          households: [newHousehold._id],
+          activeHousehold: [newHousehold._id],
+        });
+        if (newUser && newHousehold) {
           return true;
         } else {
-          console.error("Benutzer konnte nicht erstellt werden.");
+          console.error("Benutzer oder Haushalt konnte nicht erstellt werden.");
           return false;
         }
       }
@@ -68,19 +75,19 @@ export const authOptions = {
 
       if (currentUser.calendar == null) {
         currentUser.calendar = [];
-        currentUser.save();
+        await currentUser.save();
       }
       if (currentUser.recipeInteractions == null) {
         currentUser.recipeInteractions = [];
-        currentUser.save();
+        await currentUser.save();
       }
       if (currentUser.collections == null) {
         currentUser.collections = [];
-        currentUser.save();
+        await currentUser.save();
       }
       if (currentUser.shoppingList == null) {
         currentUser.shoppingList = [];
-        currentUser.save();
+        await currentUser.save();
       }
 
       return { ...session, user: { ...session.user, id: user.id } };

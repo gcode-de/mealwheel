@@ -23,8 +23,13 @@ export const Button = styled.button`
   cursor: pointer;
   border-radius: 10px;
   width: 9rem;
-  height: 3rem;
-  margin-top: 1rem;
+  height: ${(props) => (props.$height ? "1.5rem" : "3rem")};
+  margin-top: ${(props) => (props.$top ? "0.5rem" : "1rem")};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: nowrap;
+  white-space: nowrap;
 `;
 
 export const Select = styled.select`
@@ -98,4 +103,19 @@ export const P = styled.p`
 export const Spacer = styled.div`
   height: var(--height-header);
   position: relative;
+`;
+
+export const UnstyledButton = styled.button`
+  background-color: transparent;
+  border: none;
+  text-align: start;
+  border-radius: var(--border-radius-small);
+  display: flex;
+  align-items: center;
+  gap: var(--gap-between);
+  height: 2rem;
+  color: var(--color-font);
+  &:hover {
+    background-color: var(--color-background);
+  }
 `;

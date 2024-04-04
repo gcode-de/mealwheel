@@ -10,17 +10,29 @@ import { filterTags } from "@/helpers/filterTags";
 import SetNumberOfPeople from "@/components/Cards/SetNumberOfPeople";
 import IconButton from "@/components/Button/IconButton";
 import { Pen, Book, Calendar } from "@/helpers/svg";
-import { Article, List, H2, P, ListItem } from "@/components/Styled/Styled";
+import {
+  Article,
+  List,
+  H2,
+  P,
+  ListItem,
+  UnstyledButton,
+} from "@/components/Styled/Styled";
 import LoadingComponent from "@/components/Loading";
 import Notes from "@/components/Notes";
 import MenuContainer from "@/components/MenuContainer";
 import ModalComponent from "@/components/Modal";
 import AddToCollection from "@/components/Forms/AddToCollection";
+import Link from "next/link";
 import NewCollection from "../../../components/Forms/NewCollection";
 
 export default function DetailPage({
   user,
   mutateUser,
+  userIsHouseholdAdmin,
+  allUsers,
+  household,
+  mutateHousehold,
   error,
   isLoading,
   getRecipeProperty,
@@ -32,8 +44,6 @@ export default function DetailPage({
   const [selectedDate, setSelectedDate] = useState(
     new Date().toISOString().split("T")[0]
   );
-  const [calendarFormIsVisible, setCalendarFormIsVisible] = useState(false);
-  const [collectionFormIsVisible, setCollectionFormIsVisible] = useState(false);
 
   const [isMenuVisible, setIsMenuVisible] = useState(false);
   const [isModalCalendar, setIsModalCalendar] = useState(false);
@@ -113,8 +123,7 @@ export default function DetailPage({
         },
       ];
 
-      await assignRecipesToCalendarDays(assignment, user, mutateUser);
-
+      await assignRecipesToCalendarDays(assignment, household, mutateHousehold);
       const localDate = new Date(dbDate).toLocaleDateString("de-DE", {
         weekday: "long",
         year: "numeric",
@@ -122,8 +131,8 @@ export default function DetailPage({
         day: "numeric",
       });
 
-      setCalendarFormIsVisible(false);
       notifySuccess(`Das Rezept wurde für ${localDate} eingeplant.`);
+      setIsModalCalendar(false);
     } catch (error) {
       notifyError("Das Rezept konnte nicht eingeplant werden.");
     }
@@ -252,10 +261,12 @@ export default function DetailPage({
             right="var(--gap-out)"
             toggleMenu={() => setIsMenuVisible(false)}
           >
-            <UnstyledButton onClick={toggleModalCalender}>
-              <Calendar width={15} height={15} />
-              Rezept im Kalender speichern
-            </UnstyledButton>
+            {userIsHouseholdAdmin && (
+              <UnstyledButton onClick={toggleModalCalender}>
+                <Calendar width={15} height={15} />
+                Rezept im Kalender speichern
+              </UnstyledButton>
+            )}
             <UnstyledButton onClick={toggleModalCollection}>
               <Book width={15} height={15} />
               Rezept im Kochbuch speichern
@@ -307,7 +318,6 @@ export default function DetailPage({
             />
           </ModalComponent>
         )}
-
         <StyledTitle>{title}</StyledTitle>
         <P>
           {duration} MIN | {difficulty}
@@ -405,6 +415,9 @@ export default function DetailPage({
             foundInteractions={foundInteractions}
           />
         )}
+        <Link href={`/profile/community/${author}`}>
+          Erstellt von: {allUsers.find((user) => user._id === author).userName}
+        </Link>
       </Article>
     </Wrapper>
   );
@@ -528,20 +541,6 @@ const StyledCategoryButton = styled.button`
   height: 1.75rem;
   margin-bottom: 0.5rem;
   padding: 0.25rem;
-`;
-const UnstyledButton = styled.button`
-  background-color: transparent;
-  border: none;
-  text-align: start;
-  border-radius: var(--border-radius-small);
-  display: flex;
-  align-items: center;
-  gap: var(--gap-between);
-  height: 2rem;
-  color: var(--color-font);
-  &:hover {
-    background-color: var(--color-background);
-  }
 `;
 
 const StyledTitle = styled.h1`

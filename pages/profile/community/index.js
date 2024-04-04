@@ -4,7 +4,12 @@ import IconButton from "@/components/Button/IconButton";
 import ProfileCard from "@/components/Cards/ProfileCard";
 import { Spacer, H2 } from "@/components/Styled/Styled";
 
-export default function Community({ user, allUsers, mutateAllUsers }) {
+export default function Community({
+  user,
+  mutateUser,
+  allUsers,
+  mutateAllUsers,
+}) {
   const router = useRouter();
   if (!user || !allUsers) {
     return;
@@ -26,13 +31,11 @@ export default function Community({ user, allUsers, mutateAllUsers }) {
         <ProfileCard
           key={communityUser._id}
           foundUser={communityUser}
-          isFriend={user.friends.includes(communityUser._id)}
-          isRequested={communityUser.connectionRequests.some(
-            (request) => request.senderId === user._id
-          )}
           user={user}
           allUsers={allUsers}
           mutateAllUsers={mutateAllUsers}
+          mutateUser={mutateUser}
+          followButton={true}
         />
       ))}
     </>

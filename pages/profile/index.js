@@ -1,4 +1,7 @@
-import updateUserinDb from "@/helpers/updateUserInDb";
+import updateUserInDb from "@/helpers/updateUserInDb";
+import leaveHousehold from "@/helpers/leaveHousehold";
+import clearRequests from "@/helpers/clearRequests";
+import unfriendUser from "@/helpers/unfriendUser";
 import Link from "next/link";
 import styled from "styled-components";
 import Image from "next/image";
@@ -26,6 +29,7 @@ import {
 import { Button, H2, List } from "@/components/Styled/Styled";
 import StyledProgress from "@/components/StyledProgress";
 import MenuContainer from "@/components/MenuContainer";
+import updateHouseholdInDb from "@/helpers/updateHouseholdInDb";
 import IconButton from "@/components/Button/IconButton";
 import ModalComponent from "@/components/Modal";
 import updateCommunityUserInDB from "@/helpers/updateCommunityUserInDB";
@@ -37,6 +41,7 @@ export default function ProfilePage({
   mutateUser,
   allUsers,
   mutateAllUsers,
+  mutateHousehold,
 }) {
   const router = useRouter();
   const { data: session, status } = useSession();
@@ -77,8 +82,9 @@ export default function ProfilePage({
       profilePictureLink: imageUrl.imageUrl,
       publicId: imageUrl.publicId,
     };
-    updateUserinDb(user, mutateUser);
+    updateUserInDb(user, mutateUser);
     setEditUser(false);
+    setIsMenuVisible(false);
   };
   function handleEditProfile() {
     setEditUser(true);
@@ -105,32 +111,50 @@ export default function ProfilePage({
     await signOut({ callbackUrl: "/", redirect: true });
     notifySuccess("Du hast dich erfolgreich abgemeldet");
   }
-  function addFriend(id, index) {
+
+  async function acceptFriendRequest(id, index) {
     user.friends = [...user.friends, id];
-    const updatedRequests = user.connectionRequests.filter(
-      (request, ind) => ind !== index
-    );
-    user.connectionRequests = updatedRequests;
-    updateUserinDb(user, mutateUser);
-    let foundUser = allUsers.find((user) => user._id === id);
+    updateUserInDb(user, mutateUser);
+    const foundUser = allUsers.find((user) => user._id === id);
 
-    foundUser = {
-      ...foundUser,
-      friends: [...foundUser.friends, user._id],
-    };
+    await clearRequests(user._id, id, mutateUser);
 
-    updateCommunityUserInDB(foundUser, mutateAllUsers);
     notifySuccess(`${foundUser.userName} als Freund hinzugefügt`);
   }
 
-  function rejectFriendRequest(index) {
-    const updatedRequests = user.connectionRequests.filter(
-      (request, ind) => ind !== index
-    );
-    user.connectionRequests = updatedRequests;
-    updateUserinDb(user, mutateUser);
+  async function rejectFriendRequest(id, index) {
+    unfriendUser(id, user, mutateAllUsers);
+    await clearRequests(user._id, id, mutateUser);
+
     notifyError("Anfrage abgelehnt");
   }
+
+  async function acceptNewHousehold(senderId, householdId) {
+    //add household to users households array
+    if (user.households.find((household) => household._id === householdId)) {
+      notifyError(`Du bist bereits Mitglied dieses Haushalts.`);
+      await clearRequests(user._id, senderId, mutateUser);
+
+      return;
+    }
+    user.households.push(householdId);
+    user.activeHousehold = householdId;
+    await updateUserInDb(user, mutateUser);
+
+    await clearRequests(user._id, senderId, mutateUser);
+
+    notifySuccess(`Neuer Haushalt als Standard hinzugefügt`);
+    setIsNotificationVisible(false);
+  }
+
+  async function rejectNewHousehold(senderId, householdId) {
+    leaveHousehold(householdId, user._id);
+    await clearRequests(user._id, senderId, mutateUser);
+
+    notifySuccess(`Anfrage abgelehnt.`);
+    setIsNotificationVisible(false);
+  }
+
   return (
     <>
       <IconButton
@@ -156,19 +180,58 @@ export default function ProfilePage({
           toggleMenu={() => setIsNotificationVisible(false)}
         >
           {user.connectionRequests.length >= 1 ? (
-            user.connectionRequests.map((request, index) => (
-              <div key={request.senderId}>
-                <p>{request.message}</p>
-                <div>
-                  <button onClick={() => addFriend(request.senderId, index)}>
-                    bestätigen
-                  </button>
-                  <button onClick={() => rejectFriendRequest(index)}>
-                    ablehnen
-                  </button>
-                </div>
-              </div>
-            ))
+            user.connectionRequests.map((request, index) => {
+              if (request.type === 1)
+                return (
+                  <div key={request.senderId}>
+                    <p>{request.message}</p>
+                    <div>
+                      <button
+                        onClick={() =>
+                          acceptFriendRequest(request.senderId, index)
+                        }
+                      >
+                        bestätigen
+                      </button>
+                      <button
+                        onClick={() =>
+                          rejectFriendRequest(request.senderId, index)
+                        }
+                      >
+                        ablehnen
+                      </button>
+                    </div>
+                  </div>
+                );
+              if (request.type === 3)
+                return (
+                  <div key={request.senderId}>
+                    <p>{request.message}</p>
+                    <div>
+                      <button
+                        onClick={() =>
+                          acceptNewHousehold(
+                            request.senderId,
+                            request.householdId
+                          )
+                        }
+                      >
+                        bestätigen
+                      </button>
+                      <button
+                        onClick={() =>
+                          rejectNewHousehold(
+                            request.senderId,
+                            request.householdId
+                          )
+                        }
+                      >
+                        ablehnen
+                      </button>
+                    </div>
+                  </div>
+                );
+            })
           ) : (
             <p>Du bist auf dem neuesten Stand!</p>
           )}

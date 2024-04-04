@@ -1,6 +1,7 @@
 import dbConnect from "../../../db/connect";
 import User from "../../../db/models/User";
 import Recipe from "../../../db/models/Recipe";
+import Household from "@/db/models/Household";
 
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../auth/[...nextauth]";
@@ -15,8 +16,9 @@ export default async function handler(request, response) {
   if (request.method === "GET") {
     const user = await User.findById(session.user.id)
       .populate("recipeInteractions.recipe")
-      .populate("calendar.recipe")
-      .populate("collections.recipes");
+      .populate("collections.recipes")
+      .populate("households");
+    // .populate("activeHousehold");//wohl hier nicht benötigt, da die IDs ausreichen, un der Haushalt sowieso separat gefetched werden muss um damit persistens zu arbeiten.
 
     if (!user) {
       return response.status(404).json({ status: "Not Found" });
