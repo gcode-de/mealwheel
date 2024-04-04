@@ -69,7 +69,7 @@ export const authOptions = {
       }
     },
     async session({ session, user }) {
-      connect();
+      await connect();
 
       const currentUser = await User.findById(user.id);
 

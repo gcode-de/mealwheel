@@ -1,5 +1,6 @@
 import dbConnect from "../../../db/connect";
 import User from "../../../db/models/User";
+import Recipe from "../../../db/models/Recipe";
 
 export default async function handler(request, response) {
   await dbConnect();
