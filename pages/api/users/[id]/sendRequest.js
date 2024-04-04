@@ -31,13 +31,14 @@ export default async function handler(request, response) {
           .json({ status: `Requests from ${userId} to ${id} removed!` });
 
         //request from this is already exists
-      } else if (
-        user.connectionRequests.some(
-          (req) => String(req.senderId) === String(request.body.senderId)
-        )
-      ) {
-        return response.status(403).json({ status: "No spam allowed!" });
       }
+      // else if (
+      //   user.connectionRequests.some(
+      //     (req) => String(req.senderId) === String(request.body.senderId)
+      //   )
+      // ) {
+      //   return response.status(403).json({ status: "No spam allowed!" });
+      // }
 
       //add request to user
       await User.findByIdAndUpdate(id, {
