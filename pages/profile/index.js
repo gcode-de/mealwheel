@@ -117,7 +117,6 @@ export default function ProfilePage({
     updateUserInDb(user, mutateUser);
     const foundUser = allUsers.find((user) => user._id === id);
 
-    //clear requests
     await clearRequests(user._id, id, mutateUser);
 
     notifySuccess(`${foundUser.userName} als Freund hinzugefügt`);
@@ -125,7 +124,6 @@ export default function ProfilePage({
 
   async function rejectFriendRequest(id, index) {
     unfriendUser(id, user, mutateAllUsers);
-    //clear requests
     await clearRequests(user._id, id, mutateUser);
 
     notifyError("Anfrage abgelehnt");
@@ -143,7 +141,6 @@ export default function ProfilePage({
     user.activeHousehold = householdId;
     await updateUserInDb(user, mutateUser);
 
-    //clear requests
     await clearRequests(user._id, senderId, mutateUser);
 
     notifySuccess(`Neuer Haushalt als Standard hinzugefügt`);
@@ -151,10 +148,7 @@ export default function ProfilePage({
   }
 
   async function rejectNewHousehold(senderId, householdId) {
-    //remove new member from household members array
     leaveHousehold(householdId, user._id);
-
-    //clear requests
     await clearRequests(user._id, senderId, mutateUser);
 
     notifySuccess(`Anfrage abgelehnt.`);
