@@ -2,13 +2,13 @@ const mongoose = require("mongoose");
 
 const { Schema } = mongoose;
 
-const feebackSchema = new Schema({
+const feedbackSchema = new Schema({
   negativeFeedback: String,
   positiveFeedback: String,
   newFeatures: String,
 });
 
 const Feedback =
-  mongoose.models.Feedback || mongoose.model("feedback", feebackSchema);
+  mongoose.models.Feedback || mongoose.model("feedback", feedbackSchema);
 
 module.exports = Feedback;
