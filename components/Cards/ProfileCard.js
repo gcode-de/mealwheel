@@ -6,6 +6,7 @@ import FollowButton from "../Button/FollowButton";
 export default function ProfileCard({
   foundUser,
   user,
+  mutateUser,
   allUsers,
   mutateAllUsers,
 }) {
@@ -30,6 +31,7 @@ export default function ProfileCard({
         <FollowButton
           foundUser={foundUser}
           user={user}
+          mutateUser={mutateUser}
           allUsers={allUsers}
           mutateAllUsers={mutateAllUsers}
         />
