@@ -1,18 +1,9 @@
-import React from "react";
+import { useRouter } from "next/router";
 
 function Error({ statusCode }) {
-  return (
-    <p>
-      {statusCode
-        ? `Ein Fehler ${statusCode} ist auf dem Server aufgetreten`
-        : "Ein Client-seitiger Fehler ist aufgetreten"}
-    </p>
-  );
-}
+  const router = useRouter();
 
-Error.getInitialProps = ({ res, err }) => {
-  const statusCode = res ? res.statusCode : err ? err.statusCode : 404;
-  return { statusCode };
-};
+  router.push("/");
+}
 
 export default Error;
