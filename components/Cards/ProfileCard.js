@@ -30,9 +30,10 @@ export default function ProfileCard({
     };
     return Labels[role];
   }
+  console.log(foundUser);
   return (
     <ProfileWrapper>
-      <WrapperCenter href={`/profile/community/${foundUser._id}`}>
+      <WrapperCenter href={`/profile/community/${foundUser?._id}`}>
         <StyledProfile>
           {(foundUser?.profilePictureLink && (
             <StyledProfilePicture
@@ -45,7 +46,7 @@ export default function ProfileCard({
         </StyledProfile>
       </WrapperCenter>
       <StyledProfiletext>
-        <StyledLink href={`/profile/community/${foundUser._id}`}>
+        <StyledLink href={`/profile/community/${foundUser?._id}`}>
           {foundUser?.userName || foundUser?.firstName}
         </StyledLink>
         {followButton && (
