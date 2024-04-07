@@ -338,7 +338,8 @@ export default function DetailPage({
           {ingredients.map((ingredient) => (
             <ListItem key={ingredient._id}>
               <P>
-                {ingredient.quantity * servings} {ingredient.unit}
+                {Math.round(ingredient.quantity * servings * 100) / 100}{" "}
+                {ingredient.unit}
               </P>
               <P>{ingredient.name}</P>
             </ListItem>

@@ -6,5 +6,7 @@ export const ingredientUnits = [
   "kg",
   "EL",
   "TL",
+  "Bund",
+  "Dose",
   "Prise",
 ];
