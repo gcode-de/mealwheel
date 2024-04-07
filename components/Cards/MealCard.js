@@ -202,6 +202,7 @@ const StyledPTitle = styled.p`
   -webkit-line-clamp: 2; /* Begrenzt den Text auf zwei Zeilen */
   overflow: hidden;
   text-overflow: ellipsis;
+  text-wrap: balance;
 `;
 
 const StyledPDuration = styled.p`
