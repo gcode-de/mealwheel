@@ -4,6 +4,7 @@ import useSWR from "swr";
 import { useState } from "react";
 import { useRouter } from "next/router";
 import { notifySuccess, notifyError } from "/helpers/toast";
+import { getFilterLabelByValue } from "@/helpers/filterTags";
 import assignRecipesToCalendarDays from "@/helpers/assignRecipesToCalendarDays";
 import updateUserinDb from "@/helpers/updateUserInDb";
 import { filterTags } from "@/helpers/filterTags";
@@ -320,7 +321,7 @@ export default function DetailPage({
         )}
         <StyledTitle>{title}</StyledTitle>
         <P>
-          {duration} MIN | {difficulty}
+          {duration} MIN | {getFilterLabelByValue(difficulty)}
           {recipe.likes > 0 &&
             ` |  ${recipe.likes} ${
               recipe.likes > 1 ? "Schmeckos" : "Schmecko"

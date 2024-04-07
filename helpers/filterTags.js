@@ -42,3 +42,15 @@ export const filterTags = [
     ],
   },
 ];
+
+export function getFilterLabelByValue(value) {
+  for (const filter of filterTags) {
+    const optionFound = filter.options.find((option) => option.value === value);
+
+    if (optionFound) {
+      return optionFound.label;
+    }
+  }
+
+  return undefined;
+}

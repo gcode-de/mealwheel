@@ -8,6 +8,7 @@ import { BookUser, Menu, Reload, Trash } from "@/helpers/svg";
 import { useState } from "react";
 import ModalComponent from "../Modal";
 import AddToCollection from "../Forms/AddToCollection";
+import { getFilterLabelByValue } from "@/helpers/filterTags";
 
 export default function MealCard({
   recipe,
@@ -63,7 +64,7 @@ export default function MealCard({
           </StyledLink>
           <StyledPDuration>
             {recipe?.duration && `${recipe?.duration} MIN | `}
-            {recipe?.difficulty?.toUpperCase()}
+            {getFilterLabelByValue(recipe?.difficulty)?.toUpperCase()}
           </StyledPDuration>
           {$isFavorite !== null && (
             <LikesDisplay
