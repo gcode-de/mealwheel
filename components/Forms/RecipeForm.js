@@ -231,6 +231,7 @@ export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
                   $width="2rem"
                   required
                   min="0"
+                  step="0.01"
                   aria-label="add ingredient quantity for the recipe"
                   placeholder="Menge"
                 />
@@ -329,12 +330,12 @@ export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
             $marginLeft="1rem"
           />
           <ButtonContainer>
-            <Button type="submit">speichern</Button>
             {onDelete && (
               <Button type="button" onClick={onDelete}>
                 Rezept löschen
               </Button>
             )}
+            <Button type="submit">speichern</Button>
           </ButtonContainer>
         </Article>
       </form>
