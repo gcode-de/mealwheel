@@ -33,6 +33,7 @@ import ShoppingIcon from "../public/icons/svg/square-u_10457596.svg";
 import PizzaIcon from "../public/icons/svg/restaurant_7409576.svg";
 import ProfileIcon from "../public/icons/svg/profile.svg";
 import PlateWheelIcon from "/public/icons/svg/plate-wheel.svg";
+import CopyIcon from "@/public/icons/svg/files-medical_9856401.svg";
 
 export const ArrowUp = ArrowUpIcon;
 export const ArrowLeft = ArrowLeftIcon;
@@ -43,6 +44,7 @@ export const BookUser = BookUserIcon;
 export const Book = BookIcon;
 export const Calendar = CalenderIcon;
 export const Check = CheckIcon;
+export const Copy = CopyIcon;
 export const Edit = EditIcon;
 export const Filter = FilterIcon;
 export const Generate = GenerateIcon;
