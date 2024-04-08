@@ -440,6 +440,7 @@ const StyledIngredients = styled.article`
   margin-top: var(--gap-between);
   margin-bottom: var(--gap-between);
   width: calc(100% - (2 * var(--gap-out)));
+  overflow-wrap: break-word;
 `;
 
 const StyledHyper = styled.div`
