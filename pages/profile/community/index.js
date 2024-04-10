@@ -32,7 +32,11 @@ export default function Community({
         onClick={() => router.back()}
       />
       {community
-        .sort((a, b) => isFriendOfUser(b._id) - isFriendOfUser(a._id))
+        .sort((a, b) => {
+          return isFriendOfUser(b._id) !== isFriendOfUser(a._id)
+            ? (isFriendOfUser(b._id) ? 1 : 0) - (isFriendOfUser(a._id) ? 1 : 0)
+            : a.userName.localeCompare(b.userName);
+        })
         .map((communityUser) => (
           <ProfileCard
             key={communityUser._id}
