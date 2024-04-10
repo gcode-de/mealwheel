@@ -275,7 +275,7 @@ export default function DetailPage({
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        negativeFeedback: `User ${user?._id} (${user?.userName}) hat das Rezept ${recipe._id} (${recipe.title}) zur Überprüfung gemeldet.`,
+        negativeFeedback: `<a href="/profile/community/${user?._id}">${user?.userName}</a> hat <a href="/recipe/${recipe._id}">${recipe.title}</a> zur Überprüfung gemeldet.`,
       }),
     });
     setIsMenuVisible(false);

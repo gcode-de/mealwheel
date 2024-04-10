@@ -64,7 +64,12 @@ export default function Admin({ user, fetcher, recipes, allUsers }) {
           <ul>
             {feedback.map((item, index) =>
               item.negativeFeedback ? (
-                <li key={index}>{item.negativeFeedback}</li>
+                <li
+                  key={index}
+                  dangerouslySetInnerHTML={{ __html: item.negativeFeedback }}
+                >
+                  {/* {parser.parseFromString(item.negativeFeedback, "text/html")} */}
+                </li>
               ) : null
             )}
           </ul>
