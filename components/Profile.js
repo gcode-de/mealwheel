@@ -30,7 +30,7 @@ export default function Profile({
             : `Hallo,
           ${foundUser?.userName || foundUser?.firstName || "Gastnutzer"}!`}
         </p>
-        {name === "external-profil" && (
+        {name === "external-profil" && user._id !== foundUser._id && (
           <FollowButton
             foundUser={foundUser}
             user={user}
