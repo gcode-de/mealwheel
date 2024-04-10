@@ -34,6 +34,7 @@ import PizzaIcon from "../public/icons/svg/restaurant_7409576.svg";
 import ProfileIcon from "../public/icons/svg/profile.svg";
 import PlateWheelIcon from "/public/icons/svg/plate-wheel.svg";
 import CopyIcon from "@/public/icons/svg/files-medical_9856401.svg";
+import ExclamationIcon from "@/public/icons/svg/file-exclamation_10470546.svg";
 
 export const ArrowUp = ArrowUpIcon;
 export const ArrowLeft = ArrowLeftIcon;
@@ -46,6 +47,7 @@ export const Calendar = CalenderIcon;
 export const Check = CheckIcon;
 export const Copy = CopyIcon;
 export const Edit = EditIcon;
+export const Exclamation = ExclamationIcon;
 export const Filter = FilterIcon;
 export const Generate = GenerateIcon;
 export const Heart = HeartIcon;

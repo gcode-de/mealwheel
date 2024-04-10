@@ -11,7 +11,14 @@ import updateHouseholdInDb from "@/helpers/updateHouseholdInDb";
 import { filterTags } from "@/helpers/filterTags";
 import SetNumberOfPeople from "@/components/Cards/SetNumberOfPeople";
 import IconButton from "@/components/Button/IconButton";
-import { Pen, Book, Calendar, Copy, Shopping } from "@/helpers/svg";
+import {
+  Pen,
+  Book,
+  Calendar,
+  Copy,
+  Exclamation,
+  Shopping,
+} from "@/helpers/svg";
 import {
   Article,
   List,
@@ -263,6 +270,22 @@ export default function DetailPage({
       });
   }
 
+  async function reportRecipe() {
+    const response = await fetch("/api/feedback", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        negativeFeedback: `User ${user?._id} (${user?.userName}) hat das Rezept ${recipe._id} (${recipe.title}) zur Überprüfung gemeldet.`,
+      }),
+    });
+    setIsMenuVisible(false);
+    if (response.ok) {
+      notifySuccess("Rezept zur Überprüfung gemeldet.");
+    } else {
+      notifyError("Melden fehlgeschlagen.");
+    }
+  }
+
   return (
     <Wrapper>
       <IconButton
@@ -350,6 +373,12 @@ export default function DetailPage({
               <UnstyledButton onClick={() => router.push(`/recipe/${id}/edit`)}>
                 <Pen width={15} height={15} />
                 Rezept bearbeiten
+              </UnstyledButton>
+            )}
+            {!userIsAuthor && (
+              <UnstyledButton onClick={reportRecipe}>
+                <Exclamation width={15} height={15} />
+                Rezept melden
               </UnstyledButton>
             )}
           </MenuContainer>
