@@ -42,17 +42,21 @@ export default function MealCard({
     <StyledLi>
       <CardContainer>
         {
-          <ImageContainer>
-            <StyledImage
-              src={
-                recipe?.imageLink ||
-                "/img/jason-briscoe-7MAjXGUmaPw-unsplash.jpg"
-              }
-              alt={`recipe Image ${recipe?.title}`}
-              sizes="200px"
-              fill
-            />
-          </ImageContainer>
+          <StyledLink
+            href={`/recipe/${recipe?._id}?servings=${numberOfPeople}`}
+          >
+            <ImageContainer>
+              <StyledImage
+                src={
+                  recipe?.imageLink ||
+                  "/img/jason-briscoe-7MAjXGUmaPw-unsplash.jpg"
+                }
+                alt={`recipe Image ${recipe?.title}`}
+                sizes="200px"
+                fill
+              />
+            </ImageContainer>
+          </StyledLink>
         }
         <StyledDiv>
           <StyledLink
