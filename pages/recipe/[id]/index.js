@@ -18,6 +18,7 @@ import {
   Copy,
   Exclamation,
   Shopping,
+  XSmall,
 } from "@/helpers/svg";
 import {
   Article,
@@ -40,6 +41,7 @@ export default function DetailPage({
   mutateUser,
   userIsHouseholdAdmin,
   allUsers,
+  mutateAllUsers,
   household,
   mutateHousehold,
   error,
@@ -58,6 +60,7 @@ export default function DetailPage({
   const [isModalCalendar, setIsModalCalendar] = useState(false);
   const [isModalCollection, setIsModalCollection] = useState(false);
   const [isNewCollection, setIsNewCollection] = useState(false);
+  const [isLikedVisible, setIsLikedVisible] = useState(false);
 
   const router = useRouter();
   const { id } = router.query;
@@ -330,12 +333,13 @@ export default function DetailPage({
               ? "var(--color-highlight)"
               : "var(--color-lightgrey)"
           }
-          onClick={() => {
+          onClick={async () => {
             if (!user) {
               notifyError("Bitte zuerst einloggen.");
               return;
             }
-            toggleIsFavorite(_id, mutateUser, mutateRecipe);
+            await toggleIsFavorite(_id, mutateUser, mutateRecipe);
+            await mutateAllUsers();
           }}
         />
         <IconButton
@@ -425,11 +429,42 @@ export default function DetailPage({
         <StyledTitle>{title}</StyledTitle>
         <P>
           {duration} MIN | {getFilterLabelByValue(difficulty)}
-          {recipe.likes > 0 &&
-            ` |  ${recipe.likes} ${
-              recipe.likes > 1 ? "Schmeckos" : "Schmecko"
-            }`}
+          {recipe.likes > 0 && ` |  `}
+          <ClickableLikes
+            onClick={() => {
+              setIsLikedVisible((prev) => !prev);
+            }}
+          >
+            {recipe.likes > 0 &&
+              `${recipe.likes} ${recipe.likes > 1 ? "Schmeckos" : "Schmecko"}`}
+          </ClickableLikes>
         </P>
+        {isLikedVisible && (
+          <UserLikes>
+            Schmeckos:
+            {allUsers
+              .filter((user) =>
+                user.recipeInteractions.some(
+                  (interaction) =>
+                    interaction.recipe === recipe._id &&
+                    interaction.isFavorite === true
+                )
+              )
+              .map((likeUser) => (
+                <Link
+                  key={likeUser._id}
+                  href={`/profile/community/${likeUser._id}`}
+                >
+                  {likeUser.userName}
+                </Link>
+              ))}
+            <StyledXSmall
+              onClick={() => {
+                setIsLikedVisible(false);
+              }}
+            />
+          </UserLikes>
+        )}
         <H2>
           Zutaten{" "}
           <SetNumberOfPeople
@@ -660,4 +695,33 @@ const StyledTitle = styled.h1`
 
 const StyledInstructionsP = styled.p`
   margin: 0 0 var(--gap-between) 0;
+`;
+
+const ClickableLikes = styled.span`
+  text-decoration: underline;
+  cursor: pointer;
+`;
+
+const UserLikes = styled.div`
+  border: 1px solid var(--color-lightgrey);
+  border-radius: 10px;
+  padding: 0.5rem 1rem;
+  margin-right: var(--gap-out);
+  margin-left: var(--gap-out);
+  margin-top: var(--gap-between);
+  margin-bottom: calc(2 * var(--gap-between));
+  width: calc(100% - (2 * var(--gap-out)));
+  overflow-wrap: break-word;
+  display: flex;
+  gap: var(--gap-between);
+  position: relative;
+`;
+
+const StyledXSmall = styled(XSmall)`
+  width: 1rem;
+  height: 1rem;
+  position: absolute;
+  top: 0.25rem;
+  right: 0.25rem;
+  cursor: pointer;
 `;
