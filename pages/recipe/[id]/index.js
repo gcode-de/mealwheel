@@ -7,10 +7,11 @@ import { notifySuccess, notifyError } from "/helpers/toast";
 import { getFilterLabelByValue } from "@/helpers/filterTags";
 import assignRecipesToCalendarDays from "@/helpers/assignRecipesToCalendarDays";
 import updateUserinDb from "@/helpers/updateUserInDb";
+import updateHouseholdInDb from "@/helpers/updateHouseholdInDb";
 import { filterTags } from "@/helpers/filterTags";
 import SetNumberOfPeople from "@/components/Cards/SetNumberOfPeople";
 import IconButton from "@/components/Button/IconButton";
-import { Pen, Book, Calendar, Copy } from "@/helpers/svg";
+import { Pen, Book, Calendar, Copy, Shopping } from "@/helpers/svg";
 import {
   Article,
   List,
@@ -229,6 +230,39 @@ export default function DetailPage({
     }
   }
 
+  async function addIngredientsToShoppinglist() {
+    // Berechne die neuen Mengen basierend auf der aktuellen Portionenzahl
+    const adjustedIngredients = recipe.ingredients.map((ingredient) => ({
+      ...ingredient,
+      quantity: ingredient.quantity * servings,
+      isChecked: false, // Markiere neue Zutaten als nicht gecheckt
+    }));
+
+    const uncategorizedCategory = household.shoppingList.find(
+      (category) => category.category === "Unsortiert"
+    );
+
+    if (uncategorizedCategory) {
+      uncategorizedCategory.items.push(...adjustedIngredients);
+    } else {
+      household.shoppingList.push({
+        category: "Unsortiert",
+        items: adjustedIngredients,
+      });
+    }
+
+    setIsMenuVisible(false);
+
+    await updateHouseholdInDb(household, mutateHousehold)
+      .then(() => notifySuccess("Zutaten wurden zur Einkaufsliste hinzugefügt"))
+      .catch((error) => {
+        console.error("Fehler beim Aktualisieren der Einkaufsliste", error);
+        notifyError(
+          "Es gab ein Problem beim Hinzufügen der Zutaten zur Einkaufsliste."
+        );
+      });
+  }
+
   return (
     <Wrapper>
       <IconButton
@@ -303,6 +337,10 @@ export default function DetailPage({
             <UnstyledButton onClick={toggleModalCollection}>
               <Book width={15} height={15} />
               Rezept im Kochbuch speichern
+            </UnstyledButton>
+            <UnstyledButton onClick={addIngredientsToShoppinglist}>
+              <Shopping width={15} height={15} />
+              Zutaten in die Einkaufsliste
             </UnstyledButton>
             <UnstyledButton onClick={duplicateRecipe}>
               <Copy width={15} height={15} />
