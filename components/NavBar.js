@@ -28,6 +28,9 @@ export default function NavBar({ user }) {
             <Icon width="100%" height="100%" />
           </StyledIconContainer>
           <span>{label}</span>
+          {href === "/profile" && user.connectionRequests.length >= 1 && (
+            <Notification />
+          )}
         </StyledNavElement>
       ))}
     </StyledNav>
@@ -58,6 +61,7 @@ const StyledNavElement = styled(Link)`
   text-decoration: none;
   font-size: 0.8rem;
   font-weight: 500;
+  position: relative;
 
   @media only screen and (min-width: 900px) {
     &:hover {
@@ -81,4 +85,15 @@ const StyledIconContainer = styled.div`
   margin-bottom: 5px;
   transition: transform 0.2s ease;
   cursor: pointer;
+`;
+
+const Notification = styled.div`
+  height: 0.6rem;
+  width: 0.6rem;
+  background-color: var(--color-highlight);
+  border-radius: 100%;
+  position: absolute;
+  z-index: 4;
+  left: 0.75rem;
+  top: 0;
 `;
