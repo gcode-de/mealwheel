@@ -17,6 +17,10 @@ export default function Community({
 
   const community = allUsers.filter((human) => human._id !== user._id);
 
+  function isFriendOfUser(id) {
+    return user.friends.some((friend) => friend === id);
+  }
+
   return (
     <>
       <Spacer />
@@ -27,17 +31,19 @@ export default function Community({
         left="var(--gap-out)"
         onClick={() => router.back()}
       />
-      {community.map((communityUser) => (
-        <ProfileCard
-          key={communityUser._id}
-          foundUser={communityUser}
-          user={user}
-          allUsers={allUsers}
-          mutateAllUsers={mutateAllUsers}
-          mutateUser={mutateUser}
-          followButton={true}
-        />
-      ))}
+      {community
+        .sort((a, b) => isFriendOfUser(b._id) - isFriendOfUser(a._id))
+        .map((communityUser) => (
+          <ProfileCard
+            key={communityUser._id}
+            foundUser={communityUser}
+            user={user}
+            allUsers={allUsers}
+            mutateAllUsers={mutateAllUsers}
+            mutateUser={mutateUser}
+            followButton={true}
+          />
+        ))}
     </>
   );
 }

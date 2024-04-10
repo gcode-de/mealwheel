@@ -30,7 +30,6 @@ export default function ProfileCard({
     };
     return Labels[role];
   }
-  console.log(foundUser);
   return (
     <ProfileWrapper>
       <WrapperCenter href={`/profile/community/${foundUser?._id}`}>
