@@ -113,47 +113,7 @@ const Wrapper = styled.div`
   flex-direction: column;
   flex-wrap: nowrap;
 `;
-// import styled from "styled-components";
-// import Image from "next/image";
-// import Link from "next/link";
-// import FollowButton from "../Button/FollowButton";
 
-// export default function ProfileCard({
-//   foundUser,
-//   user,
-//   mutateUser,
-//   allUsers,
-//   mutateAllUsers,
-// }) {
-//   return (
-//     <ProfileWrapper>
-//       <WrapperCenter href={`/profile/community/${foundUser._id}`}>
-//         <StyledProfile>
-//           {(foundUser?.profilePictureLink && (
-//             <StyledProfilePicture
-//               src={foundUser?.profilePictureLink}
-//               alt="Profile Picture"
-//               width={106}
-//               height={106}
-//             />
-//           )) || <h1>🙋‍♀️</h1>}
-//         </StyledProfile>
-//       </WrapperCenter>
-//       <StyledProfiletext>
-//         <StyledLink href={`/profile/community/${foundUser._id}`}>
-//           {foundUser?.userName || foundUser?.firstName}
-//         </StyledLink>
-//         <FollowButton
-//           foundUser={foundUser}
-//           user={user}
-//           mutateUser={mutateUser}
-//           allUsers={allUsers}
-//           mutateAllUsers={mutateAllUsers}
-//         />
-//       </StyledProfiletext>
-//     </ProfileWrapper>
-//   );
-// }
 const WrapperCenter = styled(Link)`
   display: flex;
 
