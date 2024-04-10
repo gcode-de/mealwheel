@@ -235,7 +235,7 @@ export default function DetailPage({
     const adjustedIngredients = recipe.ingredients.map((ingredient) => ({
       ...ingredient,
       quantity: ingredient.quantity * servings,
-      isChecked: false, // Markiere neue Zutaten als nicht gecheckt
+      isChecked: false,
     }));
 
     const uncategorizedCategory = household.shoppingList.find(
