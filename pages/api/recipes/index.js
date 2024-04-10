@@ -86,7 +86,9 @@ export default async function handler(request, response) {
       };
       const recipe = new Recipe(recipeData);
       await recipe.save();
-      return response.status(201).json({ status: "Recipe created." });
+      return response
+        .status(201)
+        .json({ status: "Recipe created.", id: recipe._id });
     } catch (error) {
       console.error(error);
       return response.status(400).json({ error: error.message });

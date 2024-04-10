@@ -334,18 +334,18 @@ export default function ProfilePage({
           <H2>Gib uns Feedback</H2>
           <StyledForm onSubmit={handleFeedback}>
             <StyledInput
-              name="negativeFeedback"
-              placeholder="Sag uns, was dir noch nicht gefällt?"
-            />
-            <StyledInput
               name="positiveFeedback"
               placeholder="Was gefällt dir besonders gut?"
             />
             <StyledInput
-              name="newFeatures"
-              placeholder="Welche Funktion wünschst du dir?"
+              name="negativeFeedback"
+              placeholder="Was können wir noch verbessern?"
             />
-            <Button type="submit">schick&apos;s ab 🚀</Button>
+            <StyledInput
+              name="newFeatures"
+              placeholder="Welche neue Funktion wünschst du dir?"
+            />
+            <Button type="submit">Abschicken 🚀</Button>
           </StyledForm>
         </ModalComponent>
       )}
@@ -436,11 +436,11 @@ const StyledForm = styled.form`
   flex-direction: column;
   gap: calc(2 * var(--gap-between));
 `;
-const StyledInput = styled.input`
+const StyledInput = styled.textarea`
   background-color: var(--color-background);
   border: none;
   border-radius: 10px;
-  height: 3rem;
+  height: 6rem;
   width: 100%;
   flex-grow: ${(props) => props.$flexGrow};
   padding: 0.7rem;

@@ -10,7 +10,7 @@ import updateUserinDb from "@/helpers/updateUserInDb";
 import { filterTags } from "@/helpers/filterTags";
 import SetNumberOfPeople from "@/components/Cards/SetNumberOfPeople";
 import IconButton from "@/components/Button/IconButton";
-import { Pen, Book, Calendar } from "@/helpers/svg";
+import { Pen, Book, Calendar, Copy } from "@/helpers/svg";
 import {
   Article,
   List,
@@ -197,6 +197,38 @@ export default function DetailPage({
     setIsModalCollection(!isModalCollection);
   }
 
+  async function duplicateRecipe() {
+    const modifiedRecipeData = {
+      ...recipe,
+      title: `Kopie von ${recipe.title}`,
+      author: user._id,
+    };
+    delete modifiedRecipeData._id;
+
+    try {
+      const response = await fetch("/api/recipes", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(modifiedRecipeData),
+      });
+
+      if (!response.ok) {
+        throw new Error("Fehler beim Duplizieren des Rezepts");
+      }
+
+      const result = await response.json();
+      notifySuccess("Rezept wurde dupliziert.");
+      setIsMenuVisible(false);
+      router.push(`/recipe/${result?.id}`);
+    } catch (error) {
+      console.error("Fehler beim Duplizieren des Rezepts:", error);
+      setIsMenuVisible(false);
+      notifyError("Fehler beim Duplizieren des Rezepts");
+    }
+  }
+
   return (
     <Wrapper>
       <IconButton
@@ -271,6 +303,10 @@ export default function DetailPage({
             <UnstyledButton onClick={toggleModalCollection}>
               <Book width={15} height={15} />
               Rezept im Kochbuch speichern
+            </UnstyledButton>
+            <UnstyledButton onClick={duplicateRecipe}>
+              <Copy width={15} height={15} />
+              Rezept duplizieren
             </UnstyledButton>
             {userIsAuthor && (
               <UnstyledButton onClick={() => router.push(`/recipe/${id}/edit`)}>
@@ -440,6 +476,7 @@ const StyledIngredients = styled.article`
   margin-top: var(--gap-between);
   margin-bottom: var(--gap-between);
   width: calc(100% - (2 * var(--gap-out)));
+  overflow-wrap: break-word;
 `;
 
 const StyledHyper = styled.div`
