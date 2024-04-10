@@ -6,6 +6,10 @@ import styled from "styled-components";
 import { getProviders, signIn } from "next-auth/react";
 
 export default function SignIn({ providers }) {
+  if (Object.values(providers).length === 1) {
+    signIn(Object.values(providers)[0].id, { callbackUrl: "/profile" });
+  }
+
   return (
     <>
       <StyledBackround

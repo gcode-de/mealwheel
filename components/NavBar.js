@@ -28,7 +28,7 @@ export default function NavBar({ user }) {
             <Icon width="100%" height="100%" />
           </StyledIconContainer>
           <span>{label}</span>
-          {href === "/profile" && user.connectionRequests.length >= 1 && (
+          {href === "/profile" && user?.connectionRequests.length >= 1 && (
             <Notification />
           )}
         </StyledNavElement>
