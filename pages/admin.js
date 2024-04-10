@@ -106,4 +106,7 @@ const Wrapper = styled.div`
   margin-bottom: calc(2 * var(--gap-between));
   width: calc(100% - (2 * var(--gap-out)));
   position: relative;
+  li {
+    margin-bottom: 0.5rem;
+  }
 `;

@@ -705,7 +705,7 @@ const ClickableLikes = styled.span`
 const UserLikes = styled.div`
   border: 1px solid var(--color-lightgrey);
   border-radius: 10px;
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 0.5rem;
   margin-right: var(--gap-out);
   margin-left: var(--gap-out);
   margin-top: var(--gap-between);
@@ -715,6 +715,7 @@ const UserLikes = styled.div`
   display: flex;
   gap: var(--gap-between);
   position: relative;
+  font-size: 0.85rem;
 `;
 
 const StyledXSmall = styled(XSmall)`
