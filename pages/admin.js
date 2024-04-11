@@ -68,8 +68,8 @@ export default function Admin({
       {user.admin && (
         <>
           <Header text={"Admin, baby!"} />
-          <CountUp target={allUsers.length} label="Benutzer" />
-          <CountUp target={recipes.length} label="Rezepte" />
+          <CountUp target={allUsers?.length} label="Benutzer" />
+          <CountUp target={recipes?.length} label="Rezepte" />
           <br />
           <h2>Feedback</h2>
           <h4>positiv</h4>
