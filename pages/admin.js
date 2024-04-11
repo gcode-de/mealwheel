@@ -6,6 +6,7 @@ import useSWR from "swr";
 import { useRouter } from "next/router";
 import styled from "styled-components";
 import React, { useState, useEffect } from "react";
+import { notifySuccess, notifyError } from "/helpers/toast";
 
 export default function Admin({
   user,
@@ -43,6 +44,7 @@ export default function Admin({
   }
 
   function recalculateLikesInRecipes() {
+    let performedChanges = 0;
     recipes.forEach((recipe) => {
       const savedLikes = recipe.likes;
       const individualLikes = allUsers.reduce((acc, user) => {
@@ -53,8 +55,12 @@ export default function Admin({
         return isFavourite ? acc + 1 : acc;
       }, 0);
       const offset = savedLikes - individualLikes;
-      updateLikes(recipe._id, offset * -1, mutateRecipes);
+      if (offset !== 0) {
+        performedChanges++;
+        updateLikes(recipe._id, offset * -1, mutateRecipes);
+      }
     });
+    notifySuccess(`Schemckos neu berechnet, ${performedChanges} Änderungen.`);
   }
 
   return (
