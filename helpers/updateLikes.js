@@ -1,5 +1,4 @@
 export default async function updateLikes(recipeId, likeChange, mutate) {
-  console.log("updateLikes", recipeId, likeChange, mutate);
   try {
     mutate();
 
