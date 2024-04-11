@@ -119,7 +119,7 @@ export default function Admin({
           </ul>
         </>
       )}
-      <Button onClick={recalculateLikesInRecipes}>Likes neu berechnen</Button>
+      <Button onClick={recalculateLikesInRecipes}>Update Schmeckos</Button>
     </Wrapper>
   );
 }
