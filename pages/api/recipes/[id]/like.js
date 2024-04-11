@@ -7,10 +7,8 @@ import { authOptions } from "../../auth/[...nextauth]";
 export default async function handler(request, response) {
   await dbConnect();
 
-  // Versuche, die Session des Benutzers zu erhalten
   const session = await getServerSession(request, response, authOptions);
 
-  // Wenn keine Session vorhanden ist, antworte mit einem Fehler.
   if (!session) {
     return response
       .status(401)
@@ -19,11 +17,12 @@ export default async function handler(request, response) {
 
   if (request.method === "PUT") {
     const { id } = request.query;
-    const { likeChange } = request.body; // Erwartet 1 oder -1
+    const { likeChange } = request.body;
 
-    if (![1, -1].includes(likeChange)) {
-      return response.status(400).json({ error: "Invalid like change value." });
-    }
+    // if (![1, -1].includes(likeChange)) {
+    //   return response.status(400).json({ error: "Invalid like change value." });
+    // }
+    //the code above was disabled for the "synchronize likes" function on admin page to work.
 
     try {
       const recipe = await Recipe.findById(id);

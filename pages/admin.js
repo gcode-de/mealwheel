@@ -1,20 +1,25 @@
-import { Spacer, H2 } from "@/components/Styled/Styled";
+import { Spacer, H2, Button } from "@/components/Styled/Styled";
 import Header from "@/components/Styled/Header";
+import updateLikes from "@/helpers/updateLikes";
 
 import useSWR from "swr";
 import { useRouter } from "next/router";
 import styled from "styled-components";
 import React, { useState, useEffect } from "react";
 
-export default function Admin({ user, fetcher, recipes, allUsers }) {
+export default function Admin({
+  user,
+  fetcher,
+  recipes,
+  mutateRecipes,
+  allUsers,
+}) {
   const {
     data: feedback,
     isLoading,
     error,
     mutate,
   } = useSWR(`/api/feedback`, fetcher);
-
-  const router = useRouter();
 
   const CountUp = ({ target, label }) => {
     const [count, setCount] = useState(0);
@@ -36,7 +41,21 @@ export default function Admin({ user, fetcher, recipes, allUsers }) {
   if (!user || !feedback) {
     return;
   }
-  console.log(feedback);
+
+  function recalculateLikesInRecipes() {
+    recipes.forEach((recipe) => {
+      const savedLikes = recipe.likes;
+      const individualLikes = allUsers.reduce((acc, user) => {
+        const isFavourite = user.recipeInteractions.some(
+          (interaction) =>
+            interaction.recipe === recipe._id && interaction.isFavorite
+        );
+        return isFavourite ? acc + 1 : acc;
+      }, 0);
+      const offset = savedLikes - individualLikes;
+      updateLikes(recipe._id, offset * -1, mutateRecipes);
+    });
+  }
 
   return (
     <Wrapper>
@@ -94,6 +113,7 @@ export default function Admin({ user, fetcher, recipes, allUsers }) {
           </ul>
         </>
       )}
+      <Button onClick={recalculateLikesInRecipes}>Likes neu berechnen</Button>
     </Wrapper>
   );
 }
