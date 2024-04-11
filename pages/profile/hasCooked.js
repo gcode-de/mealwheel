@@ -73,8 +73,8 @@ export default function HasCooked({
                 key={recipe._id}
                 recipe={recipe}
                 $isFavorite={getRecipeProperty(recipe._id, "isFavorite")}
-                onToggleIsFavorite={() => {
-                  toggleIsFavorite(recipe._id, mutateUser, mutateRecipes);
+                onToggleIsFavorite={async () => {
+                  await toggleIsFavorite(recipe._id, mutateUser, mutateRecipes);
                 }}
               ></MealCard>
             );
