@@ -7,10 +7,19 @@ import { notifySuccess, notifyError } from "/helpers/toast";
 import { getFilterLabelByValue } from "@/helpers/filterTags";
 import assignRecipesToCalendarDays from "@/helpers/assignRecipesToCalendarDays";
 import updateUserinDb from "@/helpers/updateUserInDb";
+import updateHouseholdInDb from "@/helpers/updateHouseholdInDb";
 import { filterTags } from "@/helpers/filterTags";
 import SetNumberOfPeople from "@/components/Cards/SetNumberOfPeople";
 import IconButton from "@/components/Button/IconButton";
-import { Pen, Book, Calendar, Copy } from "@/helpers/svg";
+import {
+  Pen,
+  Book,
+  Calendar,
+  Copy,
+  Exclamation,
+  Shopping,
+  XSmall,
+} from "@/helpers/svg";
 import {
   Article,
   List,
@@ -32,6 +41,7 @@ export default function DetailPage({
   mutateUser,
   userIsHouseholdAdmin,
   allUsers,
+  mutateAllUsers,
   household,
   mutateHousehold,
   error,
@@ -50,6 +60,7 @@ export default function DetailPage({
   const [isModalCalendar, setIsModalCalendar] = useState(false);
   const [isModalCollection, setIsModalCollection] = useState(false);
   const [isNewCollection, setIsNewCollection] = useState(false);
+  const [isLikedVisible, setIsLikedVisible] = useState(false);
 
   const router = useRouter();
   const { id } = router.query;
@@ -229,6 +240,55 @@ export default function DetailPage({
     }
   }
 
+  async function addIngredientsToShoppinglist() {
+    // Berechne die neuen Mengen basierend auf der aktuellen Portionenzahl
+    const adjustedIngredients = recipe.ingredients.map((ingredient) => ({
+      ...ingredient,
+      quantity: ingredient.quantity * servings,
+      isChecked: false,
+    }));
+
+    const uncategorizedCategory = household.shoppingList.find(
+      (category) => category.category === "Unsortiert"
+    );
+
+    if (uncategorizedCategory) {
+      uncategorizedCategory.items.push(...adjustedIngredients);
+    } else {
+      household.shoppingList.push({
+        category: "Unsortiert",
+        items: adjustedIngredients,
+      });
+    }
+
+    setIsMenuVisible(false);
+
+    await updateHouseholdInDb(household, mutateHousehold)
+      .then(() => notifySuccess("Zutaten wurden zur Einkaufsliste hinzugefügt"))
+      .catch((error) => {
+        console.error("Fehler beim Aktualisieren der Einkaufsliste", error);
+        notifyError(
+          "Es gab ein Problem beim Hinzufügen der Zutaten zur Einkaufsliste."
+        );
+      });
+  }
+
+  async function reportRecipe() {
+    const response = await fetch("/api/feedback", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        negativeFeedback: `<a href="/profile/community/${user?._id}">${user?.userName}</a> hat <a href="/recipe/${recipe._id}">${recipe.title}</a> zur Überprüfung gemeldet.`,
+      }),
+    });
+    setIsMenuVisible(false);
+    if (response.ok) {
+      notifySuccess("Rezept zur Überprüfung gemeldet.");
+    } else {
+      notifyError("Melden fehlgeschlagen.");
+    }
+  }
+
   return (
     <Wrapper>
       <IconButton
@@ -273,12 +333,13 @@ export default function DetailPage({
               ? "var(--color-highlight)"
               : "var(--color-lightgrey)"
           }
-          onClick={() => {
+          onClick={async () => {
             if (!user) {
               notifyError("Bitte zuerst einloggen.");
               return;
             }
-            toggleIsFavorite(_id, mutateUser, mutateRecipe);
+            await toggleIsFavorite(_id, mutateUser, mutateRecipe);
+            await mutateAllUsers();
           }}
         />
         <IconButton
@@ -304,6 +365,10 @@ export default function DetailPage({
               <Book width={15} height={15} />
               Rezept im Kochbuch speichern
             </UnstyledButton>
+            <UnstyledButton onClick={addIngredientsToShoppinglist}>
+              <Shopping width={15} height={15} />
+              Zutaten in die Einkaufsliste
+            </UnstyledButton>
             <UnstyledButton onClick={duplicateRecipe}>
               <Copy width={15} height={15} />
               Rezept duplizieren
@@ -312,6 +377,12 @@ export default function DetailPage({
               <UnstyledButton onClick={() => router.push(`/recipe/${id}/edit`)}>
                 <Pen width={15} height={15} />
                 Rezept bearbeiten
+              </UnstyledButton>
+            )}
+            {!userIsAuthor && (
+              <UnstyledButton onClick={reportRecipe}>
+                <Exclamation width={15} height={15} />
+                Rezept melden
               </UnstyledButton>
             )}
           </MenuContainer>
@@ -358,11 +429,42 @@ export default function DetailPage({
         <StyledTitle>{title}</StyledTitle>
         <P>
           {duration} MIN | {getFilterLabelByValue(difficulty)}
-          {recipe.likes > 0 &&
-            ` |  ${recipe.likes} ${
-              recipe.likes > 1 ? "Schmeckos" : "Schmecko"
-            }`}
+          {recipe.likes > 0 && ` |  `}
+          <ClickableLikes
+            onClick={() => {
+              setIsLikedVisible((prev) => !prev);
+            }}
+          >
+            {recipe.likes > 0 &&
+              `${recipe.likes} ${recipe.likes > 1 ? "Schmeckos" : "Schmecko"}`}
+          </ClickableLikes>
         </P>
+        {isLikedVisible && (
+          <UserLikes>
+            Schmeckos:
+            {allUsers
+              .filter((user) =>
+                user.recipeInteractions.some(
+                  (interaction) =>
+                    interaction.recipe === recipe._id &&
+                    interaction.isFavorite === true
+                )
+              )
+              .map((likeUser) => (
+                <Link
+                  key={likeUser._id}
+                  href={`/profile/community/${likeUser._id}`}
+                >
+                  {likeUser.userName}
+                </Link>
+              ))}
+            <StyledXSmall
+              onClick={() => {
+                setIsLikedVisible(false);
+              }}
+            />
+          </UserLikes>
+        )}
         <H2>
           Zutaten{" "}
           <SetNumberOfPeople
@@ -593,4 +695,34 @@ const StyledTitle = styled.h1`
 
 const StyledInstructionsP = styled.p`
   margin: 0 0 var(--gap-between) 0;
+`;
+
+const ClickableLikes = styled.span`
+  text-decoration: underline;
+  cursor: pointer;
+`;
+
+const UserLikes = styled.div`
+  border: 1px solid var(--color-lightgrey);
+  border-radius: 10px;
+  padding: 0.5rem 0.5rem;
+  margin-right: var(--gap-out);
+  margin-left: var(--gap-out);
+  margin-top: var(--gap-between);
+  margin-bottom: calc(2 * var(--gap-between));
+  width: calc(100% - (2 * var(--gap-out)));
+  overflow-wrap: break-word;
+  display: flex;
+  gap: var(--gap-between);
+  position: relative;
+  font-size: 0.85rem;
+`;
+
+const StyledXSmall = styled(XSmall)`
+  width: 1rem;
+  height: 1rem;
+  position: absolute;
+  top: 0.25rem;
+  right: 0.25rem;
+  cursor: pointer;
 `;

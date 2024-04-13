@@ -94,9 +94,6 @@ export default function App({
       likeChange = 1;
     }
 
-    user.recipeInteractions = updatedRecipeInteractions;
-    await updateUserinDb(user, mutateUser);
-
     try {
       await updateLikes(_id, likeChange, mutateRecipes);
     } catch (error) {
@@ -106,6 +103,9 @@ export default function App({
       );
       return;
     }
+
+    user.recipeInteractions = updatedRecipeInteractions;
+    await updateUserinDb(user, mutateUser);
   }
 
   async function toggleHasCooked(_id) {
