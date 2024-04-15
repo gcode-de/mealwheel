@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { Heart, Pot } from "@/helpers/svg";
 
 export default function RandomnessSlider({
   type,
@@ -23,6 +24,24 @@ export default function RandomnessSlider({
           <SliderMark key={index} style={{ left: `${(index / max) * 100}%` }} />
         ))}
       </MarksContainer>
+      <LabelContainer>
+        <div>
+          {max - value == 1 ? (
+            <>
+              1 Rezept mit <Heart height="1rem" width="1rem" /> und{" "}
+              <Pot height="1rem" width="1rem" />
+            </>
+          ) : (
+            <>
+              {max - value} Rezepte mit <Heart height="1rem" width="1rem" /> und{" "}
+              <Pot height="1rem" width="1rem" />
+            </>
+          )}
+        </div>
+        <div>
+          {value == 1 ? `1 zufälliges Rezept` : `${value} zufällige Rezepte`}
+        </div>
+      </LabelContainer>
     </SliderContainer>
   );
 }
@@ -142,5 +161,20 @@ const StyledSlider = styled.input`
   }
   &:focus::-ms-fill-upper {
     background: var(--color-font);
+  }
+`;
+
+const LabelContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  div {
+    width: 6rem;
+  }
+
+  :nth-child(1) {
+    text-align: left;
+  }
+  :nth-child(2) {
+    text-align: right;
   }
 `;
