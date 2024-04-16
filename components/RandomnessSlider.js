@@ -28,13 +28,26 @@ export default function RandomnessSlider({
         <div>
           {max - value == 1 ? (
             <>
-              1 Rezept mit <Heart height="1rem" width="1rem" /> und{" "}
-              <Pot height="1rem" width="1rem" />
+              1 Rezept mit <br />
+              <Heart
+                height="1rem"
+                width="1rem"
+                fill="var(--color-highlight)"
+              />{" "}
+              und{" "}
+              <Pot height="1rem" width="1rem" fill="var(--color-highlight)" />
             </>
           ) : (
             <>
-              {max - value} Rezepte mit <Heart height="1rem" width="1rem" /> und{" "}
-              <Pot height="1rem" width="1rem" />
+              {max - value} Rezepte mit
+              <br />
+              <Heart
+                height="1rem"
+                width="1rem"
+                fill="var(--color-highlight)"
+              />{" "}
+              und{" "}
+              <Pot height="1rem" width="1rem" fill="var(--color-highlight)" />
             </>
           )}
         </div>
@@ -55,7 +68,7 @@ const SliderContainer = styled.div`
 
 const MarksContainer = styled.div`
   position: absolute;
-  top: 26px; // Adjust this value based on your needs
+  top: 26px;
   left: 14px;
   right: 14px;
   height: 4px;
@@ -168,7 +181,7 @@ const LabelContainer = styled.div`
   display: flex;
   justify-content: space-between;
   div {
-    width: 6rem;
+    width: 6.5rem;
   }
 
   :nth-child(1) {
