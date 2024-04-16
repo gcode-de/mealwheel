@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { Heart, Pot } from "@/helpers/svg";
+import { filterTags } from "@/helpers/filterTags";
 
 export default function RandomnessSlider({
   type,
@@ -8,7 +9,9 @@ export default function RandomnessSlider({
   value,
   onChange,
   $isActive,
+  setDietForRandomRecipes,
 }) {
+  const dietTypes = filterTags.find((tag) => tag.type === "diet").options;
   return (
     <SliderContainer $isActive={$isActive}>
       <StyledSlider
@@ -55,6 +58,18 @@ export default function RandomnessSlider({
           {value == 1 ? `1 zufälliges Rezept` : `${value} zufällige Rezepte`}
         </div>
       </LabelContainer>
+      <select
+        onChange={(e) => {
+          setDietForRandomRecipes(e.target.value);
+        }}
+      >
+        <option value="null">alle Rezepte</option>
+        {dietTypes.map((dietType) => (
+          <option value={dietType.value} key={dietType.value}>
+            {dietType.label}
+          </option>
+        ))}
+      </select>
     </SliderContainer>
   );
 }
@@ -64,6 +79,10 @@ const SliderContainer = styled.div`
   width: 80%;
   margin: 0 auto;
   opacity: ${(props) => !props.$isActive && "0.2"};
+  select {
+    position: absolute;
+    right: 0;
+  }
 `;
 
 const MarksContainer = styled.div`

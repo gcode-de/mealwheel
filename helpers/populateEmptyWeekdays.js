@@ -4,6 +4,7 @@ export default async function populateEmptyWeekdays(
   weekdays,
   assignableDays,
   randomRecipes,
+  dietForRandomRecipes,
   numberOfRandomRecipes,
   user,
   household,

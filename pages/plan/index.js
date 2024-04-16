@@ -60,6 +60,7 @@ export default function Plan({
   const [weekdays, setWeekdays] = useState([]);
   const [assignableDays, setAssignableDays] = useState([]);
   const [numberOfRandomRecipes, setNumberOfRandomRecipes] = useState(0);
+  const [dietForRandomRecipes, setDietForRandomRecipes] = useState(null);
   const [isRandomnessActive, setIsRandomnessActive] = useState(false);
 
   function toggleRandomness() {
@@ -113,6 +114,13 @@ export default function Plan({
     isLoading: randomRecipesIsLoading,
     error: randomRecipesError,
   } = useSWR(`/api/recipes/random/10`);
+
+  const filteredRandomRecipes =
+    dietForRandomRecipes === null
+      ? randomRecipes
+      : randomRecipes?.filter((recipe) =>
+          recipe.diet.some((dietItem) => dietItem === dietForRandomRecipes)
+        );
 
   async function getRandomRecipe() {
     const response = await fetch(`/api/recipes/random/`);
@@ -453,6 +461,7 @@ export default function Plan({
                 max={assignableDays.length}
                 value={numberOfRandomRecipes}
                 onChange={handleSliderChange}
+                setDietForRandomRecipes={setDietForRandomRecipes}
               />
             )}
           </RandomnessSliderContainer>
@@ -528,7 +537,8 @@ export default function Plan({
               populateEmptyWeekdays(
                 weekdays,
                 assignableDays,
-                randomRecipes,
+                filteredRandomRecipes,
+                dietForRandomRecipes,
                 numberOfRandomRecipes,
                 user,
                 household,
