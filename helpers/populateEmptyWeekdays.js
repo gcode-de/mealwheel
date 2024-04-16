@@ -84,7 +84,7 @@ export default async function populateEmptyWeekdays(
   }));
 
   if (recipeAssignments.length < assignableDays.length)
-    notifyError("nicht genügen passende Rezepte gefunden!");
+    notifyError("Nicht genügend passende Rezepte gefunden!");
 
   assignRecipesToCalendarDays(recipeAssignments, household, mutateHousehold);
 }
