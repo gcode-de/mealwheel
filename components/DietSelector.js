@@ -1,8 +1,7 @@
-import styled from "styled-components";
-
+import { Select } from "./Styled/Styled";
 export default function DietSelector({ dietTypes, onChange, defaultValue }) {
   return (
-    <select
+    <Select
       onChange={(e) => {
         onChange(e.target.value);
       }}
@@ -14,6 +13,6 @@ export default function DietSelector({ dietTypes, onChange, defaultValue }) {
           {dietType?.label}
         </option>
       ))}
-    </select>
+    </Select>
   );
 }
