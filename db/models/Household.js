@@ -41,7 +41,7 @@ const householdSchema = new Schema({
     weekdaysEnabled: {},
     mealsPerDay: Number,
     defaultNumberOfPeople: Number,
-    defaultDiet: [String],
+    defaultDiet: String,
     numberOfRandomMeals: Number,
   },
   calendar: [calendarEntrySchema],

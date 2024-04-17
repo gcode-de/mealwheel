@@ -39,6 +39,8 @@ import LoadingComponent from "@/components/Loading";
 import IconButtonLarge from "@/components/Button/IconButtonLarge";
 import { notifySuccess, notifyError } from "/helpers/toast";
 import ToggleCheckbox from "@/components/ToggleCheckbox";
+import DietSelector from "@/components/DietSelector";
+import { filterTags } from "@/helpers/filterTags";
 
 export default function Plan({
   isLoading,
@@ -60,7 +62,10 @@ export default function Plan({
   const [weekdays, setWeekdays] = useState([]);
   const [assignableDays, setAssignableDays] = useState([]);
   const [numberOfRandomRecipes, setNumberOfRandomRecipes] = useState(0);
-  const [dietForRandomRecipes, setDietForRandomRecipes] = useState(null);
+  const dietTypes = filterTags.find((tag) => tag.type === "diet").options;
+  const [dietForRandomRecipes, setDietForRandomRecipes] = useState(
+    household?.settings?.defaultDiet
+  );
   const [isRandomnessActive, setIsRandomnessActive] = useState(false);
 
   function toggleRandomness() {
@@ -461,8 +466,16 @@ export default function Plan({
                 max={assignableDays.length}
                 value={numberOfRandomRecipes}
                 onChange={handleSliderChange}
-                setDietForRandomRecipes={setDietForRandomRecipes}
               />
+            )}
+            {weekdays && (
+              <DietSelectorWrapper>
+                <DietSelector
+                  dietTypes={dietTypes}
+                  onChange={setDietForRandomRecipes}
+                  defaultValue={dietForRandomRecipes}
+                />
+              </DietSelectorWrapper>
             )}
           </RandomnessSliderContainer>
         )}
@@ -604,4 +617,14 @@ const StyledH2 = styled.h2`
   align-items: space-around;
   gap: 0.5rem;
   position: relative;
+`;
+
+const DietSelectorWrapper = styled.div`
+  position: relative;
+  width: 80%;
+  margin: 0 auto;
+  select {
+    position: absolute;
+    right: 0;
+  }
 `;
