@@ -296,9 +296,11 @@ export default function ShoppingList({
                       }
                     >
                       <Input
+                        $width={"4rem"}
                         type="number"
                         defaultValue={item.quantity}
                         min="0"
+                        step="0.01"
                         aria-label="edit ingredient quantity for the recipe"
                         name="quantity"
                       />
@@ -364,8 +366,9 @@ export default function ShoppingList({
             <StyledIngredients>
               <Input
                 type="number"
-                $width={"3rem"}
+                $width={"4rem"}
                 min="0"
+                step="0.01"
                 aria-label="add ingredient quantity for the recipe"
                 name="quantity"
               />
