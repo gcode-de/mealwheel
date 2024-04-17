@@ -64,10 +64,6 @@ const SliderContainer = styled.div`
   width: 80%;
   margin: 0 auto;
   opacity: ${(props) => !props.$isActive && "0.2"};
-  select {
-    position: absolute;
-    right: 0;
-  }
 `;
 
 const MarksContainer = styled.div`
