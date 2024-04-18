@@ -681,10 +681,10 @@ const StyledCategoryButton = styled.button`
   color: var(--color-darkgrey);
   border: solid var(--color-darkgrey) 1px;
   border-radius: var(--border-radius-small);
-  width: 6rem;
   height: 1.75rem;
   margin-bottom: 0.5rem;
-  padding: 0.25rem;
+  margin-right: 0.25rem;
+  padding: 0.25rem 0.5rem;
 `;
 
 const StyledTitle = styled.h1`
