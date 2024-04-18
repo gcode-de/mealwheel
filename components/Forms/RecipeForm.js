@@ -59,12 +59,20 @@ export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
     setServings((prevServings) => prevServings + change);
   }
 
+  // function handleTagChange(value) {
+  //   setSelectedTags(
+  //     selectedTags.includes(value)
+  //       ? selectedTags.filter((item) => item !== value)
+  //       : [value]
+  //   );
+  // }
+
   function handleTagChange(value) {
-    setSelectedTags(
-      selectedTags.includes(value)
-        ? selectedTags.filter((item) => item !== value)
-        : [value]
-    );
+    if (selectedTags.includes(value)) {
+      setSelectedTags(selectedTags.filter((item) => item !== value));
+    } else {
+      setSelectedTags([...selectedTags, value]);
+    }
   }
 
   function handleMealtypeChange(value) {
