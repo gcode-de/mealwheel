@@ -118,17 +118,19 @@ export default function Plan({
     data: randomRecipes,
     isLoading: randomRecipesIsLoading,
     error: randomRecipesError,
-  } = useSWR(`/api/recipes/random/10`);
+  } = useSWR(`/api/recipes/random/10?diet=${dietForRandomRecipes}`);
 
-  const filteredRandomRecipes =
-    dietForRandomRecipes === null
-      ? randomRecipes
-      : randomRecipes?.filter((recipe) =>
-          recipe.diet.some((dietItem) => dietItem === dietForRandomRecipes)
-        );
+  // const filteredRandomRecipes =
+  //   dietForRandomRecipes === null
+  //     ? randomRecipes
+  //     : randomRecipes?.filter((recipe) =>
+  //         recipe.diet.some((dietItem) => dietItem === dietForRandomRecipes)
+  //       );
 
   async function getRandomRecipe() {
-    const response = await fetch(`/api/recipes/random/`);
+    const response = await fetch(
+      `/api/recipes/random/?diet=${dietForRandomRecipes}`
+    );
     const recipe = await response.json();
     return recipe;
   }
@@ -550,7 +552,8 @@ export default function Plan({
               populateEmptyWeekdays(
                 weekdays,
                 assignableDays,
-                filteredRandomRecipes,
+                // filteredRandomRecipes,
+                randomRecipes,
                 dietForRandomRecipes,
                 numberOfRandomRecipes,
                 user,

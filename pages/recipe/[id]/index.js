@@ -555,9 +555,12 @@ export default function DetailPage({
             foundInteractions={foundInteractions}
           />
         )}
-        <Link href={`/profile/community/${author}`}>
-          Erstellt von: {allUsers.find((user) => user._id === author).userName}
-        </Link>
+        {allUsers.find((user) => user._id === author) && (
+          <Link href={`/profile/community/${author}`}>
+            Erstellt von:{" "}
+            {allUsers.find((user) => user._id === author)?.userName}
+          </Link>
+        )}
       </Article>
     </Wrapper>
   );

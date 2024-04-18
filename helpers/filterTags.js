@@ -22,9 +22,13 @@ export const filterTags = [
     type: "diet",
     options: [
       { label: "vegan", value: "vegan" },
-      { label: "vegetarisch", value: "vegetarian" },
+      { label: "vegetarisch", value: "vegetarian", includes: ["vegan"] },
       { label: "Fleisch", value: "meat" },
-      { label: "pescetarisch", value: "pescetarian" },
+      {
+        label: "pescetarisch",
+        value: "pescetarian",
+        includes: ["vegan", "vegetarian"],
+      },
       { label: "ketogen", value: "keto" },
       { label: "low carb", value: "low carb" },
     ],
@@ -53,4 +57,19 @@ export function getFilterLabelByValue(value) {
   }
 
   return undefined;
+}
+
+export async function expandDietCategories(dietArray) {
+  const dietOptions = filterTags.find((tag) => tag.type === "diet").options;
+  const expandedDiets = new Set(dietArray);
+
+  dietArray.forEach((diet) => {
+    const option = dietOptions.find((opt) => opt.value === diet);
+    if (option && option.includes) {
+      option.includes.forEach((includedDiet) =>
+        expandedDiets.add(includedDiet)
+      );
+    }
+  });
+  return Array.from(expandedDiets);
 }
