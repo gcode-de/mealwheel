@@ -120,13 +120,6 @@ export default function Plan({
     error: randomRecipesError,
   } = useSWR(`/api/recipes/random/10?diet=${dietForRandomRecipes}`);
 
-  // const filteredRandomRecipes =
-  //   dietForRandomRecipes === null
-  //     ? randomRecipes
-  //     : randomRecipes?.filter((recipe) =>
-  //         recipe.diet.some((dietItem) => dietItem === dietForRandomRecipes)
-  //       );
-
   async function getRandomRecipe() {
     const response = await fetch(
       `/api/recipes/random/?diet=${dietForRandomRecipes}`
@@ -182,7 +175,7 @@ export default function Plan({
   const reassignRecipe = async (day) => {
     const randomRecipe = await getRandomRecipe();
     assignRecipeToCalendarDay(
-      [{ date: day, recipe: randomRecipe[0] }],
+      [{ date: day, recipe: randomRecipe }],
       household,
       mutateHousehold
     );
@@ -552,7 +545,6 @@ export default function Plan({
               populateEmptyWeekdays(
                 weekdays,
                 assignableDays,
-                // filteredRandomRecipes,
                 randomRecipes,
                 dietForRandomRecipes,
                 numberOfRandomRecipes,
