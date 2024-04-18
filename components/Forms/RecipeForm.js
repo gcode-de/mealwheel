@@ -59,14 +59,6 @@ export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
     setServings((prevServings) => prevServings + change);
   }
 
-  // function handleTagChange(value) {
-  //   setSelectedTags(
-  //     selectedTags.includes(value)
-  //       ? selectedTags.filter((item) => item !== value)
-  //       : [value]
-  //   );
-  // }
-
   function handleTagChange(value) {
     if (selectedTags.includes(value)) {
       setSelectedTags(selectedTags.filter((item) => item !== value));
