@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { Heart, Pot } from "@/helpers/svg";
 
 export default function RandomnessSlider({
   type,
@@ -23,6 +24,37 @@ export default function RandomnessSlider({
           <SliderMark key={index} style={{ left: `${(index / max) * 100}%` }} />
         ))}
       </MarksContainer>
+      <LabelContainer>
+        <div>
+          {max - value == 1 ? (
+            <>
+              1 Rezept mit <br />
+              <Heart
+                height="1rem"
+                width="1rem"
+                fill="var(--color-highlight)"
+              />{" "}
+              und{" "}
+              <Pot height="1rem" width="1rem" fill="var(--color-highlight)" />
+            </>
+          ) : (
+            <>
+              {max - value} Rezepte mit
+              <br />
+              <Heart
+                height="1rem"
+                width="1rem"
+                fill="var(--color-highlight)"
+              />{" "}
+              und{" "}
+              <Pot height="1rem" width="1rem" fill="var(--color-highlight)" />
+            </>
+          )}
+        </div>
+        <div>
+          {value == 1 ? `1 zufälliges Rezept` : `${value} zufällige Rezepte`}
+        </div>
+      </LabelContainer>
     </SliderContainer>
   );
 }
@@ -36,7 +68,7 @@ const SliderContainer = styled.div`
 
 const MarksContainer = styled.div`
   position: absolute;
-  top: 26px; // Adjust this value based on your needs
+  top: 26px;
   left: 14px;
   right: 14px;
   height: 4px;
@@ -142,5 +174,20 @@ const StyledSlider = styled.input`
   }
   &:focus::-ms-fill-upper {
     background: var(--color-font);
+  }
+`;
+
+const LabelContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  div {
+    width: 6.5rem;
+  }
+
+  :nth-child(1) {
+    text-align: left;
+  }
+  :nth-child(2) {
+    text-align: right;
   }
 `;

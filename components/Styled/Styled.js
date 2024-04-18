@@ -39,6 +39,8 @@ export const Select = styled.select`
   display: flex;
   height: 30px;
   align-items: center;
+  padding-left: 0.25rem;
+  padding-right: 0.75rem;
 `;
 
 export const H2 = styled.h2`

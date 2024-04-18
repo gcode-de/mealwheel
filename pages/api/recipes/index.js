@@ -3,6 +3,7 @@ import Recipe from "../../../db/models/Recipe";
 import mongoose from "mongoose";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../auth/[...nextauth]";
+import { filterTags, expandDietCategories } from "@/helpers/filterTags";
 
 export default async function handler(request, response) {
   await dbConnect();
@@ -12,7 +13,7 @@ export default async function handler(request, response) {
     : null;
 
   if (request.method === "GET") {
-    const { sort = "_id", order = "desc", search } = request.query;
+    const { sort = "_id", order = "desc", search, diet } = request.query;
     const sortOrder = order === "desc" ? -1 : 1;
 
     let pipeline = [];
@@ -24,8 +25,8 @@ export default async function handler(request, response) {
     }
 
     let queryObj = {};
-    Object.keys(request.query).forEach((key) => {
-      if (!["sort", "order", "duration", "search"].includes(key)) {
+    Object.keys(request.query).forEach(async (key) => {
+      if (!["sort", "order", "duration", "search", "diet"].includes(key)) {
         if (key === "author") {
           queryObj[key] = new mongoose.Types.ObjectId(request.query[key]);
         } else {
@@ -33,6 +34,11 @@ export default async function handler(request, response) {
         }
       }
     });
+
+    if (diet) {
+      const diets = await expandDietCategories(diet.split(","));
+      queryObj["diet"] = { $in: diets };
+    }
 
     //Filtern der Rezepte, damit keine fremden, privaten Rezepte angezeigt werden:
     pipeline.push({

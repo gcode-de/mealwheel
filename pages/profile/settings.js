@@ -5,6 +5,9 @@ import { notifySuccess, notifyError } from "@/helpers/toast";
 import styled from "styled-components";
 import { Spacer, H2, List, P } from "@/components/Styled/Styled";
 
+import { filterTags } from "@/helpers/filterTags";
+import DietSelector from "@/components/DietSelector";
+
 import updateHouseholdInDb from "@/helpers/updateHouseholdInDb";
 import Household from "../../components/Household";
 import IconButton from "@/components/Button/IconButton";
@@ -23,6 +26,7 @@ export default function Settings({
 
   const settings = household?.settings || {};
   const weekdaysEnabled = settings?.weekdaysEnabled || {};
+  const dietTypes = filterTags.find((tag) => tag.type === "diet").options;
 
   if (
     household &&
@@ -70,6 +74,12 @@ export default function Settings({
   async function changeDefaultNumberOfPeople(change) {
     household.settings.defaultNumberOfPeople += change;
     await updateHouseholdInDb(household, mutateHousehold);
+  }
+
+  async function setDefaultDiet(diet) {
+    household.settings.defaultDiet = diet;
+    await updateHouseholdInDb(household, mutateHousehold);
+    notifySuccess("Ernährungstyp geändert.");
   }
 
   return (
@@ -144,6 +154,18 @@ export default function Settings({
           </Wrapper>
         </List>
       )}
+      {household && (
+        <List>
+          <DietSelectorWrapper>
+            Standard-Ernährung
+            <DietSelector
+              dietTypes={dietTypes}
+              onChange={setDefaultDiet}
+              defaultValue={household.settings.defaultDiet}
+            />
+          </DietSelectorWrapper>
+        </List>
+      )}
       <Household
         allUsers={allUsers}
         mutateAllUsers={mutateAllUsers}
@@ -174,4 +196,10 @@ const WeekdayButton = styled.button`
   margin-top: 1rem;
   margin-bottom: 1rem;
   cursor: pointer;
+`;
+
+const DietSelectorWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-between);
 `;

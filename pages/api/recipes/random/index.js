@@ -3,6 +3,7 @@ import Recipe from "../../../../db/models/Recipe";
 import mongoose from "mongoose";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../../auth/[...nextauth]";
+import { expandDietCategories } from "../../../../helpers/filterTags";
 
 export default async function handler(request, response) {
   await dbConnect();
@@ -11,25 +12,37 @@ export default async function handler(request, response) {
     ? new mongoose.Types.ObjectId(session.user.id)
     : null;
 
-  if (request.method === "GET") {
-    try {
-      const randomRecipes = await Recipe.aggregate([
-        {
-          $match: {
-            $or: [{ public: { $ne: false } }, { author: userId }],
-          },
-        },
-        { $sample: { size: 1 } },
-      ]);
+  const dietQuery = request.query.diet;
+  const mealtypeQuery = request.query.mealtype || "main"; // default to "main" if not specified
 
-      if (!randomRecipes) {
-        return response.status(404).json({ status: "Not Found" });
-      }
-
-      response.status(200).json(randomRecipes);
-    } catch (error) {
-      console.log(error);
-      response.status(400).json({ error: error.message });
+  try {
+    let dietFilter = {};
+    if (dietQuery) {
+      const diets = await expandDietCategories(dietQuery.split(","));
+      dietFilter["diet"] = { $in: diets };
     }
+
+    const matchCriteria = {
+      $or: [
+        { public: { $ne: false } }, // Das Rezept ist öffentlich oder hat keine public-Property
+        { author: userId }, // Der Benutzer ist der Autor des Rezepts
+      ],
+      ...dietFilter,
+      mealtype: { $in: [mealtypeQuery, null, []] }, // mealtype ist leer oder enthält den angefragten Typ
+    };
+
+    const randomRecipes = await Recipe.aggregate([
+      { $match: matchCriteria },
+      { $sample: { size: 1 } }, // Zufälliges Rezept zurückgeben
+    ]);
+
+    if (!randomRecipes.length) {
+      return response.status(404).json({ status: "Not Found" });
+    }
+
+    response.status(200).json(randomRecipes[0]); // Return the first random recipe
+  } catch (error) {
+    console.error(error);
+    response.status(400).json({ error: error.message });
   }
 }

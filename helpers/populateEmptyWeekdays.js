@@ -1,9 +1,11 @@
 import assignRecipesToCalendarDays from "./assignRecipesToCalendarDays";
+import { notifyError } from "./toast";
 
 export default async function populateEmptyWeekdays(
   weekdays,
   assignableDays,
   randomRecipes,
+  dietForRandomRecipes,
   numberOfRandomRecipes,
   user,
   household,
@@ -80,6 +82,9 @@ export default async function populateEmptyWeekdays(
     date: date,
     recipe: recipe._id,
   }));
+
+  if (recipeAssignments.length < assignableDays.length)
+    notifyError("Nicht genügend passende Rezepte gefunden!");
 
   assignRecipesToCalendarDays(recipeAssignments, household, mutateHousehold);
 }

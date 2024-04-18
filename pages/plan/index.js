@@ -39,6 +39,8 @@ import LoadingComponent from "@/components/Loading";
 import IconButtonLarge from "@/components/Button/IconButtonLarge";
 import { notifySuccess, notifyError } from "/helpers/toast";
 import ToggleCheckbox from "@/components/ToggleCheckbox";
+import DietSelector from "@/components/DietSelector";
+import { filterTags } from "@/helpers/filterTags";
 
 export default function Plan({
   isLoading,
@@ -60,6 +62,10 @@ export default function Plan({
   const [weekdays, setWeekdays] = useState([]);
   const [assignableDays, setAssignableDays] = useState([]);
   const [numberOfRandomRecipes, setNumberOfRandomRecipes] = useState(0);
+  const dietTypes = filterTags.find((tag) => tag.type === "diet").options;
+  const [dietForRandomRecipes, setDietForRandomRecipes] = useState(
+    household?.settings?.defaultDiet
+  );
   const [isRandomnessActive, setIsRandomnessActive] = useState(false);
 
   function toggleRandomness() {
@@ -112,10 +118,12 @@ export default function Plan({
     data: randomRecipes,
     isLoading: randomRecipesIsLoading,
     error: randomRecipesError,
-  } = useSWR(`/api/recipes/random/10`);
+  } = useSWR(`/api/recipes/random/10?diet=${dietForRandomRecipes}`);
 
   async function getRandomRecipe() {
-    const response = await fetch(`/api/recipes/random/`);
+    const response = await fetch(
+      `/api/recipes/random/?diet=${dietForRandomRecipes}`
+    );
     const recipe = await response.json();
     return recipe;
   }
@@ -167,7 +175,7 @@ export default function Plan({
   const reassignRecipe = async (day) => {
     const randomRecipe = await getRandomRecipe();
     assignRecipeToCalendarDay(
-      [{ date: day, recipe: randomRecipe[0] }],
+      [{ date: day, recipe: randomRecipe }],
       household,
       mutateHousehold
     );
@@ -441,11 +449,7 @@ export default function Plan({
         {isRandomnessActive && (
           <RandomnessSliderContainer>
             {assignableDays.length > 0 ? (
-              <p>
-                Zufällige Rezepte: {numberOfRandomRecipes} Rezepte, die weder
-                mit einem &quot;Schmecko&quot; noch als schon gekocht markiert
-                wurden
-              </p>
+              <p>Planer-Automatik anpassen:</p>
             ) : (
               <p>Alle Tage geplant.</p>
             )}
@@ -458,6 +462,15 @@ export default function Plan({
                 value={numberOfRandomRecipes}
                 onChange={handleSliderChange}
               />
+            )}
+            {weekdays && (
+              <DietSelectorWrapper>
+                <DietSelector
+                  dietTypes={dietTypes}
+                  onChange={setDietForRandomRecipes}
+                  defaultValue={dietForRandomRecipes}
+                />
+              </DietSelectorWrapper>
             )}
           </RandomnessSliderContainer>
         )}
@@ -533,6 +546,7 @@ export default function Plan({
                 weekdays,
                 assignableDays,
                 randomRecipes,
+                dietForRandomRecipes,
                 numberOfRandomRecipes,
                 user,
                 household,
@@ -598,4 +612,14 @@ const StyledH2 = styled.h2`
   align-items: space-around;
   gap: 0.5rem;
   position: relative;
+`;
+
+const DietSelectorWrapper = styled.div`
+  position: relative;
+  width: 80%;
+  margin: 0 auto;
+  select {
+    position: absolute;
+    right: 0;
+  }
 `;
