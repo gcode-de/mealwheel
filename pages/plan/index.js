@@ -281,7 +281,6 @@ export default function Plan({
             editNotes={editNotes}
           />
         )}
-        {calendarDay?.notes || "NOTES"}
       </article>
     );
   };
@@ -531,6 +530,9 @@ export default function Plan({
                       calendarDay={calendarDay}
                       index={index}
                     />
+                    {calendarDay?.notes && (
+                      <StyledNotes>{calendarDay.notes}</StyledNotes>
+                    )}
                   </Fragment>
                 );
               })}
@@ -630,5 +632,16 @@ const DietSelectorWrapper = styled.div`
   select {
     position: absolute;
     right: 0;
+  }
+`;
+
+const StyledNotes = styled.p`
+  margin: 0;
+  padding: 0;
+  padding-left: var(--gap-between);
+  font-size: 0.75rem;
+  &::before,
+  &::after {
+    content: '"';
   }
 `;
