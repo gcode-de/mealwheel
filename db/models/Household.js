@@ -9,6 +9,7 @@ const calendarEntrySchema = new Schema({
   date: String,
   numberOfPeople: Number,
   isDisabled: Boolean,
+  notes: String,
 });
 
 const shoppingItemSchema = new Schema({

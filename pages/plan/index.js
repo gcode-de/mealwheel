@@ -203,6 +203,10 @@ export default function Plan({
     return household.settings.weekdaysEnabled[new Date(date).getDay()];
   };
 
+  function editNotes() {
+    //
+  }
+
   const mouseSensor = useSensor(MouseSensor, {
     activationConstraint: {
       distance: 10, // Drag wird nach 10 Pixel Bewegung aktiviert
@@ -252,6 +256,8 @@ export default function Plan({
             userIsHouseholdAdmin={userIsHouseholdAdmin}
             weekdays={weekdays}
             index={index}
+            notes={calendarDay?.notes}
+            editNotes={editNotes}
           />
         ) : (
           <CardSkeleton
@@ -271,8 +277,11 @@ export default function Plan({
                 ? "small"
                 : ""
             }
+            notes={calendarDay?.notes}
+            editNotes={editNotes}
           />
         )}
+        {calendarDay?.notes || "NOTES"}
       </article>
     );
   };
