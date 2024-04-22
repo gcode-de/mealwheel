@@ -72,7 +72,7 @@ const StyledCardSkeleton = styled.li`
   background-color: var(--color-skeleton);
   list-style-type: none;
   height: 123px;
-  margin: 1.25rem 0 0 0;
+  margin: 1.25rem 0 var(--gap-between) 0;
   padding-top: 40px;
   text-align: center;
   color: black;
