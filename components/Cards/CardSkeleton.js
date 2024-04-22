@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import MenuContainer from "../MenuContainer";
-import { Menu, Reload } from "@/helpers/svg";
+import { Menu, Reload, Pen } from "@/helpers/svg";
 import { useState } from "react";
 
 export default function CardSkeleton({
@@ -12,6 +12,8 @@ export default function CardSkeleton({
   weekdays,
   index,
   isDisabled,
+  editNotes,
+  notes,
 }) {
   const [menuVisible, setMenuVisible] = useState(
     weekdays ? new Array(weekdays.length).fill(false) : []
@@ -50,6 +52,10 @@ export default function CardSkeleton({
               >
                 <Reload width={15} height={15} /> Neues Rezept laden
               </UnstyledButton>
+              <UnstyledButton onClick={editNotes}>
+                <Pen width={15} height={15} />
+                {notes ? "Notiz bearbeiten" : "Notiz hinzufügen"}
+              </UnstyledButton>
             </MenuContainer>
           )}
           {text}
@@ -66,7 +72,7 @@ const StyledCardSkeleton = styled.li`
   background-color: var(--color-skeleton);
   list-style-type: none;
   height: 123px;
-  margin: 1.25rem 0 0 0;
+  margin: 1.25rem 0 var(--gap-between) 0;
   padding-top: 40px;
   text-align: center;
   color: black;
@@ -115,6 +121,7 @@ const UnstyledButton = styled.button`
   gap: var(--gap-between);
   height: 1rem;
   color: var(--color-font);
+  cursor: pointer;
   z-index: 3;
   &:hover {
     background-color: var(--color-background);

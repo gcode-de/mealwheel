@@ -4,7 +4,7 @@ import Link from "next/link";
 import SetNumberOfPeople from "./SetNumberOfPeople";
 import LikesDisplay from "./LikesDisplay";
 import MenuContainer from "../MenuContainer";
-import { BookUser, Menu, Reload, Trash } from "@/helpers/svg";
+import { BookUser, Menu, Reload, Trash, Pen } from "@/helpers/svg";
 import { useState } from "react";
 import ModalComponent from "../Modal";
 import AddToCollection from "../Forms/AddToCollection";
@@ -24,6 +24,8 @@ export default function MealCard({
   userIsHouseholdAdmin,
   weekdays,
   index,
+  notes,
+  editNotes,
 }) {
   const [menuVisible, setMenuVisible] = useState(
     weekdays ? new Array(weekdays.length).fill(false) : []
@@ -129,6 +131,10 @@ export default function MealCard({
                   >
                     <Trash width={15} height={15} />
                     Tag leeren
+                  </UnstyledButton>
+                  <UnstyledButton onClick={editNotes}>
+                    <Pen width={15} height={15} />
+                    {notes ? "Notiz bearbeiten" : "Notiz hinzufügen"}
                   </UnstyledButton>
                 </MenuContainer>
               )}
@@ -258,6 +264,7 @@ const UnstyledButton = styled.button`
   gap: var(--gap-between);
   height: 2rem;
   color: var(--color-font);
+  cursor: pointer;
   &:hover {
     background-color: var(--color-background);
   }

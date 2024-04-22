@@ -41,6 +41,7 @@ import { notifySuccess, notifyError } from "/helpers/toast";
 import ToggleCheckbox from "@/components/ToggleCheckbox";
 import DietSelector from "@/components/DietSelector";
 import { filterTags } from "@/helpers/filterTags";
+import ModalInput from "@/components/Modal/input";
 
 export default function Plan({
   isLoading,
@@ -67,6 +68,8 @@ export default function Plan({
     household?.settings?.defaultDiet
   );
   const [isRandomnessActive, setIsRandomnessActive] = useState(false);
+  const [isNoteModalActive, setIsNoteModalActive] = useState(false);
+  const [calendarDayToEdit, setCalendarDayToEdit] = useState(null);
 
   function toggleRandomness() {
     setIsRandomnessActive(!isRandomnessActive);
@@ -203,6 +206,26 @@ export default function Plan({
     return household.settings.weekdaysEnabled[new Date(date).getDay()];
   };
 
+  async function saveNotes(day, notes) {
+    await createUserCalenderIfMissing();
+    if (household.calendar.some((calendarDay) => calendarDay.date === day)) {
+      household.calendar = household.calendar.map((calendarDay) =>
+        calendarDay.date === day
+          ? { ...calendarDay, notes: notes }
+          : calendarDay
+      );
+    } else {
+      console.log("saveNotes-else", day, notes);
+      household.calendar.push({
+        date: day,
+        notes,
+      });
+    }
+    setIsNoteModalActive(false);
+    setCalendarDayToEdit(null);
+    await updateHouseholdInDb(household, mutateHousehold);
+  }
+
   const mouseSensor = useSensor(MouseSensor, {
     activationConstraint: {
       distance: 10, // Drag wird nach 10 Pixel Bewegung aktiviert
@@ -252,6 +275,11 @@ export default function Plan({
             userIsHouseholdAdmin={userIsHouseholdAdmin}
             weekdays={weekdays}
             index={index}
+            notes={calendarDay?.notes}
+            editNotes={() => {
+              setCalendarDayToEdit(calendarDay);
+              setIsNoteModalActive(true);
+            }}
           />
         ) : (
           <CardSkeleton
@@ -271,6 +299,11 @@ export default function Plan({
                 ? "small"
                 : ""
             }
+            notes={calendarDay?.notes}
+            editNotes={() => {
+              setCalendarDayToEdit(calendarDay || weekday);
+              setIsNoteModalActive(true);
+            }}
           />
         )}
       </article>
@@ -522,6 +555,9 @@ export default function Plan({
                       calendarDay={calendarDay}
                       index={index}
                     />
+                    {calendarDay?.notes && (
+                      <StyledNotes>{calendarDay.notes}</StyledNotes>
+                    )}
                   </Fragment>
                 );
               })}
@@ -563,6 +599,27 @@ export default function Plan({
             }}
           />
         ))}
+      {isNoteModalActive && (
+        <ModalInput
+          message={`Notizen für ${new Date(
+            calendarDayToEdit.date
+          ).toLocaleDateString("de-DE", {
+            weekday: "long",
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          })}`}
+          toggleModal={() => {
+            setIsNoteModalActive(false);
+          }}
+          defaultVaule={calendarDayToEdit?.notes}
+          onSubmit={(e) => {
+            e.preventDefault();
+            saveNotes(calendarDayToEdit.date, e.target[0].value.trim());
+          }}
+          btnConfirmMessage="Speichern"
+        />
+      )}
     </>
   );
 }
@@ -621,5 +678,16 @@ const DietSelectorWrapper = styled.div`
   select {
     position: absolute;
     right: 0;
+  }
+`;
+
+const StyledNotes = styled.p`
+  margin: 0;
+  padding: 0;
+  padding-left: var(--gap-between);
+  font-size: 0.75rem;
+  &::before,
+  &::after {
+    content: '"';
   }
 `;
