@@ -556,7 +556,14 @@ export default function Plan({
                       index={index}
                     />
                     {calendarDay?.notes && (
-                      <StyledNotes>{calendarDay.notes}</StyledNotes>
+                      <StyledNotes
+                        onClick={() => {
+                          setCalendarDayToEdit(calendarDay);
+                          setIsNoteModalActive(true);
+                        }}
+                      >
+                        {calendarDay.notes}
+                      </StyledNotes>
                     )}
                   </Fragment>
                 );
@@ -685,6 +692,7 @@ const StyledNotes = styled.p`
   margin: 0;
   padding: 0;
   padding-left: var(--gap-between);
+  cursor: pointer;
   font-size: 0.75rem;
   &::before,
   &::after {
