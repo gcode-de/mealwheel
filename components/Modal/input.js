@@ -17,7 +17,12 @@ export default function ModalInput({
       <Overlay onClick={toggleModal} />
       <Modal>
         <>
-          <IconButton onClick={toggleModal} style={"x"} right={0} top={0} />
+          <IconButton
+            onClick={toggleModal}
+            style={"x"}
+            right="-0.5rem"
+            top="-0.5rem"
+          />
           <H2>{message}</H2>
           <Form onSubmit={onSubmit}>
             <Input

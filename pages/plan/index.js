@@ -601,13 +601,21 @@ export default function Plan({
         ))}
       {isNoteModalActive && (
         <ModalInput
+          message={`Notizen für ${new Date(
+            calendarDayToEdit.date
+          ).toLocaleDateString("de-DE", {
+            weekday: "long",
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          })}`}
           toggleModal={() => {
             setIsNoteModalActive(false);
           }}
           defaultVaule={calendarDayToEdit?.notes}
           onSubmit={(e) => {
             e.preventDefault();
-            saveNotes(calendarDayToEdit.date, e.target[0].value);
+            saveNotes(calendarDayToEdit.date, e.target[0].value.trim());
           }}
           btnConfirmMessage="Speichern"
         />
