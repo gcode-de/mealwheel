@@ -41,6 +41,7 @@ import { notifySuccess, notifyError } from "/helpers/toast";
 import ToggleCheckbox from "@/components/ToggleCheckbox";
 import DietSelector from "@/components/DietSelector";
 import { filterTags } from "@/helpers/filterTags";
+import ModalInput from "@/components/Modal/input";
 
 export default function Plan({
   isLoading,
@@ -67,6 +68,8 @@ export default function Plan({
     household?.settings?.defaultDiet
   );
   const [isRandomnessActive, setIsRandomnessActive] = useState(false);
+  const [isNoteModalActive, setIsNoteModalActive] = useState(false);
+  const [calendarDayToEdit, setCalendarDayToEdit] = useState(null);
 
   function toggleRandomness() {
     setIsRandomnessActive(!isRandomnessActive);
@@ -203,8 +206,24 @@ export default function Plan({
     return household.settings.weekdaysEnabled[new Date(date).getDay()];
   };
 
-  function editNotes() {
-    //
+  async function saveNotes(day, notes) {
+    await createUserCalenderIfMissing();
+    if (household.calendar.some((calendarDay) => calendarDay.date === day)) {
+      household.calendar = household.calendar.map((calendarDay) =>
+        calendarDay.date === day
+          ? { ...calendarDay, notes: notes }
+          : calendarDay
+      );
+    } else {
+      console.log("saveNotes-else", day, notes);
+      household.calendar.push({
+        date: day,
+        notes,
+      });
+    }
+    setIsNoteModalActive(false);
+    setCalendarDayToEdit(null);
+    await updateHouseholdInDb(household, mutateHousehold);
   }
 
   const mouseSensor = useSensor(MouseSensor, {
@@ -257,7 +276,10 @@ export default function Plan({
             weekdays={weekdays}
             index={index}
             notes={calendarDay?.notes}
-            editNotes={editNotes}
+            editNotes={() => {
+              setCalendarDayToEdit(calendarDay);
+              setIsNoteModalActive(true);
+            }}
           />
         ) : (
           <CardSkeleton
@@ -278,7 +300,10 @@ export default function Plan({
                 : ""
             }
             notes={calendarDay?.notes}
-            editNotes={editNotes}
+            editNotes={() => {
+              setCalendarDayToEdit(calendarDay || weekday);
+              setIsNoteModalActive(true);
+            }}
           />
         )}
       </article>
@@ -574,6 +599,19 @@ export default function Plan({
             }}
           />
         ))}
+      {isNoteModalActive && (
+        <ModalInput
+          toggleModal={() => {
+            setIsNoteModalActive(false);
+          }}
+          defaultVaule={calendarDayToEdit?.notes}
+          onSubmit={(e) => {
+            e.preventDefault();
+            saveNotes(calendarDayToEdit.date, e.target[0].value);
+          }}
+          btnConfirmMessage="Speichern"
+        />
+      )}
     </>
   );
 }

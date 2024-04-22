@@ -22,7 +22,7 @@ const Container = styled.div`
   top: ${(props) => props.$top};
   right: ${(props) => props.$right};
   left: ${(props) => props.$left};
-  z-index: 5;
+  z-index: 4;
   background-color: var(--color-component);
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
   border-radius: 4px;

@@ -52,7 +52,7 @@ export default function CardSkeleton({
               >
                 <Reload width={15} height={15} /> Neues Rezept laden
               </UnstyledButton>
-              <UnstyledButton onClick={editNotes()}>
+              <UnstyledButton onClick={editNotes}>
                 <Pen width={15} height={15} />
                 {notes ? "Notiz bearbeiten" : "Notiz hinzufügen"}
               </UnstyledButton>
