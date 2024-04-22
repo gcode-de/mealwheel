@@ -264,6 +264,7 @@ const UnstyledButton = styled.button`
   gap: var(--gap-between);
   height: 2rem;
   color: var(--color-font);
+  cursor: pointer;
   &:hover {
     background-color: var(--color-background);
   }

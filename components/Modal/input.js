@@ -38,7 +38,7 @@ export default function ModalInput({
 }
 const Modal = styled.div`
   position: fixed;
-  z-index: 4;
+  z-index: 10;
   top: 40%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -56,7 +56,7 @@ const Overlay = styled.div`
   left: 0;
   right: 0;
   bottom: 0;
-  z-index: 3;
+  z-index: 9;
   background: rgba(49, 49, 49, 0.5);
   margin: auto;
 `;
