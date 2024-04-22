@@ -52,6 +52,7 @@ const Modal = styled.div`
   border-radius: var(--border-radius-small);
   margin: auto;
   width: calc(100% - (2 * var(--gap-out)));
+  max-width: 600px;
 `;
 const Overlay = styled.div`
   width: 100%;

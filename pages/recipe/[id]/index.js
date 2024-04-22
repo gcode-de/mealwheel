@@ -61,6 +61,7 @@ export default function DetailPage({
   const [isModalCollection, setIsModalCollection] = useState(false);
   const [isNewCollection, setIsNewCollection] = useState(false);
   const [isLikedVisible, setIsLikedVisible] = useState(false);
+  const [isModalReport, setIsModalReport] = useState(false);
 
   const router = useRouter();
   const { id } = router.query;
@@ -73,7 +74,6 @@ export default function DetailPage({
   } = useSWR(id ? `/api/recipes/${id}` : null);
 
   const defaultNumberOfServings = recipe?.defaultNumberOfServings;
-
   const [servings, setServings] = useState(
     Number(router?.query?.servings) || defaultNumberOfServings || 2
   );
@@ -208,6 +208,11 @@ export default function DetailPage({
     setIsModalCollection(!isModalCollection);
   }
 
+  function toggleModalReport() {
+    setIsModalReport(!isModalReport);
+    setIsMenuVisible(false);
+  }
+
   async function duplicateRecipe() {
     const modifiedRecipeData = {
       ...recipe,
@@ -273,16 +278,22 @@ export default function DetailPage({
       });
   }
 
-  async function reportRecipe() {
+  async function reportRecipe(event) {
+    event.preventDefault();
     const response = await fetch("/api/feedback", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        negativeFeedback: `<a href="/profile/community/${user?._id}">${user?.userName}</a> hat <a href="/recipe/${recipe._id}">${recipe.title}</a> zur Überprüfung gemeldet.`,
+        negativeFeedback: `<a href="/profile/community/${user?._id}">${
+          user?.userName
+        }</a> hat <a href="/recipe/${recipe._id}">${
+          recipe.title
+        }</a> zur Überprüfung gemeldet. Begründung: ${event.target[0].value.trim()}.`,
       }),
     });
     setIsMenuVisible(false);
     if (response.ok) {
+      setIsModalReport(false);
       notifySuccess("Rezept zur Überprüfung gemeldet.");
     } else {
       notifyError("Melden fehlgeschlagen.");
@@ -380,7 +391,12 @@ export default function DetailPage({
               </UnstyledButton>
             )}
             {!userIsAuthor && (
-              <UnstyledButton onClick={reportRecipe}>
+              <UnstyledButton
+                onClick={() => {
+                  setIsMenuVisible(false);
+                  setIsModalReport(true);
+                }}
+              >
                 <Exclamation width={15} height={15} />
                 Rezept melden
               </UnstyledButton>
@@ -402,6 +418,16 @@ export default function DetailPage({
                 }}
               />
               <button type="submit">speichern</button>
+            </StyledForm>
+          </ModalComponent>
+        )}
+        {isModalReport && (
+          <ModalComponent toggleModal={toggleModalReport}>
+            <StyledForm onSubmit={reportRecipe}>
+              <h3>Dieses Rezept melden:</h3>
+              <label htmlFor="date">Begründung:</label>
+              <input name="report-text" required />
+              <button type="submit">melden</button>
             </StyledForm>
           </ModalComponent>
         )}
