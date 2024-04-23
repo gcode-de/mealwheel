@@ -6,7 +6,7 @@ import {
   ListItem,
   Spacer,
 } from "@/components/Styled/Styled";
-import Input from "../../components/Styled/StyledInput";
+import Input from "@/components/Styled/StyledInput";
 
 import AddButton from "@/components/Button/AddButton";
 import Header from "@/components/Styled/Header";
@@ -272,7 +272,7 @@ export default function ShoppingList({
       <Header text="Einkaufsliste" />
       <List>
         {household.shoppingList.length === 0 && (
-          <ListItem>
+          <ListItem key="empty">
             <StyledCheck>nichts zu erledigen</StyledCheck>
           </ListItem>
         )}
@@ -427,12 +427,20 @@ const StyledCheck = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1rem;
+  gap: var(--gap-between);
 `;
 const StyledCheckItem = styled.p`
   border-radius: var(--border-radius-small);
   flex-grow: ${(props) => props.$flex};
   text-decoration: ${(props) => (props.$text ? "line-through" : "none")};
+  overflow-wrap: break-word;
+  width: 100%;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1; /* Begrenzt den Text auf zwei Zeilen */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-wrap: balance;
 `;
 const StyledCheckbox = styled.input`
   background-color: var(--color-background);
@@ -442,8 +450,9 @@ const StyledCheckbox = styled.input`
   z-index: 2;
 `;
 const StyledNumberUnit = styled.div`
-  width: 40%;
+  width: 35%;
   display: flex;
+  gap: 3px;
 `;
 
 const StyledEditForm = styled.form`
