@@ -326,15 +326,17 @@ export default function ShoppingList({
                   ) : (
                     <>
                       <StyledCheck>
-                        <StyledNumberUnit>
-                          <StyledCheckItem $text={item.isChecked} $flex={0.1}>
+                        <StyledNumber>
+                          <StyledCheckItem $text={item.isChecked}>
                             {item.quantity}
                           </StyledCheckItem>
-                          <StyledCheckItem $text={item.isChecked} $flex={0.5}>
+                        </StyledNumber>
+                        <StyledUnit>
+                          <StyledCheckItem $text={item.isChecked}>
                             {item.unit}
                           </StyledCheckItem>
-                        </StyledNumberUnit>
-                        <StyledCheckItem $text={item.isChecked} $flex={2}>
+                        </StyledUnit>
+                        <StyledCheckItem $text={item.isChecked} $flex={1}>
                           {item.name}
                         </StyledCheckItem>
                       </StyledCheck>
@@ -427,20 +429,22 @@ const StyledCheck = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--gap-between);
+  :nth-child(3) {
+    overflow-wrap: break-word;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-wrap: balance;
+    hyphens: auto;
+  }
 `;
 const StyledCheckItem = styled.p`
   border-radius: var(--border-radius-small);
   flex-grow: ${(props) => props.$flex};
   text-decoration: ${(props) => (props.$text ? "line-through" : "none")};
-  overflow-wrap: break-word;
   width: 100%;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 1;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  text-wrap: balance;
 `;
 const StyledCheckbox = styled.input`
   background-color: var(--color-background);
@@ -448,13 +452,16 @@ const StyledCheckbox = styled.input`
   width: 37px;
   height: 30px;
   z-index: 2;
+  border-radius: var(--border-radius-small);
 `;
-const StyledNumberUnit = styled.div`
-  width: 35%;
-  display: flex;
-  gap: 3px;
+const StyledNumber = styled.div`
+  max-width: 55px;
+  margin-right: var(--gap-between);
 `;
-
+const StyledUnit = styled.div`
+  max-width: 60px;
+  margin-right: var(--gap-between);
+`;
 const StyledEditForm = styled.form`
   display: flex;
   width: 100%;
