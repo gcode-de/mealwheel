@@ -437,7 +437,7 @@ const StyledCheckItem = styled.p`
   width: 100%;
   display: -webkit-box;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 1; /* Begrenzt den Text auf zwei Zeilen */
+  -webkit-line-clamp: 1;
   overflow: hidden;
   text-overflow: ellipsis;
   text-wrap: balance;
