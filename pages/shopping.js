@@ -364,7 +364,7 @@ export default function ShoppingList({
           )
         )}
         {userIsHouseholdAdmin && (
-          <form onSubmit={handleSubmit}>
+          <StyledForm onSubmit={handleSubmit}>
             <StyledIngredients>
               <Input
                 type="number"
@@ -390,10 +390,10 @@ export default function ShoppingList({
                 required
               />
               <AddButton type="submit" $color="var(--color-background)">
-                <Plus width={20} height={20} />
+                <Plus width={25} height={25} />
               </AddButton>
             </StyledIngredients>
-          </form>
+          </StyledForm>
         )}
       </List>
       {household.shoppingList.length > 0 && userIsHouseholdAdmin && (
@@ -501,4 +501,8 @@ const RestyledH2 = styled(H2)`
 
 const RestyledListItem = styled(ListItem)`
   align-items: center;
+`;
+
+const StyledForm = styled.form`
+  width: calc(100% - 2 * var(--gap-between));
 `;
