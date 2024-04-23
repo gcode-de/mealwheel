@@ -504,5 +504,5 @@ const RestyledListItem = styled(ListItem)`
 `;
 
 const StyledForm = styled.form`
-  width: calc(100% - 2 * var(--gap-between));
+  width: calc(100% - var(--gap-between));
 `;
