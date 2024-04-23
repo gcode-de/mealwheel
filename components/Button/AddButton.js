@@ -6,5 +6,8 @@ const AddButton = styled.button`
   background-color: ${(props) => props.$color};
   border-radius: var(--border-radius-small);
   height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 export default AddButton;
