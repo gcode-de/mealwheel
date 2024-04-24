@@ -326,11 +326,13 @@ export default function ShoppingList({
                   ) : (
                     <>
                       <StyledCheck>
-                        <StyledNumber>
-                          <StyledCheckItem $text={item.isChecked}>
-                            {item.quantity}
-                          </StyledCheckItem>
-                        </StyledNumber>
+                        {item.quantity > 0 && (
+                          <StyledNumber>
+                            <StyledCheckItem $text={item.isChecked}>
+                              {item.quantity}
+                            </StyledCheckItem>
+                          </StyledNumber>
+                        )}
                         <StyledUnit>
                           <StyledCheckItem $text={item.isChecked}>
                             {item.unit}
