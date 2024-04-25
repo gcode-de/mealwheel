@@ -303,9 +303,10 @@ export default function ShoppingList({
                         step="0.01"
                         aria-label="edit ingredient quantity for the recipe"
                         name="quantity"
+                        placeholder="Anz."
                       />
                       <Select name="unit" defaultValue={item.unit}>
-                        <option value="">-</option>
+                        <option value="">Einh.</option>
                         {ingredientUnits.map((unit) => (
                           <option key={unit} value={unit}>
                             {unit}
@@ -327,17 +328,19 @@ export default function ShoppingList({
                     <>
                       <StyledCheck>
                         {item.quantity > 0 && (
-                          <StyledNumber>
-                            <StyledCheckItem $text={item.isChecked}>
-                              {item.quantity}
-                            </StyledCheckItem>
-                          </StyledNumber>
+                          <>
+                            <StyledNumber>
+                              <StyledCheckItem $text={item.isChecked}>
+                                {item.quantity}
+                              </StyledCheckItem>
+                            </StyledNumber>
+                            <StyledUnit>
+                              <StyledCheckItem $text={item.isChecked}>
+                                {item.unit}
+                              </StyledCheckItem>
+                            </StyledUnit>
+                          </>
                         )}
-                        <StyledUnit>
-                          <StyledCheckItem $text={item.isChecked}>
-                            {item.unit}
-                          </StyledCheckItem>
-                        </StyledUnit>
                         <StyledCheckItem $text={item.isChecked} $flex={1}>
                           {item.name}
                         </StyledCheckItem>
@@ -375,9 +378,10 @@ export default function ShoppingList({
                 step="0.01"
                 aria-label="add ingredient quantity for the recipe"
                 name="quantity"
+                placeholder="Anz."
               />
               <Select name="unit">
-                <option value="">-</option>
+                <option value="">Einh.</option>
                 {ingredientUnits.map((unit) => (
                   <option key={unit} value={unit}>
                     {unit}
