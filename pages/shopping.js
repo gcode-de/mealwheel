@@ -6,7 +6,7 @@ import {
   ListItem,
   Spacer,
 } from "@/components/Styled/Styled";
-import Input from "../../components/Styled/StyledInput";
+import Input from "@/components/Styled/StyledInput";
 
 import AddButton from "@/components/Button/AddButton";
 import Header from "@/components/Styled/Header";
@@ -272,7 +272,7 @@ export default function ShoppingList({
       <Header text="Einkaufsliste" />
       <List>
         {household.shoppingList.length === 0 && (
-          <ListItem>
+          <ListItem key="empty">
             <StyledCheck>nichts zu erledigen</StyledCheck>
           </ListItem>
         )}
@@ -326,15 +326,19 @@ export default function ShoppingList({
                   ) : (
                     <>
                       <StyledCheck>
-                        <StyledNumberUnit>
-                          <StyledCheckItem $text={item.isChecked} $flex={0.1}>
-                            {item.quantity}
-                          </StyledCheckItem>
-                          <StyledCheckItem $text={item.isChecked} $flex={0.5}>
+                        {item.quantity > 0 && (
+                          <StyledNumber>
+                            <StyledCheckItem $text={item.isChecked}>
+                              {item.quantity}
+                            </StyledCheckItem>
+                          </StyledNumber>
+                        )}
+                        <StyledUnit>
+                          <StyledCheckItem $text={item.isChecked}>
                             {item.unit}
                           </StyledCheckItem>
-                        </StyledNumberUnit>
-                        <StyledCheckItem $text={item.isChecked} $flex={2}>
+                        </StyledUnit>
+                        <StyledCheckItem $text={item.isChecked} $flex={1}>
                           {item.name}
                         </StyledCheckItem>
                       </StyledCheck>
@@ -362,7 +366,7 @@ export default function ShoppingList({
           )
         )}
         {userIsHouseholdAdmin && (
-          <form onSubmit={handleSubmit}>
+          <StyledForm onSubmit={handleSubmit}>
             <StyledIngredients>
               <Input
                 type="number"
@@ -388,10 +392,10 @@ export default function ShoppingList({
                 required
               />
               <AddButton type="submit" $color="var(--color-background)">
-                <Plus width={20} height={20} />
+                <Plus width={25} height={25} />
               </AddButton>
             </StyledIngredients>
-          </form>
+          </StyledForm>
         )}
       </List>
       {household.shoppingList.length > 0 && userIsHouseholdAdmin && (
@@ -427,12 +431,22 @@ const StyledCheck = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1rem;
+  :nth-child(3) {
+    overflow-wrap: break-word;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-wrap: balance;
+    hyphens: auto;
+  }
 `;
 const StyledCheckItem = styled.p`
   border-radius: var(--border-radius-small);
   flex-grow: ${(props) => props.$flex};
   text-decoration: ${(props) => (props.$text ? "line-through" : "none")};
+  width: 100%;
 `;
 const StyledCheckbox = styled.input`
   background-color: var(--color-background);
@@ -440,12 +454,16 @@ const StyledCheckbox = styled.input`
   width: 37px;
   height: 30px;
   z-index: 2;
+  border-radius: var(--border-radius-small);
 `;
-const StyledNumberUnit = styled.div`
-  width: 40%;
-  display: flex;
+const StyledNumber = styled.div`
+  max-width: 55px;
+  margin-right: var(--gap-between);
 `;
-
+const StyledUnit = styled.div`
+  max-width: 60px;
+  margin-right: var(--gap-between);
+`;
 const StyledEditForm = styled.form`
   display: flex;
   width: 100%;
@@ -485,4 +503,8 @@ const RestyledH2 = styled(H2)`
 
 const RestyledListItem = styled(ListItem)`
   align-items: center;
+`;
+
+const StyledForm = styled.form`
+  width: calc(100% - var(--gap-between));
 `;
