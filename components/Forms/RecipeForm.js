@@ -228,7 +228,7 @@ export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
                     handleInputChange(event, index, "quantity")
                   }
                   type="number"
-                  $width="2rem"
+                  $width="4rem"
                   required
                   min="0"
                   step="0.01"
