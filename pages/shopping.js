@@ -201,12 +201,12 @@ export default function ShoppingList({
     updateHouseholdInDb(household, mutateHousehold);
   }
 
-  function clearShopping() {
+  async function clearShopping() {
     household.shoppingList = [];
-    updateHouseholdInDb(household, mutateHousehold);
+    await updateHouseholdInDb(household, mutateHousehold);
   }
 
-  function removeCheckedItems() {
+  async function removeCheckedItems() {
     const updatedCategories = household.shoppingList
       .map((category) => {
         const filteredItems = category.items.filter((item) => !item.isChecked);
@@ -215,7 +215,8 @@ export default function ShoppingList({
       .filter((category) => category.items.length > 0);
 
     household.shoppingList = updatedCategories;
-    updateHouseholdInDb(household, mutateHousehold);
+    notifySuccess("Abgehakte Items gelöscht.");
+    await updateHouseholdInDb(household, mutateHousehold);
   }
 
   async function setCategories() {
@@ -402,8 +403,15 @@ export default function ShoppingList({
           <StyledButton
             onClick={removeCheckedItems}
             aria-label="remove checked items from list"
+            className={
+              household.shoppingList.some((category) =>
+                category.items.some((item) => item.isChecked)
+              )
+                ? ""
+                : "invisible"
+            }
           >
-            erledigte Entfernen
+            Erledigte Entfernen
           </StyledButton>
           <StyledButton
             onClick={setCategories}
@@ -497,8 +505,9 @@ const StyledButton = styled(Button)`
   gap: 0.5rem;
   align-items: center;
   width: max-content;
-  /* margin-right: var(--gap-out);
-  margin-left: auto; */
+  &.invisible {
+    visibility: hidden;
+  }
 `;
 
 const ButtonContainer = styled.div`
