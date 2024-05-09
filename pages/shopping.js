@@ -199,27 +199,22 @@ export default function ShoppingList({
       !newUserShoppingList[categoryIndex].items[itemIndex].isChecked;
 
     updateHouseholdInDb(household, mutateHousehold);
-
-    setTimeout(async () => {
-      const updatedCategories = [...household.shoppingList];
-      const updatedItems = updatedCategories[categoryIndex].items.filter(
-        (item) => !item.isChecked
-      );
-
-      if (updatedItems.length > 0) {
-        updatedCategories[categoryIndex].items = updatedItems;
-      } else {
-        // Entferne die Kategorie, wenn alle Items gecheckt sind
-        updatedCategories.splice(categoryIndex, 1);
-      }
-      household.shoppingList = updatedCategories;
-
-      updateHouseholdInDb(household, mutateHousehold);
-    }, 10000);
   }
 
   function clearShopping() {
     household.shoppingList = [];
+    updateHouseholdInDb(household, mutateHousehold);
+  }
+
+  function removeCheckedItems() {
+    const updatedCategories = household.shoppingList
+      .map((category) => {
+        const filteredItems = category.items.filter((item) => !item.isChecked);
+        return { ...category, items: filteredItems };
+      })
+      .filter((category) => category.items.length > 0);
+
+    household.shoppingList = updatedCategories;
     updateHouseholdInDb(household, mutateHousehold);
   }
 
@@ -403,7 +398,13 @@ export default function ShoppingList({
         )}
       </List>
       {household.shoppingList.length > 0 && userIsHouseholdAdmin && (
-        <>
+        <ButtonContainer>
+          <StyledButton
+            onClick={removeCheckedItems}
+            aria-label="remove checked items from list"
+          >
+            erledigte Entfernen
+          </StyledButton>
           <StyledButton
             onClick={setCategories}
             aria-label="trigger AI-based sorting and grouping of items (this takes a moment)"
@@ -413,7 +414,7 @@ export default function ShoppingList({
               ? "Sortieren"
               : `bitte warten... (${durationAiGenerating})`}
           </StyledButton>
-        </>
+        </ButtonContainer>
       )}
       <Spacer />
       {userIsHouseholdAdmin && (
@@ -496,8 +497,15 @@ const StyledButton = styled(Button)`
   gap: 0.5rem;
   align-items: center;
   width: max-content;
+  /* margin-right: var(--gap-out);
+  margin-left: auto; */
+`;
+
+const ButtonContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
   margin-right: var(--gap-out);
-  margin-left: auto;
+  margin-left: var(--gap-out);
 `;
 
 const RestyledH2 = styled(H2)`
