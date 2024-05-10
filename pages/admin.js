@@ -63,12 +63,23 @@ export default function Admin({
     notifySuccess(`Schemckos neu berechnet, ${performedChanges} Änderungen.`);
   }
 
+  const fourteenDaysAgo = new Date(); //used to calculate the number of active users
+  fourteenDaysAgo.setDate(fourteenDaysAgo.getDate() - 14);
+
   return (
     <Wrapper>
       {user.admin && (
         <>
           <Header text={"Admin, baby!"} />
-          <CountUp target={allUsers?.length} label="Benutzer" />
+          <CountUp target={allUsers?.length} label="Benutzer gesamt" />
+          <CountUp
+            target={
+              allUsers?.filter(
+                (user) => new Date(user.lastLogin) > fourteenDaysAgo
+              ).length
+            }
+            label="Benutzer letzte 14 Tage"
+          />
           <CountUp target={recipes?.length} label="Rezepte" />
           <br />
           <h2>Feedback</h2>

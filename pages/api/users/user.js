@@ -30,6 +30,10 @@ export default async function handler(request, response) {
     );
     // user.calendar = user.calendar.filter((event) => event.recipe);  //entfernt weil sonst Kalendertage ohne Rezept nicht im Wochenplan deaktiviert werden können.
 
+    // Aktualisiere das letzte Login-Datum des Nutzers
+    user.lastLogin = new Date();
+    await user.save();
+
     response.status(200).json(user);
   }
 

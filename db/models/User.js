@@ -51,6 +51,7 @@ const userSchema = new Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "Household",
   },
+  lastLogin: { type: Date },
 });
 
 const User = mongoose.models.User || mongoose.model("User", userSchema);
