@@ -8,7 +8,7 @@ export default async function handler(request, response) {
   if (request.method === "GET") {
     const users = await User.find()
       .select(
-        "userName _id profilePictureLink connectionRequests friends collections recipeInteractions"
+        "userName _id profilePictureLink connectionRequests friends collections recipeInteractions lastLogin"
       )
       .populate("collections.recipes");
 

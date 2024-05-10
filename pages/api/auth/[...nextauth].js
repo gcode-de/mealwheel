@@ -25,53 +25,12 @@ export const authOptions = {
   },
 
   callbacks: {
-    // async signIn({ user, account, profile }) {
-    //   const { email } = user;
-    //   const existingUser = await User.findOne({ email });
-    //   if (existingUser) {
-    //     return true;
-    //   } else {
-    //     const newHousehold = await Household.create({
-    //       name: `Haushalt von ${user.name}`,
-    //       members: [{ _id: user._id, role: "owner" }],
-    //       calendar: [],
-    //       shoppingList: [],
-    //       settings: {
-    //         weekdaysEnabled: {
-    //           0: true,
-    //           1: true,
-    //           2: true,
-    //           3: true,
-    //           4: true,
-    //           5: true,
-    //           6: true,
-    //         },
-    //         defaultDiet: [],
-    //         mealsPerDay: 1,
-    //         defaultNumberOfPeople: 1,
-    //       },
-    //     });
-    //     const newUser = await User.create({
-    //       email,
-    //       userName: user.name,
-    //       profilePictureLink: user.image,
-    //       recipeInteractions: [],
-    //       collections: [],
-    //       households: [newHousehold._id],
-    //       activeHousehold: [newHousehold._id],
-    //     });
-    //     if (newUser && newHousehold) {
-    //       return true;
-    //     } else {
-    //       console.error("Benutzer oder Haushalt konnte nicht erstellt werden.");
-    //       return false;
-    //     }
-    //   }
-    // },
     async signIn({ user, account, profile }) {
       const { email } = user;
       const existingUser = await User.findOne({ email });
       if (existingUser) {
+        existingUser.lastLogin = new Date();
+        await existingUser.save();
         return true;
       } else {
         // Zuerst den User erstellen
@@ -81,6 +40,7 @@ export const authOptions = {
           profilePictureLink: user.image,
           recipeInteractions: [],
           collections: [],
+          lastLogin: new Date(),
           // households und activeHousehold werden später aktualisiert
         });
 
