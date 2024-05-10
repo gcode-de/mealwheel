@@ -63,8 +63,6 @@ export default function Admin({
     notifySuccess(`Schemckos neu berechnet, ${performedChanges} Änderungen.`);
   }
 
-  console.log("allUsers", allUsers);
-
   const fourteenDaysAgo = new Date();
   fourteenDaysAgo.setDate(fourteenDaysAgo.getDate() - 14);
 
