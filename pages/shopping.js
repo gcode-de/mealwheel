@@ -199,28 +199,24 @@ export default function ShoppingList({
       !newUserShoppingList[categoryIndex].items[itemIndex].isChecked;
 
     updateHouseholdInDb(household, mutateHousehold);
-
-    setTimeout(async () => {
-      const updatedCategories = [...household.shoppingList];
-      const updatedItems = updatedCategories[categoryIndex].items.filter(
-        (item) => !item.isChecked
-      );
-
-      if (updatedItems.length > 0) {
-        updatedCategories[categoryIndex].items = updatedItems;
-      } else {
-        // Entferne die Kategorie, wenn alle Items gecheckt sind
-        updatedCategories.splice(categoryIndex, 1);
-      }
-      household.shoppingList = updatedCategories;
-
-      updateHouseholdInDb(household, mutateHousehold);
-    }, 10000);
   }
 
-  function clearShopping() {
+  async function clearShopping() {
     household.shoppingList = [];
-    updateHouseholdInDb(household, mutateHousehold);
+    await updateHouseholdInDb(household, mutateHousehold);
+  }
+
+  async function removeCheckedItems() {
+    const updatedCategories = household.shoppingList
+      .map((category) => {
+        const filteredItems = category.items.filter((item) => !item.isChecked);
+        return { ...category, items: filteredItems };
+      })
+      .filter((category) => category.items.length > 0);
+
+    household.shoppingList = updatedCategories;
+    notifySuccess("Abgehakte Items gelöscht.");
+    await updateHouseholdInDb(household, mutateHousehold);
   }
 
   async function setCategories() {
@@ -403,7 +399,20 @@ export default function ShoppingList({
         )}
       </List>
       {household.shoppingList.length > 0 && userIsHouseholdAdmin && (
-        <>
+        <ButtonContainer>
+          <StyledButton
+            onClick={removeCheckedItems}
+            aria-label="remove checked items from list"
+            className={
+              household.shoppingList.some((category) =>
+                category.items.some((item) => item.isChecked)
+              )
+                ? ""
+                : "invisible"
+            }
+          >
+            Erledigte Entfernen
+          </StyledButton>
           <StyledButton
             onClick={setCategories}
             aria-label="trigger AI-based sorting and grouping of items (this takes a moment)"
@@ -413,7 +422,7 @@ export default function ShoppingList({
               ? "Sortieren"
               : `bitte warten... (${durationAiGenerating})`}
           </StyledButton>
-        </>
+        </ButtonContainer>
       )}
       <Spacer />
       {userIsHouseholdAdmin && (
@@ -496,8 +505,16 @@ const StyledButton = styled(Button)`
   gap: 0.5rem;
   align-items: center;
   width: max-content;
+  &.invisible {
+    visibility: hidden;
+  }
+`;
+
+const ButtonContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
   margin-right: var(--gap-out);
-  margin-left: auto;
+  margin-left: var(--gap-out);
 `;
 
 const RestyledH2 = styled(H2)`
