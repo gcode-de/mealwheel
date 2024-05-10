@@ -63,7 +63,7 @@ export default function Admin({
     notifySuccess(`Schemckos neu berechnet, ${performedChanges} Änderungen.`);
   }
 
-  const fourteenDaysAgo = new Date();
+  const fourteenDaysAgo = new Date(); //used to calculate the number of active users
   fourteenDaysAgo.setDate(fourteenDaysAgo.getDate() - 14);
 
   return (
