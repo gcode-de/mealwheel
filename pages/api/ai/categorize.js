@@ -62,10 +62,11 @@ export default async function handler(req, res) {
 
     const response = await openai.chat.completions.create({
       model: "gpt-3.5-turbo",
-      // model: "gpt-4",
+      // model: "gpt-4o",
       messages: [{ role: "user", content: prompt }],
       temperature: 0.3,
       max_tokens: 4096,
+      // response_format: { type: "json_object" },
     });
 
     console.log("Response ChatGPT:", response);

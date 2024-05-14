@@ -6,6 +6,7 @@ import useSWR from "swr";
 import { useRouter } from "next/router";
 import styled from "styled-components";
 import React, { useState, useEffect } from "react";
+import Link from "next/link";
 import { notifySuccess, notifyError } from "/helpers/toast";
 
 export default function Admin({
@@ -72,14 +73,16 @@ export default function Admin({
         <>
           <Header text={"Admin, baby!"} />
           <CountUp target={allUsers?.length} label="Benutzer gesamt" />
-          <CountUp
-            target={
-              allUsers?.filter(
-                (user) => new Date(user.lastLogin) > fourteenDaysAgo
-              ).length
-            }
-            label="Benutzer letzte 14 Tage"
-          />
+          <StyledLinkToActiveUsers href="/profile/community/active">
+            <CountUp
+              target={
+                allUsers?.filter(
+                  (user) => new Date(user.lastLogin) > fourteenDaysAgo
+                ).length
+              }
+              label="Benutzer letzte 14 Tage"
+            />
+          </StyledLinkToActiveUsers>
           <CountUp target={recipes?.length} label="Rezepte" />
           <br />
           <h2>Feedback</h2>
@@ -146,4 +149,8 @@ const Wrapper = styled.div`
   li {
     margin-bottom: 0.5rem;
   }
+`;
+
+const StyledLinkToActiveUsers = styled(Link)`
+  text-decoration: none;
 `;
