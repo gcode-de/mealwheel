@@ -21,9 +21,9 @@ export default function Community({
   const fourteenDaysAgo = new Date(); //used to calculate the number of active users
   fourteenDaysAgo.setDate(fourteenDaysAgo.getDate() - 14);
 
-  const community = allUsers
-    .filter((person) => person._id !== user._id)
-    .filter((user) => new Date(user.lastLogin) > fourteenDaysAgo);
+  const community = allUsers.filter(
+    (user) => new Date(user.lastLogin) > fourteenDaysAgo
+  );
 
   function isFriendOfUser(id) {
     return user.friends.some((friend) => friend === id);
