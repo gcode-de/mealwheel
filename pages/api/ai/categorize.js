@@ -32,22 +32,6 @@ export default async function handler(req, res) {
   }
 
   try {
-    // const prompt = `Ordne diese Zutaten einer Einkaufsliste passenden Kategorien zu: ${ingredients}.\n
-    // Verwende nur diese Kategorien: '${ingredientCategories.join(
-    //   ","
-    // )}' und zwar jeweils maxmal ein mal.\n
-    // Beachte dabei vor allem den Namen der Zutat und weniger die anderen Eigenschaften.\n
-    // Behalte für Zutaten, die du nicht eindeutig zuordnen kannst, einfach die Kategorie "Unsortiert".\n
-    // Kumuliere Zutaten, die mehrfach auftauchen, indem du die Quantity addierst.\n
-    // Gib mir das Ergebnis nur vollständiges JSON zurück - als Array aus Objekten zurück nach diesem Schema: "${JSON.stringify(
-    //   dataSchema
-    // )}".\n
-    // Stelle absolut sicher, dass ich deine Antwort direkt als JSON parsen kann und dass das Array am Ende vollständig abgeschlossen ist.\n
-    // Gibt NICHT am Anfang deiner Antwort "Json", Anführungszeichen oder Backticks aus.\n
-    // Vorgehensweise: 1) Erstelle für jede der Kategorien ein Objekt mit den Properties "category: NAME_DER_KATEGORIE" und "items: []"\n
-    // 2) füge den Items-Arrays der Kategorien nacheinander die vorhandenen Item-Objekte hinzu.\n
-    // 3)Fasse am Ende alle Kategorie-Objekte mit innenliegenden Items-Arrays einem gemeinsamen Array hinzu, das du mir als valides JSON zurück gibst.`;
-
     const prompt = `Basierend auf den folgenden Zutaten, erstelle eine strukturierte Einkaufsliste als JSON. Die Liste soll in Kategorien unterteilt sein, die ausschließlich aus dieser Liste stammen: ${ingredientCategories.join(
       ", "
     )}.\n\nZutaten: ${JSON.stringify(
@@ -62,14 +46,14 @@ export default async function handler(req, res) {
 
     const response = await openai.chat.completions.create({
       model: "gpt-3.5-turbo",
-      // model: "gpt-4o",
       messages: [{ role: "user", content: prompt }],
       temperature: 0.3,
       max_tokens: 4096,
       // response_format: { type: "json_object" },
     });
 
-    console.log("Response ChatGPT:", response);
+    console.log("Response from ChatGPT:", response);
+    console.log("Response from ChatGPT:", response.choices[0].message.content);
 
     return res.status(200).json(response.choices[0].message.content);
   } catch (error) {
