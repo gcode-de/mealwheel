@@ -78,6 +78,10 @@ export default function DetailPage({
     Number(router?.query?.servings) || defaultNumberOfServings || 2
   );
 
+  const [imageSrc, setImageSrc] = useState(
+    recipe?.imageLink || "/img/jason-briscoe-7MAjXGUmaPw-unsplash.jpg"
+  );
+
   if (error || dataError) {
     return <h1>Fehler beim Laden des Rezepts...</h1>;
   }
@@ -311,7 +315,7 @@ export default function DetailPage({
         top="0.5rem"
       />
       <ImageContainer
-        src={recipe?.imageLink || "/img/jason-briscoe-7MAjXGUmaPw-unsplash.jpg"}
+        src={imageSrc}
         alt={`recipe Image ${title}`}
         width={400}
         height={400}

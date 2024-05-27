@@ -31,6 +31,9 @@ export default function MealCard({
     weekdays ? new Array(weekdays.length).fill(false) : []
   );
   const [isModalCollection, setIsModalCollection] = useState(false);
+  const [imageSrc, setImageSrc] = useState(
+    recipe?.imageLink || "/img/jason-briscoe-7MAjXGUmaPw-unsplash.jpg"
+  );
 
   function toggleMenu(index) {
     setMenuVisible((prevMenuVisible) => {
@@ -49,10 +52,7 @@ export default function MealCard({
           >
             <ImageContainer>
               <StyledImage
-                src={
-                  recipe?.imageLink ||
-                  "/img/jason-briscoe-7MAjXGUmaPw-unsplash.jpg"
-                }
+                src={imageSrc}
                 alt={`recipe Image ${recipe?.title}`}
                 sizes="200px"
                 fill
