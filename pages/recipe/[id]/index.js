@@ -78,9 +78,9 @@ export default function DetailPage({
     Number(router?.query?.servings) || defaultNumberOfServings || 2
   );
 
-  const [imageSrc, setImageSrc] = useState(
-    recipe?.imageLink || "/img/jason-briscoe-7MAjXGUmaPw-unsplash.jpg"
-  );
+  // const [imageSrc, setImageSrc] = useState(
+  //   recipe?.imageLink || "/img/jason-briscoe-7MAjXGUmaPw-unsplash.jpg"
+  // );
 
   if (error || dataError) {
     return <h1>Fehler beim Laden des Rezepts...</h1>;
@@ -315,19 +315,23 @@ export default function DetailPage({
         top="0.5rem"
       />
       <ImageContainer
-        src={imageSrc}
+        src={recipe?.imageLink || "/img/jason-briscoe-7MAjXGUmaPw-unsplash.jpg"}
         alt={`recipe Image ${title}`}
         width={400}
         height={400}
         sizes="500px"
-        onLoadingComplete={(result) => {
-          if (result.naturalWidth === 0) {
-            // Broken image
-            setImageSrc("/img/jason-briscoe-7MAjXGUmaPw-unsplash.jpg");
-          }
-        }}
-        onError={() => {
-          setImageSrc("/img/jason-briscoe-7MAjXGUmaPw-unsplash.jpg");
+        // onLoadingComplete={(result) => {
+        //   if (result.naturalWidth === 0) {
+        //     // Broken image
+        //     setImageSrc("/img/jason-briscoe-7MAjXGUmaPw-unsplash.jpg");
+        //   }
+        // }}
+        // onError={() => {
+        //   setImageSrc("/img/jason-briscoe-7MAjXGUmaPw-unsplash.jpg");
+        // }}
+        onError={(event) => {
+          event.target.id = "/img/jason-briscoe-7MAjXGUmaPw-unsplash.jpg";
+          event.target.srcset = "/img/jason-briscoe-7MAjXGUmaPw-unsplash.jpg";
         }}
       />
       <Article>
