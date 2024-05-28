@@ -31,9 +31,6 @@ export default function MealCard({
     weekdays ? new Array(weekdays.length).fill(false) : []
   );
   const [isModalCollection, setIsModalCollection] = useState(false);
-  // const [imageSrc, setImageSrc] = useState(
-  //   recipe?.imageLink || "/img/jason-briscoe-7MAjXGUmaPw-unsplash.jpg"
-  // );
 
   function toggleMenu(index) {
     setMenuVisible((prevMenuVisible) => {
@@ -59,15 +56,6 @@ export default function MealCard({
                 alt={`recipe Image ${recipe?.title}`}
                 sizes="200px"
                 fill
-                // onLoadingComplete={(result) => {
-                //   if (result.naturalWidth === 0) {
-                //     // Broken image
-                //     setImageSrc("/img/jason-briscoe-7MAjXGUmaPw-unsplash.jpg");
-                //   }
-                // }}
-                // onError={() => {
-                //   setImageSrc("/img/jason-briscoe-7MAjXGUmaPw-unsplash.jpg");
-                // }}
                 onError={(event) => {
                   event.target.id =
                     "/img/jason-briscoe-7MAjXGUmaPw-unsplash.jpg";
