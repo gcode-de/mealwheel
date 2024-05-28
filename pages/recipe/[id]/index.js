@@ -1,7 +1,7 @@
 import Image from "next/image";
 import styled from "styled-components";
 import useSWR from "swr";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/router";
 import { notifySuccess, notifyError } from "/helpers/toast";
 import { getFilterLabelByValue } from "@/helpers/filterTags";
