@@ -56,6 +56,12 @@ export default function MealCard({
                 alt={`recipe Image ${recipe?.title}`}
                 sizes="200px"
                 fill
+                onError={(event) => {
+                  event.target.id =
+                    "/img/jason-briscoe-7MAjXGUmaPw-unsplash.jpg";
+                  event.target.srcset =
+                    "/img/jason-briscoe-7MAjXGUmaPw-unsplash.jpg";
+                }}
               />
             </ImageContainer>
           </StyledLink>
@@ -209,7 +215,7 @@ const StyledPTitle = styled.p`
   width: fit-content;
   display: -webkit-box;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2; /* Begrenzt den Text auf zwei Zeilen */
+  -webkit-line-clamp: 2; /* Begrenzt den Text auf zwei Zeilen. */
   overflow: hidden;
   text-overflow: ellipsis;
   text-wrap: balance;

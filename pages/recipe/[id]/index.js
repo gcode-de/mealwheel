@@ -316,6 +316,10 @@ export default function DetailPage({
         width={400}
         height={400}
         sizes="500px"
+        onError={(event) => {
+          event.target.id = "/img/jason-briscoe-7MAjXGUmaPw-unsplash.jpg";
+          event.target.srcset = "/img/jason-briscoe-7MAjXGUmaPw-unsplash.jpg";
+        }}
       />
       <Article>
         <IconButton
