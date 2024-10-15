@@ -37,8 +37,9 @@ During the time working on the app we faced some really tricky challenges:
 
 - **Working under realistic conditions:**
   - Formulating user stories for the desired features and having them approved by a third party
-  - Drawing wireframes in excalidraw and a design mockup in Figma
-  - Keeping an overview with a user story map on figma as well as a kanban board on github
+  - Drawing [wireframes](https://excalidraw.com/#room=4fdce32385e74b435de8,h7GVr6X36ur_f6PVrTaRhQ) in excalidraw and a [design mockup](https://www.figma.com/file/ccwE8rgyKF8NW70FzLUupu/MealWheel-App?type=design&node-id=0%3A1&mode=design&t=A1kkz7d4h7CuBHpF-1
+) in Figma
+  - Keeping an overview with a [user story map](https://miro.com/app/board/uXjVNnhq0QI=/) on miro as well as a [kanban board](https://github.com/users/gcode-de/projects/1) on github
   - Sharing the work using git with many of it's possibilities
   - Having the code for each user story approved in code-reviews (teachers and fellow students)
   - Undergoing quality-assurance in preview deployments
