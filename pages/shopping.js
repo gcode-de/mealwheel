@@ -316,7 +316,11 @@ export default function ShoppingList({
                         name="name"
                         required
                       />
-                      <AddButton type="submit" $color="var(--color-background)">
+                      <AddButton
+                        type="submit"
+                        $color="var(--color-background)"
+                        aria-label="Änderungen an der Zutat speichern"
+                      >
                         <Check width={20} height={20} />
                       </AddButton>
                     </StyledEditForm>
@@ -391,7 +395,11 @@ export default function ShoppingList({
                 aria-label="add igredient name for the recipe"
                 required
               />
-              <AddButton type="submit" $color="var(--color-background)">
+              <AddButton
+                type="submit"
+                $color="var(--color-background)"
+                aria-label="Zutat hinzufügen"
+              >
                 <Plus width={25} height={25} />
               </AddButton>
             </StyledIngredients>

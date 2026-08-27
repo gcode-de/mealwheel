@@ -21,15 +21,24 @@ export default function NavBar({ user }) {
   ];
 
   return (
-    <StyledNav>
+    <StyledNav aria-label="Hauptnavigation">
       {menuItems.map(({ href, label, Icon }) => (
-        <StyledNavElement href={href} key={href} $active={isActive(href)}>
-          <StyledIconContainer>
+        <StyledNavElement
+          href={href}
+          key={href}
+          $active={isActive(href)}
+          aria-current={isActive(href) ? "page" : undefined}
+        >
+          <StyledIconContainer aria-hidden="true">
             <Icon width="100%" height="100%" />
           </StyledIconContainer>
           <span>{label}</span>
           {href === "/profile" && user?.connectionRequests.length >= 1 && (
-            <Notification />
+            <Notification>
+              <VisuallyHidden>
+                {user.connectionRequests.length} neue Benachrichtigungen
+              </VisuallyHidden>
+            </Notification>
           )}
         </StyledNavElement>
       ))}
@@ -37,18 +46,20 @@ export default function NavBar({ user }) {
   );
 }
 
-const StyledNav = styled.div`
+const StyledNav = styled.nav`
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
-  padding: 10px 10px;
+  padding: 10px 10px max(10px, env(safe-area-inset-bottom));
   background-color: var(--color-background);
   border-top: 1.5px solid var(--color-darkgrey);
   z-index: 10;
   display: flex;
   justify-content: space-between;
   gap: 10px;
+  max-width: 480px;
+  margin: 0 auto;
 `;
 
 const StyledNavElement = styled(Link)`
@@ -77,6 +88,7 @@ const StyledNavElement = styled(Link)`
   flex-flow: column nowrap;
   align-items: center;
   flex: 1;
+  min-height: 48px;
 `;
 
 const StyledIconContainer = styled.div`
@@ -96,4 +108,16 @@ const Notification = styled.div`
   z-index: 4;
   left: 0.75rem;
   top: 0;
+`;
+
+const VisuallyHidden = styled.span`
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 `;

@@ -31,7 +31,7 @@ export default function NewCollection({ user, mutateUser, setModal }) {
           placeholder="Kochbuch Name"
           aria-label="collection-name-input"
         />
-        <AddButton type="submit">
+        <AddButton type="submit" aria-label="Kochbuch hinzufügen">
           <Plus width={20} height={20} />
         </AddButton>
       </StyledForm>
