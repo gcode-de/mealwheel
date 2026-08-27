@@ -43,10 +43,12 @@ export default function Favorites({
     .map((recipe) => recipe.recipe);
 
   if (error) {
-    <div>
-      <Header text={"Favoriten"} />
-      Error...
-    </div>;
+    return (
+      <div>
+        <Header text="Favoriten" />
+        Error...
+      </div>
+    );
   }
 
   if (!favoriteRecipes.length) {

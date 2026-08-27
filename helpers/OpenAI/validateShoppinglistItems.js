@@ -1,5 +1,6 @@
 function isValidCategoryItem(item) {
   return (
+    item !== null &&
     typeof item === "object" &&
     typeof item.name === "string" &&
     // typeof item.quantity === "number" &&
@@ -11,6 +12,7 @@ function isValidCategoryItem(item) {
 
 function isValidCategoryStructure(category) {
   return (
+    category !== null &&
     typeof category === "object" &&
     typeof category.category === "string" &&
     Array.isArray(category.items) &&
