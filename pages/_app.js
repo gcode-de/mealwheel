@@ -1,5 +1,9 @@
 import updateUserinDb from "@/helpers/updateUserInDb";
 import updateLikes from "@/helpers/updateLikes";
+import {
+  getPageDataRequirements,
+  getRecipeId,
+} from "@/helpers/pageDataRequirements";
 
 import Layout from "../components/Layout";
 import GlobalStyle from "../styles";
@@ -34,63 +38,18 @@ const fetchCurrentUser = async (url) => {
   return response.json();
 };
 
-const routesWithAllUsers = new Set([
-  "/admin",
-  "/profile",
-  "/profile/settings",
-  "/profile/collections/[id]",
-  "/profile/community",
-  "/profile/community/active",
-  "/profile/community/[id]",
-  "/recipe/[id]",
-]);
-
-const routesWithHousehold = new Set([
-  "/plan",
-  "/shopping",
-  "/profile/settings",
-  "/recipe/[id]",
-]);
-
-const routesWithRecipes = new Set([
-  "/admin",
-  "/plan",
-  "/profile/myRecipes",
-  "/profile/collections/[id]",
-  "/profile/community/[id]",
-]);
-
-const routesWithPopulatedUserRecipes = new Set([
-  "/plan",
-  "/profile/favorites",
-  "/profile/hasCooked",
-  "/profile/collections/[id]",
-]);
-
-function getRecipeId(interaction) {
-  return interaction.recipe?._id || interaction.recipe;
-}
-
 export default function App({
   Component,
   pageProps: { session, ...pageProps },
 }) {
   const { pathname } = useRouter();
-  const needsAllUsers = routesWithAllUsers.has(pathname);
-  const needsHousehold = routesWithHousehold.has(pathname);
-  const needsRecipes = routesWithRecipes.has(pathname);
-  const needsPopulatedUserRecipes =
-    routesWithPopulatedUserRecipes.has(pathname);
-  const allUsersKey = needsAllUsers
-    ? `/api/users${
-        pathname === "/profile/collections/[id]"
-          ? "?include=collections"
-          : ""
-      }`
-    : null;
-  const currentUserKey = `/api/users/user${
-    needsPopulatedUserRecipes ? "?include=recipes" : ""
-  }`;
+  const {
+    needsAllUsers,
+    needsHousehold,
+    needsRecipes,
+    allUsersKey,
+    currentUserKey,
+  } = getPageDataRequirements(pathname);
 
   const {
     data: allUsers,
