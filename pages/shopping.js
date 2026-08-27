@@ -25,6 +25,7 @@ import styled from "styled-components";
 import { useRef, useState } from "react";
 import Link from "next/link";
 import { notifySuccess, notifyError } from "/helpers/toast";
+import { PageError, PageLoading } from "@/components/PageState";
 
 export default function ShoppingList({
   user,
@@ -32,11 +33,33 @@ export default function ShoppingList({
   userIsHouseholdAdmin,
   household,
   mutateHousehold,
+  error,
+  isLoading,
 }) {
   const [isAiGenerating, setIsAiGenerating] = useState(false);
   const [durationAiGenerating, setDurationAiGenerating] = useState(0);
   const editFormRef = useRef(null);
   const [editingIndex, setEditingIndex] = useState(null);
+
+  if (error) {
+    return (
+      <PageError
+        title="Einkaufsliste"
+        message="Die Einkaufsliste konnte nicht geladen werden."
+        onRetry={() => Promise.all([mutateUser?.(), mutateHousehold?.()])}
+      />
+    );
+  }
+
+  if (isLoading) {
+    return (
+      <PageLoading
+        title="Einkaufsliste"
+        amount
+        label="Einkaufsliste wird geladen"
+      />
+    );
+  }
 
   function handleItemClick(category, index) {
     setEditingIndex(`${category},${index}`);

@@ -48,7 +48,9 @@ describe("Favorites", () => {
       />
     );
 
-    expect(screen.getByText("Error...")).toBeInTheDocument();
+    expect(screen.getByRole("alert")).toHaveTextContent(
+      "Deine Favoriten konnten nicht geladen werden."
+    );
     expect(screen.queryByText(/noch keine/)).not.toBeInTheDocument();
   });
 

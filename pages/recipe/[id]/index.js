@@ -28,7 +28,7 @@ import {
   ListItem,
   UnstyledButton,
 } from "@/components/Styled/Styled";
-import LoadingComponent from "@/components/Loading";
+import { PageError, PageLoading } from "@/components/PageState";
 import Notes from "@/components/Notes";
 import MenuContainer from "@/components/MenuContainer";
 import ModalComponent from "@/components/Modal";
@@ -79,11 +79,17 @@ export default function DetailPage({
   );
 
   if (error || dataError) {
-    return <h1>Fehler beim Laden des Rezepts...</h1>;
+    return (
+      <PageError
+        title="Rezept"
+        message="Das Rezept konnte nicht geladen werden."
+        onRetry={() => Promise.all([mutateUser?.(), mutateRecipe()])}
+      />
+    );
   }
 
   if (isLoading || dataIsLoading || !recipe) {
-    return <LoadingComponent />;
+    return <PageLoading title="Rezept" label="Rezept wird geladen" />;
   }
 
   const {

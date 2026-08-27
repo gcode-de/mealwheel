@@ -2,7 +2,7 @@ import styled from "styled-components";
 import MealCard from "@/components/Cards/MealCard";
 import Header from "@/components/Styled/Header";
 import StyledUl from "@/components/Styled/StyledUl";
-import LoadingComponent from "@/components/Loading";
+import { PageError, PageLoading } from "@/components/PageState";
 
 import Link from "next/link";
 
@@ -16,11 +16,16 @@ export default function Favorites({
   mutateRecipes,
 }) {
   if (isLoading) {
+    return <PageLoading title="Favoriten" amount label="Favoriten werden geladen" />;
+  }
+
+  if (error) {
     return (
-      <>
-        <Header text="Favoriten" />
-        <LoadingComponent amount />
-      </>
+      <PageError
+        title="Favoriten"
+        message="Deine Favoriten konnten nicht geladen werden."
+        onRetry={() => mutateUser()}
+      />
     );
   }
 
@@ -41,15 +46,6 @@ export default function Favorites({
   const favoriteRecipes = user?.recipeInteractions
     .filter((recipe) => recipe.isFavorite)
     .map((recipe) => recipe.recipe);
-
-  if (error) {
-    return (
-      <div>
-        <Header text="Favoriten" />
-        Error...
-      </div>
-    );
-  }
 
   if (!favoriteRecipes.length) {
     return (

@@ -4,7 +4,7 @@ import MealCard from "@/components/Cards/MealCard";
 import Header from "@/components/Styled/Header";
 import IconButton from "@/components/Button/IconButton";
 import { useRouter } from "next/router";
-import LoadingComponent from "@/components/Loading";
+import { PageError, PageLoading } from "@/components/PageState";
 import { Spacer, H2 } from "@/components/Styled/Styled";
 
 export default function HasCooked({
@@ -17,25 +17,23 @@ export default function HasCooked({
   mutateRecipes,
 }) {
   const router = useRouter();
-  const hasCookedRecipes = user?.recipeInteractions
-    .filter((recipe) => recipe.hasCooked)
-    .map((recipe) => recipe.recipe);
-
   if (error) {
-    <div>
-      <Header text={"Schon gekocht"} />
-      Error...
-    </div>;
+    return (
+      <PageError
+        title="Schon gekocht"
+        message="Die gekochten Rezepte konnten nicht geladen werden."
+        onRetry={() => mutateUser()}
+      />
+    );
   }
 
   if (isLoading) {
-    return (
-      <>
-        <Header text="Schon gekocht" />
-        <LoadingComponent amount />
-      </>
-    );
+    return <PageLoading title="Schon gekocht" amount />;
   }
+
+  const hasCookedRecipes = (user?.recipeInteractions || [])
+    .filter((recipe) => recipe.hasCooked)
+    .map((recipe) => recipe.recipe);
 
   if (!hasCookedRecipes.length) {
     return (

@@ -1,12 +1,11 @@
-import CardSkeleton from "@/components/Cards/CardSkeleton";
 import MealCard from "@/components/Cards/MealCard";
-import Header from "@/components/Styled/Header";
 import IconButton from "@/components/Button/IconButton";
 import { useState } from "react";
 import IconButtonLarge from "@/components/Button/IconButtonLarge";
 import { Spacer, H2 } from "@/components/Styled/Styled";
 import styled from "styled-components";
 import { useRouter } from "next/router";
+import { PageError, PageLoading } from "@/components/PageState";
 
 export default function MyRecipes({
   user,
@@ -22,41 +21,27 @@ export default function MyRecipes({
 }) {
   const [isModalCollection, setIsModalCollection] = useState(false);
   const router = useRouter();
-  const myRecipes = recipes?.filter((recipe) => recipe.author === user?._id);
-
   function toggleAddCollection() {
     setIsModalCollection(!isModalCollection);
   }
 
-  if (error || recipesError || !myRecipes) {
+  if (error || recipesError) {
     return (
-      <>
-        <Header text={"Meine Rezepte"} />
-        <StyledUl>Keine eigenen Rezepte vorhanden...</StyledUl>
-        <IconButton
-          onClick={() => {
-            router.back();
-          }}
-          style={"ArrowLeft"}
-          left="2rem"
-          top="6rem"
-        />
-      </>
+      <PageError
+        title="Meine Rezepte"
+        message="Deine Rezepte konnten nicht geladen werden."
+        onRetry={() => Promise.all([mutateUser?.(), mutateRecipes()])}
+      />
     );
   }
 
   if (isLoading || recipesIsLoading) {
-    return (
-      <>
-        <Header text="Meine Rezepte" />
-
-        <StyledUl>
-          <H2>Lade Rezepte...</H2>
-          <CardSkeleton amount={5} $isLoading />
-        </StyledUl>
-      </>
-    );
+    return <PageLoading title="Meine Rezepte" amount />;
   }
+
+  const myRecipes = (recipes || []).filter(
+    (recipe) => recipe.author === user?._id
+  );
 
   return (
     <>

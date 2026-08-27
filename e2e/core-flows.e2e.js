@@ -62,6 +62,25 @@ test("start page loads recipes and applies a search", async ({ page }) => {
   await expect(page.getByText(recipe.title)).toBeVisible();
 });
 
+test("failed recipe loading can be retried", async ({ page }) => {
+  await page.unroute("**/api/recipes**");
+  let shouldFail = true;
+  await page.route("**/api/recipes**", (route) =>
+    shouldFail
+      ? route.fulfill({ status: 500, json: { message: "Fehler" } })
+      : route.fulfill({ json: [recipe] })
+  );
+
+  await page.goto("/");
+  await expect(page.locator('main[role="alert"]')).toContainText(
+    "Die Rezepte konnten nicht geladen werden."
+  );
+
+  shouldFail = false;
+  await page.getByRole("button", { name: "Erneut versuchen" }).click();
+  await expect(page.getByText(recipe.title)).toBeVisible();
+});
+
 test("recipe detail is reachable from the start page", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("link", { name: recipe.title, exact: true }).click();
