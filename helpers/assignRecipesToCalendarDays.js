@@ -5,16 +5,13 @@ export default async function assignRecipesToCalendarDays(
   household,
   mutateHousehold
 ) {
-  // Erstellen der Kalendereigenschaft im Benutzerobjekt, falls sie fehlt
-  if (!household.calendar) {
-    household.calendar = [];
-  }
+  let calendar = [...(household.calendar || [])];
 
   // Iterieren über jedes Zuweisungsobjekt im Array
   assignments.forEach(({ date, recipe, servings }) => {
-    if (household.calendar.some((calendarDay) => calendarDay.date === date)) {
+    if (calendar.some((calendarDay) => calendarDay.date === date)) {
       // Rezept zum existierenden Kalendertag hinzufügen oder aktualisieren
-      household.calendar = household.calendar.map((calendarDay) =>
+      calendar = calendar.map((calendarDay) =>
         calendarDay.date === date
           ? {
               ...calendarDay,
@@ -30,14 +27,19 @@ export default async function assignRecipesToCalendarDays(
       );
     } else {
       // Neuen Kalendertag mit Rezept und Anzahl der Personen (servings) hinzufügen
-      household.calendar.push({
-        date: date,
-        recipe: recipe,
-        numberOfPeople: servings ?? household.settings.defaultNumberOfPeople,
-        isDisabled: recipe !== null ? false : null,
-      });
+      calendar = [
+        ...calendar,
+        {
+          date: date,
+          recipe: recipe,
+          numberOfPeople:
+            servings ?? household.settings.defaultNumberOfPeople,
+          isDisabled: recipe !== null ? false : null,
+        },
+      ];
     }
   });
-  // Benutzerobjekt in die Datenbank pushen
-  await updateHouseholdInDb(household, mutateHousehold);
+  const updatedHousehold = { ...household, calendar };
+  await updateHouseholdInDb(updatedHousehold, mutateHousehold);
+  return updatedHousehold;
 }

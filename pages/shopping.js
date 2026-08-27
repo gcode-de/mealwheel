@@ -51,7 +51,7 @@ export default function ShoppingList({
     const data = Object.fromEntries(formData);
     data.quantity = Number(data.quantity);
 
-    const category = household.shoppingList.find(
+    const category = shoppingList.find(
       (cat) => cat.category === categoryName
     );
 
@@ -61,9 +61,21 @@ export default function ShoppingList({
         ...data,
       };
 
-      category.items[itemIndex] = updatedItem;
+      const updatedShoppingList = shoppingList.map((currentCategory) =>
+        currentCategory.category === categoryName
+          ? {
+              ...currentCategory,
+              items: currentCategory.items.map((item, index) =>
+                index === itemIndex ? updatedItem : item
+              ),
+            }
+          : currentCategory
+      );
 
-      updateHouseholdInDb(household, mutateHousehold);
+      updateHouseholdInDb(
+        { ...household, shoppingList: updatedShoppingList },
+        mutateHousehold
+      );
       setEditingIndex("");
     } else {
       console.log("Kategorie nicht gefunden.");
@@ -98,13 +110,18 @@ export default function ShoppingList({
   function consolidateShoppingListItems(userShoppingList) {
     if (!validateShoppinglistItems(userShoppingList)) {
       console.error("Shoppingliste enthält ungültige Daten.");
-      return;
+      return userShoppingList || [];
     }
+
+    const consolidatedList = userShoppingList.map((category) => ({
+      ...category,
+      items: category.items.map((item) => ({ ...item })),
+    }));
 
     const allItems = new Map();
 
     // Sammle alle Items über alle Kategorien hinweg
-    userShoppingList.forEach((category) => {
+    consolidatedList.forEach((category) => {
       category.items.forEach((item) => {
         const key = `${item.name}-${item.unit}`;
         if (allItems.has(key)) {
@@ -117,7 +134,7 @@ export default function ShoppingList({
     });
 
     // Leere die ursprüngliche Liste und füge konsolidierte Items hinzu
-    userShoppingList.splice(0, userShoppingList.length); // Leert das Array, behält aber die Referenz bei
+    consolidatedList.splice(0, consolidatedList.length);
 
     allItems.forEach((item, key) => {
       const [name, unit] = key.split("-");
@@ -125,12 +142,12 @@ export default function ShoppingList({
 
       categoryNames.forEach((categoryName) => {
         // Finde oder erstelle die Kategorie
-        let category = userShoppingList.find(
+        let category = consolidatedList.find(
           (c) => c.category === categoryName
         );
         if (!category) {
           category = { category: categoryName, items: [] };
-          userShoppingList.push(category);
+          consolidatedList.push(category);
         }
 
         category.items.push({
@@ -143,40 +160,37 @@ export default function ShoppingList({
     });
 
     //Entferne leere Kategorien,
-    const nonEmptyCategories = userShoppingList.filter(
+    const nonEmptyCategories = consolidatedList.filter(
       (category) => category.items.length > 0
     );
-    userShoppingList.splice(0, userShoppingList.length, ...nonEmptyCategories);
+    return nonEmptyCategories;
   }
 
-  consolidateShoppingListItems(household.shoppingList);
+  const shoppingList = consolidateShoppingListItems(household.shoppingList);
 
   async function handleSubmit(event) {
     event.preventDefault();
     const formData = new FormData(event.target);
     const data = Object.fromEntries(formData);
     data.quantity = Number(data.quantity);
-    if (!household.shoppingList) {
-      household.shoppingList = [];
-    }
-
-    const unsortedIndex = household.shoppingList.findIndex(
+    const unsortedIndex = shoppingList.findIndex(
       (category) => category.category === "Unsortiert"
     );
 
-    if (unsortedIndex !== -1) {
-      household.shoppingList[unsortedIndex].items.push({
-        ...data,
-        isChecked: false,
-      });
-    } else {
-      household.shoppingList.push({
-        name: "Unsortiert",
-        items: [{ ...data, isChecked: false }],
-      });
-    }
+    const newItem = { ...data, isChecked: false };
+    const updatedShoppingList =
+      unsortedIndex !== -1
+        ? shoppingList.map((category, index) =>
+            index === unsortedIndex
+              ? { ...category, items: [...category.items, newItem] }
+              : category
+          )
+        : [...shoppingList, { category: "Unsortiert", items: [newItem] }];
 
-    updateHouseholdInDb(household, mutateHousehold);
+    updateHouseholdInDb(
+      { ...household, shoppingList: updatedShoppingList },
+      mutateHousehold
+    );
     event.target.reset();
   }
 
@@ -186,7 +200,7 @@ export default function ShoppingList({
       return;
     }
 
-    const categoryIndex = household.shoppingList.findIndex(
+    const categoryIndex = shoppingList.findIndex(
       (c) => c.category === categoryName
     );
     if (categoryIndex === -1) {
@@ -194,33 +208,49 @@ export default function ShoppingList({
       return;
     }
 
-    const newUserShoppingList = [...household.shoppingList];
-    newUserShoppingList[categoryIndex].items[itemIndex].isChecked =
-      !newUserShoppingList[categoryIndex].items[itemIndex].isChecked;
+    const newUserShoppingList = shoppingList.map((category, index) =>
+      index === categoryIndex
+        ? {
+            ...category,
+            items: category.items.map((item, index) =>
+              index === itemIndex
+                ? { ...item, isChecked: !item.isChecked }
+                : item
+            ),
+          }
+        : category
+    );
 
-    updateHouseholdInDb(household, mutateHousehold);
+    updateHouseholdInDb(
+      { ...household, shoppingList: newUserShoppingList },
+      mutateHousehold
+    );
   }
 
   async function clearShopping() {
-    household.shoppingList = [];
-    await updateHouseholdInDb(household, mutateHousehold);
+    await updateHouseholdInDb(
+      { ...household, shoppingList: [] },
+      mutateHousehold
+    );
   }
 
   async function removeCheckedItems() {
-    const updatedCategories = household.shoppingList
+    const updatedCategories = shoppingList
       .map((category) => {
         const filteredItems = category.items.filter((item) => !item.isChecked);
         return { ...category, items: filteredItems };
       })
       .filter((category) => category.items.length > 0);
 
-    household.shoppingList = updatedCategories;
     notifySuccess("Abgehakte Items gelöscht.");
-    await updateHouseholdInDb(household, mutateHousehold);
+    await updateHouseholdInDb(
+      { ...household, shoppingList: updatedCategories },
+      mutateHousehold
+    );
   }
 
   async function setCategories() {
-    if (household.shoppingList.length === 0) {
+    if (shoppingList.length === 0) {
       notifyError("Bitte befülle zuerst deine Einkaufsliste.");
       return;
     }
@@ -237,7 +267,7 @@ export default function ShoppingList({
 
     try {
       const dataFromAPI = await fetchCategorizedIngredients(
-        JSON.stringify(household.shoppingList)
+        JSON.stringify(shoppingList)
       );
       const parsedData = JSON.parse(dataFromAPI);
 
@@ -248,7 +278,10 @@ export default function ShoppingList({
         return;
       }
 
-      household.shoppingList = await parsedData;
+      await updateHouseholdInDb(
+        { ...household, shoppingList: parsedData },
+        mutateHousehold
+      );
       notifySuccess("Einkaufsliste wurde sortiert.");
     } catch (error) {
       console.error("Fehler beim Abrufen der Daten:", error);
@@ -260,19 +293,18 @@ export default function ShoppingList({
     }
     setIsAiGenerating(false);
     setDurationAiGenerating(0);
-    updateHouseholdInDb(household, mutateHousehold);
   }
 
   return (
     <>
       <Header text="Einkaufsliste" />
       <List>
-        {household.shoppingList.length === 0 && (
+        {shoppingList.length === 0 && (
           <ListItem key="empty">
             <StyledCheck>nichts zu erledigen</StyledCheck>
           </ListItem>
         )}
-        {household.shoppingList.map(({ category, items }) =>
+        {shoppingList.map(({ category, items }) =>
           items?.length ? (
             <div key={category}>
               <RestyledH2>{category}</RestyledH2>
@@ -406,13 +438,13 @@ export default function ShoppingList({
           </StyledForm>
         )}
       </List>
-      {household.shoppingList.length > 0 && userIsHouseholdAdmin && (
+      {shoppingList.length > 0 && userIsHouseholdAdmin && (
         <ButtonContainer>
           <StyledButton
             onClick={removeCheckedItems}
             aria-label="remove checked items from list"
             className={
-              household.shoppingList.some((category) =>
+              shoppingList.some((category) =>
                 category.items.some((item) => item.isChecked)
               )
                 ? ""

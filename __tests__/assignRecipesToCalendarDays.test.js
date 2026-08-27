@@ -25,7 +25,7 @@ describe("assignRecipesToCalendarDays", () => {
       ],
     };
 
-    await assignRecipesToCalendarDays(
+    const updatedHousehold = await assignRecipesToCalendarDays(
       [
         {
           date: "2026-08-27T00:00:00.000Z",
@@ -37,7 +37,7 @@ describe("assignRecipesToCalendarDays", () => {
       "mutate-household"
     );
 
-    expect(household.calendar).toEqual([
+    expect(updatedHousehold.calendar).toEqual([
       {
         date: "2026-08-27T00:00:00.000Z",
         recipe: "new-recipe",
@@ -45,8 +45,9 @@ describe("assignRecipesToCalendarDays", () => {
         notes: "keep me",
       },
     ]);
+    expect(household.calendar[0].recipe).toBe("old-recipe");
     expect(updateHouseholdInDb).toHaveBeenCalledWith(
-      household,
+      updatedHousehold,
       "mutate-household"
     );
   });
@@ -56,7 +57,7 @@ describe("assignRecipesToCalendarDays", () => {
       settings: { defaultNumberOfPeople: 3 },
     };
 
-    await assignRecipesToCalendarDays(
+    const updatedHousehold = await assignRecipesToCalendarDays(
       [
         {
           date: "2026-08-28T00:00:00.000Z",
@@ -67,7 +68,7 @@ describe("assignRecipesToCalendarDays", () => {
       jest.fn()
     );
 
-    expect(household.calendar).toEqual([
+    expect(updatedHousehold.calendar).toEqual([
       {
         date: "2026-08-28T00:00:00.000Z",
         recipe: "recipe-id",
@@ -90,7 +91,7 @@ describe("assignRecipesToCalendarDays", () => {
       ],
     };
 
-    await assignRecipesToCalendarDays(
+    const updatedHousehold = await assignRecipesToCalendarDays(
       [
         {
           date: "2026-08-29T00:00:00.000Z",
@@ -105,7 +106,7 @@ describe("assignRecipesToCalendarDays", () => {
       jest.fn()
     );
 
-    expect(household.calendar).toEqual([
+    expect(updatedHousehold.calendar).toEqual([
       {
         date: "2026-08-29T00:00:00.000Z",
         recipe: "new-recipe",

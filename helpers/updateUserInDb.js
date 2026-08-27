@@ -1,25 +1,23 @@
 export default async function updateUserInDb(user, mutateUser) {
   if (!user) return;
-  const currentUser = user;
-  await mutateUser((prevUser) => ({ ...prevUser, ...user }), false);
+  if (!mutateUser) throw new Error("User cache cannot be updated.");
 
-  try {
-    const response = await fetch(`/api/users/user`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(user),
-    });
+  return mutateUser(
+    async () => {
+      const response = await fetch(`/api/users/user`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(user),
+      });
 
-    if (response.ok) {
-      await mutateUser();
-    } else {
-      throw new Error("Failed to update user data.");
+      if (!response.ok) throw new Error("Failed to update user data.");
+      return user;
+    },
+    {
+      optimisticData: user,
+      rollbackOnError: true,
+      populateCache: true,
+      revalidate: false,
     }
-  } catch (error) {
-    console.error(error);
-    await mutateUser(currentUser, false);
-    throw error;
-  }
+  );
 }
