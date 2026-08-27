@@ -5,7 +5,7 @@ import MealCard from "@/components/Cards/MealCard";
 import ScrollToTop from "@/components/ScrollToTopButton";
 import IconButton from "@/components/Button/IconButton";
 import IconButtonLarge from "@/components/Button/IconButtonLarge";
-import LoadingComponent from "@/components/Loading";
+import { PageError, PageLoading } from "@/components/PageState";
 
 import { Search } from "@/helpers/svg";
 import { H2 } from "@/components/Styled/Styled";
@@ -169,28 +169,16 @@ export default function HomePage({
 
   if (error || recipesError) {
     return (
-      <>
-        <Header text={"Meal Wheel"} />
-        <StyledUl>User nicht gefunden...</StyledUl>
-        <IconButton
-          onClick={() => {
-            router.back();
-          }}
-          style={"ArrowLeft"}
-          left="2rem"
-          top="6rem"
-        />
-      </>
+      <PageError
+        title="Meal Wheel"
+        message="Die Rezepte konnten nicht geladen werden."
+        onRetry={() => Promise.all([mutateUser?.(), mutateRecipes()])}
+      />
     );
   }
 
   if (!recipes || recipesIsLoading || isLoading) {
-    return (
-      <>
-        <Header text={"Meal Wheel"} />
-        <LoadingComponent amount />
-      </>
-    );
+    return <PageLoading title="Meal Wheel" amount label="Rezepte werden geladen" />;
   }
 
   return (

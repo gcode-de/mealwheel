@@ -3,13 +3,15 @@ import useSWR from "swr";
 import { notifySuccess, notifyError } from "/helpers/toast";
 
 import RecipeForm from "@/components/Forms/RecipeForm";
-import LoadingComponent from "@/components/Loading";
+import { PageError, PageLoading } from "@/components/PageState";
 import handleDeleteImage from "@/helpers/Cloudinary/handleDeleteImage";
 
 export default function EditRecipe({ user }) {
   const router = useRouter();
   const { id } = router.query;
-  const { data: recipe, isLoading, mutate } = useSWR(`/api/recipes/${id}`);
+  const { data: recipe, error, isLoading, mutate } = useSWR(
+    id ? `/api/recipes/${id}` : null
+  );
 
   async function handleDelete() {
     if (recipe.publicId) {
@@ -50,8 +52,18 @@ export default function EditRecipe({ user }) {
     }
   }
 
+  if (error) {
+    return (
+      <PageError
+        title="Rezept bearbeiten"
+        message="Das Rezept konnte nicht geladen werden."
+        onRetry={() => mutate()}
+      />
+    );
+  }
+
   if (isLoading) {
-    return <LoadingComponent />;
+    return <PageLoading title="Rezept bearbeiten" />;
   }
 
   return (

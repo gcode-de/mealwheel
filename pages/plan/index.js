@@ -35,7 +35,7 @@ import populateEmptyWeekdays from "@/helpers/populateEmptyWeekdays";
 import updateUserinDb from "@/helpers/updateUserInDb";
 import updateHouseholdInDb from "@/helpers/updateHouseholdInDb";
 import assignRecipesToCalendarDays from "@/helpers/assignRecipesToCalendarDays";
-import LoadingComponent from "@/components/Loading";
+import { PageError, PageLoading } from "@/components/PageState";
 import IconButtonLarge from "@/components/Button/IconButtonLarge";
 import { notifySuccess, notifyError } from "/helpers/toast";
 import ToggleCheckbox from "@/components/ToggleCheckbox";
@@ -52,6 +52,7 @@ export default function Plan({
   getRecipeProperty,
   toggleIsFavorite,
   recipes,
+  mutateRecipes,
   household,
   householdIsLoading,
   householdError,
@@ -121,6 +122,7 @@ export default function Plan({
     data: randomRecipes,
     isLoading: randomRecipesIsLoading,
     error: randomRecipesError,
+    mutate: mutateRandomRecipes,
   } = useSWR(`/api/recipes/random/10?diet=${dietForRandomRecipes}`);
 
   async function getRandomRecipe() {
@@ -341,19 +343,24 @@ export default function Plan({
   }
 
   if (error || randomRecipesError || householdError) {
-    <div>
-      <Header text={"Wochenplan"} />
-      Daten konnten nicht geladen werden...
-    </div>;
+    return (
+      <PageError
+        title="Wochenplan"
+        message="Der Wochenplan konnte nicht geladen werden."
+        onRetry={() =>
+          Promise.all([
+            mutateUser?.(),
+            mutateRecipes?.(),
+            mutateHousehold?.(),
+            mutateRandomRecipes(),
+          ])
+        }
+      />
+    );
   }
 
   if (isLoading || randomRecipesIsLoading || householdIsLoading) {
-    return (
-      <>
-        <Header text={"Wochenplan"} />
-        <LoadingComponent amount />
-      </>
-    );
+    return <PageLoading title="Wochenplan" amount label="Wochenplan wird geladen" />;
   }
 
   if (!user) {

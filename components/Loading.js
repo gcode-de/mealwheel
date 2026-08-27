@@ -3,16 +3,20 @@ import { PlateWheel } from "@/helpers/svg";
 import StyledUl from "./Styled/StyledUl";
 import CardSkeleton from "@/components/Cards/CardSkeleton";
 
-export default function LoadingComponent({ amount }) {
+export default function LoadingComponent({ amount, label = "Inhalte werden geladen" }) {
   return (
-    <>
-      <StyledUl>
+    <LoadingRegion role="status" aria-live="polite" aria-label={label}>
+      <StyledUl aria-hidden="true">
         <RotatingSVG />
         {amount && <CardSkeleton amount={3} $isLoading />}
       </StyledUl>
-    </>
+    </LoadingRegion>
   );
 }
+
+const LoadingRegion = styled.div`
+  min-height: 8rem;
+`;
 const RotatingSVG = styled(PlateWheel)`
   margin: 4rem auto;
   width: 50px;
