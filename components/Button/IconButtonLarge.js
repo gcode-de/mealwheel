@@ -10,7 +10,16 @@ import {
   Generate,
 } from "@/helpers/svg";
 
-export default function IconButtonLarge({ onClick, style, bottom }) {
+export default function IconButtonLarge({ onClick, style, bottom, ariaLabel }) {
+  const labels = {
+    arrowLeft: "Zurück",
+    plus: "Hinzufügen",
+    x: "Schließen",
+    arrowUp: "Nach oben scrollen",
+    saveShopping: "Zutaten zur Einkaufsliste hinzufügen",
+    generate: "Wochenplan automatisch erstellen",
+    trash: "Löschen",
+  };
   const buttonStyles = {
     arrowLeft: <ArrowLeft width={30} height={30} />,
     plus: <Plus width={30} height={30} />,
@@ -21,16 +30,20 @@ export default function IconButtonLarge({ onClick, style, bottom }) {
     trash: <Trash width={30} height={30} />,
   };
   return (
-    <StyledBox $bottom={bottom}>
-      <StyledLinkSvg onClick={onClick}>
-        {buttonStyles[style] || <div>Icon not found</div>}
-      </StyledLinkSvg>
-    </StyledBox>
+    <StyledButton
+      type="button"
+      $bottom={bottom}
+      onClick={onClick}
+      aria-label={ariaLabel || labels[style] || "Aktion ausführen"}
+    >
+      {buttonStyles[style] || <span>Icon nicht gefunden</span>}
+    </StyledButton>
   );
 }
 
-const StyledBox = styled.div`
+const StyledButton = styled.button`
   background-color: var(--color-component);
+  border: none;
   position: fixed;
   z-index: 300;
   bottom: ${(props) => props.$bottom};
@@ -42,11 +55,10 @@ const StyledBox = styled.div`
   align-items: center;
   border-radius: 100%;
   box-shadow: 4px 8px 16px 0 rgb(0 0 0 / 8%);
-`;
-
-const StyledLinkSvg = styled.button`
-  height: 30px;
-  border: none;
-  background: none;
   cursor: pointer;
+
+  svg {
+    display: block;
+    margin: auto;
+  }
 `;

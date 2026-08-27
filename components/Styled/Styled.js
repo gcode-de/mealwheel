@@ -37,7 +37,7 @@ export const Select = styled.select`
   border: 1px solid var(--color-lightgrey);
   border-radius: 10px;
   display: flex;
-  height: 30px;
+  min-height: 44px;
   align-items: center;
   padding-left: 0.25rem;
   padding-right: 0.75rem;
@@ -65,7 +65,7 @@ export const Input = styled.input`
   background-color: var(--color-background);
   border: none;
   border-radius: 10px;
-  height: 30px;
+  min-height: 44px;
   width: calc(100% - (2 * var(--gap-out)));
   flex-grow: ${(props) => props.$flexGrow};
   padding: 0.7rem;

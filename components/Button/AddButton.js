@@ -1,11 +1,11 @@
 import styled from "styled-components";
 
 const AddButton = styled.button`
-  width: 30px;
+  min-width: 44px;
   border: none;
   background-color: ${(props) => props.$color};
   border-radius: var(--border-radius-small);
-  height: 30px;
+  min-height: 44px;
   display: flex;
   justify-content: center;
   align-items: center;

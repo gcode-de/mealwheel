@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useId } from "react";
 import styled from "styled-components";
 
 export default function ToggleCheckbox({
@@ -10,20 +10,24 @@ export default function ToggleCheckbox({
   index,
   $marginTop,
   $marginLeft,
+  ariaLabel,
 }) {
+  const generatedId = useId();
+  const inputId = `toggle-${index ?? generatedId}`;
   return (
     <StyledCheckboxContainer $marginTop={$marginTop}>
-      <label htmlFor={`toggle-${index}`}>
+      <label htmlFor={inputId}>
         {label}
         <StyledHiddenCheckbox
           type="checkbox"
-          id={`toggle-${index}`}
+          id={inputId}
           name={name}
           defaultChecked={defaultChecked}
           onChange={onChange}
+          aria-label={ariaLabel || label || "Option umschalten"}
         />
         <StyledSliderCheckbox
-          htmlFor={`toggle-${index}`}
+          aria-hidden="true"
           $sliderSize={$sliderSize}
           $marginLeft={$marginLeft}
         />
@@ -44,7 +48,20 @@ const StyledCheckboxContainer = styled.div`
 `;
 
 const StyledHiddenCheckbox = styled.input`
-  display: none;
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+
+  &:focus-visible + span {
+    outline: 3px solid var(--color-highlight);
+    outline-offset: 3px;
+  }
 `;
 const StyledSliderCheckbox = styled.span`
   position: relative;

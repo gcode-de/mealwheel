@@ -16,7 +16,8 @@ export default function SignIn({ providers }) {
         src="/img/screensaver.png"
         width={400}
         height={700}
-        alt="screensaver"
+        alt=""
+        priority
       />
 
       <StyledWrapper>

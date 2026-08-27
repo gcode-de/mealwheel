@@ -172,6 +172,7 @@ export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
               type="file"
               name="file"
               id="upload"
+              aria-label="Rezeptbild auswählen"
               onChange={uploadImage}
             />
           </form>
@@ -206,6 +207,7 @@ export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
               value={difficulty}
               name="difficulty"
               required
+              aria-label="Schwierigkeitsgrad"
             >
               <option value="easy">Anfänger</option>
               <option value="medium">Fortgeschritten</option>
@@ -260,6 +262,7 @@ export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
             <Wrapper>
               <AddButton
                 type="button"
+                aria-label="Zutat hinzufügen"
                 $color="var(--color-background)"
                 onClick={addIngredient}
               >
@@ -267,6 +270,7 @@ export default function RecipeForm({ onSubmit, onDelete, data, formName }) {
               </AddButton>
               <AddButton
                 type="button"
+                aria-label="Letzte Zutat entfernen"
                 $color="var(--color-background)"
                 onClick={deleteIngredient}
               >

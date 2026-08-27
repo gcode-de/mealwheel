@@ -10,6 +10,8 @@ export default function SetNumberOfPeople({
   return (
     <NumberOfPeopleContainer $margin={$margin}>
       <button
+        type="button"
+        aria-label="Personenzahl verringern"
         onClick={(event) => {
           event.preventDefault();
           handleChange(-1);
@@ -17,8 +19,10 @@ export default function SetNumberOfPeople({
       >
         -
       </button>
-      <span>{numberOfPeople}</span>
+      <span aria-live="polite">{numberOfPeople}</span>
       <button
+        type="button"
+        aria-label="Personenzahl erhöhen"
         onClick={(event) => {
           event.preventDefault();
           handleChange(+1);
@@ -51,5 +55,7 @@ const NumberOfPeopleContainer = styled.div`
     font-size: 1.25rem;
     cursor: pointer;
     padding: 0;
+    min-width: 44px;
+    min-height: 44px;
   }
 `;

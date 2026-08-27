@@ -11,6 +11,9 @@ export default function LikesDisplay({
     <LikesDisplayContainer $margin={$margin}>
       {likes > 0 && `${likes} ${likes > 1 ? "Schmeckos" : "Schmecko"}`}
       <button
+        type="button"
+        aria-label={$isFavorite ? "Aus Favoriten entfernen" : "Zu Favoriten hinzufügen"}
+        aria-pressed={Boolean($isFavorite)}
         onClick={(event) => {
           event.preventDefault();
           onToggleIsFavorite();
@@ -43,6 +46,8 @@ const LikesDisplayContainer = styled.div`
     font-size: 1.25rem;
     cursor: pointer;
     padding: 0;
+    min-width: 44px;
+    min-height: 44px;
   }
 `;
 

@@ -29,7 +29,29 @@ export default function IconButton({
   top,
   fill,
   rotate,
+  ariaLabel,
+  ariaControls,
 }) {
+  const labels = {
+    plus: "Hinzufügen",
+    x: "Schließen",
+    ArrowLeft: "Zurück",
+    TriangleLeft: "Vorherige Auswahl",
+    TriangleRight: "Nächste Auswahl",
+    Heart: "Favorit ändern",
+    Pot: "Als gekocht markieren",
+    Reload: "Neu laden",
+    Calendar: "Kalender öffnen",
+    Edit: "Bearbeiten",
+    Settings: "Einstellungen öffnen",
+    Book: "Kochbuch öffnen",
+    Leave: "Verlassen",
+    Menu: "Menü öffnen",
+    Bell: "Benachrichtigungen öffnen",
+    ArrowSmallLeft: "Vorherige Woche",
+    ArrowSmallRight: "Nächste Woche",
+    Filter: "Filter öffnen",
+  };
   const buttonStyles = {
     plus: <Plus width={30} height={30} />,
     x: <XSmall width={30} height={30} />,
@@ -51,36 +73,43 @@ export default function IconButton({
     Filter: <Filter width={20} height={20} />,
   };
   return (
-    <StyledBox $left={left} $right={right} $top={top} $rotate={rotate}>
-      <StyledLinkSvg onClick={onClick} $fill={fill}>
-        {buttonStyles[style]}
-      </StyledLinkSvg>
-    </StyledBox>
+    <StyledButton
+      type="button"
+      onClick={onClick}
+      aria-label={ariaLabel || labels[style] || "Aktion ausführen"}
+      aria-controls={ariaControls}
+      aria-expanded={typeof rotate === "boolean" ? rotate : undefined}
+      $left={left}
+      $right={right}
+      $top={top}
+      $rotate={rotate}
+      $fill={fill}
+    >
+      {buttonStyles[style]}
+    </StyledButton>
   );
 }
 
-const StyledBox = styled.div`
+const StyledButton = styled.button`
   background-color: white;
+  border: none;
   position: absolute;
   z-index: 2;
   top: ${(props) => props.$top};
   left: ${(props) => props.$left};
   right: ${(props) => props.$right};
   transform: ${(props) => (props.$rotate ? "rotate(90deg)" : "0")};
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   display: flex;
   justify-content: center;
   align-items: center;
   border-radius: 100%;
   box-shadow: 4px 8px 16px 0 rgb(0 0 0 / 8%);
   cursor: pointer;
-`;
-
-const StyledLinkSvg = styled.button`
   fill: ${(props) => props.$fill || "var(--color-font)"};
-  height: 30px;
-  border: none;
-  background: none;
-  cursor: pointer;
+
+  svg {
+    display: block;
+  }
 `;

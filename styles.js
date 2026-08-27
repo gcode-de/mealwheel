@@ -53,12 +53,30 @@ export default createGlobalStyle`
   body {
     margin: auto;
     font-family: ${archivo.style.fontFamily};
-    max-width: 400px;
+    width: 100%;
+    max-width: 480px;
     background-color: var(--color-background);
     color: var(--color-font);
-    padding-bottom: 69px;
+    padding-bottom: calc(69px + env(safe-area-inset-bottom));
+    min-height: 100dvh;
     position: relative;
     input, button, select, option, a{color: var(--color-font)}
 
+  }
+
+  :focus-visible {
+    outline: 3px solid var(--color-highlight);
+    outline-offset: 3px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      scroll-behavior: auto !important;
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
   }
 `;

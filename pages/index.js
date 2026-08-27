@@ -209,13 +209,18 @@ export default function HomePage({
             <input
               type="text"
               placeholder="Suche..."
+              aria-label="Rezepte suchen"
               value={searchTerm}
               onChange={handleInputChange}
               onKeyDown={(event) => {
                 if (event.key === "Enter") handleSearch();
               }}
             />
-            <button onClick={handleSearch}>
+            <button
+              type="button"
+              onClick={handleSearch}
+              aria-label="Suche ausführen"
+            >
               <Search width="1.25rem" height="1.25rem" />
             </button>
           </StyledSearchContainer>

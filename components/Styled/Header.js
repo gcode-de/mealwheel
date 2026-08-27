@@ -18,7 +18,7 @@ const StyledHeader = styled.header`
 
 const StyledH1 = styled.h1`
   align-self: left;
-  font-size: 40px;
+  font-size: clamp(2rem, 10vw, 2.5rem);
   padding-bottom: 0;
   border-bottom: 1px var(--color-darkgrey) solid;
   color: var(--color-darkgrey);
