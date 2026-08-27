@@ -2,12 +2,6 @@ import { MongoClient } from "mongodb";
 
 const uri = process.env.MONGODB_URI;
 
-const options = {
-  useUnifiedTopology: true,
-
-  useNewUrlParser: true,
-};
-
 let client;
 
 let clientPromise;
@@ -22,7 +16,7 @@ if (process.env.NODE_ENV === "development") {
   // is preserved across module reloads caused by HMR (Hot Module Replacement).
 
   if (!global._mongoClientPromise) {
-    client = new MongoClient(uri, options);
+    client = new MongoClient(uri);
 
     global._mongoClientPromise = client.connect();
   }
@@ -31,7 +25,7 @@ if (process.env.NODE_ENV === "development") {
 } else {
   // In production mode, it's best to not use a global variable.
 
-  client = new MongoClient(uri, options);
+  client = new MongoClient(uri);
 
   clientPromise = client.connect();
 }

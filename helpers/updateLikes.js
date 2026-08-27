@@ -1,6 +1,6 @@
 export default async function updateLikes(recipeId, likeChange, mutate) {
   try {
-    mutate();
+    mutate?.();
 
     const response = await fetch(`/api/recipes/${recipeId}/like`, {
       method: "PUT",
@@ -14,9 +14,9 @@ export default async function updateLikes(recipeId, likeChange, mutate) {
       throw new Error("Something went wrong with updating likes.");
     }
 
-    mutate();
+    mutate?.();
   } catch (error) {
     console.error(error);
-    mutate();
+    mutate?.();
   }
 }

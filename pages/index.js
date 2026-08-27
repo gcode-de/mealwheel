@@ -20,6 +20,41 @@ import styled from "styled-components";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 
+function createEmptyFilters() {
+  return filterTags.reduce((filters, { type }) => {
+    filters[type] = [];
+    return filters;
+  }, {});
+}
+
+function createUrlWithParams(baseUrl, filters = null, sort = null, search = "") {
+  let url = baseUrl;
+  const queryParams = [];
+
+  if (filters) {
+    Object.entries(filters).forEach(([type, values]) => {
+      if (values.length > 0) {
+        queryParams.push(
+          `${type}=${values.map(encodeURIComponent).join(",")}`
+        );
+      }
+    });
+  }
+
+  if (sort?.type && sort?.order) {
+    queryParams.push(
+      `sort=${encodeURIComponent(sort.type)}&order=${encodeURIComponent(
+        sort.order
+      )}`
+    );
+  }
+
+  if (search) queryParams.push(`search=${encodeURIComponent(search)}`);
+  if (queryParams.length > 0) url += `?${queryParams.join("&")}`;
+
+  return url;
+}
+
 export default function HomePage({
   error,
   isLoading,
@@ -30,43 +65,40 @@ export default function HomePage({
   mutateUser,
 }) {
   const router = useRouter();
+  const { isReady, query } = router;
 
-  const [apiQuery, setApiQuery] = useState(`/api/recipes`);
+  const [apiQuery, setApiQuery] = useState(null);
   const [isFilterButton, setIsFilterButton] = useState(false);
 
   function toggleFilter() {
     setIsFilterButton(!isFilterButton);
   }
 
-  const [filters, setFilters] = useState(() => {
-    return filterTags.reduce((acc, { type }) => {
-      acc[type] = [];
-      return acc;
-    }, {});
-  });
+  const [filters, setFilters] = useState(createEmptyFilters);
 
   const [currentSort, setCurrentSort] = useState({});
 
   const [searchTerm, setSearchTerm] = useState("");
 
-  const { query } = useRouter();
-
   useEffect(() => {
-    if (!query) return;
+    if (!isReady) return;
 
     function parseUrlParams() {
       const searchFromQuery = query.search || "";
       setSearchTerm(searchFromQuery);
-      const newFilters = Object.keys(filters).reduce((acc, filterType) => {
-        if (query[filterType]) {
-          acc[filterType] = query[filterType]
-            .split(",")
-            .map(decodeURIComponent);
-        } else {
-          acc[filterType] = [];
-        }
-        return acc;
-      }, {});
+      const newFilters = Object.keys(createEmptyFilters()).reduce(
+        (acc, filterType) => {
+          if (query[filterType]) {
+            acc[filterType] = query[filterType]
+              .split(",")
+              .map(decodeURIComponent);
+          } else {
+            acc[filterType] = [];
+          }
+          return acc;
+        },
+        {}
+      );
 
       let newSort = null;
       if (query.sort && query.order) {
@@ -79,23 +111,19 @@ export default function HomePage({
         };
       }
       setCurrentSort(newSort);
-
-      const search = query.search || "";
-
       setFilters(newFilters);
-      if (newSort) setCurrentSort(newSort);
 
       const apiUrl = createUrlWithParams(
         "/api/recipes",
         newFilters,
         newSort,
-        search
+        searchFromQuery
       );
       setApiQuery(apiUrl);
     }
 
     parseUrlParams();
-  }, [query]);
+  }, [isReady, query]);
 
   function handleFilterChange(type, value) {
     let newFilters = {};
@@ -117,7 +145,7 @@ export default function HomePage({
   }
 
   function resetFilters() {
-    router.push("/");
+    router.replace("/", undefined, { shallow: true, scroll: false });
   }
 
   function handleSortChange({ label, type, order }) {
@@ -157,45 +185,10 @@ export default function HomePage({
       newSort,
       currentSearch
     );
-    router.replace(browserUrlWithFilters);
-  }
-
-  function createUrlWithParams(
-    baseUrl,
-    filters = null,
-    sort = null,
-    search = ""
-  ) {
-    let apiUrlWithFilters = baseUrl;
-    const queryParams = [];
-
-    if (filters) {
-      Object.entries(filters).forEach(([type, values]) => {
-        if (values.length > 0) {
-          queryParams.push(
-            `${type}=${values.map(encodeURIComponent).join(",")}`
-          );
-        }
-      });
-    }
-
-    if (sort && sort.type && sort.order) {
-      queryParams.push(
-        `sort=${encodeURIComponent(sort.type)}&order=${encodeURIComponent(
-          sort.order
-        )}`
-      );
-    }
-
-    if (search) {
-      queryParams.push(`search=${encodeURIComponent(search)}`);
-    }
-
-    if (queryParams.length > 0) {
-      apiUrlWithFilters += `?${queryParams.join("&")}`;
-    }
-
-    return apiUrlWithFilters;
+    router.replace(browserUrlWithFilters, undefined, {
+      shallow: true,
+      scroll: false,
+    });
   }
 
   const {
@@ -203,9 +196,9 @@ export default function HomePage({
     error: recipesError,
     isLoading: recipesIsLoading,
     mutate: mutateRecipes,
-  } = useSWR(apiQuery);
+  } = useSWR(apiQuery, { keepPreviousData: true });
 
-  if (error) {
+  if (error || recipesError) {
     return (
       <>
         <Header text={"Meal Wheel"} />
@@ -222,7 +215,7 @@ export default function HomePage({
     );
   }
 
-  if (recipesIsLoading || isLoading) {
+  if (!recipes || recipesIsLoading || isLoading) {
     return (
       <>
         <Header text={"Meal Wheel"} />

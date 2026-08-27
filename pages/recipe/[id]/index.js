@@ -179,7 +179,8 @@ export default function DetailPage({
     getRecipeProperty(_id, "notes");
 
     const interactionIndex = user.recipeInteractions.findIndex(
-      (interaction) => interaction.recipe._id === _id
+      (interaction) =>
+        String(interaction.recipe?._id || interaction.recipe) === String(_id)
     );
 
     if (interactionIndex !== -1) {
@@ -193,7 +194,8 @@ export default function DetailPage({
   }
 
   const foundInteractions = user?.recipeInteractions?.find(
-    (interaction) => interaction.recipe._id === _id
+    (interaction) =>
+      String(interaction.recipe?._id || interaction.recipe) === String(_id)
   );
   function toggleModalCalender() {
     setIsModalCalendar(!isModalCalendar);

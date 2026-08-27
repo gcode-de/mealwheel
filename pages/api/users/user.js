@@ -14,10 +14,15 @@ export default async function handler(request, response) {
   if (!session) return response.status(403).json({ error: "unauthenticated" });
 
   if (request.method === "GET") {
-    const user = await User.findById(session.user.id)
-      .populate("recipeInteractions.recipe")
-      .populate("collections.recipes")
-      .populate("households");
+    let userQuery = User.findById(session.user.id).populate("households");
+
+    if (request.query.include === "recipes") {
+      userQuery = userQuery
+        .populate("recipeInteractions.recipe")
+        .populate("collections.recipes");
+    }
+
+    const user = await userQuery;
     // .populate("activeHousehold");//wohl hier nicht benötigt, da die IDs ausreichen, un der Haushalt sowieso separat gefetched werden muss um damit persistens zu arbeiten.
 
     if (!user) {

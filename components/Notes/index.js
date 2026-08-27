@@ -24,7 +24,8 @@ export default function Notes({ user, mutateUser, _id, foundInteractions }) {
     setModal(!modal);
   }
   const interactionIndex = user.recipeInteractions.findIndex(
-    (interaction) => interaction.recipe._id === _id
+    (interaction) =>
+      String(interaction.recipe?._id || interaction.recipe) === String(_id)
   );
   function handleAddNote(event) {
     event.preventDefault();

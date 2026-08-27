@@ -15,6 +15,15 @@ export default function Favorites({
   mutateUser,
   mutateRecipes,
 }) {
+  if (isLoading) {
+    return (
+      <>
+        <Header text="Favoriten" />
+        <LoadingComponent amount />
+      </>
+    );
+  }
+
   if (!user) {
     return (
       <>
@@ -38,15 +47,6 @@ export default function Favorites({
       <Header text={"Favoriten"} />
       Error...
     </div>;
-  }
-
-  if (isLoading) {
-    return (
-      <>
-        <Header text="Favoriten" />
-        <LoadingComponent amount />
-      </>
-    );
   }
 
   if (!favoriteRecipes.length) {

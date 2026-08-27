@@ -19,7 +19,9 @@ export default function AddToCollection({
     event.preventDefault();
     const isDuplicate = user.collections
       .find((col) => col.collectionName === selectedCollection)
-      .recipes.find((recipe) => recipe._id === id);
+      .recipes.find(
+        (recipe) => String(recipe?._id || recipe) === String(id)
+      );
     if (isDuplicate) {
       notifyError("Dieses Rezept ist bereits gespeichert.");
       return;
