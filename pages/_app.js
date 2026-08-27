@@ -6,6 +6,7 @@ import {
 } from "@/helpers/pageDataRequirements";
 
 import Layout from "../components/Layout";
+import PwaRegistration from "@/components/PwaRegistration";
 import GlobalStyle from "../styles";
 
 import { SessionProvider } from "next-auth/react";
@@ -171,6 +172,7 @@ export default function App({
   return (
     <>
       <GlobalStyle />
+      <PwaRegistration />
       <SWRConfig value={{ fetcher }}>
         <SessionProvider session={session}>
           <Layout user={user}>
