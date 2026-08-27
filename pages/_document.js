@@ -25,8 +25,19 @@ export default class MyDocument extends Document {
 
   render() {
     return (
-      <Html lang="en">
-        <Head />
+      <Html lang="de">
+        <Head>
+          <meta name="application-name" content="MealWheel" />
+          <meta name="theme-color" content="#4d4a4a" />
+          <meta name="apple-mobile-web-app-capable" content="yes" />
+          <meta
+            name="apple-mobile-web-app-status-bar-style"
+            content="default"
+          />
+          <meta name="apple-mobile-web-app-title" content="MealWheel" />
+          <link rel="manifest" href="/manifest.json" />
+          <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+        </Head>
         <body>
           <Main />
           <NextScript />
