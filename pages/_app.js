@@ -1,5 +1,4 @@
 import updateUserinDb from "@/helpers/updateUserInDb";
-import updateHouseholdInDb from "@/helpers/updateHouseholdInDb";
 import updateLikes from "@/helpers/updateLikes";
 
 import Layout from "../components/Layout";
@@ -7,10 +6,11 @@ import GlobalStyle from "../styles";
 
 import { SessionProvider } from "next-auth/react";
 import useSWR, { SWRConfig } from "swr";
+import { useRouter } from "next/router";
 
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { notifySuccess, notifyError } from "/helpers/toast";
+import { notifyError } from "/helpers/toast";
 
 const fetcher = async (url) => {
   const res = await fetch(url);
@@ -25,30 +25,98 @@ const fetcher = async (url) => {
   return res.json();
 };
 
+const fetchCurrentUser = async (url) => {
+  const response = await fetch(url);
+
+  if (response.status === 403) return null;
+  if (!response.ok) throw new Error("User konnte nicht geladen werden.");
+
+  return response.json();
+};
+
+const routesWithAllUsers = new Set([
+  "/admin",
+  "/profile",
+  "/profile/settings",
+  "/profile/collections/[id]",
+  "/profile/community",
+  "/profile/community/active",
+  "/profile/community/[id]",
+  "/recipe/[id]",
+]);
+
+const routesWithHousehold = new Set([
+  "/plan",
+  "/shopping",
+  "/profile/settings",
+  "/recipe/[id]",
+]);
+
+const routesWithRecipes = new Set([
+  "/admin",
+  "/plan",
+  "/profile/myRecipes",
+  "/profile/collections/[id]",
+  "/profile/community/[id]",
+]);
+
+const routesWithPopulatedUserRecipes = new Set([
+  "/plan",
+  "/profile/favorites",
+  "/profile/hasCooked",
+  "/profile/collections/[id]",
+]);
+
+function getRecipeId(interaction) {
+  return interaction.recipe?._id || interaction.recipe;
+}
+
 export default function App({
   Component,
   pageProps: { session, ...pageProps },
 }) {
+  const { pathname } = useRouter();
+  const needsAllUsers = routesWithAllUsers.has(pathname);
+  const needsHousehold = routesWithHousehold.has(pathname);
+  const needsRecipes = routesWithRecipes.has(pathname);
+  const needsPopulatedUserRecipes =
+    routesWithPopulatedUserRecipes.has(pathname);
+  const allUsersKey = needsAllUsers
+    ? `/api/users${
+        pathname === "/profile/collections/[id]"
+          ? "?include=collections"
+          : ""
+      }`
+    : null;
+  const currentUserKey = `/api/users/user${
+    needsPopulatedUserRecipes ? "?include=recipes" : ""
+  }`;
+
   const {
     data: allUsers,
     isLoading: allUsersAreLoading,
     error: allUsersError,
     mutate: mutateAllUsers,
-  } = useSWR(`/api/users`, fetcher);
+  } = useSWR(allUsersKey, fetcher);
 
   const {
     data: user,
     isLoading,
     error,
     mutate,
-  } = useSWR(`/api/users/user`, fetcher);
+  } = useSWR(currentUserKey, fetchCurrentUser);
 
   const {
     data: household,
     isLoading: householdIsLoading,
     error: householdError,
     mutate: mutateHousehold,
-  } = useSWR(user ? `/api/households/${user.activeHousehold}` : null, fetcher);
+  } = useSWR(
+    needsHousehold && user?.activeHousehold
+      ? `/api/households/${user.activeHousehold}`
+      : null,
+    fetcher
+  );
 
   const userIsHouseholdAdmin = household?.members.some((member) => {
     return (
@@ -62,11 +130,23 @@ export default function App({
     error: recipesError,
     isLoading: recipesIsLoading,
     mutate: mutateRecipes,
-  } = useSWR(`/api/recipes`, fetcher);
+  } = useSWR(needsRecipes ? `/api/recipes` : null, fetcher);
+
+  const appIsLoading =
+    isLoading ||
+    (needsAllUsers && allUsersAreLoading) ||
+    (needsHousehold && Boolean(user) && householdIsLoading) ||
+    (needsRecipes && recipesIsLoading);
+
+  const appError =
+    error ||
+    (needsAllUsers && allUsersError) ||
+    (needsHousehold && householdError) ||
+    (needsRecipes && recipesError);
 
   function getRecipeProperty(_id, property) {
     const recipeInteraction = user?.recipeInteractions.find(
-      (interaction) => interaction.recipe._id === _id
+      (interaction) => String(getRecipeId(interaction)) === String(_id)
     );
     return recipeInteraction?.[property];
   }
@@ -81,7 +161,7 @@ export default function App({
 
     const updatedRecipeInteractions = user.recipeInteractions.map(
       (interaction) => {
-        if (interaction.recipe._id === _id) {
+        if (String(getRecipeId(interaction)) === String(_id)) {
           likeChange = interaction.isFavorite ? -1 : 1;
           return { ...interaction, isFavorite: !interaction.isFavorite };
         }
@@ -115,11 +195,11 @@ export default function App({
     }
     if (
       user.recipeInteractions.find(
-        (interaction) => interaction.recipe._id === _id
+        (interaction) => String(getRecipeId(interaction)) === String(_id)
       )
     ) {
       user.recipeInteractions = user.recipeInteractions.map((interaction) =>
-        interaction.recipe._id === _id
+        String(getRecipeId(interaction)) === String(_id)
           ? { ...interaction, hasCooked: !interaction.hasCooked }
           : interaction
       );
@@ -127,36 +207,6 @@ export default function App({
       user.recipeInteractions.push({ hasCooked: true, recipe: _id });
     }
     updateUserinDb(user, mutate);
-  }
-
-  if (isLoading || householdIsLoading || recipesIsLoading) {
-    return (
-      <>
-        <GlobalStyle />
-        <SessionProvider session={session}>
-          <Layout>
-            <SWRConfig value={{ fetcher }}>
-              <Component {...pageProps} isLoading />
-            </SWRConfig>
-          </Layout>
-        </SessionProvider>
-      </>
-    );
-  }
-
-  if (recipesError) {
-    return (
-      <>
-        <GlobalStyle />
-        <SessionProvider session={session}>
-          <Layout>
-            <SWRConfig value={{ fetcher }}>
-              <Component {...pageProps} recipesError />
-            </SWRConfig>
-          </Layout>
-        </SessionProvider>
-      </>
-    );
   }
 
   return (
@@ -168,6 +218,8 @@ export default function App({
             <ToastContainer />
             <Component
               {...pageProps}
+              error={appError}
+              isLoading={appIsLoading}
               user={user}
               userIsHouseholdAdmin={userIsHouseholdAdmin}
               mutateUser={mutate}
