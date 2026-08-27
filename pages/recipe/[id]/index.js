@@ -183,12 +183,15 @@ export default function DetailPage({
         String(interaction.recipe?._id || interaction.recipe) === String(_id)
     );
 
-    if (interactionIndex !== -1) {
-      user.recipeInteractions[interactionIndex].notes.push(note);
-    } else {
-      user.recipeInteractions.push({ _id: _id, notes: [note] });
-    }
-    updateUserinDb(user, mutateUser);
+    const recipeInteractions =
+      interactionIndex !== -1
+        ? user.recipeInteractions.map((interaction, index) =>
+            index === interactionIndex
+              ? { ...interaction, notes: [...(interaction.notes || []), note] }
+              : interaction
+          )
+        : [...user.recipeInteractions, { recipe: _id, notes: [note] }];
+    updateUserinDb({ ...user, recipeInteractions }, mutateUser);
     event.target.reset();
     mutate();
   }
@@ -255,22 +258,26 @@ export default function DetailPage({
       isChecked: false,
     }));
 
-    const uncategorizedCategory = household.shoppingList.find(
+    const hasUncategorizedCategory = household.shoppingList.some(
       (category) => category.category === "Unsortiert"
     );
-
-    if (uncategorizedCategory) {
-      uncategorizedCategory.items.push(...adjustedIngredients);
-    } else {
-      household.shoppingList.push({
-        category: "Unsortiert",
-        items: adjustedIngredients,
-      });
-    }
+    const shoppingList = hasUncategorizedCategory
+      ? household.shoppingList.map((category) =>
+          category.category === "Unsortiert"
+            ? { ...category, items: [...category.items, ...adjustedIngredients] }
+            : category
+        )
+      : [
+          ...household.shoppingList,
+          { category: "Unsortiert", items: adjustedIngredients },
+        ];
 
     setIsMenuVisible(false);
 
-    await updateHouseholdInDb(household, mutateHousehold)
+    await updateHouseholdInDb(
+      { ...household, shoppingList },
+      mutateHousehold
+    )
       .then(() => notifySuccess("Zutaten wurden zur Einkaufsliste hinzugefügt"))
       .catch((error) => {
         console.error("Fehler beim Aktualisieren der Einkaufsliste", error);

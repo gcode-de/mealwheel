@@ -140,24 +140,30 @@ export default function Plan({
   };
 
   const toggleDayIsDisabled = async (day) => {
-    await createUserCalenderIfMissing();
-    if (household.calendar.some((calendarDay) => calendarDay.date === day)) {
-      household.calendar = household.calendar.map((calendarDay) =>
-        calendarDay.date === day
-          ? { ...calendarDay, isDisabled: !calendarDay.isDisabled }
-          : calendarDay
-      );
-    } else {
-      household.calendar.push({
-        date: day,
-        isDisabled: checkIfWeekdayIsDefaultEnabled(day),
-      });
-    }
-    await updateHouseholdInDb(household, mutateHousehold);
+    const calendar = household.calendar || [];
+    const updatedCalendar = calendar.some(
+      (calendarDay) => calendarDay.date === day
+    )
+      ? calendar.map((calendarDay) =>
+          calendarDay.date === day
+            ? { ...calendarDay, isDisabled: !calendarDay.isDisabled }
+            : calendarDay
+        )
+      : [
+          ...calendar,
+          {
+            date: day,
+            isDisabled: checkIfWeekdayIsDefaultEnabled(day),
+          },
+        ];
+    await updateHouseholdInDb(
+      { ...household, calendar: updatedCalendar },
+      mutateHousehold
+    );
   };
 
   const changeNumberOfPeople = async (day, change) => {
-    household.calendar = household.calendar.map((calendarDay) =>
+    const calendar = household.calendar.map((calendarDay) =>
       calendarDay.date === day
         ? {
             ...calendarDay,
@@ -165,14 +171,7 @@ export default function Plan({
           }
         : calendarDay
     );
-    await updateHouseholdInDb(household, mutateHousehold);
-  };
-
-  const createUserCalenderIfMissing = async () => {
-    if (!household.calendar) {
-      household.calendar = [];
-      await updateHouseholdInDb(household, mutateHousehold);
-    }
+    await updateHouseholdInDb({ ...household, calendar }, mutateHousehold);
   };
 
   const reassignRecipe = async (day) => {
@@ -207,23 +206,22 @@ export default function Plan({
   };
 
   async function saveNotes(day, notes) {
-    await createUserCalenderIfMissing();
-    if (household.calendar.some((calendarDay) => calendarDay.date === day)) {
-      household.calendar = household.calendar.map((calendarDay) =>
-        calendarDay.date === day
-          ? { ...calendarDay, notes: notes }
-          : calendarDay
-      );
-    } else {
-      console.log("saveNotes-else", day, notes);
-      household.calendar.push({
-        date: day,
-        notes,
-      });
-    }
+    const calendar = household.calendar || [];
+    const updatedCalendar = calendar.some(
+      (calendarDay) => calendarDay.date === day
+    )
+      ? calendar.map((calendarDay) =>
+          calendarDay.date === day
+            ? { ...calendarDay, notes: notes }
+            : calendarDay
+        )
+      : [...calendar, { date: day, notes }];
     setIsNoteModalActive(false);
     setCalendarDayToEdit(null);
-    await updateHouseholdInDb(household, mutateHousehold);
+    await updateHouseholdInDb(
+      { ...household, calendar: updatedCalendar },
+      mutateHousehold
+    );
   }
 
   const mouseSensor = useSensor(MouseSensor, {
@@ -427,16 +425,19 @@ export default function Plan({
     const uncategorizedIndex = household.shoppingList.findIndex(
       (category) => category.category === "Unsortiert"
     );
-    uncategorizedIndex === -1
-      ? household.shoppingList.push({
-          category: "Unsortiert",
-          items: [...newIngredients],
-        })
-      : household.shoppingList[uncategorizedIndex].items.push(
-          ...newIngredients
-        );
+    const shoppingList =
+      uncategorizedIndex === -1
+        ? [
+            ...household.shoppingList,
+            { category: "Unsortiert", items: newIngredients },
+          ]
+        : household.shoppingList.map((category, index) =>
+            index === uncategorizedIndex
+              ? { ...category, items: [...category.items, ...newIngredients] }
+              : category
+          );
 
-    updateHouseholdInDb(household, mutateHousehold);
+    updateHouseholdInDb({ ...household, shoppingList }, mutateHousehold);
     notifySuccess("Einkaufsliste aktualisiert");
   }
   return (

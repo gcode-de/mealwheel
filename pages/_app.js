@@ -134,8 +134,16 @@ export default function App({
       likeChange = 1;
     }
 
+    const updatedUser = {
+      ...user,
+      recipeInteractions: updatedRecipeInteractions,
+    };
+
     try {
-      await updateLikes(_id, likeChange, mutateRecipes);
+      await Promise.all([
+        updateLikes(_id, likeChange, mutateRecipes),
+        updateUserinDb(updatedUser, mutateUser),
+      ]);
     } catch (error) {
       console.error(error);
       notifyError(
@@ -144,8 +152,6 @@ export default function App({
       return;
     }
 
-    user.recipeInteractions = updatedRecipeInteractions;
-    await updateUserinDb(user, mutateUser);
   }
 
   async function toggleHasCooked(_id) {
@@ -153,20 +159,27 @@ export default function App({
       notifyError("Bitte zuerst einloggen.");
       return;
     }
+    let updatedRecipeInteractions;
     if (
       user.recipeInteractions.find(
         (interaction) => String(getRecipeId(interaction)) === String(_id)
       )
     ) {
-      user.recipeInteractions = user.recipeInteractions.map((interaction) =>
+      updatedRecipeInteractions = user.recipeInteractions.map((interaction) =>
         String(getRecipeId(interaction)) === String(_id)
           ? { ...interaction, hasCooked: !interaction.hasCooked }
           : interaction
       );
     } else {
-      user.recipeInteractions.push({ hasCooked: true, recipe: _id });
+      updatedRecipeInteractions = [
+        ...user.recipeInteractions,
+        { hasCooked: true, recipe: _id },
+      ];
     }
-    updateUserinDb(user, mutate);
+    updateUserinDb(
+      { ...user, recipeInteractions: updatedRecipeInteractions },
+      mutate
+    ).catch(() => notifyError("Änderung konnte nicht gespeichert werden."));
   }
 
   return (

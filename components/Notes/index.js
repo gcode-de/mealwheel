@@ -34,14 +34,17 @@ export default function Notes({ user, mutateUser, _id, foundInteractions }) {
       comment: formData.get("comment"),
       date: new Date(),
     };
-    if (interactionIndex !== -1) {
-      user.recipeInteractions[interactionIndex].notes.push(note);
-    } else {
-      user.recipeInteractions.push({ recipe: _id, notes: [note] });
-    }
+    const recipeInteractions =
+      interactionIndex !== -1
+        ? user.recipeInteractions.map((interaction, index) =>
+            index === interactionIndex
+              ? { ...interaction, notes: [...(interaction.notes || []), note] }
+              : interaction
+          )
+        : [...user.recipeInteractions, { recipe: _id, notes: [note] }];
     setMenuVisible([...menuVisible, false]);
     setIsEditing([...isEditing, false]);
-    updateUserinDb(user, mutateUser);
+    updateUserinDb({ ...user, recipeInteractions }, mutateUser);
     event.target.reset();
   }
 
@@ -67,8 +70,18 @@ export default function Notes({ user, mutateUser, _id, foundInteractions }) {
   function handleSave(event, index) {
     event.preventDefault();
     const newComment = event.target.value;
-    user.recipeInteractions[interactionIndex].notes[index].comment = newComment;
-    updateUserinDb(user, mutateUser);
+    const recipeInteractions = user.recipeInteractions.map(
+      (interaction, interactionPosition) =>
+        interactionPosition === interactionIndex
+          ? {
+              ...interaction,
+              notes: interaction.notes.map((note, notePosition) =>
+                notePosition === index ? { ...note, comment: newComment } : note
+              ),
+            }
+          : interaction
+    );
+    updateUserinDb({ ...user, recipeInteractions }, mutateUser);
     const updatedIsEditing = [...isEditing];
     updatedIsEditing[index] = false;
     setIsEditing(updatedIsEditing);
@@ -78,7 +91,12 @@ export default function Notes({ user, mutateUser, _id, foundInteractions }) {
     const updatedNotes = user.recipeInteractions[interactionIndex].notes.filter(
       (_, i) => i !== index
     );
-    user.recipeInteractions[interactionIndex].notes = updatedNotes;
+    const recipeInteractions = user.recipeInteractions.map(
+      (interaction, interactionPosition) =>
+        interactionPosition === interactionIndex
+          ? { ...interaction, notes: updatedNotes }
+          : interaction
+    );
     setMenuVisible((prevMenuVisible) => {
       const updatedMenuVisible = [...prevMenuVisible];
       updatedMenuVisible[index] = false;
@@ -87,7 +105,7 @@ export default function Notes({ user, mutateUser, _id, foundInteractions }) {
 
     setMenuVisible(menuVisible.splice(index, 1));
     setModal(false);
-    updateUserinDb(user, mutateUser);
+    updateUserinDb({ ...user, recipeInteractions }, mutateUser);
   }
 
   function closeMenu(event, index) {
